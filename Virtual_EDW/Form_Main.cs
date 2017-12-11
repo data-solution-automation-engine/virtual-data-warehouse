@@ -35,7 +35,7 @@ namespace Virtual_EDW
             InitializeComponent();
             InitializePath();
 
-            richTextBoxInformation.Text = "Application initialised - Enterprise Data Warehouse Virtualisation. \r\n\r\n";
+            richTextBoxInformation.Text = "Application initialised - welcome to Enterprise Data Warehouse Virtualisation. \r\n\r\n";
 
             try
             {
