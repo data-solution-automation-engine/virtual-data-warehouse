@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual_EDW", "Virtual_EDW\Virtual_EDW.csproj", "{73971441-2782-43CF-862C-1F636528858A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{8221AA80-A2A2-4CE4-BD5D-9270307C36C2}"
+	ProjectSection(SolutionItems) = preProject
+		Files\Examples\ETL Automation Metadata v1.2 _OMD.xlsm = Files\Examples\ETL Automation Metadata v1.2 _OMD.xlsm
+		Files\ETL Automation Metadata v1.2.xlsm = Files\ETL Automation Metadata v1.2.xlsm
+		Files\Examples\Metadata_Upload.sql = Files\Examples\Metadata_Upload.sql
+		Files\Examples\Sample_EDW_1_Source_DML.sql = Files\Examples\Sample_EDW_1_Source_DML.sql
+		Files\Examples\Sample_EDW_2_Staging_User_Managed_DML.sql = Files\Examples\Sample_EDW_2_Staging_User_Managed_DML.sql
+		Files\Examples\Sample_EDW_2_Staging_User_Managed_OMD_DML.sql = Files\Examples\Sample_EDW_2_Staging_User_Managed_OMD_DML.sql
+		Files\SP_MD_DV_METADATA.sql = Files\SP_MD_DV_METADATA.sql
+		Files\Examples\SQL_Create_STG_and_HSTG.sql = Files\Examples\SQL_Create_STG_and_HSTG.sql
+		Files\Examples\SQL_Reset_Data.sql = Files\Examples\SQL_Reset_Data.sql
+		Files\Examples\Virtual_EDW_1_Source_v1.1.erwin = Files\Examples\Virtual_EDW_1_Source_v1.1.erwin
+		Files\Examples\Virtual_EDW_2_Staging_v1.0.erwin = Files\Examples\Virtual_EDW_2_Staging_v1.0.erwin
+		Files\Examples\Virtual_EDW_2_Staging_v1.0_OMD.erwin = Files\Examples\Virtual_EDW_2_Staging_v1.0_OMD.erwin
+		Files\Examples\Virtual_EDW_3_PSA_v1.0.erwin = Files\Examples\Virtual_EDW_3_PSA_v1.0.erwin
+		Files\Examples\Virtual_EDW_3_PSA_v1.0_OMD.erwin = Files\Examples\Virtual_EDW_3_PSA_v1.0_OMD.erwin
+		Files\Examples\Virtual_EDW_4_Integration_v1.2.1.erwin = Files\Examples\Virtual_EDW_4_Integration_v1.2.1.erwin
+		Files\Examples\Virtual_EDW_4_Integration_v1.2.1_OMD.erwin = Files\Examples\Virtual_EDW_4_Integration_v1.2.1_OMD.erwin
+		Files\Examples\Virtual_EDW_5_Presentation_v1.0.erwin = Files\Examples\Virtual_EDW_5_Presentation_v1.0.erwin
+		Files\Virtualisation_Metadata_v1.3.erwin = Files\Virtualisation_Metadata_v1.3.erwin
+	EndProjectSection
+EndProject
+Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "VEDW_Setup", "VEDW_Setup\VEDW_Setup.isproj", "{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{73971441-2782-43CF-862C-1F636528858A} = {73971441-2782-43CF-862C-1F636528858A}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CD_ROM|Any CPU = CD_ROM|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		DVD-5|Any CPU = DVD-5|Any CPU
+		Release|Any CPU = Release|Any CPU
+		SingleImage|Any CPU = SingleImage|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73971441-2782-43CF-862C-1F636528858A}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{73971441-2782-43CF-862C-1F636528858A}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.CD_ROM|Any CPU.ActiveCfg = CD_ROM
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.CD_ROM|Any CPU.Build.0 = CD_ROM
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.Debug|Any CPU.ActiveCfg = SingleImage
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.Debug|Any CPU.Build.0 = SingleImage
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.DVD-5|Any CPU.ActiveCfg = DVD-5
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.DVD-5|Any CPU.Build.0 = DVD-5
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.Release|Any CPU.ActiveCfg = SingleImage
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.Release|Any CPU.Build.0 = SingleImage
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.SingleImage|Any CPU.ActiveCfg = SingleImage
+		{4B561CD6-F1E6-4ED4-8708-87B895BCFBA0}.SingleImage|Any CPU.Build.0 = SingleImage
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<Mapping>  
+  <STM SourceTable="STG_ACURITY_CLIENTDETAILS"  TargetTable="HUB_MEMBER"  BusinessKey="COMPOSITE(ClientID, CONCAT(State;'AUS'))" FilterClause="1=1" />
+  <STM SourceTable="STG_ACURITY_CLIENTDETAILS"  TargetTable="SAT_MEMBER"  BusinessKey="COMPOSITE(ClientID, CONCAT(State;'AUS'))" FilterClause="" />
+  <STM SourceTable="STG_ACURITY_MEMBER_EMP"  TargetTable="HUB_ACCOUNT_MANAGER"  BusinessKey="COMPOSITE(ClientID,'QLD')" FilterClause="" />
+  <STM SourceTable="STG_ACURITY_MEMBER_EMP"  TargetTable="LNK_MEMBER_ACCOUNT_MANAGER"  BusinessKey="EmpID, COMPOSITE(ClientID,'QLD')" FilterClause="" />
+  <STM SourceTable="STG_ACURITY_MEMBER_EMP"  TargetTable="LSAT_MEMBER_ACCOUNT_MANAGER"  BusinessKey="EmpID, COMPOSITE(ClientID,'QLD')" FilterClause="" />
+  <STM SourceTable="STG_ACURITY_DEF"  TargetTable="HUB_DIVISION"  BusinessKey="Fundcode" FilterClause="" />          
+</Mapping>

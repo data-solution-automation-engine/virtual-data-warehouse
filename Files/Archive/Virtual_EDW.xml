@@ -1,0 +1,14 @@
+<EDW>
+  <Mapping>
+    <Staging_Table>STG_PROFILER_CUSTOMER_PERSONAL</Staging_Table>  
+    <Integration_Table>HUB_CUSTOMER</Integration_Table>  
+    <Business_Key_Definition>COMPOSITE(CustomerID,CONCAT(Contact_Number;'99999'))</Business_Key_Definition>
+   <Filter_Criteria>N/A</Filter_Criteria>
+  </Mapping>
+  <Mapping>
+    <Staging_Table>STG_PROFILER_CUSTOMER_PERSONAL2</Staging_Table>
+    <Integration_Table>HUB_CUSTOMER2</Integration_Table>   
+    <Business_Key_Definition>COMPOSITE(CustomerID,CONCAT(Contact_Number;'99999'))</Business_Key_Definition>
+   <Filter_Criteria>N/A</Filter_Criteria>
+  </Mapping>
+</EDW>
