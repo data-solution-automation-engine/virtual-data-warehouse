@@ -322,7 +322,7 @@ namespace Virtual_EDW
             {
                 dataGridViewDrivingKeyMetadata.Columns[dataGridViewDrivingKeyMetadata.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
-           
+
 
             // Disable the auto size again (to enable manual resizing)
             for (var i = 0; i < dataGridViewDrivingKeyMetadata.Columns.Count - 1; i++)
@@ -333,7 +333,7 @@ namespace Virtual_EDW
             }
 
         }
-    
+
         private void InitialiseVersionTrackbar()
         {
             //Initialise the versioning
@@ -361,7 +361,7 @@ namespace Virtual_EDW
         {
             richTextBoxInformation.Clear();
             richTextBoxInformation.Text += "Commencing reverse-engineering the model metadata from the database.\r\n";
-  
+
             // Truncate existing metadata - if selected
             if (checkBoxClearMetadata.Checked)
             {
@@ -371,8 +371,8 @@ namespace Virtual_EDW
             //Populate table / attribute version table
             var intDatabase = _myParent.textBoxIntegrationDatabase.Text;
             var stgDatabase = _myParent.textBoxStagingDatabase.Text;
-            var connStg= new SqlConnection { ConnectionString = _myParent.textBoxStagingConnection.Text };
-            var connInt = new SqlConnection {ConnectionString = _myParent.textBoxIntegrationConnection.Text};
+            var connStg = new SqlConnection { ConnectionString = _myParent.textBoxStagingConnection.Text };
+            var connInt = new SqlConnection { ConnectionString = _myParent.textBoxIntegrationConnection.Text };
             var stgPrefix = _myParent.textBoxStagingAreaPrefix.Text;
 
             // Process changes
@@ -422,10 +422,10 @@ namespace Virtual_EDW
                 insertQueryTables.AppendLine("([VERSION_ID],[STAGING_AREA_TABLE],[BUSINESS_KEY_ATTRIBUTE],[INTEGRATION_AREA_TABLE],[FILTER_CRITERIA])");
                 insertQueryTables.AppendLine("VALUES");
                 var businessKeyDefinition = version["BUSINESS_KEY_ATTRIBUTE"].ToString().Replace("'", "''");
-                insertQueryTables.AppendLine("(" + versionId + "," + 
+                insertQueryTables.AppendLine("(" + versionId + "," +
                                             "'" + (string)version["STAGING_AREA_TABLE"] + "'," +
                                             "'" + businessKeyDefinition + "'," +
-                                            "'" + (string)version["INTEGRATION_AREA_TABLE"] + "'," + 
+                                            "'" + (string)version["INTEGRATION_AREA_TABLE"] + "'," +
                                             "'" + (string)version["FILTER_CRITERIA"] + "'" +
                                             ")");
             }
@@ -507,11 +507,11 @@ namespace Virtual_EDW
                     }
                     catch (Exception ex)
                     {
-                        richTextBoxInformation.Text += "An issue has occurred: " + ex+"\r\n";
+                        richTextBoxInformation.Text += "An issue has occurred: " + ex + "\r\n";
                     }
                 }
             }
-        }        
+        }
 
         private void ReverseEngineerModelMetadata(SqlConnection conn, string prefix, string label, string databaseName)
         {
@@ -668,7 +668,7 @@ namespace Virtual_EDW
             sqlStatementForAttributeVersion.AppendLine("  CASE");
             sqlStatementForAttributeVersion.AppendLine("	WHEN extprop.Value='True' THEN 'Y'");
             sqlStatementForAttributeVersion.AppendLine("	ELSE 'N'");
-            sqlStatementForAttributeVersion.AppendLine("  END AS DRIVING_KEY_INDICATOR");     
+            sqlStatementForAttributeVersion.AppendLine("  END AS DRIVING_KEY_INDICATOR");
 
             sqlStatementForAttributeVersion.AppendLine("FROM [" + databaseName + "].INFORMATION_SCHEMA.COLUMNS main");
             sqlStatementForAttributeVersion.AppendLine("-- Driving Key");
@@ -778,7 +778,7 @@ namespace Virtual_EDW
             const string commandText = //"TRUNCATE TABLE [MD_TABLE_MAPPING]; " +
                                        //"TRUNCATE TABLE [MD_ATTRIBUTE_MAPPING]; " +
                                        "TRUNCATE TABLE [MD_VERSION_ATTRIBUTE];";
-                                       //"TRUNCATE TABLE [MD_VERSION];";
+            //"TRUNCATE TABLE [MD_VERSION];";
 
             using (var connection = new SqlConnection(_myParent.textBoxMetadataConnection.Text))
             {
@@ -1003,10 +1003,10 @@ namespace Virtual_EDW
                 queryMultiActive.AppendLine("  COLUMN_NAME AS ATTRIBUTE_NAME, ");
                 queryMultiActive.AppendLine("  VERSION_ID ");
                 queryMultiActive.AppendLine("FROM MD_VERSION_ATTRIBUTE ");
-                queryMultiActive.AppendLine("WHERE VERSION_ID = "+versionId);
+                queryMultiActive.AppendLine("WHERE VERSION_ID = " + versionId);
 
-                queryMultiActive.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + _myParent.textBoxDWHKeyIdentifier.Text + "'");
-                queryMultiActive.AppendLine("  AND (SUBSTRING(TABLE_NAME,1," + localSatPrefixLength + ")='" +_myParent.textBoxSatPrefix.Text + "_' ");
+                queryMultiActive.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + _myParent.textBoxDWHKeyIdentifier.Text + "'");
+                queryMultiActive.AppendLine("  AND (SUBSTRING(TABLE_NAME,1," + localSatPrefixLength + ")='" + _myParent.textBoxSatPrefix.Text + "_' ");
                 queryMultiActive.AppendLine("   OR SUBSTRING(TABLE_NAME,1," + localLsatPrefixLength + ")='" + _myParent.textBoxLinkSatPrefix.Text + "_')");
 
                 queryMultiActive.AppendLine("  AND PRIMARY_KEY_INDICATOR = 'Y'");
@@ -1052,7 +1052,7 @@ namespace Virtual_EDW
         {
             if (checkBoxClearMetadata.Checked)
             {
-               MessageBox.Show("Selection this option will mean that all metadata will be truncated.", "Clear metadata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Selection this option will mean that all metadata will be truncated.", "Clear metadata", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -1157,7 +1157,7 @@ namespace Virtual_EDW
             {
                 labelResult.Text = "Done!";
                 richTextBoxInformation.Text += "The metadata was processed succesfully!\r\n";
-                _myParent.SetVersion(trackBarVersioning.Value);
+                //  _myParent.SetVersion(trackBarVersioning.Value);
             }
             // Close the AlertForm
             //alert.Close();
@@ -1328,7 +1328,8 @@ namespace Virtual_EDW
                     prepareStgStatement.AppendLine("SELECT DISTINCT STAGING_AREA_TABLE");
                     prepareStgStatement.AppendLine("FROM MD_TABLE_MAPPING");
                     prepareStgStatement.AppendLine("WHERE STAGING_AREA_TABLE LIKE '" + stagingPrefix + "'");
-                    prepareStgStatement.AppendLine("AND VERSION_ID = " + versionId);
+                    prepareStgStatement.AppendLine("AND [VERSION_ID] = " + versionId);
+                    prepareStgStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
                     prepareStgStatement.AppendLine("ORDER BY STAGING_AREA_TABLE");
 
                     var listStaging = GetDataTable(ref connOmd, prepareStgStatement.ToString());
@@ -1389,7 +1390,8 @@ namespace Virtual_EDW
                     prepareHubStatement.AppendLine("SELECT DISTINCT INTEGRATION_AREA_TABLE AS HUB_TABLE_NAME");
                     prepareHubStatement.AppendLine("FROM MD_TABLE_MAPPING");
                     prepareHubStatement.AppendLine("WHERE INTEGRATION_AREA_TABLE LIKE '" + hubTablePrefix + "'");
-                    prepareHubStatement.AppendLine("AND VERSION_ID = " + versionId);
+                    prepareHubStatement.AppendLine("AND [VERSION_ID] = " + versionId);
+                    prepareHubStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
 
                     var listHub = GetDataTable(ref connOmd, prepareHubStatement.ToString());
 
@@ -1450,7 +1452,8 @@ namespace Virtual_EDW
                     prepareLinkStatement.AppendLine("SELECT DISTINCT INTEGRATION_AREA_TABLE AS LINK_TABLE_NAME");
                     prepareLinkStatement.AppendLine("FROM MD_TABLE_MAPPING");
                     prepareLinkStatement.AppendLine("WHERE INTEGRATION_AREA_TABLE LIKE '" + lnkTablePrefix + "'");
-                    prepareLinkStatement.AppendLine("AND VERSION_ID = " + versionId);
+                    prepareLinkStatement.AppendLine("AND [VERSION_ID] = " + versionId);
+                    prepareLinkStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
 
                     var listLink = GetDataTable(ref connOmd, prepareLinkStatement.ToString());
 
@@ -1520,11 +1523,13 @@ namespace Virtual_EDW
                     prepareSatStatement.AppendLine("             MD_HUB hub ON hub.HUB_TABLE_NAME=spec2.INTEGRATION_AREA_TABLE ");
                     prepareSatStatement.AppendLine("    WHERE INTEGRATION_AREA_TABLE LIKE '" + hubTablePrefix + "'");
                     prepareSatStatement.AppendLine("    AND VERSION_ID = " + versionId);
+                    prepareSatStatement.AppendLine("    AND [GENERATE_INDICATOR] = 'Y'");
                     prepareSatStatement.AppendLine(") hubkeysub ");
                     prepareSatStatement.AppendLine("       ON spec.STAGING_AREA_TABLE=hubkeysub.STAGING_AREA_TABLE ");
                     prepareSatStatement.AppendLine("       AND replace(spec.BUSINESS_KEY_ATTRIBUTE,' ','')=replace(hubkeysub.BUSINESS_KEY_ATTRIBUTE,' ','') ");
                     prepareSatStatement.AppendLine("WHERE spec.INTEGRATION_AREA_TABLE LIKE '" + satTablePrefix + "'");
                     prepareSatStatement.AppendLine("AND VERSION_ID = " + versionId);
+                    prepareSatStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
 
                     var listSat = GetDataTable(ref connOmd, prepareSatStatement.ToString());
 
@@ -1597,13 +1602,15 @@ namespace Virtual_EDW
                     prepareSatStatement.AppendLine("             MD_LINK lnk ON lnk.LINK_TABLE_NAME=spec2.INTEGRATION_AREA_TABLE");
                     prepareSatStatement.AppendLine("       WHERE INTEGRATION_AREA_TABLE LIKE '" + lnkTablePrefix + "' ");
                     prepareSatStatement.AppendLine("       AND VERSION_ID = " + versionId);
+                    prepareSatStatement.AppendLine("       AND [GENERATE_INDICATOR] = 'Y'");
                     prepareSatStatement.AppendLine(") lnkkeysub");
                     prepareSatStatement.AppendLine("    ON spec.STAGING_AREA_TABLE=lnkkeysub.STAGING_AREA_TABLE -- Only the combination of Link table and Business key can belong to the LSAT");
                     prepareSatStatement.AppendLine("   AND spec.BUSINESS_KEY_ATTRIBUTE=lnkkeysub.BUSINESS_KEY_ATTRIBUTE");
                     prepareSatStatement.AppendLine("");
                     prepareSatStatement.AppendLine("-- Only select Link Satellites as the base / driving table (spec alias)");
                     prepareSatStatement.AppendLine("WHERE spec.INTEGRATION_AREA_TABLE LIKE '" + lsatTablePrefix + "'");
-
+                    prepareSatStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
+                    prepareSatStatement.AppendLine("AND VERSION_ID = " + versionId);
 
                     var listSat = GetDataTable(ref connOmd, prepareSatStatement.ToString());
 
@@ -1673,6 +1680,7 @@ namespace Virtual_EDW
                     prepareSatXrefStatement.AppendLine("       MD_SAT sat ON sat.SATELLITE_TABLE_NAME=spec.INTEGRATION_AREA_TABLE");
                     prepareSatXrefStatement.AppendLine("WHERE spec.INTEGRATION_AREA_TABLE LIKE '" + satTablePrefix + "' ");
                     prepareSatXrefStatement.AppendLine("AND VERSION_ID = " + versionId);
+                    prepareSatXrefStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
                     prepareSatXrefStatement.AppendLine("UNION");
                     prepareSatXrefStatement.AppendLine("SELECT");
                     prepareSatXrefStatement.AppendLine("       sat.SATELLITE_TABLE_ID,");
@@ -1687,6 +1695,7 @@ namespace Virtual_EDW
                     prepareSatXrefStatement.AppendLine("LEFT OUTER JOIN -- Join in the Satellite_ID from the MD_SAT table");
                     prepareSatXrefStatement.AppendLine("       MD_SAT sat ON sat.SATELLITE_TABLE_NAME=spec.INTEGRATION_AREA_TABLE");
                     prepareSatXrefStatement.AppendLine("WHERE spec.INTEGRATION_AREA_TABLE LIKE '" + lsatTablePrefix + "' ");
+                    prepareSatXrefStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
                     prepareSatXrefStatement.AppendLine("AND VERSION_ID = " + versionId);
 
 
@@ -1767,6 +1776,7 @@ namespace Virtual_EDW
                     prepareStgHubXrefStatement.AppendLine("              WHERE ");
                     prepareStgHubXrefStatement.AppendLine("                     INTEGRATION_AREA_TABLE LIKE '" + hubTablePrefix + "'");
                     prepareStgHubXrefStatement.AppendLine("              AND VERSION_ID = " + versionId);
+                    prepareStgHubXrefStatement.AppendLine("              AND [GENERATE_INDICATOR] = 'Y'");
                     prepareStgHubXrefStatement.AppendLine("       ) hub");
                     prepareStgHubXrefStatement.AppendLine("LEFT OUTER JOIN");
                     prepareStgHubXrefStatement.AppendLine("       ( ");
@@ -1981,6 +1991,7 @@ namespace Virtual_EDW
                     prepareKeyStatement.AppendLine("            FROM MD_TABLE_MAPPING");
                     prepareKeyStatement.AppendLine("            WHERE INTEGRATION_AREA_TABLE LIKE '" + hubTablePrefix + "'");
                     prepareKeyStatement.AppendLine("              AND VERSION_ID = " + versionId);
+                    prepareKeyStatement.AppendLine("              AND [GENERATE_INDICATOR] = 'Y'");
                     prepareKeyStatement.AppendLine("        ) TableName");
                     prepareKeyStatement.AppendLine("    ) AS A CROSS APPLY BUSINESS_KEY_ATTRIBUTE_XML.nodes('/M') AS Split(a)");
                     prepareKeyStatement.AppendLine("");
@@ -2200,6 +2211,8 @@ namespace Virtual_EDW
                     prepareHubLnkXrefStatement.AppendLine("WHERE lnk.INTEGRATION_AREA_TABLE LIKE '" + lnkTablePrefix + "' and hub.INTEGRATION_AREA_TABLE LIKE '" + hubTablePrefix + "'");
                     prepareHubLnkXrefStatement.AppendLine("AND hub.VERSION_ID = " + versionId);
                     prepareHubLnkXrefStatement.AppendLine("AND lnk.VERSION_ID = " + versionId);
+                    prepareHubLnkXrefStatement.AppendLine("AND lnk.[GENERATE_INDICATOR] = 'Y'");
+                    prepareHubLnkXrefStatement.AppendLine("AND hub.[GENERATE_INDICATOR] = 'Y'");
 
                     var listHlXref = GetDataTable(ref connOmd, prepareHubLnkXrefStatement.ToString());
 
@@ -2268,6 +2281,7 @@ namespace Virtual_EDW
                     preparestgLnkXrefStatement.AppendLine("JOIN dbo.MD_STG stg_tbl ON lnk.STAGING_AREA_TABLE = stg_tbl.STAGING_AREA_TABLE_NAME");
                     preparestgLnkXrefStatement.AppendLine("WHERE lnk.INTEGRATION_AREA_TABLE like '" + lnkTablePrefix + "'");
                     preparestgLnkXrefStatement.AppendLine("AND lnk.VERSION_ID = " + versionId);
+                    preparestgLnkXrefStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
 
                     var listHlXref = GetDataTable(ref connOmd, preparestgLnkXrefStatement.ToString());
 
@@ -2343,16 +2357,17 @@ namespace Virtual_EDW
                         prepareMappingStatement.AppendLine("	   ,'N' as MULTI_ACTIVE_KEY_INDICATOR");
                         prepareMappingStatement.AppendLine("	   ,'manually_mapped' as VERIFICATION");
                         prepareMappingStatement.AppendLine("FROM dbo.MD_ATTRIBUTE_MAPPING mapping");
-                        prepareMappingStatement.AppendLine("       LEFT OUTER JOIN dbo.MD_SAT sat");
-                        prepareMappingStatement.AppendLine("	     on sat.SATELLITE_TABLE_NAME=mapping.TARGET_TABLE");
-                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_ATT target_attr");
-                        prepareMappingStatement.AppendLine("	     on mapping.TARGET_COLUMN = target_attr.ATTRIBUTE_NAME");
-                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_STG stg");
-                        prepareMappingStatement.AppendLine("	     on stg.STAGING_AREA_TABLE_NAME = mapping.SOURCE_TABLE");
-                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_ATT stg_attr");
-                        prepareMappingStatement.AppendLine("	     on mapping.SOURCE_COLUMN = stg_attr.ATTRIBUTE_NAME");
-                        prepareMappingStatement.AppendLine("WHERE TARGET_TABLE NOT LIKE '" + dwhKeyIdentifier + "' AND TARGET_TABLE NOT LIKE '" + lnkTablePrefix + "'");
-                        prepareMappingStatement.AppendLine("      AND VERSION_ID = " + versionId);
+                        prepareMappingStatement.AppendLine("       LEFT OUTER JOIN dbo.MD_SAT sat on sat.SATELLITE_TABLE_NAME=mapping.TARGET_TABLE");
+                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_ATT target_attr on mapping.TARGET_COLUMN = target_attr.ATTRIBUTE_NAME");
+                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_STG stg on stg.STAGING_AREA_TABLE_NAME = mapping.SOURCE_TABLE");
+                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_ATT stg_attr on mapping.SOURCE_COLUMN = stg_attr.ATTRIBUTE_NAME");
+                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_TABLE_MAPPING table_mapping");
+                        prepareMappingStatement.AppendLine("	     on mapping.TARGET_TABLE = table_mapping.INTEGRATION_AREA_TABLE");
+                        prepareMappingStatement.AppendLine("	    and mapping.SOURCE_TABLE = table_mapping.STAGING_AREA_TABLE");
+                        prepareMappingStatement.AppendLine("WHERE mapping.TARGET_TABLE NOT LIKE '" + dwhKeyIdentifier + "' AND mapping.TARGET_TABLE NOT LIKE '" + lnkTablePrefix + "'");
+                        prepareMappingStatement.AppendLine("      AND mapping.VERSION_ID = " + versionId);
+                        prepareMappingStatement.AppendLine("      AND table_mapping.VERSION_ID = " + versionId);
+                        prepareMappingStatement.AppendLine("      AND table_mapping.GENERATE_INDICATOR = 'Y'");
                         prepareMappingStatement.AppendLine("),");
                         prepareMappingStatement.AppendLine("ORIGINAL_ATTRIBUTES AS");
                         prepareMappingStatement.AppendLine("(");
@@ -2439,16 +2454,17 @@ namespace Virtual_EDW
                         prepareMappingStatement.AppendLine("	   ,'N' as MULTI_ACTIVE_KEY_INDICATOR");
                         prepareMappingStatement.AppendLine("	   ,'manually_mapped' as VERIFICATION");
                         prepareMappingStatement.AppendLine("FROM dbo.MD_ATTRIBUTE_MAPPING mapping");
-                        prepareMappingStatement.AppendLine("       LEFT OUTER JOIN dbo.MD_SAT sat");
-                        prepareMappingStatement.AppendLine("	     on sat.SATELLITE_TABLE_NAME=mapping.TARGET_TABLE");
-                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_ATT target_attr");
-                        prepareMappingStatement.AppendLine("	     on mapping.TARGET_COLUMN = target_attr.ATTRIBUTE_NAME");
-                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_STG stg");
-                        prepareMappingStatement.AppendLine("	     on stg.STAGING_AREA_TABLE_NAME = mapping.SOURCE_TABLE");
-                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_ATT stg_attr");
-                        prepareMappingStatement.AppendLine("	     on mapping.SOURCE_COLUMN = stg_attr.ATTRIBUTE_NAME");
-                        prepareMappingStatement.AppendLine("WHERE TARGET_TABLE NOT LIKE '" + dwhKeyIdentifier + "' AND TARGET_TABLE NOT LIKE '" + lnkTablePrefix + "'");
-                        prepareMappingStatement.AppendLine("      AND VERSION_ID = " + versionId);
+                        prepareMappingStatement.AppendLine("       LEFT OUTER JOIN dbo.MD_SAT sat on sat.SATELLITE_TABLE_NAME=mapping.TARGET_TABLE");
+                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_ATT target_attr on mapping.TARGET_COLUMN = target_attr.ATTRIBUTE_NAME");
+                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_STG stg on stg.STAGING_AREA_TABLE_NAME = mapping.SOURCE_TABLE");
+                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_ATT stg_attr on mapping.SOURCE_COLUMN = stg_attr.ATTRIBUTE_NAME");
+                        prepareMappingStatement.AppendLine("	   LEFT OUTER JOIN dbo.MD_TABLE_MAPPING table_mapping");
+                        prepareMappingStatement.AppendLine("	     on mapping.TARGET_TABLE = table_mapping.INTEGRATION_AREA_TABLE");
+                        prepareMappingStatement.AppendLine("	    and mapping.SOURCE_TABLE = table_mapping.STAGING_AREA_TABLE");
+                        prepareMappingStatement.AppendLine("WHERE mapping.TARGET_TABLE NOT LIKE '" + dwhKeyIdentifier + "' AND mapping.TARGET_TABLE NOT LIKE '" + lnkTablePrefix + "'");
+                        prepareMappingStatement.AppendLine("      AND mapping.VERSION_ID = " + versionId);
+                        prepareMappingStatement.AppendLine("      AND table_mapping.VERSION_ID = " + versionId);
+                        prepareMappingStatement.AppendLine("      AND table_mapping.GENERATE_INDICATOR = 'Y'");
                         prepareMappingStatement.AppendLine("),");
                         prepareMappingStatement.AppendLine("ORIGINAL_ATTRIBUTES AS");
                         prepareMappingStatement.AppendLine("(");
@@ -2464,12 +2480,10 @@ namespace Virtual_EDW
                         prepareMappingStatement.AppendLine("	'N' as MULTI_ACTIVE_KEY_INDICATOR,");
                         prepareMappingStatement.AppendLine("	'automatically_mapped' AS VERIFICATION");
                         prepareMappingStatement.AppendLine("FROM MD_VERSION_ATTRIBUTE mapping");
-
                         prepareMappingStatement.AppendLine("LEFT OUTER JOIN MD_STG stg ON stg.STAGING_AREA_TABLE_NAME = mapping.TABLE_NAME");
                         prepareMappingStatement.AppendLine("LEFT OUTER JOIN MD_STG_SAT_XREF xref ON stg.STAGING_AREA_TABLE_ID = xref.STAGING_AREA_TABLE_ID");
                         prepareMappingStatement.AppendLine("LEFT OUTER JOIN MD_SAT sat ON xref.SATELLITE_TABLE_ID = sat.SATELLITE_TABLE_ID");
                         prepareMappingStatement.AppendLine("LEFT OUTER JOIN MD_ATT stg_attr on mapping.COLUMN_NAME = stg_attr.ATTRIBUTE_NAME");
-
                         prepareMappingStatement.AppendLine("JOIN MD_VERSION_ATTRIBUTE satatts");
                         prepareMappingStatement.AppendLine("    on sat.SATELLITE_TABLE_NAME=satatts.TABLE_NAME");
                         prepareMappingStatement.AppendLine("    and UPPER(mapping.COLUMN_NAME) = UPPER(satatts.COLUMN_NAME)");
@@ -2972,6 +2986,7 @@ namespace Virtual_EDW
                     prepareDrivingKeyStatement.AppendLine("                     FROM MD_TABLE_MAPPING");
                     prepareDrivingKeyStatement.AppendLine("                     WHERE INTEGRATION_AREA_TABLE LIKE '" + lsatTablePrefix + "' AND DRIVING_KEY_ATTRIBUTE IS NOT NULL AND DRIVING_KEY_ATTRIBUTE != ''");
                     prepareDrivingKeyStatement.AppendLine("                     AND VERSION_ID =" + versionId);
+                    prepareDrivingKeyStatement.AppendLine("                     AND [GENERATE_INDICATOR] = 'Y'");
                     prepareDrivingKeyStatement.AppendLine("              ) TableName");
                     prepareDrivingKeyStatement.AppendLine("       ) AS A CROSS APPLY DRIVING_KEY_ATTRIBUTE_XML.nodes('/M') AS Split(a)");
                     prepareDrivingKeyStatement.AppendLine(")  base");
@@ -2987,6 +3002,7 @@ namespace Virtual_EDW
                     prepareDrivingKeyStatement.AppendLine("WHERE base.VERSION_ID = " + versionId);
                     prepareDrivingKeyStatement.AppendLine("AND base.BUSINESS_KEY_ATTRIBUTE IS NOT NULL");
                     prepareDrivingKeyStatement.AppendLine("AND base.BUSINESS_KEY_ATTRIBUTE!=''");
+                    prepareDrivingKeyStatement.AppendLine("AND [GENERATE_INDICATOR] = 'Y'");
 
                     var listDrivingKeys = GetDataTable(ref connOmd, prepareDrivingKeyStatement.ToString());
 
@@ -3118,7 +3134,7 @@ namespace Virtual_EDW
                             trackBarVersioning.Maximum = GetMaxVersionId();
                             trackBarVersioning.TickFrequency = GetVersionCount();
                             trackBarVersioning.Value = GetMaxVersionId();
-                            _myParent.SetVersion(GetMaxVersionId());
+                            //       _myParent.SetVersion(GetMaxVersionId());
                         }
                         catch (Exception ex)
                         {
@@ -3149,7 +3165,7 @@ namespace Virtual_EDW
                             trackBarVersioning.Maximum = GetMaxVersionId();
                             trackBarVersioning.TickFrequency = GetVersionCount();
                             trackBarVersioning.Value = GetMaxVersionId();
-                            _myParent.SetVersion(GetMaxVersionId());
+                            //           _myParent.SetVersion(GetMaxVersionId());
                         }
                         catch (Exception ex)
                         {
@@ -3244,7 +3260,7 @@ namespace Virtual_EDW
                         insertQueryTables.AppendLine("INSERT INTO MD_VERSION_ATTRIBUTE");
                         insertQueryTables.AppendLine("([VERSION_ID], [TABLE_NAME],[COLUMN_NAME],[DATA_TYPE],[CHARACTER_MAXIMUM_LENGTH],[NUMERIC_PRECISION], [ORDINAL_POSITION], [PRIMARY_KEY_INDICATOR], [DRIVING_KEY_INDICATOR], [MULTI_ACTIVE_INDICATOR])");
                         insertQueryTables.AppendLine("VALUES");
-                        insertQueryTables.AppendLine("(" + versionId + ",'" +tableName + "','" + columnName + "','" + dataType + "','" + maxLength + "','" + numericPrecision + "','" + ordinalPosition + "','" + primaryKeyIndicator + "','" + drivingKeyIndicator + "','" + multiActiveIndicator + "')");
+                        insertQueryTables.AppendLine("(" + versionId + ",'" + tableName + "','" + columnName + "','" + dataType + "','" + maxLength + "','" + numericPrecision + "','" + ordinalPosition + "','" + primaryKeyIndicator + "','" + drivingKeyIndicator + "','" + multiActiveIndicator + "')");
                     }
                 }
             }
@@ -3335,7 +3351,7 @@ namespace Virtual_EDW
                             {
                                 multiActiveIndicator = (string)row[8];
                             }
-                            insertQueryTables.AppendLine("IF NOT EXISTS (SELECT * FROM [MD_VERSION_ATTRIBUTE] WHERE [VERSION_ID]= "+versionId+" AND [TABLE_NAME]='"+tableName+"' AND [COLUMN_NAME]='"+columnName+"')");
+                            insertQueryTables.AppendLine("IF NOT EXISTS (SELECT * FROM [MD_VERSION_ATTRIBUTE] WHERE [VERSION_ID]= " + versionId + " AND [TABLE_NAME]='" + tableName + "' AND [COLUMN_NAME]='" + columnName + "')");
                             insertQueryTables.AppendLine("INSERT INTO [MD_VERSION_ATTRIBUTE]");
                             insertQueryTables.AppendLine("([VERSION_ID], [TABLE_NAME],[COLUMN_NAME],[DATA_TYPE],[CHARACTER_MAXIMUM_LENGTH],[NUMERIC_PRECISION], [ORDINAL_POSITION], [PRIMARY_KEY_INDICATOR], [DRIVING_KEY_INDICATOR], [MULTI_ACTIVE_INDICATOR])");
                             insertQueryTables.AppendLine("VALUES");

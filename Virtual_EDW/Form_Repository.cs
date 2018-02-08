@@ -245,18 +245,30 @@ namespace Virtual_EDW
                 createStatement.AppendLine();
                 RunSqlCommand(connOmdString, createStatement, worker, 3);
                 createStatement.Clear();
-       
+
+                createStatement.AppendLine("IF OBJECT_ID('[FK_MD_SOURCE_STG_XREF_MD_SOURCE_DATASET]', 'F') IS NOT NULL");
+                createStatement.AppendLine("ALTER TABLE [MD_SOURCE_STG_XREF] DROP CONSTRAINT [FK_MD_SOURCE_STG_XREF_MD_SOURCE_DATASET]");
+                createStatement.AppendLine();
+                RunSqlCommand(connOmdString, createStatement, worker, 4);
+                createStatement.Clear();
+
+                createStatement.AppendLine("IF OBJECT_ID('[FK_MD_SOURCE_DATASET_MD_SOURCE_SYSTEM]', 'F') IS NOT NULL");
+                createStatement.AppendLine("ALTER TABLE [MD_SOURCE_DATASET] DROP CONSTRAINT [FK_MD_SOURCE_DATASET_MD_SOURCE_SYSTEM]");
+                createStatement.AppendLine();
+                RunSqlCommand(connOmdString, createStatement, worker, 4);
+                createStatement.Clear();
+
 
                 // Attribute 
                 createStatement.AppendLine();
                 createStatement.AppendLine("--Attribute");
-                createStatement.AppendLine("IF OBJECT_ID('[MD_ATT]', 'U') IS NOT NULL"); 
+                createStatement.AppendLine("IF OBJECT_ID('[MD_ATT]', 'U') IS NOT NULL");
                 createStatement.AppendLine(" DROP TABLE [MD_ATT]");
                 createStatement.AppendLine("");
                 createStatement.AppendLine("CREATE TABLE [MD_ATT]");
                 createStatement.AppendLine("(");
                 createStatement.AppendLine("    [ATTRIBUTE_ID]       integer NOT NULL ,");
-                createStatement.AppendLine("    [ATTRIBUTE_NAME]     varchar(100) NOT NULL,"); 
+                createStatement.AppendLine("    [ATTRIBUTE_NAME]     varchar(100) NOT NULL,");
                 createStatement.AppendLine("    CONSTRAINT[PK_MD_ATT] PRIMARY KEY CLUSTERED ( [ATTRIBUTE_ID] ASC)");
                 createStatement.AppendLine(")");
                 createStatement.AppendLine("");
@@ -446,14 +458,16 @@ namespace Virtual_EDW
                 // Source CDC Xref
                 createStatement.AppendLine();
                 createStatement.AppendLine("-- Source / CDC Xref");
-                createStatement.AppendLine("IF OBJECT_ID('[MD_SOURCE_CDC_TYPE_XREF]', 'U') IS NOT NULL");
-                createStatement.AppendLine(" DROP TABLE [MD_SOURCE_CDC_TYPE_XREF]");
+                createStatement.AppendLine("IF OBJECT_ID('[MD_STG_CDC_TYPE_XREF]', 'U') IS NOT NULL");
+                createStatement.AppendLine(" DROP TABLE [MD_STG_CDC_TYPE_XREF]");
                 createStatement.AppendLine("");
-                createStatement.AppendLine("CREATE TABLE [MD_SOURCE_CDC_TYPE_XREF]");
+                createStatement.AppendLine("CREATE TABLE [MD_STG_CDC_TYPE_XREF]");
                 createStatement.AppendLine("( ");
                 createStatement.AppendLine("	[STAGING_AREA_TABLE_NAME] varchar(100)  NOT NULL,");
-                createStatement.AppendLine("    [CHANGE_DATA_CAPTURE_TYPE]     varchar(100)  NOT NULL,");
-                createStatement.AppendLine("    CONSTRAINT [PK_MD_SOURCE_CDC_TYPE_XREF] PRIMARY KEY CLUSTERED ( [CHANGE_DATA_CAPTURE_TYPE], [STAGING_AREA_TABLE_NAME] ASC)");
+                createStatement.AppendLine("    [CHANGE_DATA_CAPTURE_TYPE] varchar(100)  NOT NULL,");
+                createStatement.AppendLine("    [CHANGE_DATETIME_DEFINITION] varchar(4000) NULL,");
+                createStatement.AppendLine("    [GENERATE_INDICATOR] varchar(1) NULL,");
+                createStatement.AppendLine("    CONSTRAINT [PK_MD_STG_CDC_TYPE_XREF] PRIMARY KEY CLUSTERED ( [CHANGE_DATA_CAPTURE_TYPE], [STAGING_AREA_TABLE_NAME] ASC)");
                 createStatement.AppendLine(")");
 
                 RunSqlCommand(connOmdString, createStatement, worker, 42);
@@ -468,9 +482,63 @@ namespace Virtual_EDW
                 createStatement.AppendLine("CREATE TABLE [MD_SOURCE_STG_XREF]");
                 createStatement.AppendLine("( ");
                 createStatement.AppendLine("	[STAGING_AREA_TABLE_NAME] varchar(100)  NOT NULL,");
-                createStatement.AppendLine("    [SOURCE_TABLE_NAME]     varchar(100)  NOT NULL,");
-                createStatement.AppendLine("    [SOURCE_TABLE_SCHEMA]     varchar(100)  NOT NULL,");
-                createStatement.AppendLine("    CONSTRAINT [PK_MD_SOURCE_STG_XREF] PRIMARY KEY CLUSTERED ( [STAGING_AREA_TABLE_NAME] ASC, [SOURCE_TABLE_NAME])");
+                createStatement.AppendLine("    [SOURCE_DATASET_ID] int  NOT NULL,");
+                createStatement.AppendLine("    [CHANGE_DATETIME_DEFINITION] varchar(4000) NULL,");
+                createStatement.AppendLine("    CONSTRAINT [PK_MD_SOURCE_STG_XREF] PRIMARY KEY CLUSTERED ( [STAGING_AREA_TABLE_NAME] ASC)");
+                createStatement.AppendLine(")");
+
+                RunSqlCommand(connOmdString, createStatement, worker, 43);
+                createStatement.Clear();
+
+                // Source Datasest
+                createStatement.AppendLine();
+                createStatement.AppendLine("-- Source dataset");
+                createStatement.AppendLine("IF OBJECT_ID('[MD_SOURCE_DATASET]', 'U') IS NOT NULL");
+                createStatement.AppendLine(" DROP TABLE [MD_SOURCE_DATASET]");
+                createStatement.AppendLine("");
+                createStatement.AppendLine("CREATE TABLE [MD_SOURCE_DATASET]");
+                createStatement.AppendLine("( ");
+                createStatement.AppendLine("        [SOURCE_DATASET_ID] [int] IDENTITY(1,1) NOT NULL,");
+                createStatement.AppendLine("        [SOURCE_DATASET_NAME] [varchar] (100) NOT NULL, ");
+                createStatement.AppendLine("        [SOURCE_DATASET_TYPE] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[SCHEMA_NAME] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[FILE_BASE_NAME] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[FILE_EXTENSION] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[FILE_HEADER_INCLUDED_INDICATOR] [varchar] (1) NULL,");
+                createStatement.AppendLine("    	[FILE_COLUMN_DELIMITER_NAME] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[FILE_COLUMN_DELIMITER_TYPE] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[FILE_ROW_DELIMITER_NAME] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[FILE_ROW_DELIMITER_TYPE] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[FILE_LAST_ROW_DELIMITER_TYPE] [varchar] (100) NULL,");
+                createStatement.AppendLine("    	[ARCHIVE_REQUIRED_INDICATOR] [varchar] (1) NULL,");
+                createStatement.AppendLine("    	[SOURCE_SYSTEM_ID] [int] NULL,");
+                createStatement.AppendLine("    CONSTRAINT [PK_MD_SOURCE_DATASET] PRIMARY KEY CLUSTERED ( [SOURCE_DATASET_ID] ASC)");
+                createStatement.AppendLine(")");
+
+                RunSqlCommand(connOmdString, createStatement, worker, 43);
+                createStatement.Clear();
+
+                // Source System
+                createStatement.AppendLine();
+                createStatement.AppendLine("-- Source system");
+                createStatement.AppendLine("IF OBJECT_ID('[MD_SOURCE_SYSTEM]', 'U') IS NOT NULL");
+                createStatement.AppendLine(" DROP TABLE [MD_SOURCE_SYSTEM]");
+                createStatement.AppendLine("");
+                createStatement.AppendLine("CREATE TABLE [MD_SOURCE_SYSTEM]");
+                createStatement.AppendLine("( ");
+                createStatement.AppendLine("    [SOURCE_SYSTEM_ID] [int] NOT NULL,");
+                createStatement.AppendLine("    [SOURCE_SYSTEM_NAME] [varchar] (100) NOT NULL,");
+                createStatement.AppendLine("    [SOURCE_SYSTEM_NAME_SHORT] [varchar] (100) NULL,");
+                createStatement.AppendLine("	[SOURCE_SYSTEM_DESCRIPTION] [varchar] (4000) NULL,");
+                createStatement.AppendLine("	[DEFAULT_FILE_EXTENSION] [varchar] (100) NULL,");
+                createStatement.AppendLine("	[DEFAULT_FILE_HEADER_INCLUDED_INDICATOR] [varchar] (1) NULL,");
+                createStatement.AppendLine("	[DEFAULT_FILE_COLUMN_DELIMITER_NAME] [varchar] (100) NULL,");
+                createStatement.AppendLine("	[DEFAULT_FILE_COLUMN_DELIMITER_TYPE] [varchar] (100) NULL,");
+                createStatement.AppendLine("	[DEFAULT_FILE_ROW_DELIMITER_NAME] [varchar] (100) NULL,");
+                createStatement.AppendLine("	[DEFAULT_FILE_ROW_DELIMITER_TYPE] [varchar] (100) NULL,");
+                createStatement.AppendLine("	[DEFAULT_FILE_LAST_ROW_DELIMITER_TYPE] [varchar] (100) NULL,");
+                createStatement.AppendLine("	[DEFAULT_ARCHIVE_REQUIRED_INDICATOR] [varchar] (1) NULL");
+                createStatement.AppendLine("    CONSTRAINT [PK_MD_SOURCE_SYSTEM] PRIMARY KEY CLUSTERED ( [SOURCE_SYSTEM_ID] ASC)");
                 createStatement.AppendLine(")");
 
                 RunSqlCommand(connOmdString, createStatement, worker, 43);
@@ -618,7 +686,8 @@ namespace Virtual_EDW
                 createStatement.AppendLine("	[BUSINESS_KEY_ATTRIBUTE] varchar(4000)  NULL,");
                 createStatement.AppendLine("	[DRIVING_KEY_ATTRIBUTE] varchar(4000)  NULL,");
                 createStatement.AppendLine("	[INTEGRATION_AREA_TABLE] varchar(100)  NULL,");
-                createStatement.AppendLine("	[FILTER_CRITERIA]    varchar(4000)  NULL,");
+                createStatement.AppendLine("	[FILTER_CRITERIA] varchar(4000)  NULL,");
+                createStatement.AppendLine("	[GENERATE_INDICATOR] varchar(1)  NULL,");
                 createStatement.AppendLine("    CONSTRAINT[PK_MD_TABLE_MAPPING] PRIMARY KEY CLUSTERED([TABLE_MAPPING_HASH] ASC, [VERSION_ID] ASC)");
                 createStatement.AppendLine(")");
 
@@ -744,7 +813,7 @@ namespace Virtual_EDW
                 RunSqlCommand(connOmdString, createStatement, worker, 68);
                 createStatement.Clear();
 
-                createStatement.AppendLine("ALTER TABLE [MD_STG_HUB_XREF]  WITH CHECK ADD  CONSTRAINT [FK_MD_STG_HUB_XREF_MD_HUB] FOREIGN KEY([HUB_TABLE_ID])"); 
+                createStatement.AppendLine("ALTER TABLE [MD_STG_HUB_XREF]  WITH CHECK ADD  CONSTRAINT [FK_MD_STG_HUB_XREF_MD_HUB] FOREIGN KEY([HUB_TABLE_ID])");
                 createStatement.AppendLine("REFERENCES  [MD_HUB] ([HUB_TABLE_ID])");
                 createStatement.AppendLine();
                 RunSqlCommand(connOmdString, createStatement, worker, 69);
@@ -815,7 +884,7 @@ namespace Virtual_EDW
                 createStatement.AppendLine();
                 RunSqlCommand(connOmdString, createStatement, worker, 78);
                 createStatement.Clear();
-                
+
                 createStatement.AppendLine("ALTER TABLE [MD_STG_SAT_XREF]  WITH CHECK ADD  CONSTRAINT [FK_MD_STG_SAT_XREF_MD_SAT] FOREIGN KEY([SATELLITE_TABLE_ID])");
                 createStatement.AppendLine("REFERENCES  [MD_SAT] ([SATELLITE_TABLE_ID])");
                 createStatement.AppendLine();
@@ -827,6 +896,19 @@ namespace Virtual_EDW
                 createStatement.AppendLine();
                 RunSqlCommand(connOmdString, createStatement, worker, 79);
                 createStatement.Clear();
+
+                createStatement.AppendLine("ALTER TABLE [dbo].[MD_SOURCE_STG_XREF]  WITH CHECK ADD  CONSTRAINT [FK_MD_SOURCE_STG_XREF_MD_SOURCE_DATASET] FOREIGN KEY([SOURCE_DATASET_ID])");
+                createStatement.AppendLine("REFERENCES [dbo].[MD_SOURCE_DATASET] ([SOURCE_DATASET_ID])");
+                createStatement.AppendLine();
+                RunSqlCommand(connOmdString, createStatement, worker, 79);
+                createStatement.Clear();
+
+                createStatement.AppendLine("ALTER TABLE [dbo].[MD_SOURCE_DATASET]  WITH CHECK ADD  CONSTRAINT [FK_MD_SOURCE_DATASET_MD_SOURCE_SYSTEM] FOREIGN KEY([SOURCE_SYSTEM_ID])");
+                createStatement.AppendLine("REFERENCES [dbo].[MD_SOURCE_SYSTEM] ([SOURCE_SYSTEM_ID])");
+                createStatement.AppendLine();
+                RunSqlCommand(connOmdString, createStatement, worker, 79);
+                createStatement.Clear();
+
 
                 // Drop the views
 
@@ -926,7 +1008,7 @@ namespace Virtual_EDW
                 createStatement.AppendLine();
                 RunSqlCommand(connOmdString, createStatement, worker, 85);
                 createStatement.Clear();
-                
+
                 createStatement.AppendLine("CREATE VIEW [interface].[INTERFACE_BUSINESS_KEY_COMPONENT_PART]");
                 createStatement.AppendLine("AS");
                 createStatement.AppendLine("SELECT");
@@ -994,34 +1076,39 @@ namespace Virtual_EDW
                 RunSqlCommand(connOmdString, createStatement, worker, 91);
                 createStatement.Clear();
 
-                createStatement.AppendLine("CREATE view[interface].[INTERFACE_SOURCE_TO_STAGING]");
+                createStatement.AppendLine("CREATE VIEW [interface].[INTERFACE_SOURCE_TO_STAGING]");
                 createStatement.AppendLine("AS");
                 createStatement.AppendLine("/*");
                 createStatement.AppendLine("This view combines the staging area listing / interfaces with the exceptions where a single source file/table is mapped to more than one Staging Area tables.");
                 createStatement.AppendLine("This is the default source for source-to-staging interfaces.");
                 createStatement.AppendLine("*/");
                 createStatement.AppendLine("");
-                createStatement.AppendLine("select");
-                createStatement.AppendLine("      schema_listing.TABLE_NAME AS STAGING_AREA_TABLE_NAME -- the Staging Area tables queried from the catalog");
-                createStatement.AppendLine("                , '[dbo]' AS STAGING_AREA_SCHEMA_NAME");
-                createStatement.AppendLine("                , coalesce(naming_exception.SOURCE_TABLE_NAME");
-                createStatement.AppendLine("                , substring(schema_listing.TABLE_NAME");
-                createStatement.AppendLine("                , charindex(N'_', schema_listing.TABLE_NAME, 5) + 1,len(schema_listing.TABLE_NAME))) as SOURCE_TABLE_NAME");
-                createStatement.AppendLine("                , substring(schema_listing.TABLE_NAME , 5 , charindex(N'_', schema_listing.TABLE_NAME, 5) - 5) as SOURCE_TABLE_SYSTEM_NAME");
-                createStatement.AppendLine("                ,'tbd' AS SOURCE_SCHEMA_NAME");
-                createStatement.AppendLine("                , COALESCE(cdctype.CHANGE_DATA_CAPTURE_TYPE, 'Undefined') AS CHANGE_DATA_CAPTURE_TYPE");
-                createStatement.AppendLine("FROM "+_myParent.textBoxStagingDatabase.Text+".INFORMATION_SCHEMA.TABLES as schema_listing");
-                createStatement.AppendLine("                left join dbo.MD_SOURCE_STG_XREF as naming_exception");
-                createStatement.AppendLine("                                                on naming_exception.STAGING_AREA_TABLE_NAME = schema_listing.TABLE_NAME");
-                createStatement.AppendLine("                left join dbo.MD_SOURCE_CDC_TYPE_XREF as cdctype");
-                createStatement.AppendLine("                       on schema_listing.TABLE_NAME = cdctype.STAGING_AREA_TABLE_NAME");
-                createStatement.AppendLine("where TABLE_TYPE = 'BASE TABLE'");
-                createStatement.AppendLine("and TABLE_NAME not like '%LANDING%'");
-                createStatement.AppendLine("and TABLE_NAME not like '%USERMANAGED%';");
+                createStatement.AppendLine("SELECT");
+                createStatement.AppendLine(" schema_stg_listing.TABLE_NAME AS STAGING_AREA_TABLE_NAME-- the Staging Area tables queried from the catalog");
+                createStatement.AppendLine(" , '[dbo]' AS STAGING_AREA_SCHEMA_NAME");
+                createStatement.AppendLine(" , coalesce(dataset.SOURCE_DATASET_NAME");
+                createStatement.AppendLine(" , substring(schema_stg_listing.TABLE_NAME");
+                createStatement.AppendLine(" , charindex(N'_', schema_stg_listing.TABLE_NAME, 5) + 1 -- always prefixed with STG_(length 4)");
+                createStatement.AppendLine(" , len(schema_stg_listing.TABLE_NAME))) AS SOURCE_TABLE_NAME");
+                createStatement.AppendLine(" , substring(schema_stg_listing.TABLE_NAME");
+                createStatement.AppendLine(" , 5 -- always prefixed with STG_(length 4)");
+                createStatement.AppendLine(" , charindex(N'_', schema_stg_listing.TABLE_NAME, 5) - 5) AS SOURCE_TABLE_SYSTEM_NAME");
+                createStatement.AppendLine(" ,'tbd' AS SOURCE_SCHEMA_NAME");
+                createStatement.AppendLine(" , COALESCE(cdctype.CHANGE_DATA_CAPTURE_TYPE, 'Undefined') AS CHANGE_DATA_CAPTURE_TYPE");
+                createStatement.AppendLine(" , COALESCE(naming_exception.CHANGE_DATETIME_DEFINITION, cdctype.CHANGE_DATETIME_DEFINITION) AS CHANGE_DATETIME_DEFINITION");
+                createStatement.AppendLine(" , cdctype.GENERATE_INDICATOR AS GENERATE_INDICATOR");
+                createStatement.AppendLine("FROM EDW_100_Staging_Area.INFORMATION_SCHEMA.TABLES as schema_stg_listing");
+                createStatement.AppendLine("LEFT JOIN dbo.MD_SOURCE_STG_XREF as naming_exception on naming_exception.STAGING_AREA_TABLE_NAME = schema_stg_listing.TABLE_NAME");
+                createStatement.AppendLine("LEFT JOIN dbo.MD_STG_CDC_TYPE_XREF as cdctype on schema_stg_listing.TABLE_NAME = cdctype.STAGING_AREA_TABLE_NAME");
+                createStatement.AppendLine("LEFT JOIN dbo.MD_SOURCE_DATASET dataset ON naming_exception.SOURCE_DATASET_ID = dataset.SOURCE_DATASET_ID");
+                createStatement.AppendLine("WHERE TABLE_TYPE = 'BASE TABLE'");
+                createStatement.AppendLine("AND TABLE_NAME not like '%LANDING%'");
+                createStatement.AppendLine("AND TABLE_NAME not like '%USERMANAGED%'");
+                createStatement.AppendLine("AND schema_stg_listing.TABLE_NAME LIKE 'STG_%'");
                 createStatement.AppendLine();
                 RunSqlCommand(connOmdString, createStatement, worker, 93);
                 createStatement.Clear();
-                
+
                 createStatement.AppendLine("CREATE VIEW[interface].[INTERFACE_STAGING_HUB_XREF]");
                 createStatement.AppendLine("AS");
                 createStatement.AppendLine("SELECT");
