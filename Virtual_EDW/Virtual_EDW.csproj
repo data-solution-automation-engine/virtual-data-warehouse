@@ -240,9 +240,6 @@
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
-    <None Include="Virtual_EDW_1_TemporaryKey.pfx" />
-    <None Include="Virtual_EDW_3_TemporaryKey.pfx" />
-    <None Include="Virtual_EDW_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

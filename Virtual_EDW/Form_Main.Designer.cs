@@ -2344,6 +2344,7 @@
             this.groupBoxVersionSelection.TabIndex = 19;
             this.groupBoxVersionSelection.TabStop = false;
             this.groupBoxVersionSelection.Text = "Version Selection";
+            this.groupBoxVersionSelection.Enter += new System.EventHandler(this.groupBoxVersionSelection_Enter);
             // 
             // labelVersion
             // 

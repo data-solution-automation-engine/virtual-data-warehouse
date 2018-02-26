@@ -3960,7 +3960,7 @@ namespace Virtual_EDW
 
                                         // Construct associated to the WHERE clause
                                         if (columnOrdinal > 1)
-                                            wherePredicate += "\n    AND ";
+                                            wherePredicate += "\n    OR ";
                                         wherePredicate += hubTargetBusinessKeyName + " != PREVIOUS_FOLLOWER_KEY" + columnOrdinal;
                                     }
                                 }
@@ -8947,6 +8947,11 @@ namespace Virtual_EDW
         }
 
         private void tabPageDefaultSettings_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxVersionSelection_Enter(object sender, EventArgs e)
         {
 
         }
