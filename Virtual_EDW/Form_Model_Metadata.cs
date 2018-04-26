@@ -1984,7 +1984,18 @@ namespace Virtual_EDW
                     prepareKeyStatement.AppendLine("        ROW_NUMBER() OVER(PARTITION BY STAGING_AREA_TABLE, INTEGRATION_AREA_TABLE, BUSINESS_KEY_ATTRIBUTE ORDER BY STAGING_AREA_TABLE, INTEGRATION_AREA_TABLE, BUSINESS_KEY_ATTRIBUTE ASC) AS COMPONENT_ORDER");
                     prepareKeyStatement.AppendLine("    FROM");
                     prepareKeyStatement.AppendLine("    (");
-                    prepareKeyStatement.AppendLine("        SELECT STAGING_AREA_TABLE, INTEGRATION_AREA_TABLE, BUSINESS_KEY_ATTRIBUTE, CONVERT(XML, '<M>' + REPLACE(BUSINESS_KEY_ATTRIBUTE, ',', '</M><M>') + '</M>') AS BUSINESS_KEY_ATTRIBUTE_XML");
+
+                    // Change to move from comma separate to semicolon separation for composite keys
+                    prepareKeyStatement.AppendLine("      SELECT");
+                    prepareKeyStatement.AppendLine("          STAGING_AREA_TABLE, ");
+                    prepareKeyStatement.AppendLine("          INTEGRATION_AREA_TABLE, ");
+                    prepareKeyStatement.AppendLine("          BUSINESS_KEY_ATTRIBUTE,");
+                    prepareKeyStatement.AppendLine("          CASE SUBSTRING(BUSINESS_KEY_ATTRIBUTE, 0, CHARINDEX('(', BUSINESS_KEY_ATTRIBUTE))");
+                    prepareKeyStatement.AppendLine("        	 WHEN 'COMPOSITE' THEN CONVERT(XML, '<M>' + REPLACE(BUSINESS_KEY_ATTRIBUTE, ';', '</M><M>') + '</M>') ");
+                    prepareKeyStatement.AppendLine("        	 ELSE CONVERT(XML, '<M>' + REPLACE(BUSINESS_KEY_ATTRIBUTE, ',', '</M><M>') + '</M>') ");
+                    prepareKeyStatement.AppendLine("          END AS BUSINESS_KEY_ATTRIBUTE_XML");
+                    // End of composite key change
+
                     prepareKeyStatement.AppendLine("        FROM");
                     prepareKeyStatement.AppendLine("        (");
                     prepareKeyStatement.AppendLine("            SELECT DISTINCT STAGING_AREA_TABLE, INTEGRATION_AREA_TABLE, LTRIM(RTRIM(BUSINESS_KEY_ATTRIBUTE)) AS BUSINESS_KEY_ATTRIBUTE");
@@ -2172,42 +2183,41 @@ namespace Virtual_EDW
                 {
                     var prepareHubLnkXrefStatement = new StringBuilder();
 
-                    prepareHubLnkXrefStatement.AppendLine("SELECT DISTINCT");
-                    prepareHubLnkXrefStatement.AppendLine("        hub_tbl.HUB_TABLE_ID,");
-                    prepareHubLnkXrefStatement.AppendLine("        hub_tbl.HUB_TABLE_NAME,");
-                    prepareHubLnkXrefStatement.AppendLine("        lnk_tbl.LINK_TABLE_ID,");
-                    prepareHubLnkXrefStatement.AppendLine("        lnk_tbl.LINK_TABLE_NAME");
-                    prepareHubLnkXrefStatement.AppendLine("FROM MD_TABLE_MAPPING lnk");
+                    prepareHubLnkXrefStatement.AppendLine("SELECT");
+                    prepareHubLnkXrefStatement.AppendLine("  hub_tbl.HUB_TABLE_ID,");
+                    prepareHubLnkXrefStatement.AppendLine("  hub_tbl.HUB_TABLE_NAME,");
+                    prepareHubLnkXrefStatement.AppendLine("  lnk_tbl.LINK_TABLE_ID,");
+                    prepareHubLnkXrefStatement.AppendLine("  lnk_tbl.LINK_TABLE_NAME,");
+                    prepareHubLnkXrefStatement.AppendLine("  lnk_hubkey_order.HUB_KEY_ORDER AS HUB_ORDER,");
+                    prepareHubLnkXrefStatement.AppendLine("  lnk_hubkey_order.BUSINESS_KEY_PART AS BUSINESS_KEY_DEFINITION");
+                    prepareHubLnkXrefStatement.AppendLine("FROM MD_TABLE_MAPPING lnk --driving table for links(filtered on links only).The link will get the associated Hubs added");
+                    prepareHubLnkXrefStatement.AppendLine("JOIN");
+                    prepareHubLnkXrefStatement.AppendLine("-- This join adds the Hubs and their order by pivoting on the full business key");
+                    prepareHubLnkXrefStatement.AppendLine("(");
+                    prepareHubLnkXrefStatement.AppendLine("  SELECT");
+                    prepareHubLnkXrefStatement.AppendLine("    INTEGRATION_AREA_TABLE,");
+                    prepareHubLnkXrefStatement.AppendLine("    BUSINESS_KEY_ATTRIBUTE,");
+                    prepareHubLnkXrefStatement.AppendLine("    LTRIM(Split.a.value('.', 'VARCHAR(100)')) AS BUSINESS_KEY_PART,");
+                    prepareHubLnkXrefStatement.AppendLine("    ROW_NUMBER() OVER(PARTITION BY INTEGRATION_AREA_TABLE ORDER BY INTEGRATION_AREA_TABLE) AS HUB_KEY_ORDER");
+                    prepareHubLnkXrefStatement.AppendLine("  FROM");
+                    prepareHubLnkXrefStatement.AppendLine("  (");
+                    prepareHubLnkXrefStatement.AppendLine("    SELECT INTEGRATION_AREA_TABLE, BUSINESS_KEY_ATTRIBUTE, CAST('<M>' + REPLACE(BUSINESS_KEY_ATTRIBUTE, ',', '</M><M>') + '</M>' AS XML) AS BUSINESS_KEY_SOURCE_XML");
+                    prepareHubLnkXrefStatement.AppendLine("    FROM  MD_TABLE_MAPPING");
+                    prepareHubLnkXrefStatement.AppendLine("    WHERE INTEGRATION_AREA_TABLE LIKE 'LNK%'");
+                    prepareHubLnkXrefStatement.AppendLine("  ) AS A CROSS APPLY BUSINESS_KEY_SOURCE_XML.nodes('/M') AS Split(a)");
+                    prepareHubLnkXrefStatement.AppendLine(") lnk_hubkey_order ON lnk.INTEGRATION_AREA_TABLE = lnk_hubkey_order.INTEGRATION_AREA_TABLE");
+
+                    prepareHubLnkXrefStatement.AppendLine("--Adding the Hub mapping data to get the business keys");
                     prepareHubLnkXrefStatement.AppendLine("JOIN MD_TABLE_MAPPING hub");
                     prepareHubLnkXrefStatement.AppendLine("  ON lnk.STAGING_AREA_TABLE = hub.STAGING_AREA_TABLE");
-                    prepareHubLnkXrefStatement.AppendLine("       AND NOT EXISTS(");
-                    prepareHubLnkXrefStatement.AppendLine("              SELECT *");
-                    prepareHubLnkXrefStatement.AppendLine("              FROM");
-                    prepareHubLnkXrefStatement.AppendLine("                (");
-                    prepareHubLnkXrefStatement.AppendLine("                     SELECT ltrim(rtrim(BUSINESS_KEY_ATTRIBUTE.value('.', 'VARCHAR(MAX)'))) as BUSINESS_KEY_ATTRIBUTE");
-                    prepareHubLnkXrefStatement.AppendLine("                           FROM(");
-                    prepareHubLnkXrefStatement.AppendLine("                                  SELECT CONVERT(XML, '<M>' + REPLACE(hub.BUSINESS_KEY_ATTRIBUTE, ',', '</M><M>') + '</M>') as BUSINESS_KEY_ATTRIBUTE_XML");
-                    prepareHubLnkXrefStatement.AppendLine("                           )A");
-                    prepareHubLnkXrefStatement.AppendLine("                        CROSS APPLY BUSINESS_KEY_ATTRIBUTE_XML.nodes('/M') BUSINESS_KEY_ATTRIBUTES(BUSINESS_KEY_ATTRIBUTE)");
-                    prepareHubLnkXrefStatement.AppendLine("                 )hub_key_columns");
-                    prepareHubLnkXrefStatement.AppendLine("                 LEFT JOIN");
-                    prepareHubLnkXrefStatement.AppendLine("                 (");
-                    prepareHubLnkXrefStatement.AppendLine("                     SELECT ltrim(rtrim(BUSINESS_KEY_ATTRIBUTE.value('.', 'VARCHAR(MAX)'))) as BUSINESS_KEY_ATTRIBUTE");
-                    prepareHubLnkXrefStatement.AppendLine("                           FROM(");
-                    prepareHubLnkXrefStatement.AppendLine("                                  SELECT CONVERT(XML, '<M>' + REPLACE(lnk.BUSINESS_KEY_ATTRIBUTE, ',', '</M><M>') + '</M>') as BUSINESS_KEY_ATTRIBUTE_XML");
-                    prepareHubLnkXrefStatement.AppendLine("                           )A");
-                    prepareHubLnkXrefStatement.AppendLine("                        CROSS APPLY BUSINESS_KEY_ATTRIBUTE_XML.nodes('/M') BUSINESS_KEY_ATTRIBUTES(BUSINESS_KEY_ATTRIBUTE)");
-                    prepareHubLnkXrefStatement.AppendLine("                 )lnk_key_columns");
-                    prepareHubLnkXrefStatement.AppendLine("                 ON hub_key_columns.BUSINESS_KEY_ATTRIBUTE = lnk_key_columns.BUSINESS_KEY_ATTRIBUTE");
-                    prepareHubLnkXrefStatement.AppendLine("                 WHERE lnk_key_columns.BUSINESS_KEY_ATTRIBUTE is null");
-                    prepareHubLnkXrefStatement.AppendLine("              )");
-                    prepareHubLnkXrefStatement.AppendLine("           JOIN dbo.MD_HUB hub_tbl");
-                    prepareHubLnkXrefStatement.AppendLine("            ON hub.INTEGRATION_AREA_TABLE = hub_tbl.HUB_TABLE_NAME");
-                    prepareHubLnkXrefStatement.AppendLine("          JOIN dbo.MD_LINK lnk_tbl");
-                    prepareHubLnkXrefStatement.AppendLine("            ON lnk.INTEGRATION_AREA_TABLE = lnk_tbl.LINK_TABLE_NAME");
-                    prepareHubLnkXrefStatement.AppendLine("          JOIN dbo.MD_STG stg_tbl");
-                    prepareHubLnkXrefStatement.AppendLine("            ON lnk.STAGING_AREA_TABLE = stg_tbl.STAGING_AREA_TABLE_NAME");
-                    prepareHubLnkXrefStatement.AppendLine("           AND hub.STAGING_AREA_TABLE = stg_tbl.STAGING_AREA_TABLE_NAME");
+                    prepareHubLnkXrefStatement.AppendLine("  AND lnk_hubkey_order.BUSINESS_KEY_PART = hub.BUSINESS_KEY_ATTRIBUTE-- This condition is required to remove the redundant rows caused by the Link key pivoting");
+                    prepareHubLnkXrefStatement.AppendLine("JOIN dbo.MD_HUB hub_tbl");
+                    prepareHubLnkXrefStatement.AppendLine("  ON hub.INTEGRATION_AREA_TABLE = hub_tbl.HUB_TABLE_NAME");
+                    prepareHubLnkXrefStatement.AppendLine("JOIN dbo.MD_LINK lnk_tbl");
+                    prepareHubLnkXrefStatement.AppendLine("  ON lnk.INTEGRATION_AREA_TABLE = lnk_tbl.LINK_TABLE_NAME");
+                    prepareHubLnkXrefStatement.AppendLine("JOIN dbo.MD_STG stg_tbl");
+                    prepareHubLnkXrefStatement.AppendLine("  ON lnk.STAGING_AREA_TABLE = stg_tbl.STAGING_AREA_TABLE_NAME");
+                    prepareHubLnkXrefStatement.AppendLine("  AND hub.STAGING_AREA_TABLE = stg_tbl.STAGING_AREA_TABLE_NAME");
                     prepareHubLnkXrefStatement.AppendLine("WHERE lnk.INTEGRATION_AREA_TABLE LIKE '" + lnkTablePrefix + "' and hub.INTEGRATION_AREA_TABLE LIKE '" + hubTablePrefix + "'");
                     prepareHubLnkXrefStatement.AppendLine("AND hub.VERSION_ID = " + versionId);
                     prepareHubLnkXrefStatement.AppendLine("AND lnk.VERSION_ID = " + versionId);
@@ -2223,10 +2233,12 @@ namespace Virtual_EDW
                             _alert.SetTextLogging("-->  Processing the " + tableName["HUB_TABLE_NAME"] + " / " + tableName["LINK_TABLE_NAME"] + " relationship\r\n");
 
                             var insertHlXrefStatement = new StringBuilder();
+                            var businessKeyDefinition = tableName["BUSINESS_KEY_DEFINITION"];
+                            businessKeyDefinition = businessKeyDefinition.ToString().Replace("'", "''");
 
                             insertHlXrefStatement.AppendLine("INSERT INTO [MD_HUB_LINK_XREF]");
-                            insertHlXrefStatement.AppendLine("([HUB_TABLE_ID], [LINK_TABLE_ID])");
-                            insertHlXrefStatement.AppendLine("VALUES ('" + tableName["HUB_TABLE_ID"] + "','" + tableName["LINK_TABLE_ID"] + "')");
+                            insertHlXrefStatement.AppendLine("([HUB_TABLE_ID], [LINK_TABLE_ID], [HUB_ORDER], [BUSINESS_KEY_DEFINITION])");
+                            insertHlXrefStatement.AppendLine("VALUES ('" + tableName["HUB_TABLE_ID"] + "','" + tableName["LINK_TABLE_ID"] + "','" + tableName["HUB_ORDER"] + "','" + businessKeyDefinition + "')");
 
                             var command = new SqlCommand(insertHlXrefStatement.ToString(), connection);
 
