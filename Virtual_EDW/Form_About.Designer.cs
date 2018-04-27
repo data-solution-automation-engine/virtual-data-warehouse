@@ -44,7 +44,7 @@ namespace Virtual_EDW
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(9, 223);
+            this.button1.Location = new System.Drawing.Point(9, 201);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(109, 40);
             this.button1.TabIndex = 0;
@@ -55,7 +55,7 @@ namespace Virtual_EDW
             // buttonClose
             // 
             this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClose.Location = new System.Drawing.Point(168, 223);
+            this.buttonClose.Location = new System.Drawing.Point(168, 201);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(109, 40);
             this.buttonClose.TabIndex = 1;
@@ -77,10 +77,11 @@ namespace Virtual_EDW
             // 
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Location = new System.Drawing.Point(13, 32);
+            this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 13);
+            this.textBox2.Size = new System.Drawing.Size(100, 55);
             this.textBox2.TabIndex = 3;
-            this.textBox2.Text = "Roelant Vos - 2015";
+            this.textBox2.Text = "Roelant Vos\r\n2015-2018\r\nv1.4";
             // 
             // pictureBox1
             // 
@@ -89,14 +90,14 @@ namespace Virtual_EDW
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(189, 9);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 78);
+            this.pictureBox1.Size = new System.Drawing.Size(100, 56);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(12, 60);
+            this.linkLabel1.Location = new System.Drawing.Point(12, 254);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(137, 13);
             this.linkLabel1.TabIndex = 7;
@@ -111,7 +112,7 @@ namespace Virtual_EDW
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(289, 275);
+            this.ClientSize = new System.Drawing.Size(289, 276);
             this.ControlBox = false;
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.textBox1);
