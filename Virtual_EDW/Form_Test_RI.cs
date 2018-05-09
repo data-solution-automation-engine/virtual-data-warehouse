@@ -18,8 +18,6 @@ namespace Virtual_EDW
             // radioButtonPSA.Checked = true;
         }
 
-
-
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
@@ -37,7 +35,13 @@ namespace Virtual_EDW
             try
             {
                 connOmd.Open();
-                var queryRi = new StringBuilder();
+            }
+            catch (Exception exception)
+            {
+                DebuggingTextbox.Text = "There was an error connecting to the metadata database. \r\n\r\nA connection could not be established. Can you verify the connection details for the metadata in the main screen? \r\n\r\nThe error message is: " + exception.Message;
+            }
+
+            var queryRi = new StringBuilder();
 
                 queryRi.AppendLine("--");
                 queryRi.AppendLine("-- Referential Integrity Validation Query");
@@ -91,7 +95,7 @@ namespace Virtual_EDW
                     foreach (DataRow row in satTables.Rows)
                     {
                         var satTableName = (string)row["SATELLITE_TABLE_NAME"];
-                        var stgTableName = (string)row["STAGING_AREA_TABLE_NAME"];
+                        var stagingAreaTableName = (string)row["STAGING_AREA_TABLE_NAME"];
                         var businessKeyDefinition = (string) row["BUSINESS_KEY_DEFINITION"];
                         var hubTableName = (string)row["HUB_TABLE_NAME"];
                         var hubSk = hubTableName.Substring(4) + "_" + _myParent.textBoxDWHKeyIdentifier.Text;
@@ -109,20 +113,28 @@ namespace Virtual_EDW
                         var hubQueryWhere = new StringBuilder();
                         var hubQueryGroupBy = new StringBuilder();
 
-                        // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
-                        var componentList =  _myParent.GetBusinessKeyComponentList(stgTableName, hubTableName, businessKeyDefinition);
+                    // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
+                    var componentList = _myParent.GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
 
-                        foreach (DataRow component in componentList.Rows)
+                    // Components are key parts, such as a composite key (2 or more components) or regular and concatenated keys (1 component)
+                    foreach (DataRow component in componentList.Rows)
+                    {
+                        var componentId = (int)component["BUSINESS_KEY_COMPONENT_ID"] - 1;
+
+                        // Retrieve the elements of each business key component
+                        // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
+                        var elementList = _myParent.GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
+
+                        if (elementList == null)
                         {
-                            var componentId = (int)component["BUSINESS_KEY_COMPONENT_ID"] - 1;
-
-                            // Retrieve the elements of each business key component
-                            var elementList = _myParent.GetBusinessKeyElements(stgTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
-
-                            if (elementList != null && elementList.Rows.Count > 1)
+                            richTextBoxOutput.Text += ("An error occurred for {hubTableName}. The collection of Business Keys is empty.\r\n");
+                        }
+                        else
+                        {
+                            if (elementList.Rows.Count > 1) // Build a concatinated key if the count of elements is greater than 1 for a component (key part)
                             {
-                                // Build a concatinated or composite key
                                 fieldList.Clear();
+                                fieldDict.Clear();
 
                                 foreach (DataRow element in elementList.Rows)
                                 {
@@ -131,6 +143,18 @@ namespace Virtual_EDW
                                     if (elementType == "Attribute")
                                     {
                                         fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "',");
+
+                                        sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                        sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+                                        sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
+                                        sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
+
+                                        var elementDataTypes = _myParent.GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
+
+                                        foreach (DataRow attribute in elementDataTypes.Rows)
+                                        {
+                                            fieldDict.Add(attribute["COLUMN_NAME"].ToString(), attribute["DATA_TYPE"].ToString());
+                                        }
                                     }
                                     else if (elementType == "User Defined Value")
                                     {
@@ -140,20 +164,6 @@ namespace Virtual_EDW
                                     fieldOrderedList.Add(element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
                                 }
 
-                                sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stgTableName + "'");
-                                sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
-
-                                var elementDataTypes = _myParent.GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
-
-                                fieldDict.Clear();
-
-                                foreach (DataRow attribute in elementDataTypes.Rows)
-                                {
-                                    fieldDict.Add(attribute["COLUMN_NAME"].ToString(),
-                                        attribute["DATA_TYPE"].ToString());
-                                }
 
                                 // Build the concatenated key
                                 foreach (var busKey in fieldOrderedList)
@@ -183,60 +193,52 @@ namespace Virtual_EDW
                                 hubQuerySelect.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
                                 hubQueryWhere.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " != '' AND");
                                 hubQueryGroupBy.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + ",");
-
                             }
-                            else // Single key 
+                            else // Handle a component of a single or composite key 
                             {
-                                var udPflag = false;
-                                if (elementList != null)
-                                    foreach (DataRow element in elementList.Rows)
+                                foreach (DataRow element in elementList.Rows) // Only a single element...
+                                {
+                                    if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() == "User Defined Value")
                                     {
-                                        if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() == "User Defined Value")
+                                        firstKey = element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
+                                        hubQuerySelect.AppendLine("    " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
+                                    }
+                                    else // It's a normal attribute
+                                    {
+                                        // We need the data type again
+                                        sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                        sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+                                        sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
+                                        sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
+
+                                        firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "]";
+
+                                        var elementDataTypes = _myParent.GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
+
+                                        foreach (DataRow attribute in elementDataTypes.Rows)
                                         {
-                                            firstKey = element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
-                                            udPflag = true;
+                                            if (attribute["DATA_TYPE"].ToString() == "numeric" || attribute["DATA_TYPE"].ToString() == "int")
+                                            {
+                                                hubQuerySelect.AppendLine("    CAST(" + firstKey + " AS " + stringDataType + "(100)) AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
+                                            }
+                                            else
+                                            {
+                                                hubQuerySelect.AppendLine("      " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
+                                            }
                                         }
-                                        else
-                                        {
-                                            // We need the data type again
-                                            sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                            sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                            sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stgTableName + "'");
-                                            sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
 
-                                            firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "]";
-                                        }
+                                        hubQueryWhere.AppendLine(" " + firstKey + " IS NOT NULL AND");
+                                        hubQueryGroupBy.AppendLine("    " + firstKey + ",");
                                     }
 
-                                var elementDataTypes = _myParent.GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
-
-                                foreach (DataRow attribute in elementDataTypes.Rows)
-                                {
-                                    if (attribute["DATA_TYPE"].ToString() == "numeric")
-                                    {
-                                        hubQuerySelect.AppendLine("      CAST(" + firstKey + " AS " + stringDataType + "(100)) AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                    }
-                                    else
-                                    {
-                                        hubQuerySelect.AppendLine("      " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                    }
-                                }
-
-                                if (udPflag == false)
-                                {
-                                    hubQueryWhere.AppendLine(" " + firstKey + " IS NOT NULL AND");
-                                }
-
-                                if (udPflag == false)
-                                {
-                                    hubQueryGroupBy.AppendLine("    " + firstKey + ",");
-                                }
+                                } // End of element loop (for single element)
                             }
-                        } // End of component elements
+                        }
+                    } // End of component elements
 
-                        hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
+                    hubQueryWhere.Remove(hubQueryWhere.Length - 6, 6);
 
-                        queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + satTableName + "'");
+                    queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + satTableName + "'");
                         queryRi.AppendLine("FROM " + satTableName + " A");
 
                         if (radioButtonDeltaValidation.Checked) // Join to the Staging Area, on the business key
@@ -256,7 +258,7 @@ namespace Virtual_EDW
                             queryRi.AppendLine("    ),2) AS " + hubSk);
                             queryRi.AppendLine("  FROM ");
                             queryRi.AppendLine("  (");
-                            queryRi.AppendLine("    SELECT "+ hubQuerySelect + " FROM ["+_myParent.textBoxStagingDatabase.Text+ "].[dbo].["+stgTableName+"]");
+                            queryRi.AppendLine("    SELECT "+ hubQuerySelect + " FROM ["+_myParent.textBoxStagingDatabase.Text+ "].[dbo].["+stagingAreaTableName+"]");
                             queryRi.AppendLine("  ) stgsub");
                             queryRi.AppendLine(") staging ON ");
                             queryRi.AppendLine("A." + hubSk + " = staging." + hubSk);
@@ -381,11 +383,7 @@ namespace Virtual_EDW
                 }
 
                 DebuggingTextbox.Text = queryRi.ToString();
-            }
-            catch (Exception exception)
-            {
-                DebuggingTextbox.Text = "There was an error connecting to the metadata database. \r\n\r\nA connection could not be established. Can you verify the connection details for the metadata in the main screen? \r\n\r\nThe error message is: " + exception.Message;
-            }  
+
         }
     }
 }
