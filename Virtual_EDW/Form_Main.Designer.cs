@@ -237,6 +237,9 @@
             this.trackBarVersioning = new System.Windows.Forms.TrackBar();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.groupBoxhashKeyoutput = new System.Windows.Forms.GroupBox();
+            this.radioButtonCharacterHash = new System.Windows.Forms.RadioButton();
+            this.radioButtonBinaryHash = new System.Windows.Forms.RadioButton();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -267,6 +270,7 @@
             this.groupBoxVersionSelection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBoxhashKeyoutput.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonGenerateHubs
@@ -1008,6 +1012,7 @@
             // 
             // tabPageDataVaultSpecific
             // 
+            this.tabPageDataVaultSpecific.Controls.Add(this.groupBoxhashKeyoutput);
             this.tabPageDataVaultSpecific.Controls.Add(this.checkBoxDisableHash);
             this.tabPageDataVaultSpecific.Controls.Add(this.checkBoxAlternativeSatLDTS);
             this.tabPageDataVaultSpecific.Controls.Add(this.label41);
@@ -1046,7 +1051,7 @@
             // checkBoxDisableHash
             // 
             this.checkBoxDisableHash.AutoSize = true;
-            this.checkBoxDisableHash.Location = new System.Drawing.Point(8, 342);
+            this.checkBoxDisableHash.Location = new System.Drawing.Point(232, 358);
             this.checkBoxDisableHash.Name = "checkBoxDisableHash";
             this.checkBoxDisableHash.Size = new System.Drawing.Size(183, 17);
             this.checkBoxDisableHash.TabIndex = 71;
@@ -2095,14 +2100,14 @@
             this.generateTestDataToolStripMenuItem,
             this.generateRIValidationToolStripMenuItem});
             this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.testingToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.testingToolStripMenuItem.Text = "Testing";
             // 
             // generateTestDataToolStripMenuItem
             // 
             this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
             this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
             this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
             // 
@@ -2110,7 +2115,7 @@
             // 
             this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
             this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
             this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
             // 
@@ -2383,6 +2388,37 @@
             this.pictureBox1.TabIndex = 15;
             this.pictureBox1.TabStop = false;
             // 
+            // groupBoxhashKeyoutput
+            // 
+            this.groupBoxhashKeyoutput.Controls.Add(this.radioButtonCharacterHash);
+            this.groupBoxhashKeyoutput.Controls.Add(this.radioButtonBinaryHash);
+            this.groupBoxhashKeyoutput.Location = new System.Drawing.Point(8, 333);
+            this.groupBoxhashKeyoutput.Name = "groupBoxhashKeyoutput";
+            this.groupBoxhashKeyoutput.Size = new System.Drawing.Size(126, 70);
+            this.groupBoxhashKeyoutput.TabIndex = 72;
+            this.groupBoxhashKeyoutput.TabStop = false;
+            this.groupBoxhashKeyoutput.Text = "Hash key output";
+            // 
+            // radioButtonCharacterHash
+            // 
+            this.radioButtonCharacterHash.AutoSize = true;
+            this.radioButtonCharacterHash.Location = new System.Drawing.Point(6, 42);
+            this.radioButtonCharacterHash.Name = "radioButtonCharacterHash";
+            this.radioButtonCharacterHash.Size = new System.Drawing.Size(71, 17);
+            this.radioButtonCharacterHash.TabIndex = 1;
+            this.radioButtonCharacterHash.Text = "Character";
+            this.radioButtonCharacterHash.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonBinaryHash
+            // 
+            this.radioButtonBinaryHash.AutoSize = true;
+            this.radioButtonBinaryHash.Location = new System.Drawing.Point(6, 19);
+            this.radioButtonBinaryHash.Name = "radioButtonBinaryHash";
+            this.radioButtonBinaryHash.Size = new System.Drawing.Size(54, 17);
+            this.radioButtonBinaryHash.TabIndex = 0;
+            this.radioButtonBinaryHash.Text = "Binary";
+            this.radioButtonBinaryHash.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2461,6 +2497,8 @@
             this.groupBoxVersionSelection.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBoxhashKeyoutput.ResumeLayout(false);
+            this.groupBoxhashKeyoutput.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2675,6 +2713,9 @@
         internal System.Windows.Forms.TextBox textBoxLinkedServer;
         internal System.Windows.Forms.CheckBox checkBoxUnicode;
         private System.Windows.Forms.CheckBox checkBoxExcludeLanding;
+        internal System.Windows.Forms.GroupBox groupBoxhashKeyoutput;
+        internal System.Windows.Forms.RadioButton radioButtonCharacterHash;
+        internal System.Windows.Forms.RadioButton radioButtonBinaryHash;
     }
 }
 

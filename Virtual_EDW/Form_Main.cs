@@ -48,6 +48,8 @@ namespace Virtual_EDW
 
             //checkBoxDisableHash.Checked = true; //EXPERIMENTAL
 
+            radioButtonBinaryHash.Checked = true;
+
             checkBoxGenerateInDatabase.Checked = false;
             checkBoxIfExistsStatement.Checked = true;
             radiobuttonViews.Checked = true;
