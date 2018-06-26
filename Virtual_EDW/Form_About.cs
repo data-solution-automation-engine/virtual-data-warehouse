@@ -7,13 +7,13 @@ using System.Windows.Forms;
 
 namespace Virtual_EDW
 {
-    public partial class FormAbout : Form
+    public partial class FormAbout : FormBase
     {
-        private readonly FormMain _myParent;
+        //private readonly FormMain _myParent;
 
         public FormAbout(FormMain parent)
         {
-            _myParent = parent;
+            MyParent = parent;
             InitializeComponent();
             FormBorderStyle = FormBorderStyle.FixedSingle;
         }
@@ -25,8 +25,8 @@ namespace Virtual_EDW
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-            var connHstg = new SqlConnection {ConnectionString = _myParent.textBoxPSAConnection.Text};
+            var configurationSettings = new ConfigurationSettings();
+            var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
 
             try
             {
@@ -94,28 +94,7 @@ namespace Virtual_EDW
             Process.Start("http://www.roelantvos.com");
         }
 
-        public DataTable GetDataTable(ref SqlConnection sqlConnection, string sql)
-        {
-            // Pass the connection to a command object
-            var sqlCommand = new SqlCommand(sql, sqlConnection);
-            var sqlDataAdapter = new SqlDataAdapter { SelectCommand = sqlCommand };
 
-            var dataTable = new DataTable();
-
-            // Adds or refreshes rows in the DataSet to match those in the data source
-
-            try
-            {
-                sqlDataAdapter.Fill(dataTable);
-            }
-
-            catch (Exception exception)
-            {
-                MessageBox.Show("An error has occurred: " + exception.Message);
-                return null;
-            }
-            return dataTable;
-        }
 
     }
 }

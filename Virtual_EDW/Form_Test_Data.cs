@@ -2,18 +2,17 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-using System.Windows.Forms;
 
 namespace Virtual_EDW
 {
-    public partial class FormTestData : Form
+    public partial class FormTestData : FormBase
     {
         // Make parent form controls accessible (create instance of Form Main)
-        private readonly FormMain _myParent;
+        //private readonly FormMain _myParent;
 
         public FormTestData(FormMain parent)
         {
-            _myParent = parent;
+            MyParent = parent;
             InitializeComponent();
 
             radioButtonStagingArea.Checked=true;
@@ -56,11 +55,13 @@ namespace Virtual_EDW
 
         private void buttonGenerateTestcases_Click(object sender, EventArgs e)
         {
+            var configurationSettings = new ConfigurationSettings();
+
             var connStg = new SqlConnection();
             var connVariable = new SqlConnection();
 
             // Assign database connection string
-            connStg.ConnectionString = _myParent.textBoxStagingConnection.Text;
+            connStg.ConnectionString = configurationSettings.ConnectionStringStg;
 
             try
             {
@@ -78,7 +79,7 @@ namespace Virtual_EDW
                     "FROM INFORMATION_SCHEMA.TABLES " +
                     "WHERE TABLE_TYPE='BASE TABLE' AND TABLE_NAME NOT LIKE '%_USERMANAGED_%'";
 
-                var tables = _myParent.GetDataTable(ref connStg, queryTableArray);
+                var tables = MyParent.GetDataTable(ref connStg, queryTableArray);
 
                 if (tables != null)
                 {
@@ -99,38 +100,37 @@ namespace Virtual_EDW
                         testCaseQuery.AppendLine("-- Creating testcases for " + stgTableName);
                         testCaseQuery.AppendLine();
 
-                        var localkeyLength = _myParent.textBoxDWHKeyIdentifier.TextLength;
-                        var localkeySubstring = _myParent.textBoxDWHKeyIdentifier.TextLength + 1;
+                        var localkeyLength = configurationSettings.DwhKeyIdentifier.Length;
+                        var localkeySubstring = configurationSettings.DwhKeyIdentifier.Length + 1;
 
                         var queryAttributeArray =
                             "SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION " +
                             "FROM INFORMATION_SCHEMA.COLUMNS " +
-                            "WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," +
-                            localkeySubstring + ")!='_" + _myParent.textBoxDWHKeyIdentifier.Text + "'" +
+                            "WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'" +
                             " AND TABLE_NAME= '" + stgTableName + "'" +
-                            " AND COLUMN_NAME NOT IN ('" + _myParent.textBoxRecordSource.Text + "','" +
-                            _myParent.textBoxAlternativeRecordSource.Text + "','" +
-                            _myParent.textBoxHubAlternativeLDTSAttribute.Text + "','" +
-                            _myParent.textBoxSatelliteAlternativeLDTSAttribute.Text + "','" +
-                            _myParent.textBoxETLProcessID.Text + "','" +
-                            _myParent.textBoxEventDateTime.Text + "','" +
-                            _myParent.textBoxChangeDataCaptureIndicator.Text + "','" +
-                            _myParent.textBoxRecordChecksum.Text + "','" +
-                            _myParent.textBoxSourceRowId.Text + "','" +
-                            _myParent.textBoxLDST.Text + "')";
+                            " AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" +
+                            configurationSettings.AlternativeRecordSourceAttribute + "','" +
+                            configurationSettings.AlternativeLoadDateTimeAttribute + "','" +
+                            configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+                            configurationSettings.EtlProcessAttribute + "','" +
+                            configurationSettings.EventDateTimeAttribute + "','" +
+                            configurationSettings.ChangeDataCaptureAttribute + "','" +
+                            configurationSettings.RecordChecksumAttribute + "','" +
+                            configurationSettings.RowIdAttribute + "','" +
+                            configurationSettings.LoadDateTimeAttribute + "')";
 
-                        var attributeArray = _myParent.GetDataTable(ref connStg, queryAttributeArray);
+                        var attributeArray = MyParent.GetDataTable(ref connStg, queryAttributeArray);
 
                         for (var intCounter = 1; intCounter <= Convert.ToInt32(textBoxTestCaseAmount.Text); intCounter++)
                         {
                             testCaseQuery.AppendLine("-- Testcase " + intCounter);
                             testCaseQuery.AppendLine("INSERT INTO [dbo].[" + stgTableName + "]");
                             testCaseQuery.AppendLine("(");
-                            testCaseQuery.AppendLine("[" + _myParent.textBoxETLProcessID.Text + "],");
-                            testCaseQuery.AppendLine("[" + _myParent.textBoxEventDateTime.Text + "],");
-                            testCaseQuery.AppendLine("[" + _myParent.textBoxRecordSource.Text + "],");
-                            testCaseQuery.AppendLine("[" + _myParent.textBoxChangeDataCaptureIndicator.Text + "],");
-                            testCaseQuery.AppendLine("[" + _myParent.textBoxRecordChecksum.Text + "],");
+                            testCaseQuery.AppendLine("[" + configurationSettings.EtlProcessAttribute + "],");
+                            testCaseQuery.AppendLine("[" + configurationSettings.EventDateTimeAttribute + "],");
+                            testCaseQuery.AppendLine("[" + configurationSettings.RecordSourceAttribute + "],");
+                            testCaseQuery.AppendLine("[" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                            testCaseQuery.AppendLine("[" + configurationSettings.RecordChecksumAttribute + "],");
 
                             foreach (DataRow attributeRow in attributeArray.Rows)
                             {
@@ -186,20 +186,21 @@ namespace Virtual_EDW
                         {
                             if (radioButtonStagingArea.Checked)
                             {
-                                connVariable.ConnectionString = _myParent.textBoxStagingConnection.Text;
+                                connVariable.ConnectionString = configurationSettings.ConnectionStringStg;
                             }
                             if (radioButtonPSA.Checked)
                             {
-                                connVariable.ConnectionString = _myParent.textBoxPSAConnection.Text;
+                                connVariable.ConnectionString = configurationSettings.ConnectionStringHstg;
                             }
                             if (radiobuttonSource.Checked)
                             {
-                                connVariable.ConnectionString = _myParent.textBoxSourceConnection.Text;
+                                connVariable.ConnectionString = configurationSettings.ConnectionStringSource;
+                                    //_myParent.textBoxSourceConnection.Text;
                             }
 
                             try
                             {
-                                _myParent.GenerateInDatabase(connVariable, testCaseQuery.ToString());
+                                MyParent.GenerateInDatabase(connVariable, testCaseQuery.ToString());
                                 richTextBoxOutput.Text = "The " + textBoxTestCaseAmount.Text +
                                                          " testcases were created in the designated database.";
                             }

@@ -8,13 +8,13 @@ using System.Windows.Forms;
 
 namespace Virtual_EDW
 {
-    public partial class FormDimensional : Form
+    public partial class FormDimensional : FormBase
     {
-        private readonly FormMain _myParent;
+       // private readonly FormMain _myParent;
 
-        public FormDimensional(FormMain parent)
+        public FormDimensional(FormMain parent) : base(parent)
         {
-            _myParent = parent;
+            MyParent = parent;
             InitializeComponent();
 
             PopulateHubRadioButtonList();
@@ -25,45 +25,26 @@ namespace Virtual_EDW
             PopulateHubRadioButtonList();
         }
 
-        public DataTable GetDataTable(ref SqlConnection sqlConnection, string sql)
-        {
-            // Pass the connection to a command object
-            var sqlCommand = new SqlCommand(sql, sqlConnection);
-            var sqlDataAdapter = new SqlDataAdapter { SelectCommand = sqlCommand };
-
-            var dataTable = new DataTable();
-
-            // Adds or refreshes rows in the DataSet to match those in the data source
-
-            try
-            {
-                sqlDataAdapter.Fill(dataTable);
-            }
-
-            catch (Exception)
-            {
-                return null;
-            }
-            return dataTable;
-        }
 
         private void PopulateHubRadioButtonList()
         {
             richTextBoxInformation.Clear();
 
+            var configurationSettings = new ConfigurationSettings();
+
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    radioButtonPSA.Checked ? _myParent.textBoxPSAConnection.Text : _myParent.textBoxIntegrationConnection.Text
+                    radioButtonPSA.Checked ? configurationSettings.ConnectionStringHstg : configurationSettings.ConnectionStringInt
             };
 
-            var hubIdentifier = _myParent.textBoxHubTablePrefix.Text;
+            var hubIdentifier = configurationSettings.HubTablePrefixValue;
 
-            if (_myParent.tablePrefixRadiobutton.Checked)
+            if (configurationSettings.TableNamingLocation == "Prefix")
             {
                 hubIdentifier = string.Concat(hubIdentifier, "_%");
             }
-            else if (_myParent.tableSuffixRadiobutton.Checked)
+            else if (configurationSettings.TableNamingLocation == "Suffix")
             {
                 hubIdentifier = string.Concat("%_", hubIdentifier);
             }
@@ -133,18 +114,20 @@ namespace Virtual_EDW
 
         private void GetAttributes(string hubList)
         {
+            var configurationSettings = new ConfigurationSettings();
+
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    radioButtonPSA.Checked ? _myParent.textBoxPSAConnection.Text : _myParent.textBoxIntegrationConnection.Text
+                    radioButtonPSA.Checked ? configurationSettings.ConnectionStringHstg : configurationSettings.ConnectionStringInt
             };
 
-            var keyIdentifier = _myParent.textBoxDWHKeyIdentifier.Text;
-            if (_myParent.keyPrefixRadiobutton.Checked)
+            var keyIdentifier = configurationSettings.DwhKeyIdentifier;
+            if (configurationSettings.KeyNamingLocation == "Prefix")//_myParent.keyPrefixRadiobutton.Checked)
             {
                 keyIdentifier = string.Concat(keyIdentifier, "_%");
             }
-            else if (_myParent.keySuffixRadiobutton.Checked)
+            else if (configurationSettings.KeyNamingLocation == "Suffix")
             {
                 keyIdentifier = string.Concat("%_", keyIdentifier);
             }
@@ -154,17 +137,17 @@ namespace Virtual_EDW
             }
 
             // Retrieve the prefix/suffix settings for the tables (Hubs, Links, Sats)
-            var linkIdentifier = _myParent.textBoxLinkTablePrefix.Text;
-            var linkSatIdentifier = _myParent.textBoxLinkSatPrefix.Text;
-            var satIdentifier = _myParent.textBoxSatPrefix.Text;
+            var linkIdentifier = configurationSettings.LinkTablePrefixValue;
+            var linkSatIdentifier = configurationSettings.LinkTablePrefixValue;
+            var satIdentifier = configurationSettings.SatTablePrefixValue;
 
-            if (_myParent.tablePrefixRadiobutton.Checked)
+            if (configurationSettings.TableNamingLocation == "Prefix")//_myParent.tablePrefixRadiobutton.Checked)
             {
                 linkIdentifier = string.Concat(linkIdentifier, "_%");
                 linkSatIdentifier = string.Concat(linkSatIdentifier, "_%");
                 satIdentifier = string.Concat(satIdentifier, "_%");
             }
-            else if (_myParent.tableSuffixRadiobutton.Checked)
+            else if (configurationSettings.TableNamingLocation == "Suffix")
             {
                 linkIdentifier = string.Concat("%_", linkIdentifier);
                 linkSatIdentifier = string.Concat("%_", linkSatIdentifier);
@@ -233,17 +216,17 @@ namespace Virtual_EDW
                     var attributeName = row["COLUMN_NAME"].ToString();
 
                     if (
-                        attributeName == _myParent.textBoxRecordSource.Text || 
-                        attributeName == _myParent.textBoxAlternativeRecordSource.Text ||
-                        attributeName == _myParent.textBoxSourceRowId.Text ||
-                        attributeName == _myParent.textBoxRecordChecksum.Text ||
-                        attributeName == _myParent.textBoxHubAlternativeLDTSAttribute.Text ||
-                        attributeName == _myParent.textBoxETLProcessID.Text ||
-                        attributeName == _myParent.textBoxLDST.Text ||
-                        attributeName == _myParent.textBoxCurrentRecordAttributeName.Text ||
-                        attributeName == _myParent.textBoxETLUpdateProcessID.Text ||
-                        attributeName == _myParent.textBoxSatelliteAlternativeLDTSAttribute.Text ||
-                        attributeName == _myParent.textBoxExpiryDateTimeName.Text
+                        attributeName == configurationSettings.RecordSourceAttribute || 
+                        attributeName == configurationSettings.AlternativeRecordSourceAttribute ||
+                        attributeName == configurationSettings.RowIdAttribute ||
+                        attributeName == configurationSettings.RecordChecksumAttribute ||
+                        attributeName == configurationSettings.AlternativeLoadDateTimeAttribute ||
+                        attributeName == configurationSettings.EtlProcessAttribute ||
+                        attributeName == configurationSettings.LoadDateTimeAttribute ||
+                        attributeName == configurationSettings.CurrentRowAttribute ||
+                        attributeName == configurationSettings.EtlProcessUpdateAttribute ||
+                        attributeName == configurationSettings.AlternativeSatelliteLoadDateTimeAttribute ||
+                        attributeName == configurationSettings.ExpiryDateTimeAttribute
                        )
                     {
                         row.Delete();

@@ -1,6 +1,6 @@
 ﻿namespace Virtual_EDW
 {
-    partial class Form_Base
+    partial class FormBase
     {
         /// <summary>
         /// Required designer variable.

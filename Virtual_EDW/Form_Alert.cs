@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace Virtual_EDW
 {
-    public partial class Form_Alert : Form_Base
+    public partial class Form_Alert : FormBase
     {
         //Make the label and progressbar accessbile from the main form for updates
         public string Message
@@ -72,7 +72,7 @@ namespace Virtual_EDW
 
         private void buttonShowLog_Click(object sender, EventArgs e)
         {
-            Process.Start(GlobalVariables.ConfigurationPath + @"\Error_Log.txt");
+            Process.Start(GlobalParameters.ConfigurationPath + @"\Error_Log.txt");
         }
     }
 }

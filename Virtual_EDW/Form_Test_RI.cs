@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-using System.Windows.Forms;
 
 namespace Virtual_EDW
 {
-    public partial class FormTestRi : Form
+    public partial class FormTestRi : FormBase
     {
-        private readonly FormMain _myParent;
+        //private readonly FormMain _myParent;
 
         public FormTestRi (FormMain parent)
         {
-            _myParent = parent;
+            MyParent = parent;
             InitializeComponent();
             // radioButtonPSA.Checked = true;
         }
@@ -25,8 +24,12 @@ namespace Virtual_EDW
 
         private void buttonGenerateTestcases_Click(object sender, EventArgs e)
         {
-            var connOmd = new SqlConnection {ConnectionString = _myParent.textBoxMetadataConnection.Text};
-            var connStg = new SqlConnection { ConnectionString = _myParent.textBoxStagingConnection.Text };
+            var configurationSettings = new ConfigurationSettings();
+
+            var configurationSettingVedw = new ConfigurationSettingsVedwSpecific();
+
+            var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
+            var connStg = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringStg };
 
             var versionId = 0;//_myParent.trackBarVersioning.Value;
 
@@ -51,14 +54,14 @@ namespace Virtual_EDW
 
                 if (radioButtonPSA.Checked)
                 {
-                    queryRi.AppendLine("USE [" + _myParent.textBoxPSADatabase.Text + "]");
+                    queryRi.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
                 }
                 else if (radioButtonIntegrationLayer.Checked)
                 {
-                    queryRi.AppendLine("USE [" + _myParent.textBoxIntegrationDatabase.Text + "]");
+                    queryRi.AppendLine("USE [" + configurationSettings.IntegrationDatabaseName + "]");
                 }
 
-                var stringDataType = _myParent.checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
+                var stringDataType = configurationSettingVedw.EnableUnicode == "True" ? "NVARCHAR" : "VARCHAR";
 
                 // Satellite component
                 queryRi.AppendLine("GO");
@@ -84,7 +87,7 @@ namespace Virtual_EDW
                 queryTableArraySat.AppendLine("FROM[interface].[INTERFACE_STAGING_SATELLITE_XREF]");
                 queryTableArraySat.AppendLine("WHERE [SATELLITE_TYPE]='Normal'");
 
-                var satTables = _myParent.GetDataTable(ref connOmd, queryTableArraySat.ToString());
+                var satTables = MyParent.GetDataTable(ref connOmd, queryTableArraySat.ToString());
 
                 if (satTables.Rows.Count == 0)
                 {
@@ -98,23 +101,23 @@ namespace Virtual_EDW
                         var stagingAreaTableName = (string)row["STAGING_AREA_TABLE_NAME"];
                         var businessKeyDefinition = (string) row["BUSINESS_KEY_DEFINITION"];
                         var hubTableName = (string)row["HUB_TABLE_NAME"];
-                        var hubSk = hubTableName.Substring(4) + "_" + _myParent.textBoxDWHKeyIdentifier.Text;
+                        var hubSk = hubTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
 
                         // Retrieving the business key attributes for the Hub                 
-                        var hubKeyList = _myParent.GetHubTargetBusinessKeyList(hubTableName, versionId);
+                        var hubKeyList = MyParent.GetHubTargetBusinessKeyList(hubTableName, versionId);
 
                         var fieldList = new StringBuilder();
                         var compositeKey = new StringBuilder();
                         var fieldDict = new Dictionary<string, string>();
                         var fieldOrderedList = new List<string>();
-                        var firstKey = string.Empty;
+                        string firstKey;
                         var sqlStatementForSourceQuery = new StringBuilder();
                         var hubQuerySelect = new StringBuilder();
                         var hubQueryWhere = new StringBuilder();
                         var hubQueryGroupBy = new StringBuilder();
 
                     // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
-                    var componentList = _myParent.GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
+                    var componentList = MyParent.GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
 
                     // Components are key parts, such as a composite key (2 or more components) or regular and concatenated keys (1 component)
                     foreach (DataRow component in componentList.Rows)
@@ -123,7 +126,7 @@ namespace Virtual_EDW
 
                         // Retrieve the elements of each business key component
                         // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
-                        var elementList = _myParent.GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
+                        var elementList = MyParent.GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
 
                         if (elementList == null)
                         {
@@ -149,7 +152,7 @@ namespace Virtual_EDW
                                         sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
                                         sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
 
-                                        var elementDataTypes = _myParent.GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
+                                        var elementDataTypes = MyParent.GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
 
                                         foreach (DataRow attribute in elementDataTypes.Rows)
                                         {
@@ -213,7 +216,7 @@ namespace Virtual_EDW
 
                                         firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "]";
 
-                                        var elementDataTypes = _myParent.GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
+                                        var elementDataTypes = MyParent.GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
 
                                         foreach (DataRow attribute in elementDataTypes.Rows)
                                         {
@@ -258,7 +261,7 @@ namespace Virtual_EDW
                             queryRi.AppendLine("    ),2) AS " + hubSk);
                             queryRi.AppendLine("  FROM ");
                             queryRi.AppendLine("  (");
-                            queryRi.AppendLine("    SELECT "+ hubQuerySelect + " FROM ["+_myParent.textBoxStagingDatabase.Text+ "].[dbo].["+stagingAreaTableName+"]");
+                            queryRi.AppendLine("    SELECT "+ hubQuerySelect + " FROM ["+configurationSettings.StagingDatabaseName+ "].[dbo].["+stagingAreaTableName+"]");
                             queryRi.AppendLine("  ) stgsub");
                             queryRi.AppendLine(") staging ON ");
                             queryRi.AppendLine("A." + hubSk + " = staging." + hubSk);
@@ -278,7 +281,7 @@ namespace Virtual_EDW
                 // Link component
                 var queryTableArrayLink = "SELECT DISTINCT LINK_TABLE_ID, LINK_TABLE_NAME FROM MD_LINK WHERE LINK_TABLE_NAME !='Not applicable'";
 
-                var linkTables = _myParent.GetDataTable(ref connOmd, queryTableArrayLink);
+                var linkTables = MyParent.GetDataTable(ref connOmd, queryTableArrayLink);
 
                 queryRi.AppendLine();
                 queryRi.AppendLine("-- Link validation");
@@ -302,11 +305,11 @@ namespace Virtual_EDW
                                             "JOIN MD_HUB b ON a.HUB_TABLE_ID=b.HUB_TABLE_ID " +
                                             "WHERE a.LINK_TABLE_ID = " + (int)row["LINK_TABLE_ID"];
 
-                        var hubTables = _myParent.GetDataTable(ref connOmd, queryHubArray);
+                        var hubTables = MyParent.GetDataTable(ref connOmd, queryHubArray);
                         foreach (DataRow hubRow in hubTables.Rows)
                         {
                             var hubTableName = (string)hubRow["HUB_TABLE_NAME"];
-                            var hubSk = hubTableName.Substring(4) + "_" + _myParent.textBoxDWHKeyIdentifier.Text;
+                            var hubSk = hubTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
                             queryRi.AppendLine("LEFT OUTER JOIN " + hubTableName + " on " + linkTableName + "." + hubSk +
                                                " = " + hubTableName + "." + hubSk);
                         }
@@ -315,7 +318,7 @@ namespace Virtual_EDW
                         foreach (DataRow hubRow in hubTables.Rows)
                         {
                             var hubTableName = (string)hubRow["HUB_TABLE_NAME"];
-                            var hubSk = hubTableName.Substring(4) + "_" + _myParent.textBoxDWHKeyIdentifier.Text;
+                            var hubSk = hubTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
                             queryRi.AppendLine("  " + hubTableName + "." + hubSk + " IS NULL OR");
                         }
                         queryRi.Remove(queryRi.Length - 5, 5);
@@ -354,7 +357,7 @@ namespace Virtual_EDW
                     queryTableArrayLinkSat.AppendLine("FROM[interface].[INTERFACE_STAGING_SATELLITE_XREF]");
                     queryTableArrayLinkSat.AppendLine("WHERE [SATELLITE_TYPE]='Link Satellite'");
 
-                    var linkSatTables = _myParent.GetDataTable(ref connOmd, queryTableArrayLinkSat.ToString());
+                    var linkSatTables = MyParent.GetDataTable(ref connOmd, queryTableArrayLinkSat.ToString());
 
                     if (satTables.Rows.Count == 0)
                     {
@@ -366,7 +369,7 @@ namespace Virtual_EDW
                         {
                             var lsatTableName = (string)row["SATELLITE_TABLE_NAME"];
                             var linkTableName = (string)row["LINK_TABLE_NAME"];
-                            var hubSk = linkTableName.Substring(4) + "_" + _myParent.textBoxDWHKeyIdentifier.Text;
+                            var hubSk = linkTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
 
                             queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + lsatTableName + "'");
                             queryRi.AppendLine("FROM " + lsatTableName + " A");

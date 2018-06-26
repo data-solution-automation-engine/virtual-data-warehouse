@@ -10,13 +10,13 @@ using System.Linq;
 
 namespace Virtual_EDW
 {
-    public partial class FormPit : Form
+    public partial class FormPit : FormBase
     {
-        private readonly FormMain _myParent;
+        //private readonly FormMain _myParent;
 
         public FormPit(FormMain parent)
         {
-            _myParent = parent;
+            MyParent = parent;
             InitializeComponent();
 
             PopulateHubRadioButtonList();
@@ -34,8 +34,10 @@ namespace Virtual_EDW
 
         private void InitializeComboBox()
         {
+            var configurationSettings = new ConfigurationSettings();
+
             //Populate the dropdown combobox for time selection in PIT
-            comboBoxTimePerspective.Items.Add(_myParent.textBoxLDST.Text);
+            comboBoxTimePerspective.Items.Add(configurationSettings.LoadDateTimeAttribute);
 
             comboBoxTimePerspective.SelectedIndex = 0;
             comboBoxChangeCondensing.SelectedIndex = 0;
@@ -48,45 +50,26 @@ namespace Virtual_EDW
             PopulateHubRadioButtonList();
         }
 
-        public DataTable GetDataTable(ref SqlConnection sqlConnection, string sql)
-        {
-            // Pass the connection to a command object
-            var sqlCommand = new SqlCommand(sql, sqlConnection);
-            var sqlDataAdapter = new SqlDataAdapter { SelectCommand = sqlCommand };
-
-            var dataTable = new DataTable();
-
-            // Adds or refreshes rows in the DataSet to match those in the data source
-
-            try
-            {
-                sqlDataAdapter.Fill(dataTable);
-            }
-
-            catch (Exception)
-            {
-                return null;
-            }
-            return dataTable;
-        }
 
         private void PopulateHubRadioButtonList()
         {
             richTextBoxInformation.Clear();
 
+            var configurationSettings = new ConfigurationSettings();
+
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    radioButtonPSA.Checked ? _myParent.textBoxPSAConnection.Text : _myParent.textBoxIntegrationConnection.Text
+                    radioButtonPSA.Checked ? configurationSettings.ConnectionStringHstg : configurationSettings.ConnectionStringInt
             };
 
-            var hubIdentifier = _myParent.textBoxHubTablePrefix.Text;
+            var hubIdentifier = configurationSettings.HubTablePrefixValue;
 
-            if (_myParent.tablePrefixRadiobutton.Checked)
+            if (configurationSettings.TableNamingLocation == "Prefix")
             {
                 hubIdentifier = string.Concat(hubIdentifier, "_%"); // E.g. HSH_%, a prefix
             }
-            else if (_myParent.tableSuffixRadiobutton.Checked)
+            else if (configurationSettings.TableNamingLocation == "Suffix")
             {
                 hubIdentifier = string.Concat("%_", hubIdentifier); // E.g. %_HSH, a suffix
             }
@@ -128,7 +111,7 @@ namespace Virtual_EDW
                 dynamicRadioButton[hubCounter] = new RadioButton();
                 dynamicRadioButton[hubCounter].CheckedChanged += RadioButtonCheckedChanged;
                 dynamicRadioButton[hubCounter].Text = row["HUB_NAME"].ToString();
-                dynamicRadioButton[hubCounter].Location = new System.Drawing.Point(10, 10 + hubCounter*20);
+                dynamicRadioButton[hubCounter].Location = new Point(10, 10 + hubCounter*20);
                 dynamicRadioButton[hubCounter].Width = 500;
                 tabHub.Controls.Add(dynamicRadioButton[hubCounter]);
                 hubCounter++;
@@ -155,28 +138,29 @@ namespace Virtual_EDW
 
         private void GetAttributes(string hubList)
         {
+            var configurationSettings = new ConfigurationSettings();
+
             // Set connection depending on target area
             var conn = new SqlConnection
             {
-                ConnectionString = radioButtonPSA.Checked ? _myParent.textBoxPSAConnection.Text : _myParent.textBoxIntegrationConnection.Text
+                ConnectionString = radioButtonPSA.Checked ? configurationSettings.ConnectionStringHstg : configurationSettings.ConnectionStringInt
             };
 
             // Retrieve the location of the key indicator (suffix or prefix)
-            var keyIdentifier = _myParent.textBoxDWHKeyIdentifier.Text;
+            var keyIdentifier = configurationSettings.DwhKeyIdentifier;
             var suffixLocation ="Unknown";
-            var loadDateTimeStamp = _myParent.textBoxLDST.Text;
+            var loadDateTimeStamp = configurationSettings.LoadDateTimeAttribute;
 
-            var recordSource = "";
-            recordSource = _myParent.checkBoxAlternativeRecordSource.Checked ? _myParent.textBoxAlternativeRecordSource.Text : _myParent.textBoxRecordSource.Text;
+            var recordSource = configurationSettings.EnableAlternativeRecordSourceAttribute == "True" ? configurationSettings.AlternativeRecordSourceAttribute : configurationSettings.RecordSourceAttribute;
 
-            var etlProcessId = _myParent.textBoxETLProcessID.Text;
+            var etlProcessId = configurationSettings.EtlProcessAttribute;
 
-            if (_myParent.keyPrefixRadiobutton.Checked)
+            if (configurationSettings.KeyNamingLocation == "Prefix")
             {
                 keyIdentifier = string.Concat(keyIdentifier, "_%"); // E.g. HSH_%, a prefix
                 suffixLocation = "prefix";
             }
-            else if (_myParent.keySuffixRadiobutton.Checked)
+            else if (configurationSettings.KeyNamingLocation == "Suffix")
             {
                 keyIdentifier = string.Concat("%_", keyIdentifier); // E.g. %_HSH, a suffix
                 suffixLocation = "suffix";
@@ -187,17 +171,17 @@ namespace Virtual_EDW
             }
 
             // Retrieve the prefix/suffix settings for the tables (Hubs, Links, Sats)
-            var linkIdentifier = _myParent.textBoxLinkTablePrefix.Text;
-            var linkSatIdentifier = _myParent.textBoxLinkSatPrefix.Text;
-            var satIdentifier = _myParent.textBoxSatPrefix.Text;
+            var linkIdentifier = configurationSettings.LinkTablePrefixValue;
+            var linkSatIdentifier = configurationSettings.LinkTablePrefixValue;
+            var satIdentifier = configurationSettings.SatTablePrefixValue;
 
-            if (_myParent.tablePrefixRadiobutton.Checked)
+            if (configurationSettings.TableNamingLocation == "Prefix")
             {
                 linkIdentifier = string.Concat(linkIdentifier, "_%");
                 linkSatIdentifier = string.Concat(linkSatIdentifier, "_%");
                 satIdentifier = string.Concat(satIdentifier, "_%");
             }
-            else if (_myParent.tableSuffixRadiobutton.Checked)
+            else if (configurationSettings.TableNamingLocation == "Suffix")
             {
                 linkIdentifier = string.Concat("%_", linkIdentifier);
                 linkSatIdentifier = string.Concat("%_", linkSatIdentifier);
@@ -275,7 +259,7 @@ namespace Virtual_EDW
             var hubSk = "Unknown";
             foreach (DataRow attribute in attributeSelection.Rows)
             {
-                if ("'"+attribute["TABLE_NAME"]+"'" == hubList && attribute["COLUMN_NAME"].ToString().Contains(_myParent.textBoxDWHKeyIdentifier.Text))
+                if ("'"+attribute["TABLE_NAME"]+"'" == hubList && attribute["COLUMN_NAME"].ToString().Contains(configurationSettings.DwhKeyIdentifier))
                 {
                     hubSk=attribute["COLUMN_NAME"].ToString();
                 }
@@ -284,23 +268,23 @@ namespace Virtual_EDW
             // Create an array of attributes to check by default
             string[] defaultAttributes =
             {
-                //_myParent.textBoxHubAlternativeLDTSAttribute.Text,
-                _myParent.textBoxLDST.Text,
-                _myParent.textBoxSatelliteAlternativeLDTSAttribute.Text,
-                //_myParent.textBoxExpiryDateTimeName.Text,
+                //_myParent.configurationSettings.AlternativeLoadDateTimeAttribute,
+                configurationSettings.LoadDateTimeAttribute,
+                configurationSettings.AlternativeSatelliteLoadDateTimeAttribute,
+                //_myParent.configurationSettings.ExpiryDateTimeAttribute,
                 hubSk
             };
 
             // Create an array of process attributes so these can be selected/checked easily later
             string[] systemAttributes =
             {
-                _myParent.textBoxRecordSource.Text,
-                _myParent.textBoxSourceRowId.Text,
-                _myParent.textBoxRecordChecksum.Text,
-                _myParent.textBoxETLProcessID.Text,
-                _myParent.textBoxCurrentRecordAttributeName.Text,
-                _myParent.textBoxETLUpdateProcessID.Text,
-                _myParent.textBoxAlternativeRecordSource.Text,
+                configurationSettings.RecordSourceAttribute,
+                configurationSettings.RowIdAttribute,
+                configurationSettings.RecordChecksumAttribute,
+                configurationSettings.EtlProcessAttribute,
+                configurationSettings.CurrentRowAttribute,
+                configurationSettings.EtlProcessUpdateAttribute,
+                configurationSettings.AlternativeRecordSourceAttribute,
                 "ROW_NR",
                 "ROW_NUMBER"
             };
@@ -400,7 +384,7 @@ namespace Virtual_EDW
             //        row.Cells[2].Value = true;
            //     }
 
-                if ("'"+row.Cells[0].Value+"'" == hubList && row.Cells[1].Value.ToString().Contains(_myParent.textBoxDWHKeyIdentifier.Text))
+                if ("'"+row.Cells[0].Value+"'" == hubList && row.Cells[1].Value.ToString().Contains(configurationSettings.DwhKeyIdentifier))
                 {
                     row.Cells[2].ReadOnly = true;
                     row.Cells[2].Style.BackColor = Color.LightGray;
@@ -463,6 +447,7 @@ namespace Virtual_EDW
 
         private void butGenerate_Click(object sender, EventArgs e)
         {
+            var configurationSettings = new ConfigurationSettings();
 
             // Build arrays - list of each table in and its columns
             var tableList = new SortedList<string, List<string>>();
@@ -502,40 +487,33 @@ namespace Virtual_EDW
 
             // Understand what the effective dates are for the Hub
             var hubEffectiveDate = "Unknown";
-            if (_myParent.checkBoxAlternativeHubLDTS.Checked)
+            if (configurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
             {
-                hubEffectiveDate = _myParent.textBoxHubAlternativeLDTSAttribute.Text;
+                hubEffectiveDate = configurationSettings.AlternativeLoadDateTimeAttribute;
             }
             else
             {
-                hubEffectiveDate = _myParent.textBoxLDST.Text;
+                hubEffectiveDate = configurationSettings.LoadDateTimeAttribute;
             }
 
             // Understand what the effective dates are for the Sat
             var satEffectiveDate = "Unknown";
-            if (_myParent.checkBoxAlternativeSatLDTS.Checked)
-            {
-                satEffectiveDate = _myParent.textBoxSatelliteAlternativeLDTSAttribute.Text;
-            }
-            else
-            {
-                satEffectiveDate = _myParent.textBoxLDST.Text;
-            }
+            satEffectiveDate = configurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True" ? configurationSettings.AlternativeSatelliteLoadDateTimeAttribute : configurationSettings.LoadDateTimeAttribute;
 
             // Build up Hub, Sat and Link identifiers
-            var linkIdentifier = _myParent.textBoxLinkTablePrefix.Text;
-            var linkSatIdentifier = _myParent.textBoxLinkSatPrefix.Text;
-            var satIdentifier = _myParent.textBoxSatPrefix.Text;
-            var hubIdentifier = _myParent.textBoxHubTablePrefix.Text;
+            var linkIdentifier = configurationSettings.LinkTablePrefixValue;
+            var linkSatIdentifier = configurationSettings.LinkTablePrefixValue;
+            var satIdentifier = configurationSettings.SatTablePrefixValue;
+            var hubIdentifier = configurationSettings.HubTablePrefixValue;
 
-            if (_myParent.tablePrefixRadiobutton.Checked)
+            if (configurationSettings.TableNamingLocation == "Prefix")
             {
                 linkIdentifier = string.Concat(linkIdentifier, "_");
                 linkSatIdentifier = string.Concat(linkSatIdentifier, "_");
                 satIdentifier = string.Concat(satIdentifier, "_");
                 hubIdentifier = string.Concat(hubIdentifier, "_");
             }
-            else if (_myParent.tableSuffixRadiobutton.Checked)
+            else if (configurationSettings.TableNamingLocation == "Suffix")
             {
                 linkIdentifier = string.Concat("_", linkIdentifier);
                 linkSatIdentifier = string.Concat("_", linkSatIdentifier);
@@ -554,7 +532,7 @@ namespace Virtual_EDW
                 if (integrationTable.Contains(hubIdentifier))
                 {
                     hubTable = integrationTable;
-                    if (integrationAttribute.Contains(_myParent.textBoxDWHKeyIdentifier.Text))
+                    if (integrationAttribute.Contains(configurationSettings.DwhKeyIdentifier))
                     hubKey = integrationAttribute;
                 }             
                         
@@ -564,13 +542,13 @@ namespace Virtual_EDW
             var outputQuery = new StringBuilder();
 
             var satLoadDateTime = "";
-            if (_myParent.checkBoxAlternativeSatLDTS.Checked)
+            if (configurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
             {
-                satLoadDateTime = _myParent.textBoxSatelliteAlternativeLDTSAttribute.Text;
+                satLoadDateTime = configurationSettings.AlternativeSatelliteLoadDateTimeAttribute;
             }
             else
             {
-                satLoadDateTime = _myParent.textBoxLDST.Text;
+                satLoadDateTime = configurationSettings.LoadDateTimeAttribute;
             }
 
             outputQuery.AppendLine("SELECT");
@@ -743,14 +721,14 @@ namespace Virtual_EDW
                         outputQuery.AppendLine("      LEFT OUTER JOIN " + tableName);
                         outputQuery.AppendLine("        ON " + tableName + "." + hubKey + " = TimeRanges." + hubKey);
                        // outputQuery.AppendLine("        AND " + tableName + "." + satEffectiveDate + " <= TimeRanges.PIT_EFFECTIVE_DATETIME");
-                       // outputQuery.AppendLine("        AND " + tableName + "." + _myParent.textBoxExpiryDateTimeName.Text + " >= TimeRanges.PIT_EXPIRY_DATETIME");
+                       // outputQuery.AppendLine("        AND " + tableName + "." + _myParent.configurationSettings.ExpiryDateTimeAttribute + " >= TimeRanges.PIT_EXPIRY_DATETIME");
                     }
                     if (tableName.Contains(satIdentifier))
                     {
                         outputQuery.AppendLine("      LEFT OUTER JOIN " + tableName);
                         outputQuery.AppendLine("        ON " + tableName + "." + hubKey + " = TimeRanges." + hubKey);
                         outputQuery.AppendLine("        AND " + tableName + "." + satEffectiveDate +" <= TimeRanges.PIT_EFFECTIVE_DATETIME");
-                        outputQuery.AppendLine("        AND " + tableName + "." +_myParent.textBoxExpiryDateTimeName.Text +" >= TimeRanges.PIT_EXPIRY_DATETIME");
+                        outputQuery.AppendLine("        AND " + tableName + "." +configurationSettings.ExpiryDateTimeAttribute +" >= TimeRanges.PIT_EXPIRY_DATETIME");
                     }
                 }
             }
@@ -795,11 +773,6 @@ namespace Virtual_EDW
             richTextBoxInformation.Clear();
             richTextBoxInformation.Text += "Refreshing information using the Persistent Staging Area metadata.";
             GetAttributes("'" + labelFirstHub.Text + "'");
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(richTextBoxOutput.Text);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

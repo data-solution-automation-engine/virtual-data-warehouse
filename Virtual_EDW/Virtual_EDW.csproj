@@ -102,6 +102,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="Microsoft.CSharp" />
@@ -145,29 +146,11 @@
     <Compile Include="Form_Dimensional.Designer.cs">
       <DependentUpon>Form_Dimensional.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form_Model_Metadata.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_Model_Metadata.Designer.cs">
-      <DependentUpon>Form_Model_Metadata.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form_Manage_Metadata.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_Manage_Metadata.Designer.cs">
-      <DependentUpon>Form_Manage_Metadata.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form_Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form_Main.Designer.cs">
       <DependentUpon>Form_Main.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form_Repository.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_Repository.Designer.cs">
-      <DependentUpon>Form_Repository.cs</DependentUpon>
     </Compile>
     <Compile Include="Form_Test_Data.cs">
       <SubType>Form</SubType>
@@ -180,12 +163,6 @@
     </Compile>
     <Compile Include="Form_Test_RI.Designer.cs">
       <DependentUpon>Form_Test_RI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form_Validation.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_Validation.Designer.cs">
-      <DependentUpon>Form_Validation.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -210,23 +187,11 @@
     <EmbeddedResource Include="Form_Main.resx">
       <DependentUpon>Form_Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form_Model_Metadata.resx">
-      <DependentUpon>Form_Model_Metadata.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_Manage_Metadata.resx">
-      <DependentUpon>Form_Manage_Metadata.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_Repository.resx">
-      <DependentUpon>Form_Repository.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Form_Test_Data.resx">
       <DependentUpon>Form_Test_Data.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_Test_RI.resx">
       <DependentUpon>Form_Test_RI.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_Validation.resx">
-      <DependentUpon>Form_Validation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
