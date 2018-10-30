@@ -30,21 +30,19 @@ namespace Virtual_EDW
         {
             richTextBoxInformation.Clear();
 
-            var configurationSettings = new ConfigurationSettings();
-
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    radioButtonPSA.Checked ? configurationSettings.ConnectionStringHstg : configurationSettings.ConnectionStringInt
+                    radioButtonPSA.Checked ? ConfigurationSettings.ConnectionStringHstg : ConfigurationSettings.ConnectionStringInt
             };
 
-            var hubIdentifier = configurationSettings.HubTablePrefixValue;
+            var hubIdentifier = ConfigurationSettings.HubTablePrefixValue;
 
-            if (configurationSettings.TableNamingLocation == "Prefix")
+            if (ConfigurationSettings.TableNamingLocation == "Prefix")
             {
                 hubIdentifier = string.Concat(hubIdentifier, "_%");
             }
-            else if (configurationSettings.TableNamingLocation == "Suffix")
+            else if (ConfigurationSettings.TableNamingLocation == "Suffix")
             {
                 hubIdentifier = string.Concat("%_", hubIdentifier);
             }
@@ -114,20 +112,18 @@ namespace Virtual_EDW
 
         private void GetAttributes(string hubList)
         {
-            var configurationSettings = new ConfigurationSettings();
-
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    radioButtonPSA.Checked ? configurationSettings.ConnectionStringHstg : configurationSettings.ConnectionStringInt
+                    radioButtonPSA.Checked ? ConfigurationSettings.ConnectionStringHstg : ConfigurationSettings.ConnectionStringInt
             };
 
-            var keyIdentifier = configurationSettings.DwhKeyIdentifier;
-            if (configurationSettings.KeyNamingLocation == "Prefix")//_myParent.keyPrefixRadiobutton.Checked)
+            var keyIdentifier = ConfigurationSettings.DwhKeyIdentifier;
+            if (ConfigurationSettings.KeyNamingLocation == "Prefix")//_myParent.keyPrefixRadiobutton.Checked)
             {
                 keyIdentifier = string.Concat(keyIdentifier, "_%");
             }
-            else if (configurationSettings.KeyNamingLocation == "Suffix")
+            else if (ConfigurationSettings.KeyNamingLocation == "Suffix")
             {
                 keyIdentifier = string.Concat("%_", keyIdentifier);
             }
@@ -137,17 +133,17 @@ namespace Virtual_EDW
             }
 
             // Retrieve the prefix/suffix settings for the tables (Hubs, Links, Sats)
-            var linkIdentifier = configurationSettings.LinkTablePrefixValue;
-            var linkSatIdentifier = configurationSettings.LinkTablePrefixValue;
-            var satIdentifier = configurationSettings.SatTablePrefixValue;
+            var linkIdentifier = ConfigurationSettings.LinkTablePrefixValue;
+            var linkSatIdentifier = ConfigurationSettings.LinkTablePrefixValue;
+            var satIdentifier = ConfigurationSettings.SatTablePrefixValue;
 
-            if (configurationSettings.TableNamingLocation == "Prefix")//_myParent.tablePrefixRadiobutton.Checked)
+            if (ConfigurationSettings.TableNamingLocation == "Prefix")//_myParent.tablePrefixRadiobutton.Checked)
             {
                 linkIdentifier = string.Concat(linkIdentifier, "_%");
                 linkSatIdentifier = string.Concat(linkSatIdentifier, "_%");
                 satIdentifier = string.Concat(satIdentifier, "_%");
             }
-            else if (configurationSettings.TableNamingLocation == "Suffix")
+            else if (ConfigurationSettings.TableNamingLocation == "Suffix")
             {
                 linkIdentifier = string.Concat("%_", linkIdentifier);
                 linkSatIdentifier = string.Concat("%_", linkSatIdentifier);
@@ -216,17 +212,17 @@ namespace Virtual_EDW
                     var attributeName = row["COLUMN_NAME"].ToString();
 
                     if (
-                        attributeName == configurationSettings.RecordSourceAttribute || 
-                        attributeName == configurationSettings.AlternativeRecordSourceAttribute ||
-                        attributeName == configurationSettings.RowIdAttribute ||
-                        attributeName == configurationSettings.RecordChecksumAttribute ||
-                        attributeName == configurationSettings.AlternativeLoadDateTimeAttribute ||
-                        attributeName == configurationSettings.EtlProcessAttribute ||
-                        attributeName == configurationSettings.LoadDateTimeAttribute ||
-                        attributeName == configurationSettings.CurrentRowAttribute ||
-                        attributeName == configurationSettings.EtlProcessUpdateAttribute ||
-                        attributeName == configurationSettings.AlternativeSatelliteLoadDateTimeAttribute ||
-                        attributeName == configurationSettings.ExpiryDateTimeAttribute
+                        attributeName == ConfigurationSettings.RecordSourceAttribute || 
+                        attributeName == ConfigurationSettings.AlternativeRecordSourceAttribute ||
+                        attributeName == ConfigurationSettings.RowIdAttribute ||
+                        attributeName == ConfigurationSettings.RecordChecksumAttribute ||
+                        attributeName == ConfigurationSettings.AlternativeLoadDateTimeAttribute ||
+                        attributeName == ConfigurationSettings.EtlProcessAttribute ||
+                        attributeName == ConfigurationSettings.LoadDateTimeAttribute ||
+                        attributeName == ConfigurationSettings.CurrentRowAttribute ||
+                        attributeName == ConfigurationSettings.EtlProcessUpdateAttribute ||
+                        attributeName == ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute ||
+                        attributeName == ConfigurationSettings.ExpiryDateTimeAttribute
                        )
                     {
                         row.Delete();

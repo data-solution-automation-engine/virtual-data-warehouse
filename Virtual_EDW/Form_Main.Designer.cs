@@ -108,8 +108,6 @@
             this.openConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveConfigurationFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.metadataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sourceSystemRegistryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dimensionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rawDataMartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pointInTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -143,6 +141,9 @@
             this.trackBarVersioning = new System.Windows.Forms.TrackBar();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.openTEAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -986,7 +987,6 @@
             // 
             this.menuStripMainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.metadataToolStripMenuItem,
             this.dimensionalToolStripMenuItem,
             this.testingToolStripMenuItem,
             this.helpToolStripMenuItem});
@@ -1002,6 +1002,9 @@
             this.openOutputDirectoryToolStripMenuItem,
             this.openConfigurationDirectoryToolStripMenuItem,
             this.saveConfigurationFileToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.openTEAMToolStripMenuItem,
+            this.toolStripSeparator3,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -1039,22 +1042,6 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // metadataToolStripMenuItem
-            // 
-            this.metadataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sourceSystemRegistryToolStripMenuItem});
-            this.metadataToolStripMenuItem.Name = "metadataToolStripMenuItem";
-            this.metadataToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
-            this.metadataToolStripMenuItem.Text = "Metadata";
-            // 
-            // sourceSystemRegistryToolStripMenuItem
-            // 
-            this.sourceSystemRegistryToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.DocumentationIcon;
-            this.sourceSystemRegistryToolStripMenuItem.Name = "sourceSystemRegistryToolStripMenuItem";
-            this.sourceSystemRegistryToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
-            this.sourceSystemRegistryToolStripMenuItem.Text = "Source System Registry";
-            this.sourceSystemRegistryToolStripMenuItem.Click += new System.EventHandler(this.sourceSystemRegistryToolStripMenuItem_Click);
-            // 
             // dimensionalToolStripMenuItem
             // 
             this.dimensionalToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1069,7 +1056,7 @@
             // 
             this.rawDataMartToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.CubeIcon;
             this.rawDataMartToolStripMenuItem.Name = "rawDataMartToolStripMenuItem";
-            this.rawDataMartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rawDataMartToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.rawDataMartToolStripMenuItem.Text = "Raw Data Mart";
             this.rawDataMartToolStripMenuItem.Click += new System.EventHandler(this.rawDataMartToolStripMenuItem_Click);
             // 
@@ -1077,7 +1064,7 @@
             // 
             this.pointInTimeToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.Time;
             this.pointInTimeToolStripMenuItem.Name = "pointInTimeToolStripMenuItem";
-            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pointInTimeToolStripMenuItem.Text = "Point In Time";
             this.pointInTimeToolStripMenuItem.Click += new System.EventHandler(this.pointInTimeToolStripMenuItem_Click);
             // 
@@ -1085,7 +1072,7 @@
             // 
             this.unknownKeysToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ghost_icon;
             this.unknownKeysToolStripMenuItem.Name = "unknownKeysToolStripMenuItem";
-            this.unknownKeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.unknownKeysToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.unknownKeysToolStripMenuItem.Text = "Unknown Keys";
             this.unknownKeysToolStripMenuItem.Click += new System.EventHandler(this.unknownKeysToolStripMenuItem_Click);
             // 
@@ -1383,6 +1370,24 @@
             this.pictureBox1.TabIndex = 15;
             this.pictureBox1.TabStop = false;
             // 
+            // openTEAMToolStripMenuItem
+            // 
+            this.openTEAMToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.RavosLogo;
+            this.openTEAMToolStripMenuItem.Name = "openTEAMToolStripMenuItem";
+            this.openTEAMToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.openTEAMToolStripMenuItem.Text = "Open TEAM";
+            this.openTEAMToolStripMenuItem.Click += new System.EventHandler(this.openTEAMToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(228, 6);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(228, 6);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1489,7 +1494,6 @@
         private System.Windows.Forms.RadioButton radiobuttonStoredProc;
         private System.Windows.Forms.RadioButton radiobuttonViews;
         private System.Windows.Forms.GroupBox SQLGenerationGroupBox;
-        private System.Windows.Forms.ToolStripMenuItem metadataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dimensionalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rawDataMartToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
@@ -1548,7 +1552,6 @@
         private System.Windows.Forms.TextBox textBoxFilterCriterionLnk;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.TextBox textBoxFilterCriterionLsat;
-        private System.Windows.Forms.ToolStripMenuItem sourceSystemRegistryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pointInTimeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unknownKeysToolStripMenuItem;
         private System.Windows.Forms.CheckBox checkBoxEvaluateSatDelete;
@@ -1566,6 +1569,9 @@
         internal System.Windows.Forms.TextBox textBoxConfigurationPath;
         private System.Windows.Forms.Label OutputPathLabel;
         internal System.Windows.Forms.TextBox textBoxOutputPath;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem openTEAMToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     }
 }
 

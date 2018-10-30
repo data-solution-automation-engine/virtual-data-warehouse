@@ -55,13 +55,11 @@ namespace Virtual_EDW
 
         private void buttonGenerateTestcases_Click(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
-
             var connStg = new SqlConnection();
             var connVariable = new SqlConnection();
 
             // Assign database connection string
-            connStg.ConnectionString = configurationSettings.ConnectionStringStg;
+            connStg.ConnectionString = ConfigurationSettings.ConnectionStringStg;
 
             try
             {
@@ -100,24 +98,24 @@ namespace Virtual_EDW
                         testCaseQuery.AppendLine("-- Creating testcases for " + stgTableName);
                         testCaseQuery.AppendLine();
 
-                        var localkeyLength = configurationSettings.DwhKeyIdentifier.Length;
-                        var localkeySubstring = configurationSettings.DwhKeyIdentifier.Length + 1;
+                        var localkeyLength = ConfigurationSettings.DwhKeyIdentifier.Length;
+                        var localkeySubstring = ConfigurationSettings.DwhKeyIdentifier.Length + 1;
 
                         var queryAttributeArray =
                             "SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION " +
                             "FROM INFORMATION_SCHEMA.COLUMNS " +
-                            "WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'" +
+                            "WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'" +
                             " AND TABLE_NAME= '" + stgTableName + "'" +
-                            " AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" +
-                            configurationSettings.AlternativeRecordSourceAttribute + "','" +
-                            configurationSettings.AlternativeLoadDateTimeAttribute + "','" +
-                            configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
-                            configurationSettings.EtlProcessAttribute + "','" +
-                            configurationSettings.EventDateTimeAttribute + "','" +
-                            configurationSettings.ChangeDataCaptureAttribute + "','" +
-                            configurationSettings.RecordChecksumAttribute + "','" +
-                            configurationSettings.RowIdAttribute + "','" +
-                            configurationSettings.LoadDateTimeAttribute + "')";
+                            " AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" +
+                            ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +
+                            ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
+                            ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+                            ConfigurationSettings.EtlProcessAttribute + "','" +
+                            ConfigurationSettings.EventDateTimeAttribute + "','" +
+                            ConfigurationSettings.ChangeDataCaptureAttribute + "','" +
+                            ConfigurationSettings.RecordChecksumAttribute + "','" +
+                            ConfigurationSettings.RowIdAttribute + "','" +
+                            ConfigurationSettings.LoadDateTimeAttribute + "')";
 
                         var attributeArray = MyParent.GetDataTable(ref connStg, queryAttributeArray);
 
@@ -126,11 +124,11 @@ namespace Virtual_EDW
                             testCaseQuery.AppendLine("-- Testcase " + intCounter);
                             testCaseQuery.AppendLine("INSERT INTO [dbo].[" + stgTableName + "]");
                             testCaseQuery.AppendLine("(");
-                            testCaseQuery.AppendLine("[" + configurationSettings.EtlProcessAttribute + "],");
-                            testCaseQuery.AppendLine("[" + configurationSettings.EventDateTimeAttribute + "],");
-                            testCaseQuery.AppendLine("[" + configurationSettings.RecordSourceAttribute + "],");
-                            testCaseQuery.AppendLine("[" + configurationSettings.ChangeDataCaptureAttribute + "],");
-                            testCaseQuery.AppendLine("[" + configurationSettings.RecordChecksumAttribute + "],");
+                            testCaseQuery.AppendLine("[" + ConfigurationSettings.EtlProcessAttribute + "],");
+                            testCaseQuery.AppendLine("[" + ConfigurationSettings.EventDateTimeAttribute + "],");
+                            testCaseQuery.AppendLine("[" + ConfigurationSettings.RecordSourceAttribute + "],");
+                            testCaseQuery.AppendLine("[" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
+                            testCaseQuery.AppendLine("[" + ConfigurationSettings.RecordChecksumAttribute + "],");
 
                             foreach (DataRow attributeRow in attributeArray.Rows)
                             {
@@ -186,15 +184,15 @@ namespace Virtual_EDW
                         {
                             if (radioButtonStagingArea.Checked)
                             {
-                                connVariable.ConnectionString = configurationSettings.ConnectionStringStg;
+                                connVariable.ConnectionString = ConfigurationSettings.ConnectionStringStg;
                             }
                             if (radioButtonPSA.Checked)
                             {
-                                connVariable.ConnectionString = configurationSettings.ConnectionStringHstg;
+                                connVariable.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                             }
                             if (radiobuttonSource.Checked)
                             {
-                                connVariable.ConnectionString = configurationSettings.ConnectionStringSource;
+                                connVariable.ConnectionString = ConfigurationSettings.ConnectionStringSource;
                                     //_myParent.textBoxSourceConnection.Text;
                             }
 

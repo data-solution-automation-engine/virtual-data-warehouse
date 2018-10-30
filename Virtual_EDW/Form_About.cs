@@ -25,8 +25,7 @@ namespace Virtual_EDW
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
-            var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
+            var connHstg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
 
             try
             {

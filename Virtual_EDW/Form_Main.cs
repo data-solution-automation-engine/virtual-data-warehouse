@@ -12,31 +12,32 @@ using System.Threading;
 using System.ComponentModel;
 using System.Drawing;
 using System.Security.Permissions;
+using Virtual_EDW.Classes;
 
 namespace Virtual_EDW
 {
     public partial class FormMain : FormBase
     {
         Form_Alert _alert;
-        private StringBuilder errorMessage;
-        private StringBuilder errorDetails;
+        private StringBuilder _errorMessage;
+        private StringBuilder _errorDetails;
         private int _errorCounter;
 
         public FormMain()
         {
-            errorMessage = new StringBuilder();
-            errorMessage.AppendLine("Error were detected:");
-            errorMessage.AppendLine();
+            _errorMessage = new StringBuilder();
+            _errorMessage.AppendLine("Error were detected:");
+            _errorMessage.AppendLine();
            
-            errorDetails = new StringBuilder();
-            errorDetails.AppendLine();
+            _errorDetails = new StringBuilder();
+            _errorDetails.AppendLine();
             _errorCounter = 0;
 
             InitializeComponent();
 
             //Make sure the root directories exist, based on hard-coded (tool) parameters
             //Also create the initial file with the configuration if it doesn't exist already
-            InitialisePath();
+            EnvironmentConfiguration.InitialiseRootPath();
 
             //Set the root path, to be able to locate the configuration file and load it
             InitialiseRootPath();
@@ -61,11 +62,9 @@ namespace Virtual_EDW
 
             InitialiseDocumentation();
 
-            var configurationSettings = new ConfigurationSettings();
-
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
-            var connStg = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringStg };
-            var connPsa = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringHstg };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
+            var connStg = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringStg };
+            var connPsa = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringHstg };
 
             try
             {
@@ -104,36 +103,35 @@ namespace Virtual_EDW
 
             if (_errorCounter > 0)
             {
-                richTextBoxInformation.AppendText(errorMessage.ToString());
+                richTextBoxInformation.AppendText(_errorMessage.ToString());
             }
 
         }
-
+        /// <summary>
+        /// This is the local updates on the VEDW specific configuration 
+        /// </summary>
         private void UpdateConfigurationSettingsOnForm()
         {
-            var configurationSettings = new ConfigurationSettings();
-            var configurationSettingsVedwSpecific = new ConfigurationSettingsVedwSpecific();
+            InitialiseConfiguration(ConfigurationSettings.ConfigurationPath + GlobalParameters.ConfigfileName);
 
-            InitialiseConfiguration(configurationSettings.ConfigurationPath + GlobalParameters.ConfigfileName);
+            textBoxOutputPath.Text = ConfigurationSettings.OutputPath;
+            textBoxConfigurationPath.Text = ConfigurationSettings.ConfigurationPath;
 
-            textBoxOutputPath.Text = configurationSettings.OutputPath;
-            textBoxConfigurationPath.Text = configurationSettings.ConfigurationPath;
-
-            if (configurationSettingsVedwSpecific.EnableUnicode == "True")
+            if (ConfigurationSettingsVedwSpecific.EnableUnicode == "True")
             {
                 checkBoxUnicode.Checked = true;
             }
 
-            if (configurationSettingsVedwSpecific.DisableHash == "True")
+            if (ConfigurationSettingsVedwSpecific.DisableHash == "True")
             {
                 checkBoxDisableHash.Checked = true;
             }
 
-            if (configurationSettingsVedwSpecific.HashKeyOutputType == "Binary")
+            if (ConfigurationSettingsVedwSpecific.HashKeyOutputType == "Binary")
             {
                 radioButtonBinaryHash.Checked = true;
             }
-            if (configurationSettingsVedwSpecific.HashKeyOutputType == "Character")
+            if (ConfigurationSettingsVedwSpecific.HashKeyOutputType == "Character")
             {
                 radioButtonCharacterHash.Checked = true;
             }
@@ -147,8 +145,7 @@ namespace Virtual_EDW
             FileSystemWatcher watcher = new FileSystemWatcher();
             //watcher.Path = (GlobalParameters.ConfigurationPath + GlobalParameters.ConfigfileName);
 
-            var configurationSettings = new ConfigurationSettings();
-            watcher.Path = configurationSettings.ConfigurationPath;
+            watcher.Path = ConfigurationSettings.ConfigurationPath;
 
             /* Watch for changes in LastAccess and LastWrite times, and
                the renaming of files or directories. */
@@ -190,73 +187,12 @@ namespace Virtual_EDW
             labelVersion.Text = majorVersion + "." + minorVersion;
         }
 
-        private static void InitialisePath()
-        {
-            // These are the standard software directories
-            var configurationPath = GlobalParameters.ConfigurationPath; //Application.StartupPath + @"\Configuration\";
-            var outputPath = GlobalParameters.OutputPath; //Application.StartupPath + @"\Output\";
-
-            // Create the directories if they don't exist yet
-            try
-            {
-                if (!Directory.Exists(configurationPath))
-                {
-                    Directory.CreateDirectory(configurationPath);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error creation default directory at " + configurationPath + " the message is " + ex, "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            try
-            {
-                if (!Directory.Exists(outputPath))
-                {
-                    Directory.CreateDirectory(outputPath);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error creation default directory at " + outputPath + " the message is " + ex, "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            // Create root path file, with dummy values, if it doesn't exist already
-            try
-            {
-                if (!File.Exists(GlobalParameters.ConfigurationPath + GlobalParameters.PathfileName))
-                {
-                    var initialConfigurationFile = new StringBuilder();
-
-                    initialConfigurationFile.AppendLine("/* TEAM File Path Settings */");
-                    initialConfigurationFile.AppendLine("/* Roelant Vos - 2018 */");
-                    initialConfigurationFile.AppendLine("ConfigurationPath|" + GlobalParameters.ConfigurationPath);
-                    initialConfigurationFile.AppendLine("OutputPath|" + GlobalParameters.OutputPath);
-                    initialConfigurationFile.AppendLine("EnableUnicode|True");
-                    initialConfigurationFile.AppendLine("DisableHash|False");
-                    initialConfigurationFile.AppendLine("HashKeyOutputType|Binary");
-                    initialConfigurationFile.AppendLine("/* End of file */");
-
-                    using (var outfile = new StreamWriter(GlobalParameters.ConfigurationPath + GlobalParameters.PathfileName))
-                    {
-                        outfile.Write(initialConfigurationFile.ToString());
-                        outfile.Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "An error occurred while creation the default path file. The error message is " + ex, "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+    
 
         private static void InitialiseConfigurationPath()
         {
-            var configurationSettings = new ConfigurationSettings();
-
-            var configurationPath = configurationSettings.ConfigurationPath; //Application.StartupPath + @"\Configuration\";
-            var outputPath = configurationSettings.OutputPath; //Application.StartupPath + @"\Output\";
+            var configurationPath = ConfigurationSettings.ConfigurationPath; //Application.StartupPath + @"\Configuration\";
+            var outputPath = ConfigurationSettings.OutputPath; //Application.StartupPath + @"\Output\";
 
             // Create the directories if they don't exist yet
             try
@@ -287,7 +223,7 @@ namespace Virtual_EDW
             // Create initial config file with dummy values
             try
             {
-                if (!File.Exists(configurationSettings.ConfigurationPath + GlobalParameters.ConfigfileName))
+                if (!File.Exists(ConfigurationSettings.ConfigurationPath + GlobalParameters.ConfigfileName))
                 {
                     var initialConfigurationFile = new StringBuilder();
 
@@ -340,7 +276,7 @@ namespace Virtual_EDW
 
                     initialConfigurationFile.AppendLine("/* End of file */");
 
-                    using (var outfile = new StreamWriter(configurationSettings.ConfigurationPath + GlobalParameters.ConfigfileName))
+                    using (var outfile = new StreamWriter(ConfigurationSettings.ConfigurationPath + GlobalParameters.ConfigfileName))
                     {
                         outfile.Write(initialConfigurationFile.ToString());
                         outfile.Close();
@@ -431,7 +367,7 @@ namespace Virtual_EDW
 
         private void GenerateHubInsertInto(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkBoxIfExistsStatement.Checked)
             {
@@ -443,14 +379,14 @@ namespace Virtual_EDW
             {
                 for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
                 {
-                    var connHstg = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringHstg };
+                    var connHstg = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringHstg };
                     var conn = new SqlConnection
                     {
-                        ConnectionString = checkBoxIgnoreVersion.Checked ? configurationSettings.ConnectionStringInt : configurationSettings.ConnectionStringOmd
+                        ConnectionString = checkBoxIgnoreVersion.Checked ? ConfigurationSettings.ConnectionStringInt : ConfigurationSettings.ConnectionStringOmd
                     };
 
                     var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
-                    var hubSk = hubTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                    var hubSk = hubTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
 
                     // Build the main attribute list of the Hub table for selection
                     var sourceTableStructure = GetTableStructure(hubTableName, ref conn, versionId, "HUB");
@@ -463,10 +399,10 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine("-- Generated at " + DateTime.Now);
                     insertIntoStatement.AppendLine("--");
                     insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                    insertIntoStatement.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                     insertIntoStatement.AppendLine("GO");
                     insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("INSERT INTO " + configurationSettings.IntegrationDatabaseName + "." +configurationSettings.SchemaName + "." + hubTableName);
+                    insertIntoStatement.AppendLine("INSERT INTO " + ConfigurationSettings.IntegrationDatabaseName + "." +ConfigurationSettings.SchemaName + "." + hubTableName);
                     insertIntoStatement.AppendLine("(");
                     
                     foreach (DataRow attribute in sourceTableStructure.Rows)
@@ -481,7 +417,7 @@ namespace Virtual_EDW
 
                     foreach (DataRow attribute in sourceTableStructure.Rows)
                     {
-                        if ((string)attribute["COLUMN_NAME"] == configurationSettings.EtlProcessAttribute)
+                        if ((string)attribute["COLUMN_NAME"] == ConfigurationSettings.EtlProcessAttribute)
                         {
                             insertIntoStatement.AppendLine("   -1 AS " + attribute["COLUMN_NAME"] + ",");
                         }
@@ -495,7 +431,7 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine();
                     insertIntoStatement.AppendLine("FROM " + hubTableName + " hub_view");
                     insertIntoStatement.AppendLine("LEFT OUTER JOIN ");
-                    insertIntoStatement.AppendLine(" " + configurationSettings.IntegrationDatabaseName + "." +configurationSettings.SchemaName +
+                    insertIntoStatement.AppendLine(" " + ConfigurationSettings.IntegrationDatabaseName + "." +ConfigurationSettings.SchemaName +
                                                     "." + hubTableName + " hub_table");
                     insertIntoStatement.AppendLine(" ON hub_view." + hubSk + " = hub_table." + hubSk);
                     insertIntoStatement.AppendLine("WHERE hub_table." + hubSk + " IS NULL");
@@ -528,13 +464,13 @@ namespace Virtual_EDW
 
         private void GenerateHubViews(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             // Create the Hub views - representing the Hub entity
-            var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
-            var connStg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringStg};
-            var connPsa = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
-            var connInt = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringInt};
+            var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
+            var connStg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringStg};
+            var connPsa = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
+            var connInt = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringInt};
 
             if (checkedListBoxHubMetadata.CheckedItems.Count != 0)
             {
@@ -542,7 +478,7 @@ namespace Virtual_EDW
                 {
                     var hubView = new StringBuilder();
                     var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
-                    var hubSk = hubTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                    var hubSk = hubTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
 
                     var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
@@ -555,13 +491,13 @@ namespace Virtual_EDW
                     hubView.AppendLine("-- Generated at " + DateTime.Now);
                     hubView.AppendLine("--");
                     hubView.AppendLine();
-                    hubView.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                    hubView.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                     hubView.AppendLine("GO");
                     hubView.AppendLine();
                     hubView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[" + hubTableName +"]') AND type in (N'V'))");
-                    hubView.AppendLine("DROP VIEW [" + configurationSettings.SchemaName + "].[" + hubTableName + "]");
+                    hubView.AppendLine("DROP VIEW [" + ConfigurationSettings.SchemaName + "].[" + hubTableName + "]");
                     hubView.AppendLine("GO");
-                    hubView.AppendLine("CREATE VIEW [" + configurationSettings.SchemaName + "].[" + hubTableName + "] AS  ");
+                    hubView.AppendLine("CREATE VIEW [" + ConfigurationSettings.SchemaName + "].[" + hubTableName + "] AS  ");
                     // START OF MAIN QUERY
                     hubView.AppendLine("SELECT hub.*");
                     hubView.AppendLine("FROM(");
@@ -593,25 +529,25 @@ namespace Virtual_EDW
                         hubView.AppendLine();
                     }
 
-                    hubView.AppendLine("  -1 AS " + configurationSettings.EtlProcessAttribute + ",");
+                    hubView.AppendLine("  -1 AS " + ConfigurationSettings.EtlProcessAttribute + ",");
 
-                    if (configurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+                    if (ConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
                     {
-                        hubView.AppendLine("  MIN(" + configurationSettings.LoadDateTimeAttribute + ") AS " + configurationSettings.AlternativeLoadDateTimeAttribute + ",");
+                        hubView.AppendLine("  MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ") AS " + ConfigurationSettings.AlternativeLoadDateTimeAttribute + ",");
                     }
                     else
                     {
-                        hubView.AppendLine("  MIN(" + configurationSettings.LoadDateTimeAttribute + ") AS " + configurationSettings.LoadDateTimeAttribute + ",");
+                        hubView.AppendLine("  MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ") AS " + ConfigurationSettings.LoadDateTimeAttribute + ",");
                     }
 
 
-                    if (configurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+                    if (ConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
                     {
-                        hubView.AppendLine("  " + configurationSettings.RecordSourceAttribute + " AS " + configurationSettings.AlternativeRecordSourceAttribute + ",");
+                        hubView.AppendLine("  " + ConfigurationSettings.RecordSourceAttribute + " AS " + ConfigurationSettings.AlternativeRecordSourceAttribute + ",");
                     }
                     else
                     {
-                        hubView.AppendLine("  " + configurationSettings.RecordSourceAttribute + ",");
+                        hubView.AppendLine("  " + ConfigurationSettings.RecordSourceAttribute + ",");
                     }
 
                     foreach (DataRow hubKey in hubKeyList.Rows)
@@ -629,13 +565,13 @@ namespace Virtual_EDW
                     hubView.AppendLine();
                     hubView.AppendLine("  ORDER BY ");
 
-                    if (configurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+                    if (ConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
                     {
-                        hubView.AppendLine("      MIN(" + configurationSettings.LoadDateTimeAttribute + ")");
+                        hubView.AppendLine("      MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ")");
                     }
                     else
                     {
-                        hubView.AppendLine("      MIN(" + configurationSettings.LoadDateTimeAttribute + ")");
+                        hubView.AppendLine("      MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ")");
                     }
                     hubView.AppendLine("  ) AS ROW_NR");
 
@@ -667,7 +603,7 @@ namespace Virtual_EDW
                             var hubQueryGroupBy = new StringBuilder();
                             
                             var stagingAreaTableName = (string)hubDetailRow["STAGING_AREA_TABLE_NAME"];
-                            var psaTableName = configurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(configurationSettings.StgTablePrefixValue, "");
+                            var psaTableName = ConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(ConfigurationSettings.StgTablePrefixValue, "");
                             var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
                             var filterCriteria = (string)hubDetailRow["FILTER_CRITERIA"];
 
@@ -807,8 +743,8 @@ namespace Virtual_EDW
                             sqlSourceStatement.AppendLine("  SELECT ");
                             sqlSourceStatement.AppendLine("    " + hubQuerySelect);
                             sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
-                            sqlSourceStatement.AppendLine("    " + configurationSettings.RecordSourceAttribute + ",");
-                            sqlSourceStatement.AppendLine("    MIN(" + configurationSettings.LoadDateTimeAttribute + ") AS " + configurationSettings.LoadDateTimeAttribute +"");
+                            sqlSourceStatement.AppendLine("    " + ConfigurationSettings.RecordSourceAttribute + ",");
+                            sqlSourceStatement.AppendLine("    MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ") AS " + ConfigurationSettings.LoadDateTimeAttribute +"");
                             sqlSourceStatement.AppendLine("  FROM " + psaTableName);
                             sqlSourceStatement.AppendLine("  WHERE");
                             sqlSourceStatement.AppendLine("    " + hubQueryWhere);
@@ -825,7 +761,7 @@ namespace Virtual_EDW
                             sqlSourceStatement.AppendLine("    " + hubQueryGroupBy);
                             sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
 
-                            sqlSourceStatement.AppendLine("    " + configurationSettings.RecordSourceAttribute + "");
+                            sqlSourceStatement.AppendLine("    " + ConfigurationSettings.RecordSourceAttribute + "");
 
                             hubView.Append(sqlSourceStatement);
 
@@ -847,7 +783,7 @@ namespace Virtual_EDW
                         hubView.AppendLine("  [" + (string) hubKey["COLUMN_NAME"] + "],");
                     }
 
-                    hubView.AppendLine("  " + configurationSettings.RecordSourceAttribute);
+                    hubView.AppendLine("  " + ConfigurationSettings.RecordSourceAttribute);
 
                     hubView.AppendLine(") hub");
                     hubView.AppendLine("WHERE ROW_NR = 1");
@@ -878,7 +814,7 @@ namespace Virtual_EDW
                     //Generate in database
                     if (checkBoxGenerateInDatabase.Checked)
                     {
-                        connPsa.ConnectionString = configurationSettings.ConnectionStringHstg;
+                        connPsa.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                         GenerateInDatabase(connPsa, hubView.ToString());
                     }
 
@@ -935,10 +871,10 @@ namespace Virtual_EDW
 
         public DataTable GetBusinessKeyComponentList(string stagingTableName, string hubTableName, string businessKeyDefinition)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             // Retrieving the top level component to evaluate composite, concat or pivot 
-            var conn = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
+            var conn = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
 
             try
             {
@@ -1001,10 +937,10 @@ namespace Virtual_EDW
 
         private void openOutputDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
             try
             {
-                Process.Start(configurationSettings.OutputPath);
+                Process.Start(ConfigurationSettings.OutputPath);
             }
             catch (Exception ex)
             {
@@ -1047,17 +983,17 @@ namespace Virtual_EDW
         // Generate the Insert Into statement for the Satellites
         private void GenerateSatInsertInto(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
             {
                 for (int x = 0; x <= checkedListBoxSatMetadata.CheckedItems.Count - 1; x++)
                 {
-                    var connHstg = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringHstg };
-                    var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
+                    var connHstg = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringHstg };
+                    var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
                     var conn = new SqlConnection
                     {
-                        ConnectionString = checkBoxIgnoreVersion.Checked ? configurationSettings.ConnectionStringInt : configurationSettings.ConnectionStringOmd
+                        ConnectionString = checkBoxIgnoreVersion.Checked ? ConfigurationSettings.ConnectionStringInt : ConfigurationSettings.ConnectionStringOmd
                     };
 
                     var targetTableName = checkedListBoxSatMetadata.CheckedItems[x].ToString();
@@ -1075,7 +1011,7 @@ namespace Virtual_EDW
 
                     foreach (DataRow row in tables.Rows)
                     {
-                        var hubSk = row["HUB_TABLE_NAME"].ToString().Substring(4) + "_"+configurationSettings.DwhKeyIdentifier;
+                        var hubSk = row["HUB_TABLE_NAME"].ToString().Substring(4) + "_"+ConfigurationSettings.DwhKeyIdentifier;
 
                         // Build the main attribute list of the Satellite table for selection
                         var sourceTableStructure = GetTableStructure(targetTableName, ref conn, versionId, "SAT");
@@ -1091,11 +1027,11 @@ namespace Virtual_EDW
                         insertIntoStatement.AppendLine("-- Generated at " + DateTime.Now);
                         insertIntoStatement.AppendLine("--");
                         insertIntoStatement.AppendLine();
-                        insertIntoStatement.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                        insertIntoStatement.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                         insertIntoStatement.AppendLine("GO");
                         insertIntoStatement.AppendLine();
-                        insertIntoStatement.AppendLine("INSERT INTO [" + configurationSettings.IntegrationDatabaseName + "].[" +
-                                                       configurationSettings.SchemaName + "].[" + targetTableName + "]");
+                        insertIntoStatement.AppendLine("INSERT INTO [" + ConfigurationSettings.IntegrationDatabaseName + "].[" +
+                                                       ConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
                         insertIntoStatement.AppendLine("   (");
 
                         foreach (DataRow attribute in sourceTableStructure.Rows)
@@ -1116,7 +1052,7 @@ namespace Virtual_EDW
                         {
                             var sourceAttribute = attribute["COLUMN_NAME"];
 
-                            if ((string)sourceAttribute == configurationSettings.EtlProcessAttribute || (string)sourceAttribute == configurationSettings.EtlProcessUpdateAttribute)
+                            if ((string)sourceAttribute == ConfigurationSettings.EtlProcessAttribute || (string)sourceAttribute == ConfigurationSettings.EtlProcessUpdateAttribute)
                             {
                                 insertIntoStatement.Append("   -1 AS [" + sourceAttribute + "],");
                                 insertIntoStatement.AppendLine();
@@ -1132,20 +1068,20 @@ namespace Virtual_EDW
                         insertIntoStatement.AppendLine();
                         insertIntoStatement.AppendLine("FROM " + targetTableName + " sat_view");
                         insertIntoStatement.AppendLine("LEFT OUTER JOIN");
-                        insertIntoStatement.AppendLine("   [" + configurationSettings.IntegrationDatabaseName + "].[" + configurationSettings.SchemaName + "].[" + targetTableName + "] sat_table");
+                        insertIntoStatement.AppendLine("   [" + ConfigurationSettings.IntegrationDatabaseName + "].[" + ConfigurationSettings.SchemaName + "].[" + targetTableName + "] sat_table");
                         insertIntoStatement.AppendLine(" ON sat_view.[" + hubSk + "] = sat_table.[" + hubSk+"]");
 
 
 
-                        if (configurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+                        if (ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
                         {
-                            insertIntoStatement.AppendLine("AND sat_view.[" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "] = sat_table.[" +
-                                                           configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "]");
+                            insertIntoStatement.AppendLine("AND sat_view.[" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "] = sat_table.[" +
+                                                           ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "]");
                         }
                         else
                         {
-                            insertIntoStatement.AppendLine("AND sat_view.[" + configurationSettings.LoadDateTimeAttribute + "] = sat_table.[" +
-                                                         configurationSettings.LoadDateTimeAttribute + "]");                          
+                            insertIntoStatement.AppendLine("AND sat_view.[" + ConfigurationSettings.LoadDateTimeAttribute + "] = sat_table.[" +
+                                                         ConfigurationSettings.LoadDateTimeAttribute + "]");                          
                         }
 
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
@@ -1163,7 +1099,7 @@ namespace Virtual_EDW
 
                         if (checkBoxGenerateInDatabase.Checked)
                         {
-                            connHstg.ConnectionString = configurationSettings.ConnectionStringHstg;
+                            connHstg.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                             GenerateInDatabase(connHstg, insertIntoStatement.ToString());
                         }
 
@@ -1186,7 +1122,7 @@ namespace Virtual_EDW
 
         private void GenerateSatViews(int versionId) //  Generate Satellite Views
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
             {
@@ -1200,16 +1136,16 @@ namespace Virtual_EDW
                                                         "WHERE SATELLITE_TYPE = 'Normal' " +
                                                         " AND SATELLITE_TABLE_NAME = '" + targetTableName + "'";
                   
-                    var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
-                    var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
-                    var connStg = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringStg };
+                    var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
+                    var connHstg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
+                    var connStg = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringStg };
 
                     var conn = new SqlConnection
                     {
                         ConnectionString =
                             checkBoxIgnoreVersion.Checked
-                                ? configurationSettings.ConnectionStringStg
-                                : configurationSettings.ConnectionStringOmd
+                                ? ConfigurationSettings.ConnectionStringStg
+                                : ConfigurationSettings.ConnectionStringOmd
                     };
 
                     // Start logic handling
@@ -1226,15 +1162,15 @@ namespace Virtual_EDW
                         var targetTableId = (int) row["SATELLITE_TABLE_ID"];
                         var stagingAreaTableId = (int) row["STAGING_AREA_TABLE_ID"];
                         var stagingAreaTableName = (string) row["STAGING_AREA_TABLE_NAME"];
-                        var psaTableName = configurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(configurationSettings.StgTablePrefixValue, "");
+                        var psaTableName = ConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(ConfigurationSettings.StgTablePrefixValue, "");
                         var hubTableName = (string) row["HUB_TABLE_NAME"];
                         var filterCriteria = (string)row["FILTER_CRITERIA"];
                         var businessKeyDefinition = (string)row["BUSINESS_KEY_DEFINITION"];
 
-                        var hubSk = hubTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                        var hubSk = hubTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
 
                         // The name of the Hub hash key as it may be available in the Staging Area (if added here)
-                        var stgHubSk = configurationSettings.DwhKeyIdentifier + "_" + hubTableName;
+                        var stgHubSk = ConfigurationSettings.DwhKeyIdentifier + "_" + hubTableName;
                         var fieldList = new StringBuilder();
                         var compositeKey = new StringBuilder();
 
@@ -1256,18 +1192,18 @@ namespace Virtual_EDW
                         satView.AppendLine("-- Generated at " + DateTime.Now);
                         satView.AppendLine("-- ");
                         satView.AppendLine();
-                        satView.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                        satView.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                         satView.AppendLine("GO");
                         satView.AppendLine();
                         satView.AppendLine("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[" +targetTableName + "]') AND type in (N'V'))");
-                        satView.AppendLine("DROP VIEW [" + configurationSettings.SchemaName + "].[" + targetTableName + "]");
+                        satView.AppendLine("DROP VIEW [" + ConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
                         satView.AppendLine("go");
-                        satView.AppendLine("CREATE VIEW [" + configurationSettings.SchemaName + "].[" + targetTableName + "] AS  ");
+                        satView.AppendLine("CREATE VIEW [" + ConfigurationSettings.SchemaName + "].[" + targetTableName + "] AS  ");
 
                         // Query the Staging Area to retrieve the attributes and datatypes, precisions and length
                         var sqlStatementForSourceAttribute = new StringBuilder();
 
-                        var localKey = configurationSettings.DwhKeyIdentifier;
+                        var localKey = ConfigurationSettings.DwhKeyIdentifier;
                         var localkeyLength = localKey.Length;
                         var localkeySubstring = localkeyLength + 1;
 
@@ -1276,8 +1212,8 @@ namespace Virtual_EDW
                             sqlStatementForSourceAttribute.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
                             sqlStatementForSourceAttribute.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                             sqlStatementForSourceAttribute.AppendLine("WHERE TABLE_NAME= '" + psaTableName + "'");
-                            sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +configurationSettings.DwhKeyIdentifier + "'");
-                            sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +configurationSettings.RecordSourceAttribute + "','" +configurationSettings.AlternativeRecordSourceAttribute + "','" +configurationSettings.AlternativeLoadDateTimeAttribute + "','" +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +configurationSettings.EtlProcessAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" +configurationSettings.AlternativeLoadDateTimeAttribute + "','" +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +configurationSettings.LoadDateTimeAttribute + "')");
+                            sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +ConfigurationSettings.DwhKeyIdentifier + "'");
+                            sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +ConfigurationSettings.RecordSourceAttribute + "','" +ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +ConfigurationSettings.LoadDateTimeAttribute + "')");
                             sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
                         }
                         else
@@ -1286,8 +1222,8 @@ namespace Virtual_EDW
                             sqlStatementForSourceAttribute.AppendLine("FROM MD_VERSION_ATTRIBUTE");
                             sqlStatementForSourceAttribute.AppendLine("WHERE VERSION_ID = " + versionId);
                             sqlStatementForSourceAttribute.AppendLine("  AND TABLE_NAME= '" + psaTableName + "'");
-                            sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +configurationSettings.DwhKeyIdentifier + "'");
-                            sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +configurationSettings.RecordSourceAttribute + "','" +configurationSettings.AlternativeRecordSourceAttribute + "','" +configurationSettings.AlternativeLoadDateTimeAttribute + "','" +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +configurationSettings.EtlProcessAttribute + "','" +configurationSettings.AlternativeRecordSourceAttribute + "','" +configurationSettings.AlternativeLoadDateTimeAttribute + "','" +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +configurationSettings.LoadDateTimeAttribute + "')");
+                            sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +ConfigurationSettings.DwhKeyIdentifier + "'");
+                            sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +ConfigurationSettings.RecordSourceAttribute + "','" +ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +ConfigurationSettings.EtlProcessAttribute + "','" +ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +ConfigurationSettings.LoadDateTimeAttribute + "')");
                             sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
                         }
 
@@ -1486,18 +1422,18 @@ namespace Virtual_EDW
 
 
                         // Effective Date / LDTS
-                        if (configurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+                        if (ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
                         {
-                            satView.AppendLine("   DATEADD(mcs,[" + configurationSettings.RowIdAttribute + "]," + configurationSettings.LoadDateTimeAttribute + ") AS " + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
+                            satView.AppendLine("   DATEADD(mcs,[" + ConfigurationSettings.RowIdAttribute + "]," + ConfigurationSettings.LoadDateTimeAttribute + ") AS " + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
                         }
                         else
                         {
-                            satView.AppendLine("   DATEADD(mcs,["+configurationSettings.RowIdAttribute+"]," + configurationSettings.LoadDateTimeAttribute + ") AS " + configurationSettings.LoadDateTimeAttribute + ",");
+                            satView.AppendLine("   DATEADD(mcs,["+ConfigurationSettings.RowIdAttribute+"]," + ConfigurationSettings.LoadDateTimeAttribute + ") AS " + ConfigurationSettings.LoadDateTimeAttribute + ",");
                         }
 
 
                         // Expiry datetime
-                        satView.AppendLine("   COALESCE ( LEAD ( DATEADD(mcs,[" + configurationSettings.RowIdAttribute + "]," + configurationSettings.LoadDateTimeAttribute + ") ) OVER");
+                        satView.AppendLine("   COALESCE ( LEAD ( DATEADD(mcs,[" + ConfigurationSettings.RowIdAttribute + "]," + ConfigurationSettings.LoadDateTimeAttribute + ") ) OVER");
                         satView.AppendLine("   		     (PARTITION BY ");
 
 
@@ -1519,8 +1455,8 @@ namespace Virtual_EDW
 
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
-                        satView.AppendLine("   		      ORDER BY " + configurationSettings.LoadDateTimeAttribute + "),");
-                        satView.AppendLine("   CAST( '9999-12-31' AS DATETIME)) AS " + configurationSettings.ExpiryDateTimeAttribute +
+                        satView.AppendLine("   		      ORDER BY " + ConfigurationSettings.LoadDateTimeAttribute + "),");
+                        satView.AppendLine("   CAST( '9999-12-31' AS DATETIME)) AS " + ConfigurationSettings.ExpiryDateTimeAttribute +
                                            ",");
                         satView.AppendLine("   CASE");
                         satView.AppendLine("      WHEN ( RANK() OVER (PARTITION BY ");
@@ -1541,39 +1477,39 @@ namespace Virtual_EDW
 
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
-                        satView.AppendLine("          ORDER BY " + configurationSettings.LoadDateTimeAttribute + " desc )) = 1");
+                        satView.AppendLine("          ORDER BY " + ConfigurationSettings.LoadDateTimeAttribute + " desc )) = 1");
                         satView.AppendLine("      THEN 'Y'");
                         satView.AppendLine("      ELSE 'N'");
-                        satView.AppendLine("   END AS " + configurationSettings.CurrentRowAttribute + ",");
+                        satView.AppendLine("   END AS " + ConfigurationSettings.CurrentRowAttribute + ",");
 
-                        satView.AppendLine("   -1 AS " + configurationSettings.EtlProcessAttribute + ",");
-                        satView.AppendLine("   -1 AS " + configurationSettings.EtlProcessUpdateAttribute + ",");
-                        satView.AppendLine("   " + configurationSettings.ChangeDataCaptureAttribute + ",");
-                        satView.AppendLine("   " + configurationSettings.RowIdAttribute + ",");
+                        satView.AppendLine("   -1 AS " + ConfigurationSettings.EtlProcessAttribute + ",");
+                        satView.AppendLine("   -1 AS " + ConfigurationSettings.EtlProcessUpdateAttribute + ",");
+                        satView.AppendLine("   " + ConfigurationSettings.ChangeDataCaptureAttribute + ",");
+                        satView.AppendLine("   " + ConfigurationSettings.RowIdAttribute + ",");
 
-                        if (configurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+                        if (ConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
                         {
-                            satView.AppendLine("   " + configurationSettings.RecordSourceAttribute + " AS " + configurationSettings.AlternativeRecordSourceAttribute + ",");
+                            satView.AppendLine("   " + ConfigurationSettings.RecordSourceAttribute + " AS " + ConfigurationSettings.AlternativeRecordSourceAttribute + ",");
                         }
                         else
                         {
-                            satView.AppendLine("   " + configurationSettings.RecordSourceAttribute + ",");
+                            satView.AppendLine("   " + ConfigurationSettings.RecordSourceAttribute + ",");
                         }
 
                         //Logical deletes
                         if (checkBoxEvaluateSatDelete.Checked)
                         {
                             satView.AppendLine("    CASE");
-                            satView.AppendLine("      WHEN [" + configurationSettings.ChangeDataCaptureAttribute +"] = 'Delete' THEN 'Y'");
+                            satView.AppendLine("      WHEN [" + ConfigurationSettings.ChangeDataCaptureAttribute +"] = 'Delete' THEN 'Y'");
                             satView.AppendLine("      ELSE 'N'");
-                            satView.AppendLine("    END AS [" + configurationSettings.LogicalDeleteAttribute+"],");
+                            satView.AppendLine("    END AS [" + ConfigurationSettings.LogicalDeleteAttribute+"],");
                         }
 
          
 
                         //Hash key generation
                         satView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
-                        satView.AppendLine("      ISNULL(RTRIM(CONVERT("+ stringDataType + "(100)," + configurationSettings.ChangeDataCaptureAttribute + ")),'NA')+'|'+");
+                        satView.AppendLine("      ISNULL(RTRIM(CONVERT("+ stringDataType + "(100)," + ConfigurationSettings.ChangeDataCaptureAttribute + ")),'NA')+'|'+");
 
                         foreach (DataRow attribute in sourceStructure.Rows)
                         {
@@ -1587,7 +1523,7 @@ namespace Virtual_EDW
                         }
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
-                        satView.AppendLine("   ),2) AS " + configurationSettings.RecordChecksumAttribute + ",");
+                        satView.AppendLine("   ),2) AS " + ConfigurationSettings.RecordChecksumAttribute + ",");
 
                         // Regular attributes
                         foreach (DataRow attribute in sourceStructure.Rows)
@@ -1641,7 +1577,7 @@ namespace Virtual_EDW
                             multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
                             satView.AppendLine("         " + multiActiveAttributeFromName + ",");
                         }
-                        satView.AppendLine("         [" + configurationSettings.LoadDateTimeAttribute + "]) AS INT)");
+                        satView.AppendLine("         [" + ConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
 
                         satView.AppendLine("   AS ROW_NUMBER");
                         // End of initial selection
@@ -1650,11 +1586,11 @@ namespace Virtual_EDW
                         satView.AppendLine("FROM ");
                         satView.AppendLine("   (");
                         satView.AppendLine("      SELECT ");
-                        satView.AppendLine("         [" + configurationSettings.LoadDateTimeAttribute + "],");
-                        satView.AppendLine("         [" + configurationSettings.EventDateTimeAttribute + "],");
-                        satView.AppendLine("         [" + configurationSettings.RecordSourceAttribute + "],");
-                        satView.AppendLine("         [" + configurationSettings.RowIdAttribute + "],");
-                        satView.AppendLine("         [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                        satView.AppendLine("         [" + ConfigurationSettings.LoadDateTimeAttribute + "],");
+                        satView.AppendLine("         [" + ConfigurationSettings.EventDateTimeAttribute + "],");
+                        satView.AppendLine("         [" + ConfigurationSettings.RecordSourceAttribute + "],");
+                        satView.AppendLine("         [" + ConfigurationSettings.RowIdAttribute + "],");
+                        satView.AppendLine("         [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                         // Satellite / Hub key
                         if (foundRow != null)
@@ -1709,14 +1645,14 @@ namespace Virtual_EDW
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
 
-                        satView.AppendLine("             ORDER BY [" + configurationSettings.LoadDateTimeAttribute + "] ASC, [" + configurationSettings.EventDateTimeAttribute + "] ASC, [" + configurationSettings.ChangeDataCaptureAttribute + "] DESC) = COMBINED_VALUE");
+                        satView.AppendLine("             ORDER BY [" + ConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + ConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + ConfigurationSettings.ChangeDataCaptureAttribute + "] DESC) = COMBINED_VALUE");
                         satView.AppendLine("           THEN 'Same'");
                         satView.AppendLine("           ELSE 'Different'");
                         satView.AppendLine("         END AS VALUE_CHANGE_INDICATOR,");
                         satView.AppendLine("         CASE ");
 
                         // CDC Change Indicator
-                        satView.AppendLine("           WHEN LAG([" + configurationSettings.ChangeDataCaptureAttribute + "],1,'') OVER (PARTITION BY ");
+                        satView.AppendLine("           WHEN LAG([" + ConfigurationSettings.ChangeDataCaptureAttribute + "],1,'') OVER (PARTITION BY ");
                         if (foundRow != null)
                         {
                             // Hash can be selected from STG
@@ -1737,14 +1673,14 @@ namespace Virtual_EDW
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
 
-                        satView.AppendLine("             ORDER BY [" + configurationSettings.LoadDateTimeAttribute + "] ASC, [" + configurationSettings.EventDateTimeAttribute + "] ASC, [" + configurationSettings.ChangeDataCaptureAttribute + "] ASC) = [" + configurationSettings.ChangeDataCaptureAttribute + "]");
+                        satView.AppendLine("             ORDER BY [" + ConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + ConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + ConfigurationSettings.ChangeDataCaptureAttribute + "] ASC) = [" + ConfigurationSettings.ChangeDataCaptureAttribute + "]");
                         satView.AppendLine("           THEN 'Same'");
                         satView.AppendLine("           ELSE 'Different'");
                         satView.AppendLine("         END AS CDC_CHANGE_INDICATOR,");
 
                         // Time Change Indicator
                         satView.AppendLine("         CASE ");
-                        satView.AppendLine("           WHEN LEAD([" + configurationSettings.LoadDateTimeAttribute + "],1,'9999-12-31') OVER (PARTITION BY ");
+                        satView.AppendLine("           WHEN LEAD([" + ConfigurationSettings.LoadDateTimeAttribute + "],1,'9999-12-31') OVER (PARTITION BY ");
                         
                         // Satellite / Hub key
                         if (foundRow != null)
@@ -1768,7 +1704,7 @@ namespace Virtual_EDW
                         satView.AppendLine();
 
 
-                        satView.AppendLine("             ORDER BY [" + configurationSettings.LoadDateTimeAttribute + "] ASC, [" + configurationSettings.EventDateTimeAttribute + "] ASC, [" + configurationSettings.ChangeDataCaptureAttribute + "] ASC) = [" + configurationSettings.LoadDateTimeAttribute + "]");
+                        satView.AppendLine("             ORDER BY [" + ConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + ConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + ConfigurationSettings.ChangeDataCaptureAttribute + "] ASC) = [" + ConfigurationSettings.LoadDateTimeAttribute + "]");
                         satView.AppendLine("           THEN 'Same'");
                         satView.AppendLine("           ELSE 'Different'");
                         satView.AppendLine("         END AS TIME_CHANGE_INDICATOR");
@@ -1779,11 +1715,11 @@ namespace Virtual_EDW
                         // Combined Value selection (inner most query)
                         satView.AppendLine("      (");
                         satView.AppendLine("        SELECT");
-                        satView.AppendLine("          [" + configurationSettings.LoadDateTimeAttribute + "],");
-                        satView.AppendLine("          [" + configurationSettings.EventDateTimeAttribute + "],");
-                        satView.AppendLine("          [" + configurationSettings.RecordSourceAttribute + "],");
-                        satView.AppendLine("          [" + configurationSettings.RowIdAttribute + "],");
-                        satView.AppendLine("          [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                        satView.AppendLine("          [" + ConfigurationSettings.LoadDateTimeAttribute + "],");
+                        satView.AppendLine("          [" + ConfigurationSettings.EventDateTimeAttribute + "],");
+                        satView.AppendLine("          [" + ConfigurationSettings.RecordSourceAttribute + "],");
+                        satView.AppendLine("          [" + ConfigurationSettings.RowIdAttribute + "],");
+                        satView.AppendLine("          [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                         // Business keys 
                         if (foundRow != null)
@@ -1836,11 +1772,11 @@ namespace Virtual_EDW
                             // Start of zero record
                             satView.AppendLine("        UNION");
                             satView.AppendLine("        SELECT DISTINCT");
-                            satView.AppendLine("          '1900-01-01' AS [" + configurationSettings.LoadDateTimeAttribute + "],");
-                            satView.AppendLine("          '1900-01-01' AS [" + configurationSettings.EventDateTimeAttribute + "],");
-                            satView.AppendLine("          'Data Warehouse' AS [" + configurationSettings.RecordSourceAttribute + "],");
-                            satView.AppendLine("          0 AS [" + configurationSettings.RowIdAttribute + "],");
-                            satView.AppendLine("          'N/A' AS [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                            satView.AppendLine("          '1900-01-01' AS [" + ConfigurationSettings.LoadDateTimeAttribute + "],");
+                            satView.AppendLine("          '1900-01-01' AS [" + ConfigurationSettings.EventDateTimeAttribute + "],");
+                            satView.AppendLine("          'Data Warehouse' AS [" + ConfigurationSettings.RecordSourceAttribute + "],");
+                            satView.AppendLine("          0 AS [" + ConfigurationSettings.RowIdAttribute + "],");
+                            satView.AppendLine("          'N/A' AS [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                             // Business keys 
                             if (foundRow != null)
@@ -1883,7 +1819,7 @@ namespace Virtual_EDW
                         satView.AppendLine(") combined_value");
 
                         satView.AppendLine("WHERE ");
-                        satView.AppendLine("  (VALUE_CHANGE_INDICATOR ='Different' and [" + configurationSettings.ChangeDataCaptureAttribute + "] in ('Insert', 'Change')) ");
+                        satView.AppendLine("  (VALUE_CHANGE_INDICATOR ='Different' and [" + ConfigurationSettings.ChangeDataCaptureAttribute + "] in ('Insert', 'Change')) ");
                         satView.AppendLine("  OR");
                         satView.AppendLine("  (CDC_CHANGE_INDICATOR = 'Different' and TIME_CHANGE_INDICATOR = 'Different')");
 
@@ -1941,7 +1877,7 @@ namespace Virtual_EDW
 
                         if (checkBoxGenerateInDatabase.Checked)
                         {
-                            connHstg.ConnectionString = configurationSettings.ConnectionStringHstg;
+                            connHstg.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                             GenerateInDatabase(connHstg, satView.ToString());
                         }
 
@@ -2011,24 +1947,24 @@ namespace Virtual_EDW
 
         private void GenerateLinkInsertInto(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
             {
                 for (int x = 0; x <= checkedListBoxLinkMetadata.CheckedItems.Count - 1; x++)
                 {
-                    var connStg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringStg};
-                    var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
+                    var connStg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringStg};
+                    var connHstg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
                     var conn = new SqlConnection
                     {
                         ConnectionString =
                             checkBoxIgnoreVersion.Checked
-                                ? configurationSettings.ConnectionStringInt
-                                : configurationSettings.ConnectionStringOmd
+                                ? ConfigurationSettings.ConnectionStringInt
+                                : ConfigurationSettings.ConnectionStringOmd
                     };
 
                     var targetTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
-                    var linkSk = targetTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                    var linkSk = targetTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
 
                     // Initial SQL for Link tables
                     var insertIntoStatement = new StringBuilder();
@@ -2038,10 +1974,10 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine("-- Generated at " + DateTime.Now);
                     insertIntoStatement.AppendLine("--");
                     insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                    insertIntoStatement.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                     insertIntoStatement.AppendLine("GO");
                     insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("INSERT INTO " + configurationSettings.IntegrationDatabaseName + "." +configurationSettings.SchemaName + "." + targetTableName);
+                    insertIntoStatement.AppendLine("INSERT INTO " + ConfigurationSettings.IntegrationDatabaseName + "." +ConfigurationSettings.SchemaName + "." + targetTableName);
                     insertIntoStatement.AppendLine("   (");
 
                     // Build the main attribute list of the Hub table for selection
@@ -2061,7 +1997,7 @@ namespace Virtual_EDW
                     {
                         var sourceAttribute = attribute["COLUMN_NAME"];
 
-                        if ((string) sourceAttribute == configurationSettings.EtlProcessAttribute)
+                        if ((string) sourceAttribute == ConfigurationSettings.EtlProcessAttribute)
                         {
                             insertIntoStatement.Append("   -1 AS " + sourceAttribute + ",");
                             insertIntoStatement.AppendLine();
@@ -2077,7 +2013,7 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine();
                     insertIntoStatement.AppendLine("FROM " + targetTableName + " link_view");
                     insertIntoStatement.AppendLine("LEFT OUTER JOIN ");
-                    insertIntoStatement.AppendLine(" " + configurationSettings.IntegrationDatabaseName + "." + configurationSettings.SchemaName +
+                    insertIntoStatement.AppendLine(" " + ConfigurationSettings.IntegrationDatabaseName + "." + ConfigurationSettings.SchemaName +
                                                    "." + targetTableName + " link_table");
                     insertIntoStatement.AppendLine(" ON link_view." + linkSk + " = link_table." + linkSk);
                     insertIntoStatement.AppendLine("WHERE link_table." + linkSk + " IS NULL");
@@ -2112,12 +2048,12 @@ namespace Virtual_EDW
 
         private void GenerateLinkViews(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
-            var connStg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringStg};
-            var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
-            var connInt = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringInt};
+            var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
+            var connStg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringStg};
+            var connHstg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
+            var connInt = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringInt};
 
             if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
             {
@@ -2127,7 +2063,7 @@ namespace Virtual_EDW
                     var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
                     var linkTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
-                    var linkSk = linkTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                    var linkSk = linkTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
 
                     var linkView = new StringBuilder();
 
@@ -2147,14 +2083,14 @@ namespace Virtual_EDW
                     linkView.AppendLine("-- Generated at " + DateTime.Now);
                     linkView.AppendLine("--");
                     linkView.AppendLine();
-                    linkView.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                    linkView.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                     linkView.AppendLine("GO");
                     linkView.AppendLine();
                     linkView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[" +linkTableName + "]') AND type in (N'V'))");
-                    linkView.AppendLine("DROP VIEW [" + configurationSettings.SchemaName + "].[" + linkTableName + "]");
+                    linkView.AppendLine("DROP VIEW [" + ConfigurationSettings.SchemaName + "].[" + linkTableName + "]");
                     linkView.AppendLine("GO");
                     linkView.AppendLine();
-                    linkView.AppendLine("CREATE VIEW [" + configurationSettings.SchemaName + "].[" + linkTableName +"] AS  ");
+                    linkView.AppendLine("CREATE VIEW [" + ConfigurationSettings.SchemaName + "].[" + linkTableName +"] AS  ");
                     linkView.AppendLine("SELECT link.*");
                     linkView.AppendLine("FROM");
                     linkView.AppendLine("(");
@@ -2222,24 +2158,24 @@ namespace Virtual_EDW
                         linkView.AppendLine();
                     }
 
-                    linkView.AppendLine("  -1 AS " + configurationSettings.EtlProcessAttribute + ",");
+                    linkView.AppendLine("  -1 AS " + ConfigurationSettings.EtlProcessAttribute + ",");
 
-                    if (configurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+                    if (ConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
                     {
-                        linkView.AppendLine("  MIN(" + configurationSettings.LoadDateTimeAttribute + ") AS " +configurationSettings.AlternativeLoadDateTimeAttribute + ",");
+                        linkView.AppendLine("  MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ") AS " +ConfigurationSettings.AlternativeLoadDateTimeAttribute + ",");
                     }
                     else
                     {
-                        linkView.AppendLine("  MIN(" + configurationSettings.LoadDateTimeAttribute + ") AS " + configurationSettings.LoadDateTimeAttribute + ",");
+                        linkView.AppendLine("  MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ") AS " + ConfigurationSettings.LoadDateTimeAttribute + ",");
                     }
 
-                    if (configurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+                    if (ConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
                     {
-                        linkView.AppendLine("  " + configurationSettings.RecordSourceAttribute + " AS " + configurationSettings.AlternativeRecordSourceAttribute + ",");
+                        linkView.AppendLine("  " + ConfigurationSettings.RecordSourceAttribute + " AS " + ConfigurationSettings.AlternativeRecordSourceAttribute + ",");
                     }
                     else
                     {
-                        linkView.AppendLine("  " + configurationSettings.RecordSourceAttribute + ",");
+                        linkView.AppendLine("  " + ConfigurationSettings.RecordSourceAttribute + ",");
                     }
 
                     hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
@@ -2256,7 +2192,7 @@ namespace Virtual_EDW
 
                         foreach (var hubArray in hubFullBusinessKeyList)
                         {
-                            //var hubNameSk = hubArray[0].Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                            //var hubNameSk = hubArray[0].Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
                             var hubBusinessKeyName = hubArray[1];
                             var hubGroupCounter = hubArray[3];
 
@@ -2315,13 +2251,13 @@ namespace Virtual_EDW
                     linkView.Remove(linkView.Length - 3, 3);
                     linkView.AppendLine();
                     linkView.AppendLine("  ORDER BY ");
-                    if (configurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+                    if (ConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
                     {
-                        linkView.AppendLine("      MIN(" + configurationSettings.LoadDateTimeAttribute + ")");
+                        linkView.AppendLine("      MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ")");
                     }
                     else
                     {
-                        linkView.AppendLine("      MIN(" + configurationSettings.LoadDateTimeAttribute + ")");
+                        linkView.AppendLine("      MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ")");
                     }
                     linkView.AppendLine("  ) AS ROW_NR");
 
@@ -2355,7 +2291,7 @@ namespace Virtual_EDW
                             var stagingAreaTableName = (string) linkDetailRow["STAGING_AREA_TABLE_NAME"];
                             var filterCriteria = (string) linkDetailRow["FILTER_CRITERIA"];
 
-                            var currentTableName = configurationSettings.PsaTablePrefixValue +stagingAreaTableName.Replace(configurationSettings.StgTablePrefixValue, "");
+                            var currentTableName = ConfigurationSettings.PsaTablePrefixValue +stagingAreaTableName.Replace(ConfigurationSettings.StgTablePrefixValue, "");
 
                             // Get the Hubs for each Link/STG combination - both need to be represented in the query
                             var hubTables = GetHubLinkCombination(stagingAreaTableName, linkTableName);
@@ -2522,14 +2458,14 @@ namespace Virtual_EDW
                             sqlSourceStatement.AppendLine("  SELECT ");
                             sqlSourceStatement.AppendLine("   " + hubQuerySelect);
                             sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
-                            sqlSourceStatement.AppendLine("    " + configurationSettings.RecordSourceAttribute + ",");
+                            sqlSourceStatement.AppendLine("    " + ConfigurationSettings.RecordSourceAttribute + ",");
 
                             foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                             {
                                 sqlSourceStatement.AppendLine("    [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "] AS [" + (string)attribute["ATTRIBUTE_NAME_TO"] + "],");
                             }
-                            sqlSourceStatement.AppendLine("    MIN(" + configurationSettings.LoadDateTimeAttribute + ") AS " + configurationSettings.LoadDateTimeAttribute +"");
-                            sqlSourceStatement.AppendLine("  FROM [" + configurationSettings.PsaDatabaseName + "].[" + configurationSettings.SchemaName + "].[" + currentTableName + "]");
+                            sqlSourceStatement.AppendLine("    MIN(" + ConfigurationSettings.LoadDateTimeAttribute + ") AS " + ConfigurationSettings.LoadDateTimeAttribute +"");
+                            sqlSourceStatement.AppendLine("  FROM [" + ConfigurationSettings.PsaDatabaseName + "].[" + ConfigurationSettings.SchemaName + "].[" + currentTableName + "]");
                             sqlSourceStatement.AppendLine("  WHERE");
                             sqlSourceStatement.AppendLine(" " + hubQueryWhere);
                             sqlSourceStatement.Remove(sqlSourceStatement.Length - 1, 1);
@@ -2549,7 +2485,7 @@ namespace Virtual_EDW
                             {
                                 sqlSourceStatement.AppendLine("    [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "],");
                             }
-                            sqlSourceStatement.AppendLine("    " + configurationSettings.RecordSourceAttribute);
+                            sqlSourceStatement.AppendLine("    " + ConfigurationSettings.RecordSourceAttribute);
 
                             linkView.AppendLine(sqlSourceStatement.ToString());
                             linkView.Remove(linkView.Length - 3, 3);
@@ -2587,7 +2523,7 @@ namespace Virtual_EDW
                             linkView.AppendLine("  [" + (string)attribute["ATTRIBUTE_NAME_TO"] + "],");
                         }
 
-                        linkView.AppendLine("  [" + configurationSettings.RecordSourceAttribute + "]");
+                        linkView.AppendLine("  [" + ConfigurationSettings.RecordSourceAttribute + "]");
                         linkView.AppendLine(") link");
                         linkView.AppendLine("WHERE ROW_NR=1");
 
@@ -2606,7 +2542,7 @@ namespace Virtual_EDW
                         // Generate into the database
                         if (checkBoxGenerateInDatabase.Checked)
                         {
-                            connHstg.ConnectionString = configurationSettings.ConnectionStringHstg;
+                            connHstg.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                             GenerateInDatabase(connHstg, linkView.ToString());
                         }
 
@@ -2628,9 +2564,9 @@ namespace Virtual_EDW
 
         private DataTable GetBusinessKeyElementsBase (string stagingAreaTableName, string hubTableName, string businessKeyDefinition)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
             var sqlStatementForSourceBusinessKey = new StringBuilder();
 
             businessKeyDefinition = businessKeyDefinition.Replace("'", "''");
@@ -2647,9 +2583,9 @@ namespace Virtual_EDW
 
         internal DataTable GetBusinessKeyElements(string stagingAreaTableName,string hubTableName, string businessKeyDefinition, int businessKeyComponentId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
             var sqlStatementForSourceBusinessKey = new StringBuilder();
 
             businessKeyDefinition = businessKeyDefinition.Replace("'", "''");
@@ -2667,9 +2603,9 @@ namespace Virtual_EDW
 
         private DataTable GetDegenerateLinkAttributes(string targetTableName)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var conn = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var conn = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
 
             try
             {
@@ -2699,9 +2635,9 @@ namespace Virtual_EDW
 
         private DataTable GetHubLinkCombination(string stagingAreaTableName, string linkTableName)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
 
             // Get the Hubs for each Link/STG combination - both need to be represented in the query
             var queryHubGen = "SELECT * FROM [interface].[INTERFACE_HUB_LINK_XREF] " +
@@ -2716,12 +2652,12 @@ namespace Virtual_EDW
 
         public DataTable GetHubTargetBusinessKeyList(string hubTableName, int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             // Obtain the business key as it is known in the target Hub table. Can be multiple due to composite keys
             var conn = new SqlConnection
             {
-                ConnectionString = checkBoxIgnoreVersion.Checked ? configurationSettings.ConnectionStringInt : configurationSettings.ConnectionStringOmd
+                ConnectionString = checkBoxIgnoreVersion.Checked ? ConfigurationSettings.ConnectionStringInt : ConfigurationSettings.ConnectionStringOmd
             };
 
             try
@@ -2735,7 +2671,7 @@ namespace Virtual_EDW
 
             var sqlStatementForHubBusinessKeys = new StringBuilder();
 
-            var keyText = configurationSettings.DwhKeyIdentifier;
+            var keyText = ConfigurationSettings.DwhKeyIdentifier;
             var localkeyLength = keyText.Length;
             var localkeySubstring = localkeyLength + 1;
 
@@ -2744,20 +2680,20 @@ namespace Virtual_EDW
                 // Make sure the live database is hit when the checkbox is ticked
                 sqlStatementForHubBusinessKeys.AppendLine("SELECT COLUMN_NAME");
                 sqlStatementForHubBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier +"'");
+                sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier +"'");
                 sqlStatementForHubBusinessKeys.AppendLine("  AND TABLE_NAME= '" + hubTableName + "'");
-                sqlStatementForHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" + configurationSettings.AlternativeLoadDateTimeAttribute + "','" +
-                                                          configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                sqlStatementForHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" + ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
+                                                          ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
             }
             else
             {
                 //Ignore version is not checked, so versioning is used - meaning the business key metadata is sourced from the version history metadata.
                 sqlStatementForHubBusinessKeys.AppendLine("SELECT COLUMN_NAME");
                 sqlStatementForHubBusinessKeys.AppendLine("FROM MD_VERSION_ATTRIBUTE");
-                sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");
+                sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");
                 sqlStatementForHubBusinessKeys.AppendLine("  AND TABLE_NAME= '" + hubTableName + "'");
-                sqlStatementForHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" + configurationSettings.AlternativeLoadDateTimeAttribute + "','" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
-                                                          configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                sqlStatementForHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" + ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+                                                          ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                 sqlStatementForHubBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
             }
 
@@ -2774,12 +2710,12 @@ namespace Virtual_EDW
 
         public LinkedList<string[]> GetLinkTargetBusinessKeyList(string linkTableName, int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             // Obtain the business keys are they are known in the target Link table. Can be different due to same-as links etc.
             var conn = new SqlConnection
             {
-                ConnectionString = checkBoxIgnoreVersion.Checked ? configurationSettings.ConnectionStringInt : configurationSettings.ConnectionStringOmd
+                ConnectionString = checkBoxIgnoreVersion.Checked ? ConfigurationSettings.ConnectionStringInt : ConfigurationSettings.ConnectionStringOmd
             };
 
             try
@@ -2798,10 +2734,10 @@ namespace Virtual_EDW
                 // Make sure the live database is hit when the checkbox is ticked
                 sqlStatementForLinkBusinessKeys.AppendLine("SELECT COLUMN_NAME");
                 sqlStatementForLinkBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                //sqlStatementForLinkBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");
+                //sqlStatementForLinkBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");
                 sqlStatementForLinkBusinessKeys.AppendLine("WHERE TABLE_NAME= '" + linkTableName + "'");
-                sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" + configurationSettings.AlternativeLoadDateTimeAttribute + "','" +
-                                                          configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" + ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
+                                                          ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                 sqlStatementForLinkBusinessKeys.AppendLine("ORDER BY ORDINAL_POSITION");
             }
             else
@@ -2809,10 +2745,10 @@ namespace Virtual_EDW
                 //Ignore version is not checked, so versioning is used - meaning the business key metadata is sourced from the version history metadata.
                 sqlStatementForLinkBusinessKeys.AppendLine("SELECT COLUMN_NAME");
                 sqlStatementForLinkBusinessKeys.AppendLine("FROM MD_VERSION_ATTRIBUTE");
-                //sqlStatementForLinkBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");
+                //sqlStatementForLinkBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");
                 sqlStatementForLinkBusinessKeys.AppendLine("WHERE TABLE_NAME= '" + linkTableName + "'");
-                sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" + configurationSettings.AlternativeLoadDateTimeAttribute + "','" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
-                                                          configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" + ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+                                                          ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                 sqlStatementForLinkBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
                 sqlStatementForLinkBusinessKeys.AppendLine("ORDER BY ORDINAL_POSITION");
             }
@@ -2829,11 +2765,11 @@ namespace Virtual_EDW
             {
 
                 var linkKeyList = new LinkedList<string[]>();
-                var shortlinkTableKeyName = linkTableName.Replace("LNK_", "")+ "_" +configurationSettings.DwhKeyIdentifier;
+                var shortlinkTableKeyName = linkTableName.Replace("LNK_", "")+ "_" +ConfigurationSettings.DwhKeyIdentifier;
 
                 foreach (DataRow linkKey in linkKeyListDataTable.Rows)
                 {
-                    if (!linkKey["COLUMN_NAME"].ToString().Contains(shortlinkTableKeyName) && linkKey["COLUMN_NAME"].ToString().Contains(configurationSettings.DwhKeyIdentifier)) // Removing Link SK and degenerate fields
+                    if (!linkKey["COLUMN_NAME"].ToString().Contains(shortlinkTableKeyName) && linkKey["COLUMN_NAME"].ToString().Contains(ConfigurationSettings.DwhKeyIdentifier)) // Removing Link SK and degenerate fields
                     {
                         linkKeyList.AddLast
                             (
@@ -2853,10 +2789,10 @@ namespace Virtual_EDW
 
         private LinkedList<string[]> GetHubTablesForLink(string targetTableName, int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             // First, get the associated Hub tables for the Link
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
             var queryLinkHubTables = new StringBuilder();
             int groupCounter = 1;
 
@@ -2881,7 +2817,7 @@ namespace Virtual_EDW
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    checkBoxIgnoreVersion.Checked ? configurationSettings.ConnectionStringInt : configurationSettings.ConnectionStringOmd
+                    checkBoxIgnoreVersion.Checked ? ConfigurationSettings.ConnectionStringInt : ConfigurationSettings.ConnectionStringOmd
             };
 
             var hubTargetBusinessKeyListForLink = new LinkedList<string[]>();
@@ -2890,8 +2826,8 @@ namespace Virtual_EDW
             {
                 var queryHubBusinessKeys = new StringBuilder();
 
-                var localKey = configurationSettings.DwhKeyIdentifier;
-                var localHubPrefix = configurationSettings.HubTablePrefixValue;
+                var localKey = ConfigurationSettings.DwhKeyIdentifier;
+                var localHubPrefix = ConfigurationSettings.HubTablePrefixValue;
                 var localkeyLength = localKey.Length;
                 var localkeySubstring = localkeyLength + 1;
                 var localHubPrefixLength = localHubPrefix.Length + 1;
@@ -2903,14 +2839,14 @@ namespace Virtual_EDW
                     queryHubBusinessKeys.AppendLine("JOIN ");
                     queryHubBusinessKeys.AppendLine(" (SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
                     queryHubBusinessKeys.AppendLine("  FROM   INFORMATION_SCHEMA.COLUMNS");
-                    queryHubBusinessKeys.AppendLine("  WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");
-                    queryHubBusinessKeys.AppendLine("   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + configurationSettings.HubTablePrefixValue + "_'");
-                    queryHubBusinessKeys.AppendLine("   AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" +configurationSettings.AlternativeLoadDateTimeAttribute + "','" +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                    queryHubBusinessKeys.AppendLine("  WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");
+                    queryHubBusinessKeys.AppendLine("   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + ConfigurationSettings.HubTablePrefixValue + "_'");
+                    queryHubBusinessKeys.AppendLine("   AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                     queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
                     queryHubBusinessKeys.AppendLine("	) b");
                     queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_TABLE_NAME"] + "'");
-                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" +configurationSettings.AlternativeRecordSourceAttribute + "','" +configurationSettings.AlternativeLoadDateTimeAttribute + "','" +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_TABLE_NAME"] + "'");
+                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" +ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                 }
                 else //Get the key details from the metadata
                 {
@@ -2920,15 +2856,15 @@ namespace Virtual_EDW
                     queryHubBusinessKeys.AppendLine("	(SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
                     queryHubBusinessKeys.AppendLine("	 FROM   MD_VERSION_ATTRIBUTE");
                     queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("      AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" +configurationSettings.HubTablePrefixValue + "_'");
-                    queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" +configurationSettings.AlternativeRecordSourceAttribute + "','" +configurationSettings.AlternativeLoadDateTimeAttribute + "','" +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                    queryHubBusinessKeys.AppendLine("      AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" +ConfigurationSettings.HubTablePrefixValue + "_'");
+                    queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" +ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                     queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
                     queryHubBusinessKeys.AppendLine("	) b");
                     queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
                     queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");
+                    queryHubBusinessKeys.AppendLine("AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");
                     queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_TABLE_NAME"] + "'");
-                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" +configurationSettings.AlternativeRecordSourceAttribute + "','" +configurationSettings.AlternativeLoadDateTimeAttribute + "','" +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" +ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                 }
 
                 var hubKeyList = GetDataTable(ref conn, queryHubBusinessKeys.ToString());
@@ -2956,10 +2892,10 @@ namespace Virtual_EDW
 
         private LinkedList<string[]> GetAllHubTablesForLink(string targetTableName, int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             // First, get the associated Hub tables for the Link
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
             var queryLinkHubTables = new StringBuilder();
             int groupCounter = 1;
 
@@ -2983,7 +2919,7 @@ namespace Virtual_EDW
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    checkBoxIgnoreVersion.Checked ? configurationSettings.ConnectionStringInt : configurationSettings.ConnectionStringOmd
+                    checkBoxIgnoreVersion.Checked ? ConfigurationSettings.ConnectionStringInt : ConfigurationSettings.ConnectionStringOmd
             };
 
             var hubTargetBusinessKeyListForLink = new LinkedList<string[]>();
@@ -2992,8 +2928,8 @@ namespace Virtual_EDW
             {
                 var queryHubBusinessKeys = new StringBuilder();
 
-                var localKey = configurationSettings.DwhKeyIdentifier;
-                var localHubPrefix = configurationSettings.HubTablePrefixValue;
+                var localKey = ConfigurationSettings.DwhKeyIdentifier;
+                var localHubPrefix = ConfigurationSettings.HubTablePrefixValue;
                 var localkeyLength = localKey.Length;
                 var localkeySubstring = localkeyLength + 1;
                 var localHubPrefixLength = localHubPrefix.Length + 1;
@@ -3005,14 +2941,14 @@ namespace Virtual_EDW
                     queryHubBusinessKeys.AppendLine("JOIN ");
                     queryHubBusinessKeys.AppendLine(" (SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
                     queryHubBusinessKeys.AppendLine("  FROM   INFORMATION_SCHEMA.COLUMNS");
-                    queryHubBusinessKeys.AppendLine("  WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");
-                    queryHubBusinessKeys.AppendLine("   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + configurationSettings.HubTablePrefixValue + "_'");
-                    queryHubBusinessKeys.AppendLine("   AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" + configurationSettings.AlternativeLoadDateTimeAttribute + "','" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                    queryHubBusinessKeys.AppendLine("  WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");
+                    queryHubBusinessKeys.AppendLine("   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + ConfigurationSettings.HubTablePrefixValue + "_'");
+                    queryHubBusinessKeys.AppendLine("   AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" + ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                     queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
                     queryHubBusinessKeys.AppendLine("	) b");
                     queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_TABLE_NAME"] + "'");
-                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" + configurationSettings.AlternativeLoadDateTimeAttribute + "','" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_TABLE_NAME"] + "'");
+                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" + ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                 }
                 else //Get the key details from the metadata
                 {
@@ -3022,15 +2958,15 @@ namespace Virtual_EDW
                     queryHubBusinessKeys.AppendLine("	(SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
                     queryHubBusinessKeys.AppendLine("	 FROM   MD_VERSION_ATTRIBUTE");
                     queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("      AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + configurationSettings.HubTablePrefixValue + "_'");
-                    queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" + configurationSettings.AlternativeLoadDateTimeAttribute + "','" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                    queryHubBusinessKeys.AppendLine("      AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + ConfigurationSettings.HubTablePrefixValue + "_'");
+                    queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" + ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                     queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
                     queryHubBusinessKeys.AppendLine("	) b");
                     queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
                     queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + configurationSettings.DwhKeyIdentifier + "'");
+                    queryHubBusinessKeys.AppendLine("AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'");
                     queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_TABLE_NAME"] + "'");
-                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.RecordSourceAttribute + "','" + configurationSettings.AlternativeRecordSourceAttribute + "','" + configurationSettings.AlternativeLoadDateTimeAttribute + "','" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + configurationSettings.EtlProcessAttribute + "','" + configurationSettings.LoadDateTimeAttribute + "')");
+                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" + ConfigurationSettings.AlternativeRecordSourceAttribute + "','" + ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + ConfigurationSettings.EtlProcessAttribute + "','" + ConfigurationSettings.LoadDateTimeAttribute + "')");
                 }
 
                 var hubKeyList = GetDataTable(ref conn, queryHubBusinessKeys.ToString());
@@ -3086,7 +3022,7 @@ namespace Virtual_EDW
 
         private void GenerateLsatInsertInto(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkBoxIfExistsStatement.Checked)
             {
@@ -3098,12 +3034,12 @@ namespace Virtual_EDW
             {
                 for (int x = 0; x <= checkedListBoxLsatMetadata.CheckedItems.Count - 1; x++)
                 {
-                    var connHstg = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringHstg };
-                    var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
+                    var connHstg = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringHstg };
+                    var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
 
                     var conn = new SqlConnection
                     {
-                        ConnectionString = checkBoxIgnoreVersion.Checked ? configurationSettings.ConnectionStringInt : configurationSettings.ConnectionStringOmd
+                        ConnectionString = checkBoxIgnoreVersion.Checked ? ConfigurationSettings.ConnectionStringInt : ConfigurationSettings.ConnectionStringOmd
                     };
 
                     var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
@@ -3130,7 +3066,7 @@ namespace Virtual_EDW
 
                     foreach (DataRow row in tables.Rows)
                     {
-                        var linkSk = row["LINK_TABLE_NAME"].ToString().Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                        var linkSk = row["LINK_TABLE_NAME"].ToString().Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
 
                         // Build the main attribute list of the Satellite table for selection
                         var sourceTableStructure = GetTableStructure(targetTableName, ref conn, versionId, "LSAT");
@@ -3146,10 +3082,10 @@ namespace Virtual_EDW
                         insertIntoStatement.AppendLine("-- Generated at " + DateTime.Now);
                         insertIntoStatement.AppendLine("--");
                         insertIntoStatement.AppendLine();
-                        insertIntoStatement.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                        insertIntoStatement.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                         insertIntoStatement.AppendLine("GO");
                         insertIntoStatement.AppendLine();
-                        insertIntoStatement.AppendLine("INSERT INTO [" + configurationSettings.IntegrationDatabaseName + "].[" + configurationSettings.SchemaName + "].[" + targetTableName + "]");
+                        insertIntoStatement.AppendLine("INSERT INTO [" + ConfigurationSettings.IntegrationDatabaseName + "].[" + ConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
                         insertIntoStatement.AppendLine("   (");
 
                         foreach (DataRow attribute in sourceTableStructure.Rows)
@@ -3166,8 +3102,8 @@ namespace Virtual_EDW
                         {
                             var sourceAttribute = attribute["COLUMN_NAME"];
 
-                            if ((string) sourceAttribute == configurationSettings.EtlProcessAttribute ||
-                                (string) sourceAttribute == configurationSettings.EtlProcessUpdateAttribute)
+                            if ((string) sourceAttribute == ConfigurationSettings.EtlProcessAttribute ||
+                                (string) sourceAttribute == ConfigurationSettings.EtlProcessUpdateAttribute)
                             {
                                 insertIntoStatement.Append("   -1 AS [" + sourceAttribute + "],");
                                 insertIntoStatement.AppendLine();
@@ -3183,16 +3119,16 @@ namespace Virtual_EDW
                         insertIntoStatement.AppendLine();
                         insertIntoStatement.AppendLine("FROM " + targetTableName + " lsat_view");
                         insertIntoStatement.AppendLine("LEFT OUTER JOIN");
-                        insertIntoStatement.AppendLine("   [" + configurationSettings.IntegrationDatabaseName + "].[" +configurationSettings.SchemaName + "].[" + targetTableName + "] lsat_table");
+                        insertIntoStatement.AppendLine("   [" + ConfigurationSettings.IntegrationDatabaseName + "].[" +ConfigurationSettings.SchemaName + "].[" + targetTableName + "] lsat_table");
                         insertIntoStatement.AppendLine(" ON lsat_view.[" + linkSk + "] = lsat_table.[" + linkSk + "]");
 
-                        if (configurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+                        if (ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
                         {
-                            insertIntoStatement.AppendLine("AND lsat_view.[" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "] = lsat_table.[" + configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "]");
+                            insertIntoStatement.AppendLine("AND lsat_view.[" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "] = lsat_table.[" + ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "]");
                         }
                         else
                         {
-                            insertIntoStatement.AppendLine("AND lsat_view.[" + configurationSettings.LoadDateTimeAttribute + "] = lsat_table.[" + configurationSettings.LoadDateTimeAttribute + "]");
+                            insertIntoStatement.AppendLine("AND lsat_view.[" + ConfigurationSettings.LoadDateTimeAttribute + "] = lsat_table.[" + ConfigurationSettings.LoadDateTimeAttribute + "]");
                         }
 
                         // Multi-active
@@ -3233,7 +3169,7 @@ namespace Virtual_EDW
         // Link Satellite generation - driving key based
         private void GenerateLsatDrivingKeyViews(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
             {
@@ -3241,9 +3177,9 @@ namespace Virtual_EDW
                 {
                     var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
-                    var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
-                    var connStg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringStg};
-                    var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
+                    var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
+                    var connStg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringStg};
+                    var connHstg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
 
                     var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
 
@@ -3262,7 +3198,7 @@ namespace Virtual_EDW
 
                             string multiActiveAttributeFromName;
 
-                            var psaTableName = configurationSettings.PsaTablePrefixValue + row["STAGING_AREA_TABLE_NAME"].ToString().Replace(configurationSettings.StgTablePrefixValue, "");
+                            var psaTableName = ConfigurationSettings.PsaTablePrefixValue + row["STAGING_AREA_TABLE_NAME"].ToString().Replace(ConfigurationSettings.StgTablePrefixValue, "");
 
 
                             var stagingAreaTableName = (string)row["STAGING_AREA_TABLE_NAME"];
@@ -3273,7 +3209,7 @@ namespace Virtual_EDW
 
                             var linkTableName = (string) row["LINK_TABLE_NAME"];
 
-                            var linkSk = linkTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                            var linkSk = linkTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
 
                             // Query to detect multi-active attributes
                             var multiActiveAttributes = GetMultiActiveAttributes(targetTableId);
@@ -3322,13 +3258,13 @@ namespace Virtual_EDW
                             linkSatView.AppendLine("-- Generated at " + DateTime.Now);
                             linkSatView.AppendLine("--");
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                            linkSatView.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                             linkSatView.AppendLine("GO");
                             linkSatView.AppendLine();
                             linkSatView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[" +targetTableName + "]') AND type in (N'V'))");
-                            linkSatView.AppendLine("DROP VIEW [" + configurationSettings.SchemaName + "].[" + targetTableName + "]");
+                            linkSatView.AppendLine("DROP VIEW [" + ConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
                             linkSatView.AppendLine("go");
-                            linkSatView.AppendLine("CREATE VIEW [" + configurationSettings.SchemaName + "].[" + targetTableName +"] AS  ");
+                            linkSatView.AppendLine("CREATE VIEW [" + ConfigurationSettings.SchemaName + "].[" + targetTableName +"] AS  ");
                             linkSatView.AppendLine("SELECT");
 
                             if (!checkBoxDisableHash.Checked)
@@ -3375,13 +3311,13 @@ namespace Virtual_EDW
                             }
 
                             // Effective Datetime
-                            if (configurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+                            if (ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
                             {
-                                linkSatView.AppendLine("   " + configurationSettings.LoadDateTimeAttribute + " AS " +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
+                                linkSatView.AppendLine("   " + ConfigurationSettings.LoadDateTimeAttribute + " AS " +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
                             }
                             else
                             {
-                                linkSatView.AppendLine("   " + configurationSettings.LoadDateTimeAttribute + " AS " + configurationSettings.LoadDateTimeAttribute + ",");
+                                linkSatView.AppendLine("   " + ConfigurationSettings.LoadDateTimeAttribute + " AS " + ConfigurationSettings.LoadDateTimeAttribute + ",");
                             }
 
                             //Multi-Active attributes
@@ -3391,7 +3327,7 @@ namespace Virtual_EDW
                             }
 
                             // Expiry Datetime
-                            linkSatView.AppendLine("   COALESCE ( LEAD ( " + configurationSettings.LoadDateTimeAttribute + " ) OVER");
+                            linkSatView.AppendLine("   COALESCE ( LEAD ( " + ConfigurationSettings.LoadDateTimeAttribute + " ) OVER");
                             linkSatView.AppendLine("      (PARTITION BY ");
 
                             // Business Key attributes
@@ -3422,13 +3358,13 @@ namespace Virtual_EDW
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("   	  ORDER BY " + configurationSettings.LoadDateTimeAttribute + "),");
+                            linkSatView.AppendLine("   	  ORDER BY " + ConfigurationSettings.LoadDateTimeAttribute + "),");
                             linkSatView.AppendLine("      CAST( '9999-12-31' AS DATETIME)");
-                            linkSatView.AppendLine("   ) AS " + configurationSettings.ExpiryDateTimeAttribute + ",");
+                            linkSatView.AppendLine("   ) AS " + ConfigurationSettings.ExpiryDateTimeAttribute + ",");
 
                             // Current record indicator
                             linkSatView.AppendLine("   CASE ");
-                            linkSatView.AppendLine("     WHEN ( LEAD ( " + configurationSettings.LoadDateTimeAttribute + " ) OVER");
+                            linkSatView.AppendLine("     WHEN ( LEAD ( " + ConfigurationSettings.LoadDateTimeAttribute + " ) OVER");
                             linkSatView.AppendLine("      (PARTITION BY ");
 
                             foreach (var hubArray in hubBusinessKeyList)
@@ -3450,32 +3386,32 @@ namespace Virtual_EDW
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("   	  ORDER BY " + configurationSettings.LoadDateTimeAttribute + ")");
+                            linkSatView.AppendLine("   	  ORDER BY " + ConfigurationSettings.LoadDateTimeAttribute + ")");
                             linkSatView.AppendLine("      ) IS NULL");
                             linkSatView.AppendLine("     THEN 'Y' ELSE 'N'");
-                            linkSatView.AppendLine("   END AS " + configurationSettings.CurrentRowAttribute + ",");
+                            linkSatView.AppendLine("   END AS " + ConfigurationSettings.CurrentRowAttribute + ",");
 
                             // Other process metadata attributes
-                            if (configurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+                            if (ConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
                             {
-                                linkSatView.AppendLine("   [" + configurationSettings.RecordSourceAttribute + "] AS ["+ configurationSettings.AlternativeRecordSourceAttribute + "],");
+                                linkSatView.AppendLine("   [" + ConfigurationSettings.RecordSourceAttribute + "] AS ["+ ConfigurationSettings.AlternativeRecordSourceAttribute + "],");
                             }
                             else
                             {
-                                linkSatView.AppendLine("   [" + configurationSettings.RecordSourceAttribute + "],");
+                                linkSatView.AppendLine("   [" + ConfigurationSettings.RecordSourceAttribute + "],");
                             }
 
                             //Logical deletes
                             if (checkBoxEvaluateSatDelete.Checked)
                             {
                                 linkSatView.AppendLine("    CASE");
-                                linkSatView.AppendLine("      WHEN [" + configurationSettings.ChangeDataCaptureAttribute + "] = 'Delete' THEN 'Y'");
+                                linkSatView.AppendLine("      WHEN [" + ConfigurationSettings.ChangeDataCaptureAttribute + "] = 'Delete' THEN 'Y'");
                                 linkSatView.AppendLine("      ELSE 'N'");
-                                linkSatView.AppendLine("    END AS [" + configurationSettings.LogicalDeleteAttribute + "],");
+                                linkSatView.AppendLine("    END AS [" + ConfigurationSettings.LogicalDeleteAttribute + "],");
                             }
 
-                            linkSatView.AppendLine("   [" + configurationSettings.RowIdAttribute + "],");
-                            linkSatView.AppendLine("   [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                            linkSatView.AppendLine("   [" + ConfigurationSettings.RowIdAttribute + "],");
+                            linkSatView.AppendLine("   [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                             // Row number
                             linkSatView.AppendLine("   CAST(");
@@ -3520,13 +3456,13 @@ namespace Virtual_EDW
                                 linkSatView.AppendLine("          [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "],");
                             }
 
-                            linkSatView.AppendLine("          [" + configurationSettings.LoadDateTimeAttribute + "]) AS INT)");
+                            linkSatView.AppendLine("          [" + ConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
                             linkSatView.AppendLine("   AS ROW_NUMBER,");
 
                             // Checksum
                             linkSatView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
                             linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +
-                                                   configurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
+                                                   ConfigurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
 
                             foreach (var hubArray in hubBusinessKeyList)
                             {
@@ -3545,16 +3481,16 @@ namespace Virtual_EDW
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("   ),2) AS " + configurationSettings.RecordChecksumAttribute + "");
+                            linkSatView.AppendLine("   ),2) AS " + ConfigurationSettings.RecordChecksumAttribute + "");
 
                             // From statement
                             linkSatView.AppendLine("FROM ");
                             linkSatView.AppendLine("(");
                             linkSatView.AppendLine("  SELECT ");
-                            linkSatView.AppendLine("    [" + configurationSettings.LoadDateTimeAttribute + "],");
-                            linkSatView.AppendLine("    [" + configurationSettings.RecordSourceAttribute + "],");
-                            linkSatView.AppendLine("    [" + configurationSettings.RowIdAttribute + "],");
-                            linkSatView.AppendLine("    [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                            linkSatView.AppendLine("    [" + ConfigurationSettings.LoadDateTimeAttribute + "],");
+                            linkSatView.AppendLine("    [" + ConfigurationSettings.RecordSourceAttribute + "],");
+                            linkSatView.AppendLine("    [" + ConfigurationSettings.RowIdAttribute + "],");
+                            linkSatView.AppendLine("    [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                             var sqlStatementForComponent = new StringBuilder();
                             var sqlSourceStatement = new StringBuilder();
@@ -3768,7 +3704,7 @@ namespace Virtual_EDW
                                         if (columnOrdinal > 1)
                                             linkSatView.AppendLine(",");
                                         linkSatView.Append("    LAG(" + hubSourceBusinessKeyName + ", 1, '0')");
-                                        linkSatView.Append(" OVER (PARTITION BY " + drivingKeys + " ORDER BY " + configurationSettings.LoadDateTimeAttribute+")");
+                                        linkSatView.Append(" OVER (PARTITION BY " + drivingKeys + " ORDER BY " + ConfigurationSettings.LoadDateTimeAttribute+")");
                                         linkSatView.Append(" AS PREVIOUS_FOLLOWER_KEY" + columnOrdinal);
 
                                         // Construct associated to the WHERE clause
@@ -3787,14 +3723,14 @@ namespace Virtual_EDW
                             {
                                 // Remove 3NF deletion issue
 
-                                linkSatView.AppendLine("  WHERE NOT (" + configurationSettings.RowIdAttribute + ">1 AND " + configurationSettings.ChangeDataCaptureAttribute + " = 'Delete')");
+                                linkSatView.AppendLine("  WHERE NOT (" + ConfigurationSettings.RowIdAttribute + ">1 AND " + ConfigurationSettings.ChangeDataCaptureAttribute + " = 'Delete')");
                             }
                             else
                             {
                                 linkSatView.AppendLine("  WHERE " + filterCriteria);
                                 // Remove 3NF deletion issue
 
-                                linkSatView.AppendLine("  AND NOT (" + configurationSettings.RowIdAttribute + ">1 AND " + configurationSettings.ChangeDataCaptureAttribute + " = 'Delete')");
+                                linkSatView.AppendLine("  AND NOT (" + ConfigurationSettings.RowIdAttribute + ">1 AND " + ConfigurationSettings.ChangeDataCaptureAttribute + " = 'Delete')");
                             }
 
                             if (checkBoxDisableLsatZeroRecords.Checked == false)
@@ -3803,10 +3739,10 @@ namespace Virtual_EDW
                                 linkSatView.AppendLine("  UNION");
 
                                 linkSatView.AppendLine("  SELECT ");
-                                linkSatView.AppendLine("    [" + configurationSettings.LoadDateTimeAttribute + "],");
-                                linkSatView.AppendLine("    [" + configurationSettings.RecordSourceAttribute + "],");
-                                linkSatView.AppendLine("    [" + configurationSettings.RowIdAttribute + "],");
-                                linkSatView.AppendLine("    [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                                linkSatView.AppendLine("    [" + ConfigurationSettings.LoadDateTimeAttribute + "],");
+                                linkSatView.AppendLine("    [" + ConfigurationSettings.RecordSourceAttribute + "],");
+                                linkSatView.AppendLine("    [" + ConfigurationSettings.RowIdAttribute + "],");
+                                linkSatView.AppendLine("    [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                                 foreach (var hubArray in hubBusinessKeyList)
                                 {
@@ -3837,10 +3773,10 @@ namespace Virtual_EDW
                                 linkSatView.AppendLine();
                                 linkSatView.AppendLine("  FROM (");
                                 linkSatView.AppendLine("    SELECT");
-                                linkSatView.AppendLine("    '1900-01-01' AS [" + configurationSettings.LoadDateTimeAttribute + "],");
-                                linkSatView.AppendLine("    'Data Warehouse' AS [" + configurationSettings.RecordSourceAttribute + "],");
-                                linkSatView.AppendLine("    0 AS [" + configurationSettings.RowIdAttribute + "],");
-                                linkSatView.AppendLine("    'N/A' AS [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                                linkSatView.AppendLine("    '1900-01-01' AS [" + ConfigurationSettings.LoadDateTimeAttribute + "],");
+                                linkSatView.AppendLine("    'Data Warehouse' AS [" + ConfigurationSettings.RecordSourceAttribute + "],");
+                                linkSatView.AppendLine("    0 AS [" + ConfigurationSettings.RowIdAttribute + "],");
+                                linkSatView.AppendLine("    'N/A' AS [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                                 linkSatView.AppendLine("    " + hubQuerySelect);
                                 linkSatView.Remove(linkSatView.Length - 3, 3);
@@ -3873,7 +3809,7 @@ namespace Virtual_EDW
 
                                 linkSatView.Remove(linkSatView.Length - 3, 3);
                                 linkSatView.AppendLine();
-                                linkSatView.Append("    ORDER BY [" + configurationSettings.LoadDateTimeAttribute + "], ");
+                                linkSatView.Append("    ORDER BY [" + ConfigurationSettings.LoadDateTimeAttribute + "], ");
 
                                 foreach (var hubArray in hubDrivingKeyPair)
                                 {
@@ -3919,7 +3855,7 @@ namespace Virtual_EDW
                                 }
                             }
 
-                            linkSatView.AppendLine("--  [" + configurationSettings.LoadDateTimeAttribute + "]");
+                            linkSatView.AppendLine("--  [" + ConfigurationSettings.LoadDateTimeAttribute + "]");
                             // End of source subuery
 
                             SetTextLsat("Processing driving key Link Satellite entity view for " + targetTableName + "\r\n");
@@ -3933,7 +3869,7 @@ namespace Virtual_EDW
 
                             if (checkBoxGenerateInDatabase.Checked)
                             {
-                                connHstg.ConnectionString = configurationSettings.ConnectionStringHstg;
+                                connHstg.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                                 GenerateInDatabase(connHstg, linkSatView.ToString());
                             }
 
@@ -3954,9 +3890,9 @@ namespace Virtual_EDW
         private DataTable GetMultiActiveAttributes(int targetTableId)
         {
             // Query to detect multi-active attributes
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
             var multiActiveAttributeQuery = new StringBuilder();
 
             multiActiveAttributeQuery.AppendLine("SELECT ");
@@ -3978,7 +3914,7 @@ namespace Virtual_EDW
         // Link Satellite generation - historical
         private void GenerateLsatHistoryViews(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
             {
@@ -3986,9 +3922,9 @@ namespace Virtual_EDW
                 {
                     var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
-                    var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
-                    var connStg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringStg};
-                    var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
+                    var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
+                    var connStg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringStg};
+                    var connHstg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
 
                     var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
 
@@ -4010,9 +3946,9 @@ namespace Virtual_EDW
                             var targetTableId = (int) row["SATELLITE_TABLE_ID"];
                             var linkTableName = (string) row["LINK_TABLE_NAME"];
 
-                            var linkSk = linkTableName.Substring(4) + "_" + configurationSettings.DwhKeyIdentifier;
+                            var linkSk = linkTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
                             var currentTableName = (string) row["STAGING_AREA_TABLE_NAME"];
-                            currentTableName = configurationSettings.PsaTablePrefixValue +currentTableName.Replace(configurationSettings.StgTablePrefixValue, "");
+                            currentTableName = ConfigurationSettings.PsaTablePrefixValue +currentTableName.Replace(ConfigurationSettings.StgTablePrefixValue, "");
 
 
                             // Query to detect multi-active attributes
@@ -4037,13 +3973,13 @@ namespace Virtual_EDW
                             linkSatView.AppendLine("-- Generated at " + DateTime.Now);
                             linkSatView.AppendLine("--");
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("USE [" + configurationSettings.PsaDatabaseName + "]");
+                            linkSatView.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
                             linkSatView.AppendLine("GO");
                             linkSatView.AppendLine();
                             linkSatView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[" +targetTableName + "]') AND type in (N'V'))");
-                            linkSatView.AppendLine("DROP VIEW [" + configurationSettings.SchemaName + "].[" + targetTableName +"]");
+                            linkSatView.AppendLine("DROP VIEW [" + ConfigurationSettings.SchemaName + "].[" + targetTableName +"]");
                             linkSatView.AppendLine("go");
-                            linkSatView.AppendLine("CREATE VIEW [" + configurationSettings.SchemaName + "].[" + targetTableName +"] AS  ");
+                            linkSatView.AppendLine("CREATE VIEW [" + ConfigurationSettings.SchemaName + "].[" + targetTableName +"] AS  ");
                             linkSatView.AppendLine("SELECT");
 
 
@@ -4086,13 +4022,13 @@ namespace Virtual_EDW
                             }
 
                             // Effective Datetime
-                            if (configurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+                            if (ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
                             {
-                                linkSatView.AppendLine("   " + configurationSettings.LoadDateTimeAttribute + " AS " +configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
+                                linkSatView.AppendLine("   " + ConfigurationSettings.LoadDateTimeAttribute + " AS " +ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
                             }
                             else
                             {
-                                linkSatView.AppendLine("   " + configurationSettings.LoadDateTimeAttribute + " AS " + configurationSettings.LoadDateTimeAttribute + ",");
+                                linkSatView.AppendLine("   " + ConfigurationSettings.LoadDateTimeAttribute + " AS " + ConfigurationSettings.LoadDateTimeAttribute + ",");
                             }
 
                             //Multi-Active attributes
@@ -4103,7 +4039,7 @@ namespace Virtual_EDW
                             }
 
                             // Expiry Datetime
-                            linkSatView.AppendLine("   COALESCE ( LEAD ( [" + configurationSettings.LoadDateTimeAttribute + "] ) OVER");
+                            linkSatView.AppendLine("   COALESCE ( LEAD ( [" + ConfigurationSettings.LoadDateTimeAttribute + "] ) OVER");
                             linkSatView.AppendLine("   		     (PARTITION BY ");
 
                             // Add the Business Kyes
@@ -4127,8 +4063,8 @@ namespace Virtual_EDW
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("   		     ORDER BY [" + configurationSettings.LoadDateTimeAttribute + "]),");
-                            linkSatView.AppendLine("   CAST( '9999-12-31' AS DATETIME)) AS " + configurationSettings.ExpiryDateTimeAttribute + ",");
+                            linkSatView.AppendLine("   		     ORDER BY [" + ConfigurationSettings.LoadDateTimeAttribute + "]),");
+                            linkSatView.AppendLine("   CAST( '9999-12-31' AS DATETIME)) AS " + ConfigurationSettings.ExpiryDateTimeAttribute + ",");
 
                             // Current record indicator
                             linkSatView.AppendLine("   CASE");
@@ -4156,34 +4092,34 @@ namespace Virtual_EDW
                             linkSatView.Remove(linkSatView.Length - 3, 3);
                             linkSatView.AppendLine();
 
-                            linkSatView.AppendLine("          ORDER BY [" + configurationSettings.LoadDateTimeAttribute + "] desc )) = 1");
+                            linkSatView.AppendLine("          ORDER BY [" + ConfigurationSettings.LoadDateTimeAttribute + "] desc )) = 1");
                             linkSatView.AppendLine("      THEN 'Y'");
                             linkSatView.AppendLine("      ELSE 'N'");
-                            linkSatView.AppendLine("   END AS " + configurationSettings.CurrentRowAttribute + ",");
+                            linkSatView.AppendLine("   END AS " + ConfigurationSettings.CurrentRowAttribute + ",");
 
-                            if (configurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+                            if (ConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
                             {
-                                linkSatView.AppendLine("   [" + configurationSettings.RecordSourceAttribute + "] AS [" + configurationSettings.AlternativeRecordSourceAttribute + "],");
+                                linkSatView.AppendLine("   [" + ConfigurationSettings.RecordSourceAttribute + "] AS [" + ConfigurationSettings.AlternativeRecordSourceAttribute + "],");
                             }
                             else
                             {
-                                linkSatView.AppendLine("   [" + configurationSettings.RecordSourceAttribute + "],");
+                                linkSatView.AppendLine("   [" + ConfigurationSettings.RecordSourceAttribute + "],");
                             }
 
                             //Logical deletes
                             if (checkBoxEvaluateSatDelete.Checked)
                             {
                                 linkSatView.AppendLine("    CASE");
-                                linkSatView.AppendLine("      WHEN [" + configurationSettings.ChangeDataCaptureAttribute + "] = 'Delete' THEN 'Y'");
+                                linkSatView.AppendLine("      WHEN [" + ConfigurationSettings.ChangeDataCaptureAttribute + "] = 'Delete' THEN 'Y'");
                                 linkSatView.AppendLine("      ELSE 'N'");
-                                linkSatView.AppendLine("    END AS [" + configurationSettings.LogicalDeleteAttribute + "],");
+                                linkSatView.AppendLine("    END AS [" + ConfigurationSettings.LogicalDeleteAttribute + "],");
                             }
 
 
-                            linkSatView.AppendLine("   -1 AS " + configurationSettings.EtlProcessAttribute + ",");
-                            linkSatView.AppendLine("   -1 AS " + configurationSettings.EtlProcessUpdateAttribute + ",");
-                            linkSatView.AppendLine("   [" + configurationSettings.RowIdAttribute + "],");
-                            linkSatView.AppendLine("   [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                            linkSatView.AppendLine("   -1 AS " + ConfigurationSettings.EtlProcessAttribute + ",");
+                            linkSatView.AppendLine("   -1 AS " + ConfigurationSettings.EtlProcessUpdateAttribute + ",");
+                            linkSatView.AppendLine("   [" + ConfigurationSettings.RowIdAttribute + "],");
+                            linkSatView.AppendLine("   [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                             // All the attibutes (except the multi-active ones)
                             foreach (DataRow attribute in sourceStructure.Rows)
@@ -4241,12 +4177,12 @@ namespace Virtual_EDW
                                 linkSatView.AppendLine("         " + (string)attribute["ATTRIBUTE_NAME_TO"] + ",");
                             }
 
-                            linkSatView.AppendLine("         [" + configurationSettings.LoadDateTimeAttribute + "]) AS INT)");
+                            linkSatView.AppendLine("         [" + ConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
                             linkSatView.AppendLine("   AS ROW_NUMBER,");
 
                             // Checksum
                             linkSatView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
-                            linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +configurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
+                            linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +ConfigurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
 
                             foreach (var hubArray in hubBusinessKeyList)
                             {
@@ -4262,16 +4198,16 @@ namespace Virtual_EDW
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("   ),2) AS " + configurationSettings.RecordChecksumAttribute + "");
+                            linkSatView.AppendLine("   ),2) AS " + ConfigurationSettings.RecordChecksumAttribute + "");
 
                             // From statement
                             linkSatView.AppendLine("FROM ");
                             linkSatView.AppendLine("(");
                             linkSatView.AppendLine("  SELECT DISTINCT");
-                            linkSatView.AppendLine("    [" + configurationSettings.LoadDateTimeAttribute + "],");
-                            linkSatView.AppendLine("    [" + configurationSettings.RecordSourceAttribute + "],");
-                            linkSatView.AppendLine("    [" + configurationSettings.RowIdAttribute + "],");
-                            linkSatView.AppendLine("    [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                            linkSatView.AppendLine("    [" + ConfigurationSettings.LoadDateTimeAttribute + "],");
+                            linkSatView.AppendLine("    [" + ConfigurationSettings.RecordSourceAttribute + "],");
+                            linkSatView.AppendLine("    [" + ConfigurationSettings.RowIdAttribute + "],");
+                            linkSatView.AppendLine("    [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                             var sqlStatementForComponent = new StringBuilder();
                             var sqlStatementForHubBusinessKeys = new StringBuilder();
@@ -4531,10 +4467,10 @@ namespace Virtual_EDW
                                 linkSatView.AppendLine("  UNION");
 
                                 linkSatView.AppendLine("  SELECT DISTINCT");
-                                linkSatView.AppendLine("    '1900-01-01' AS [" + configurationSettings.LoadDateTimeAttribute + "],");
-                                linkSatView.AppendLine("    'Data Warehouse' AS [" + configurationSettings.RecordSourceAttribute + "],");
-                                linkSatView.AppendLine("     0 AS [" + configurationSettings.RowIdAttribute + "],");
-                                linkSatView.AppendLine("    'N/A' AS [" + configurationSettings.ChangeDataCaptureAttribute + "],");
+                                linkSatView.AppendLine("    '1900-01-01' AS [" + ConfigurationSettings.LoadDateTimeAttribute + "],");
+                                linkSatView.AppendLine("    'Data Warehouse' AS [" + ConfigurationSettings.RecordSourceAttribute + "],");
+                                linkSatView.AppendLine("     0 AS [" + ConfigurationSettings.RowIdAttribute + "],");
+                                linkSatView.AppendLine("    'N/A' AS [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
                                 linkSatView.AppendLine("" + hubQuerySelect);
                                 linkSatView.Remove(linkSatView.Length - 2, 2);
@@ -4602,10 +4538,10 @@ namespace Virtual_EDW
 
         private DataTable GetStagingToSatelliteAttributeMapping(int targetTableId, int stagingAreaTableId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             var sqlStatementForAttributes = new StringBuilder();
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
 
             // Query the metadata to retrieve the STG and INT attributes and their relationship
             sqlStatementForAttributes.AppendLine("SELECT ");
@@ -4623,15 +4559,15 @@ namespace Virtual_EDW
             sqlStatementForAttributes.AppendLine("WHERE SATELLITE_TABLE_ID = " + targetTableId);
             sqlStatementForAttributes.AppendLine("  AND STAGING_AREA_TABLE_ID = " + stagingAreaTableId);
             sqlStatementForAttributes.AppendLine("  AND ATTRIBUTE_NAME_TO NOT IN ('" +
-                                                 configurationSettings.RecordSourceAttribute + "','" +
-                                                 configurationSettings.AlternativeRecordSourceAttribute + "','" +
-                                                 configurationSettings.RowIdAttribute + "','" +
-                                                 configurationSettings.RecordChecksumAttribute + "','" +
-                                                 configurationSettings.ChangeDataCaptureAttribute + "','" +
-                                                 configurationSettings.AlternativeLoadDateTimeAttribute + "','" +
-                                                 configurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
-                                                 configurationSettings.EtlProcessAttribute + "','" +
-                                                 configurationSettings.LoadDateTimeAttribute + "')");
+                                                 ConfigurationSettings.RecordSourceAttribute + "','" +
+                                                 ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +
+                                                 ConfigurationSettings.RowIdAttribute + "','" +
+                                                 ConfigurationSettings.RecordChecksumAttribute + "','" +
+                                                 ConfigurationSettings.ChangeDataCaptureAttribute + "','" +
+                                                 ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
+                                                 ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+                                                 ConfigurationSettings.EtlProcessAttribute + "','" +
+                                                 ConfigurationSettings.LoadDateTimeAttribute + "')");
 
             var sourceStructure = GetDataTable(ref connOmd, sqlStatementForAttributes.ToString());
             return sourceStructure;
@@ -4734,7 +4670,7 @@ namespace Virtual_EDW
         // Create the Insert statement for the Persisten Staging Area (PSA)
         private void PsaGenerateInsertInto(int versionId)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkBoxIfExistsStatement.Checked)
             {
@@ -4745,8 +4681,8 @@ namespace Virtual_EDW
             {
                 for (int x = 0; x <= checkedListBoxPsaMetadata.CheckedItems.Count - 1; x++)
                 {
-                    var connStg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringStg};
-                    var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
+                    var connStg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringStg};
+                    var connHstg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
 
                     var targetTableName = checkedListBoxPsaMetadata.CheckedItems[x].ToString();
                 
@@ -4761,10 +4697,10 @@ namespace Virtual_EDW
                     psaInsertIntoStatement.AppendLine("-- Generated at " + DateTime.Now);
                     psaInsertIntoStatement.AppendLine("--");
                     psaInsertIntoStatement.AppendLine();
-                    psaInsertIntoStatement.AppendLine("USE [" + configurationSettings.StagingDatabaseName + "]");
+                    psaInsertIntoStatement.AppendLine("USE [" + ConfigurationSettings.StagingDatabaseName + "]");
                     psaInsertIntoStatement.AppendLine("GO");
                     psaInsertIntoStatement.AppendLine();
-                    psaInsertIntoStatement.AppendLine("INSERT INTO ["+configurationSettings.PsaDatabaseName+"].["+configurationSettings.SchemaName+"].[" + targetTableName+"]");
+                    psaInsertIntoStatement.AppendLine("INSERT INTO ["+ConfigurationSettings.PsaDatabaseName+"].["+ConfigurationSettings.SchemaName+"].[" + targetTableName+"]");
                     psaInsertIntoStatement.AppendLine("   (");
 
                     foreach (DataRow attribute in sourceTableStructure.Rows)
@@ -4781,7 +4717,7 @@ namespace Virtual_EDW
                     {
                         var sourceAttribute = attribute["COLUMN_NAME"];
 
-                        if ((string)sourceAttribute == configurationSettings.EtlProcessAttribute)
+                        if ((string)sourceAttribute == ConfigurationSettings.EtlProcessAttribute)
                         {
                             psaInsertIntoStatement.AppendLine("   -1 AS " + attribute["COLUMN_NAME"] + ",");
                         }
@@ -4803,7 +4739,7 @@ namespace Virtual_EDW
 
                     if (checkBoxGenerateInDatabase.Checked)
                     {
-                        connHstg.ConnectionString = configurationSettings.ConnectionStringHstg;
+                        connHstg.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                         GenerateInDatabase(connHstg, psaInsertIntoStatement.ToString());
                     }
 
@@ -4824,7 +4760,7 @@ namespace Virtual_EDW
 
         private void PsaGenerateViews()
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             var mydocpath = textBoxOutputPath.Text;
 
@@ -4832,19 +4768,19 @@ namespace Virtual_EDW
             {
                 for (int x = 0; x <= checkedListBoxPsaMetadata.CheckedItems.Count - 1; x++)
                 {
-                    var connStg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringStg};
-                    var connHstg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringHstg};
+                    var connStg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringStg};
+                    var connHstg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringHstg};
 
-                    var recordSourceAttribute = configurationSettings.RecordSourceAttribute;
-                    var loadDateTimeAttribute = configurationSettings.LoadDateTimeAttribute;
-                    var etlProcessIdAttribute = configurationSettings.EtlProcessAttribute;
-                    var cdcOperationAttribute = configurationSettings.ChangeDataCaptureAttribute;
+                    var recordSourceAttribute = ConfigurationSettings.RecordSourceAttribute;
+                    var loadDateTimeAttribute = ConfigurationSettings.LoadDateTimeAttribute;
+                    var etlProcessIdAttribute = ConfigurationSettings.EtlProcessAttribute;
+                    var cdcOperationAttribute = ConfigurationSettings.ChangeDataCaptureAttribute;
 
                     var targetTableName = checkedListBoxPsaMetadata.CheckedItems[x].ToString();
-                    var sourceTableName = targetTableName.Replace(configurationSettings.PsaTablePrefixValue,configurationSettings.StgTablePrefixValue);
+                    var sourceTableName = targetTableName.Replace(ConfigurationSettings.PsaTablePrefixValue,ConfigurationSettings.StgTablePrefixValue);
 
                     string targetTableIndexName;
-                    if (configurationSettings.PsaKeyLocation == "PrimaryKey")//radioButtonPSABusinessKeyIndex.Checked
+                    if (ConfigurationSettings.PsaKeyLocation == "PrimaryKey")//radioButtonPSABusinessKeyIndex.Checked
                     {
                         targetTableIndexName = "PK_" + targetTableName;
                     }
@@ -4869,7 +4805,7 @@ namespace Virtual_EDW
                     sqlStatementForPartitioningQuery.AppendLine("ON A.column_id=C.column_id");
                     sqlStatementForPartitioningQuery.AppendLine("  AND A.object_id=C.object_id");
                     sqlStatementForPartitioningQuery.AppendLine("WHERE B.name='" + targetTableIndexName + "'");
-                    sqlStatementForPartitioningQuery.AppendLine("  AND C.name<>'"+configurationSettings.LoadDateTimeAttribute+"'");
+                    sqlStatementForPartitioningQuery.AppendLine("  AND C.name<>'"+ConfigurationSettings.LoadDateTimeAttribute+"'");
                     sqlStatementForPartitioningQuery.AppendLine("  AND C.name NOT IN ('" + recordSourceAttribute + "','" + etlProcessIdAttribute + "','" + loadDateTimeAttribute + "')");
                     sqlStatementForPartitioningQuery.AppendLine();
 
@@ -4897,7 +4833,7 @@ namespace Virtual_EDW
                     sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
                     sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                     sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + sourceTableName + "'");
-                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME !='"+configurationSettings.EtlProcessAttribute+"'");
+                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME !='"+ConfigurationSettings.EtlProcessAttribute+"'");
                     sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_HUB%'");
                     sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_LNK%'");
                     sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_SAT%'");
@@ -4915,27 +4851,27 @@ namespace Virtual_EDW
                     psaView.AppendLine("-- Generated at 11/21/2014 11:52:15 AM");
                     psaView.AppendLine("--");
                     psaView.AppendLine();
-                    psaView.AppendLine("USE ["+configurationSettings.StagingDatabaseName+"]");
+                    psaView.AppendLine("USE ["+ConfigurationSettings.StagingDatabaseName+"]");
                     psaView.AppendLine("GO");
 
                     if (checkBoxIfExistsStatement.Checked)
                     {
                         psaView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[" + targetTableName + "]') AND type in (N'V'))");
-                        psaView.AppendLine("DROP VIEW [" + configurationSettings.SchemaName + "].[" + targetTableName + "];");
+                        psaView.AppendLine("DROP VIEW [" + ConfigurationSettings.SchemaName + "].[" + targetTableName + "];");
                         psaView.AppendLine("GO");
                     }
 
-                    psaView.AppendLine("CREATE VIEW [" + configurationSettings.SchemaName + "].[" + targetTableName + "] AS "); 
+                    psaView.AppendLine("CREATE VIEW [" + ConfigurationSettings.SchemaName + "].[" + targetTableName + "] AS "); 
 
                     psaView.AppendLine("SELECT ");
-                    psaView.AppendLine("  " + targetTableName + "_" + configurationSettings.DwhKeyIdentifier + ",");
+                    psaView.AppendLine("  " + targetTableName + "_" + ConfigurationSettings.DwhKeyIdentifier + ",");
 
                     foreach (DataRow attribute in sourceStructure.Rows)
                     {
                         psaView.AppendLine("  " + attribute["COLUMN_NAME"] + ",");
                     }
-                    psaView.AppendLine("  LKP_"+configurationSettings.RecordChecksumAttribute+",");
-                    psaView.AppendLine("  LKP_"+configurationSettings.ChangeDataCaptureAttribute+",");
+                    psaView.AppendLine("  LKP_"+ConfigurationSettings.RecordChecksumAttribute+",");
+                    psaView.AppendLine("  LKP_"+ConfigurationSettings.ChangeDataCaptureAttribute+",");
                     psaView.AppendLine("  KEY_ROW_NUMBER");
                     psaView.AppendLine("FROM");
                     psaView.AppendLine("(");
@@ -4948,15 +4884,15 @@ namespace Virtual_EDW
 
                     }
 
-                    psaView.AppendLine("       CONVERT(" + stringDataType + "(100),STG.[" + configurationSettings.LoadDateTimeAttribute + "],126)+'|'");
-                    psaView.AppendLine("    ),2) AS " + targetTableName + "_" + configurationSettings.DwhKeyIdentifier + ",");
+                    psaView.AppendLine("       CONVERT(" + stringDataType + "(100),STG.[" + ConfigurationSettings.LoadDateTimeAttribute + "],126)+'|'");
+                    psaView.AppendLine("    ),2) AS " + targetTableName + "_" + ConfigurationSettings.DwhKeyIdentifier + ",");
                     
                     foreach (DataRow attribute in sourceStructure.Rows)
                     {
                         psaView.AppendLine("    STG." + attribute["COLUMN_NAME"] + ",");
                     }
 
-                    psaView.AppendLine("    COALESCE(maxsub.LKP_"+configurationSettings.RecordChecksumAttribute+",'N/A') AS LKP_"+configurationSettings.RecordChecksumAttribute+",");
+                    psaView.AppendLine("    COALESCE(maxsub.LKP_"+ConfigurationSettings.RecordChecksumAttribute+",'N/A') AS LKP_"+ConfigurationSettings.RecordChecksumAttribute+",");
                     psaView.AppendLine("    COALESCE(maxsub.LKP_"+cdcOperationAttribute+",'N/A') AS LKP_"+cdcOperationAttribute+",");
 
                     // ROW_NUMBER over Partition By query element
@@ -4988,7 +4924,7 @@ namespace Virtual_EDW
                     psaView.AppendLine();
                     psaView.AppendLine("  FROM "+sourceTableName + " STG");
                     psaView.AppendLine("  LEFT OUTER JOIN -- Prevent reprocessing");
-                    psaView.AppendLine("    " + configurationSettings.PsaDatabaseName + "." + configurationSettings.SchemaName + "." + targetTableName + " HSTG");
+                    psaView.AppendLine("    " + ConfigurationSettings.PsaDatabaseName + "." + ConfigurationSettings.SchemaName + "." + targetTableName + " HSTG");
                     psaView.AppendLine("    ON");
 
                     foreach (DataRow businessKey in partitionAttributes.Rows)
@@ -5012,9 +4948,9 @@ namespace Virtual_EDW
                         psaView.AppendLine(",");
                     }
 
-                    psaView.AppendLine("      A."+configurationSettings.RecordChecksumAttribute+" AS LKP_"+configurationSettings.RecordChecksumAttribute+",");
+                    psaView.AppendLine("      A."+ConfigurationSettings.RecordChecksumAttribute+" AS LKP_"+ConfigurationSettings.RecordChecksumAttribute+",");
                     psaView.AppendLine("      A."+cdcOperationAttribute+" AS LKP_"+cdcOperationAttribute+"");
-                    psaView.AppendLine("    FROM " + configurationSettings.PsaDatabaseName + "." + configurationSettings.SchemaName + "." + targetTableName + " A");
+                    psaView.AppendLine("    FROM " + ConfigurationSettings.PsaDatabaseName + "." + ConfigurationSettings.SchemaName + "." + targetTableName + " A");
                     psaView.AppendLine("    JOIN (");
                     psaView.AppendLine("      SELECT ");
 
@@ -5026,7 +4962,7 @@ namespace Virtual_EDW
                     }
 
                     psaView.AppendLine("        MAX(" + loadDateTimeAttribute + ") AS MAX_" + loadDateTimeAttribute + " ");
-                    psaView.AppendLine("      FROM " + configurationSettings.PsaDatabaseName + "." + configurationSettings.SchemaName + "." + targetTableName + " B");
+                    psaView.AppendLine("      FROM " + ConfigurationSettings.PsaDatabaseName + "." + ConfigurationSettings.SchemaName + "." + targetTableName + " B");
                     psaView.AppendLine("      GROUP BY ");
 
                     foreach (DataRow businessKey in partitionAttributes.Rows)
@@ -5066,10 +5002,10 @@ namespace Virtual_EDW
                     psaView.AppendLine("  KEY_ROW_NUMBER=1");
                     psaView.AppendLine("  AND");
                     psaView.AppendLine("  (");
-                    psaView.AppendLine("    (" + configurationSettings.RecordChecksumAttribute + "!=LKP_"+configurationSettings.RecordChecksumAttribute+")");
+                    psaView.AppendLine("    (" + ConfigurationSettings.RecordChecksumAttribute + "!=LKP_"+ConfigurationSettings.RecordChecksumAttribute+")");
                     psaView.AppendLine("    -- The checksums are different");
                     psaView.AppendLine("    OR");
-                    psaView.AppendLine("    (" + configurationSettings.RecordChecksumAttribute + "=LKP_"+configurationSettings.RecordChecksumAttribute+" AND "+configurationSettings.ChangeDataCaptureAttribute+"!=LKP_"+configurationSettings.ChangeDataCaptureAttribute+")");
+                    psaView.AppendLine("    (" + ConfigurationSettings.RecordChecksumAttribute + "=LKP_"+ConfigurationSettings.RecordChecksumAttribute+" AND "+ConfigurationSettings.ChangeDataCaptureAttribute+"!=LKP_"+ConfigurationSettings.ChangeDataCaptureAttribute+")");
                     psaView.AppendLine("    -- The checksums are the same but the CDC is different");
                     psaView.AppendLine("    -- In other words, if the hash is the same AND the CDC operation is the same then there is no change");
                     psaView.AppendLine("  )");
@@ -5090,7 +5026,7 @@ namespace Virtual_EDW
 
                     if (checkBoxGenerateInDatabase.Checked)
                     {
-                        connHstg.ConnectionString = configurationSettings.ConnectionStringHstg;
+                        connHstg.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                         GenerateInDatabase(connHstg, psaView.ToString());
                     }
 
@@ -5139,7 +5075,7 @@ namespace Virtual_EDW
 
         private void StagingGenerateInsertInto()
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
             var mydocpath = textBoxOutputPath.Text;
 
@@ -5148,14 +5084,14 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxStgMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxStgMetadata.CheckedItems[x].ToString();
-                    var connStg = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringStg }; 
+                    var connStg = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringStg }; 
 
                     // Build the main attribute list of the STG table for selection
                     var sqlStatementForSourceQuery = new StringBuilder();
                     sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
                     sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                     sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + targetTableName + "'");
-                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT IN ('" + configurationSettings.LoadDateTimeAttribute + "','" +configurationSettings.RowIdAttribute + "')");
+                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.LoadDateTimeAttribute + "','" +ConfigurationSettings.RowIdAttribute + "')");
                     sqlStatementForSourceQuery.AppendLine("ORDER BY ORDINAL_POSITION");
 
                     var sourceStructure = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
@@ -5168,18 +5104,18 @@ namespace Virtual_EDW
                     stgInsertIntoStatement.AppendLine("-- The Row ID and Load Date/Time will be created upon insert as default values");
                     stgInsertIntoStatement.AppendLine("--");
                     stgInsertIntoStatement.AppendLine();
-                    stgInsertIntoStatement.AppendLine("USE [" + configurationSettings.StagingDatabaseName + "]");
+                    stgInsertIntoStatement.AppendLine("USE [" + ConfigurationSettings.StagingDatabaseName + "]");
                     stgInsertIntoStatement.AppendLine("GO");
                     stgInsertIntoStatement.AppendLine();
 
                     if (checkBoxIfExistsStatement.Checked)
                     {
-                        stgInsertIntoStatement.AppendLine("TRUNCATE TABLE [" + configurationSettings.StagingDatabaseName + "].[" +configurationSettings.SchemaName + "].[" + targetTableName + "]");
+                        stgInsertIntoStatement.AppendLine("TRUNCATE TABLE [" + ConfigurationSettings.StagingDatabaseName + "].[" +ConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
                         stgInsertIntoStatement.AppendLine("GO");
                         stgInsertIntoStatement.AppendLine();
                     }
 
-                    stgInsertIntoStatement.AppendLine("INSERT INTO [" + configurationSettings.StagingDatabaseName + "].[" +configurationSettings.SchemaName + "].[" + targetTableName + "]");
+                    stgInsertIntoStatement.AppendLine("INSERT INTO [" + ConfigurationSettings.StagingDatabaseName + "].[" +ConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
                     stgInsertIntoStatement.AppendLine("   (");
 
                     foreach (DataRow attribute in sourceStructure.Rows)
@@ -5194,7 +5130,7 @@ namespace Virtual_EDW
 
                     foreach (DataRow attribute in sourceStructure.Rows)
                     {
-                        if ((string)attribute["COLUMN_NAME"] == configurationSettings.EtlProcessAttribute)
+                        if ((string)attribute["COLUMN_NAME"] == ConfigurationSettings.EtlProcessAttribute)
                         {
                             stgInsertIntoStatement.AppendLine("   -1 AS " + attribute["COLUMN_NAME"] + ",");
                         }
@@ -5216,7 +5152,7 @@ namespace Virtual_EDW
 
                     if (checkBoxGenerateInDatabase.Checked)
                     {
-                        connStg.ConnectionString = configurationSettings.ConnectionStringHstg;
+                        connStg.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
                         GenerateInDatabase(connStg, stgInsertIntoStatement.ToString());
                     }
 
@@ -5232,17 +5168,17 @@ namespace Virtual_EDW
 
         private void StagingGenerateViews()
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connStg = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringStg};
-            var connOmd = new SqlConnection {ConnectionString = configurationSettings.ConnectionStringOmd};
+            var connStg = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringStg};
+            var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
 
-            var recordSourceAttribute = configurationSettings.RecordSourceAttribute;
-            var loadDateTimeAttribute = configurationSettings.LoadDateTimeAttribute;
-            var etlProcessIdAttribute = configurationSettings.EtlProcessAttribute;
-            var cdcOperationAttribute = configurationSettings.ChangeDataCaptureAttribute;
-            var eventDateTimeAttribute = configurationSettings.EventDateTimeAttribute;
-            var sourceRowIdAttribute = configurationSettings.RowIdAttribute;
+            var recordSourceAttribute = ConfigurationSettings.RecordSourceAttribute;
+            var loadDateTimeAttribute = ConfigurationSettings.LoadDateTimeAttribute;
+            var etlProcessIdAttribute = ConfigurationSettings.EtlProcessAttribute;
+            var cdcOperationAttribute = ConfigurationSettings.ChangeDataCaptureAttribute;
+            var eventDateTimeAttribute = ConfigurationSettings.EventDateTimeAttribute;
+            var sourceRowIdAttribute = ConfigurationSettings.RowIdAttribute;
             var mydocpath = textBoxOutputPath.Text;
 
             if (checkedListBoxStgMetadata.CheckedItems.Count != 0)
@@ -5259,7 +5195,7 @@ namespace Virtual_EDW
                     var parts = targetTableName.Split('_');
                     var sourceSystemName = parts[1];
                     var sourceTableName = targetTableName.Replace("STG_" + sourceSystemName + "_", "");
-                    var historyAreaTableName = configurationSettings.PsaTablePrefixValue + "_" + sourceSystemName + "_" + sourceTableName;
+                    var historyAreaTableName = ConfigurationSettings.PsaTablePrefixValue + "_" + sourceSystemName + "_" + sourceTableName;
                     var mainBusinessKey = "";
 
                     var errorCapture = new StringBuilder();
@@ -5272,7 +5208,7 @@ namespace Virtual_EDW
 
                     var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
-                    connStg.ConnectionString = configurationSettings.ConnectionStringStg;
+                    connStg.ConnectionString = ConfigurationSettings.ConnectionStringStg;
 
                     // Creating the  selection query
                     var stgView = new StringBuilder();
@@ -5282,17 +5218,17 @@ namespace Virtual_EDW
                     stgView.AppendLine("-- Generated at 11/21/2014 11:52:15 AM");
                     stgView.AppendLine("--");
                     stgView.AppendLine();
-                    stgView.AppendLine("USE [" + configurationSettings.StagingDatabaseName + "]");
+                    stgView.AppendLine("USE [" + ConfigurationSettings.StagingDatabaseName + "]");
                     stgView.AppendLine("GO");
 
                     if (checkBoxIfExistsStatement.Checked)
                     {
                         stgView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[VW_" +targetTableName + "]') AND type in (N'V'))");
-                        stgView.AppendLine("DROP VIEW ["+configurationSettings.SchemaName+"].[VW_" + targetTableName + "]");
+                        stgView.AppendLine("DROP VIEW ["+ConfigurationSettings.SchemaName+"].[VW_" + targetTableName + "]");
                         stgView.AppendLine("GO");
                     }
 
-                    stgView.AppendLine("CREATE VIEW [" + configurationSettings.SchemaName + "].[VW_" + targetTableName + "] AS ");
+                    stgView.AppendLine("CREATE VIEW [" + ConfigurationSettings.SchemaName + "].[VW_" + targetTableName + "] AS ");
 
                     // Retrieving the Natural Key for the Staging Area table
                     sqlStatementForNaturalKey.Clear();
@@ -5332,7 +5268,7 @@ namespace Virtual_EDW
                         sqlStatementForSourceAttribute.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION, NUMERIC_SCALE");
                         sqlStatementForSourceAttribute.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                         sqlStatementForSourceAttribute.AppendLine("WHERE TABLE_NAME= '" + targetTableName + "'");
-                        sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" + eventDateTimeAttribute + "','" + sourceRowIdAttribute + "','" + cdcOperationAttribute + "','" + recordSourceAttribute + "','" + etlProcessIdAttribute + "','" + loadDateTimeAttribute + "','"+configurationSettings.RecordChecksumAttribute+"')");
+                        sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" + eventDateTimeAttribute + "','" + sourceRowIdAttribute + "','" + cdcOperationAttribute + "','" + recordSourceAttribute + "','" + etlProcessIdAttribute + "','" + loadDateTimeAttribute + "','"+ConfigurationSettings.RecordChecksumAttribute+"')");
                         sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
 
                         var sourceStructure = GetDataTable(ref connStg, sqlStatementForSourceAttribute.ToString());
@@ -5355,7 +5291,7 @@ namespace Virtual_EDW
                         hashListQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                         hashListQuery.AppendLine("WHERE TABLE_NAME= '" + targetTableName + "'");
                         hashListQuery.AppendLine("  AND SUBSTRING(COLUMN_NAME,1,5)='HASH_'");
-                        hashListQuery.AppendLine("  AND COLUMN_NAME!='"+configurationSettings.RecordChecksumAttribute+"'");
+                        hashListQuery.AppendLine("  AND COLUMN_NAME!='"+ConfigurationSettings.RecordChecksumAttribute+"'");
                         hashListQuery.AppendLine("ORDER BY ORDINAL_POSITION");
 
                         var hashList = GetDataTable(ref connStg, hashListQuery.ToString());
@@ -5441,14 +5377,14 @@ namespace Virtual_EDW
 
                         stgView.Remove(stgView.Length - 3, 3);
                         stgView.AppendLine();
-                        stgView.AppendLine("   ),2) AS "+configurationSettings.RecordChecksumAttribute+",");
+                        stgView.AppendLine("   ),2) AS "+ConfigurationSettings.RecordChecksumAttribute+",");
 
                         // Hash on Business Keys
                         if (hashList != null)
                         {
                             foreach (DataRow hub in hashList.Rows)
                             {
-                                var hubTableName = configurationSettings.HubTablePrefixValue + '_' + hub["TABLE_NAME"];
+                                var hubTableName = ConfigurationSettings.HubTablePrefixValue + '_' + hub["TABLE_NAME"];
 
                                 if (hub["TABLE_TYPE"].ToString() == "HUB")
                                 {
@@ -5515,7 +5451,7 @@ namespace Virtual_EDW
                         {
                             foreach (DataRow lnk in hashList.Rows)
                             {
-                                var lnkTableName = configurationSettings.LinkTablePrefixValue + '_' + lnk["TABLE_NAME"];
+                                var lnkTableName = ConfigurationSettings.LinkTablePrefixValue + '_' + lnk["TABLE_NAME"];
 
                                 if (lnk["TABLE_TYPE"].ToString() == "LNK")
                                 {
@@ -5571,14 +5507,14 @@ namespace Virtual_EDW
 
                         stgView.Remove(stgView.Length - 3, 3);
                         stgView.AppendLine();
-                        stgView.AppendLine("FROM [" + configurationSettings.SourceDatabaseName + "].[" + configurationSettings.SchemaName + "].[" +sourceTableName+"]");
+                        stgView.AppendLine("FROM [" + ConfigurationSettings.SourceDatabaseName + "].[" + ConfigurationSettings.SchemaName + "].[" +sourceTableName+"]");
                         stgView.AppendLine("),");
 	
                         // Creating the History Area query
                         stgView.AppendLine("PSA_CTE AS");
                         stgView.AppendLine("(");
                         stgView.AppendLine("SELECT");
-                        stgView.AppendLine("   A." + configurationSettings.RecordChecksumAttribute + " AS " + configurationSettings.RecordChecksumAttribute + ",");
+                        stgView.AppendLine("   A." + ConfigurationSettings.RecordChecksumAttribute + " AS " + ConfigurationSettings.RecordChecksumAttribute + ",");
 
                         // Adding the attributes to the main query against the source system
                         if (sourceStructure != null)
@@ -5591,7 +5527,7 @@ namespace Virtual_EDW
 
                         stgView.Remove(stgView.Length - 3, 3);
                         stgView.AppendLine();
-                        stgView.AppendLine("FROM " + configurationSettings.PsaDatabaseName+"."+configurationSettings.SchemaName+"."+historyAreaTableName + " A");
+                        stgView.AppendLine("FROM " + ConfigurationSettings.PsaDatabaseName+"."+ConfigurationSettings.SchemaName+"."+historyAreaTableName + " A");
 
                         stgView.AppendLine("   JOIN (");
                         stgView.AppendLine("        SELECT");
@@ -5603,8 +5539,8 @@ namespace Virtual_EDW
                         }
 
                         stgView.AppendLine();
-                        stgView.AppendLine("            MAX(" + configurationSettings.LoadDateTimeAttribute + ") AS MAX_" + configurationSettings.LoadDateTimeAttribute + "");
-                        stgView.AppendLine("        FROM " + configurationSettings.PsaDatabaseName+"."+configurationSettings.SchemaName+"."+historyAreaTableName);
+                        stgView.AppendLine("            MAX(" + ConfigurationSettings.LoadDateTimeAttribute + ") AS MAX_" + ConfigurationSettings.LoadDateTimeAttribute + "");
+                        stgView.AppendLine("        FROM " + ConfigurationSettings.PsaDatabaseName+"."+ConfigurationSettings.SchemaName+"."+historyAreaTableName);
                         stgView.AppendLine("        GROUP BY");
 
                         foreach (DataRow businessKey in naturalKeyDataTable.Rows)
@@ -5627,8 +5563,8 @@ namespace Virtual_EDW
                         stgView.Remove(stgView.Length - 7, 7);
                         stgView.AppendLine();
                         stgView.AppendLine("   AND");
-                        stgView.AppendLine("   A." + configurationSettings.LoadDateTimeAttribute + " = B.MAX_" + configurationSettings.LoadDateTimeAttribute + "");
-                        stgView.AppendLine("WHERE "+configurationSettings.ChangeDataCaptureAttribute+" != 'Delete'");
+                        stgView.AppendLine("   A." + ConfigurationSettings.LoadDateTimeAttribute + " = B.MAX_" + ConfigurationSettings.LoadDateTimeAttribute + "");
+                        stgView.AppendLine("WHERE "+ConfigurationSettings.ChangeDataCaptureAttribute+" != 'Delete'");
                         stgView.AppendLine(")");
 
                         // Putting together the CTE join
@@ -5653,7 +5589,7 @@ namespace Virtual_EDW
                                 }
                             }
 
-                            stgView.AppendLine("  CASE WHEN STG_CTE.[" + mainBusinessKey + "] IS NULL THEN PSA_CTE.[" + configurationSettings.RecordChecksumAttribute + "] ELSE STG_CTE.[" + configurationSettings.RecordChecksumAttribute + "] COLLATE DATABASE_DEFAULT END AS [" + configurationSettings.RecordChecksumAttribute + "], ");
+                            stgView.AppendLine("  CASE WHEN STG_CTE.[" + mainBusinessKey + "] IS NULL THEN PSA_CTE.[" + ConfigurationSettings.RecordChecksumAttribute + "] ELSE STG_CTE.[" + ConfigurationSettings.RecordChecksumAttribute + "] COLLATE DATABASE_DEFAULT END AS [" + ConfigurationSettings.RecordChecksumAttribute + "], ");
 
                             if (hashList != null)
                                 foreach (DataRow hashkey in hashList.Rows)
@@ -5662,11 +5598,11 @@ namespace Virtual_EDW
 
                                     if (hashkey["TABLE_TYPE"].ToString() == "HUB")
                                     {
-                                        intTableName = configurationSettings.HubTablePrefixValue + '_' + hashkey["TABLE_NAME"];
+                                        intTableName = ConfigurationSettings.HubTablePrefixValue + '_' + hashkey["TABLE_NAME"];
                                     }
                                     else if (hashkey["TABLE_TYPE"].ToString() == "LNK")
                                     {
-                                        intTableName = configurationSettings.LinkTablePrefixValue + '_' + hashkey["TABLE_NAME"];
+                                        intTableName = ConfigurationSettings.LinkTablePrefixValue + '_' + hashkey["TABLE_NAME"];
                                     }
 
                                  
@@ -5677,10 +5613,10 @@ namespace Virtual_EDW
                             stgView.AppendLine("  CASE " +
                                                "WHEN STG_CTE.[" + mainBusinessKey + "] IS NULL THEN 'Delete' " +
                                                "WHEN PSA_CTE.[" + mainBusinessKey + "] IS NULL THEN 'Insert' " +
-                                               "WHEN STG_CTE." + mainBusinessKey + " IS NOT NULL AND PSA_CTE." + mainBusinessKey + " IS NOT NULL AND STG_CTE." + configurationSettings.RecordChecksumAttribute + " != PSA_CTE."+configurationSettings.RecordChecksumAttribute+" THEN 'Change' " +
+                                               "WHEN STG_CTE." + mainBusinessKey + " IS NOT NULL AND PSA_CTE." + mainBusinessKey + " IS NOT NULL AND STG_CTE." + ConfigurationSettings.RecordChecksumAttribute + " != PSA_CTE."+ConfigurationSettings.RecordChecksumAttribute+" THEN 'Change' " +
                                                "ELSE 'No Change' " +
-                                               "END AS [" + configurationSettings.ChangeDataCaptureAttribute + "],");
-                            stgView.AppendLine("  '" + configurationSettings.SourceSystemPrefix + "' AS " + configurationSettings.RecordSourceAttribute+ ",");
+                                               "END AS [" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
+                            stgView.AppendLine("  '" + ConfigurationSettings.SourceSystemPrefix + "' AS " + ConfigurationSettings.RecordSourceAttribute+ ",");
 
                             stgView.AppendLine("  ROW_NUMBER() OVER ");
                             stgView.AppendLine("    (ORDER BY ");
@@ -5702,8 +5638,8 @@ namespace Virtual_EDW
                             }
                             stgView.Remove(stgView.Length - 3, 3);
                             stgView.AppendLine();
-                            stgView.AppendLine("    ) AS "+configurationSettings.RowIdAttribute+",");
-                            stgView.AppendLine("  GETDATE() AS " + configurationSettings.EventDateTimeAttribute);
+                            stgView.AppendLine("    ) AS "+ConfigurationSettings.RowIdAttribute+",");
+                            stgView.AppendLine("  GETDATE() AS " + ConfigurationSettings.EventDateTimeAttribute);
 
                             stgView.AppendLine("FROM STG_CTE");
                             stgView.AppendLine("FULL OUTER JOIN PSA_CTE ON ");
@@ -5742,14 +5678,14 @@ namespace Virtual_EDW
                                 {
                                     stgView.AppendLine("     WHEN STG_CTE." + mainBusinessKey + " IS NOT NULL AND PSA_CTE." +
                                                        mainBusinessKey + " IS NOT NULL AND STG_CTE." +
-                                                       configurationSettings.RecordChecksumAttribute + " COLLATE DATABASE_DEFAULT != PSA_CTE." +
-                                                       configurationSettings.RecordChecksumAttribute + " THEN 'Change' ");
+                                                       ConfigurationSettings.RecordChecksumAttribute + " COLLATE DATABASE_DEFAULT != PSA_CTE." +
+                                                       ConfigurationSettings.RecordChecksumAttribute + " THEN 'Change' ");
                                 }
                                 else
                                 {
                                     stgView.AppendLine("     WHEN STG_CTE." + mainBusinessKey + " IS NOT NULL AND PSA_CTE." +
                                                        mainBusinessKey + " IS NOT NULL AND STG_CTE." +
-                                                       configurationSettings.RecordChecksumAttribute + " != PSA_CTE." + configurationSettings.RecordChecksumAttribute +
+                                                       ConfigurationSettings.RecordChecksumAttribute + " != PSA_CTE." + ConfigurationSettings.RecordChecksumAttribute +
                                                        " THEN 'Change' ");
                                 }
                             }
@@ -5776,7 +5712,7 @@ namespace Virtual_EDW
 
                     if (checkBoxGenerateInDatabase.Checked)
                     {
-                        connStg.ConnectionString = configurationSettings.ConnectionStringStg;
+                        connStg.ConnectionString = ConfigurationSettings.ConnectionStringStg;
                         GenerateInDatabase(connStg, stgView.ToString());
                     }
 
@@ -6186,45 +6122,45 @@ namespace Virtual_EDW
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            var configurationSettings = new ConfigurationSettings();
+            
 
             var errorLog = new StringBuilder();
             var errorCounter = new int();
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
-            var metaDataConnection = configurationSettings.ConnectionStringOmd;
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
+            var metaDataConnection = ConfigurationSettings.ConnectionStringOmd;
 
             // Get everything as local variables to reduce multithreading issues
-            var stagingDatabase = '[' + configurationSettings.StagingDatabaseName + ']';
-            var integrationDatabase = '[' + configurationSettings.IntegrationDatabaseName + ']';
+            var stagingDatabase = '[' + ConfigurationSettings.StagingDatabaseName + ']';
+            var integrationDatabase = '[' + ConfigurationSettings.IntegrationDatabaseName + ']';
 
-            var linkedServer = configurationSettings.LinkedServer;
+            var linkedServer = ConfigurationSettings.LinkedServer;
             if (linkedServer != "")
             {
                 linkedServer = '[' + linkedServer + "].";
             }
 
-            var effectiveDateTimeAttribute = configurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True" ? configurationSettings.AlternativeSatelliteLoadDateTimeAttribute : configurationSettings.LoadDateTimeAttribute;
-            var currentRecordAttribute = configurationSettings.CurrentRowAttribute;
-            var eventDateTimeAtttribute = configurationSettings.EventDateTimeAttribute;
-            var recordSource = configurationSettings.RecordSourceAttribute;
-            var alternativeRecordSource = configurationSettings.AlternativeRecordSourceAttribute;
-            var sourceRowId = configurationSettings.RowIdAttribute;
-            var recordChecksum = configurationSettings.RecordChecksumAttribute;
-            var changeDataCaptureIndicator = configurationSettings.ChangeDataCaptureAttribute;
-            var hubAlternativeLdts = configurationSettings.AlternativeLoadDateTimeAttribute;
-            var etlProcessId = configurationSettings.EtlProcessAttribute;
-            var loadDateTimeStamp = configurationSettings.LoadDateTimeAttribute;
+            var effectiveDateTimeAttribute = ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True" ? ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute : ConfigurationSettings.LoadDateTimeAttribute;
+            var currentRecordAttribute = ConfigurationSettings.CurrentRowAttribute;
+            var eventDateTimeAtttribute = ConfigurationSettings.EventDateTimeAttribute;
+            var recordSource = ConfigurationSettings.RecordSourceAttribute;
+            var alternativeRecordSource = ConfigurationSettings.AlternativeRecordSourceAttribute;
+            var sourceRowId = ConfigurationSettings.RowIdAttribute;
+            var recordChecksum = ConfigurationSettings.RecordChecksumAttribute;
+            var changeDataCaptureIndicator = ConfigurationSettings.ChangeDataCaptureAttribute;
+            var hubAlternativeLdts = ConfigurationSettings.AlternativeLoadDateTimeAttribute;
+            var etlProcessId = ConfigurationSettings.EtlProcessAttribute;
+            var loadDateTimeStamp = ConfigurationSettings.LoadDateTimeAttribute;
 
-            var stagingPrefix = configurationSettings.StgTablePrefixValue;
-            var hubTablePrefix = configurationSettings.HubTablePrefixValue;
-            var lnkTablePrefix = configurationSettings.LinkTablePrefixValue;
+            var stagingPrefix = ConfigurationSettings.StgTablePrefixValue;
+            var hubTablePrefix = ConfigurationSettings.HubTablePrefixValue;
+            var lnkTablePrefix = ConfigurationSettings.LinkTablePrefixValue;
 
-            var satTablePrefix = configurationSettings.SatTablePrefixValue;
-            var lsatTablePrefix = configurationSettings.LinkTablePrefixValue;
+            var satTablePrefix = ConfigurationSettings.SatTablePrefixValue;
+            var lsatTablePrefix = ConfigurationSettings.LinkTablePrefixValue;
 
            
-            if (configurationSettings.TableNamingLocation == "Prefix") //tablePrefixLocation
+            if (ConfigurationSettings.TableNamingLocation == "Prefix") //tablePrefixLocation
             {
                 stagingPrefix = stagingPrefix + '%';
                 hubTablePrefix = hubTablePrefix + '%';
@@ -6241,10 +6177,10 @@ namespace Virtual_EDW
                 lsatTablePrefix = '%' + lsatTablePrefix;
             }
 
-            var dwhKeyIdentifier = configurationSettings.DwhKeyIdentifier;
+            var dwhKeyIdentifier = ConfigurationSettings.DwhKeyIdentifier;
 
             //var keyPrefixLocation = keyPrefixRadiobutton.Checked;
-            if (configurationSettings.KeyNamingLocation == "Prefix") //keyPrefixLocation
+            if (ConfigurationSettings.KeyNamingLocation == "Prefix") //keyPrefixLocation
             {
                 dwhKeyIdentifier = dwhKeyIdentifier + '%';
             }
@@ -8120,21 +8056,21 @@ namespace Virtual_EDW
         private void PrepareMetadata(int majorVersion, int minorVersion)
         {
 
-            var configurationSettings = new ConfigurationSettings();
+            
 
             if (checkBoxIgnoreVersion.Checked)
             {
                 var ignoreVersionDialog =
                     MessageBox.Show(
                         "Selection this option will activate the selected version of the automation metadata against the model (metadata / Data Vault table structures) that is deployed in the live Integration Layer database (" +
-                        configurationSettings.IntegrationDatabaseName +
+                        ConfigurationSettings.IntegrationDatabaseName +
                         ").\r\n Model versioning for the Data Vault model will thus be igored. Are you sure this is what you want?",
                         "Model versioning will be ignored", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
                 if (ignoreVersionDialog == DialogResult.Yes)
                 {
                     //Active the selected version into the MD schema
-                    using (new SqlConnection(configurationSettings.ConnectionStringOmd))
+                    using (new SqlConnection(ConfigurationSettings.ConnectionStringOmd))
                     {
                         // Reset back to latest automation metadata / latest model metadata
                         richTextBoxInformation.Clear();
@@ -8171,7 +8107,7 @@ namespace Virtual_EDW
 
                     versionExistenceCheck.AppendLine("SELECT * FROM MD_VERSION_ATTRIBUTE WHERE VERSION_ID = " + trackBarVersioning.Value);
 
-                    var connOmd = new SqlConnection(configurationSettings.ConnectionStringOmd);
+                    var connOmd = new SqlConnection(ConfigurationSettings.ConnectionStringOmd);
 
                     var versionExistenceCheckDataTable = GetDataTable(ref connOmd, versionExistenceCheck.ToString());
 
@@ -8261,9 +8197,9 @@ namespace Virtual_EDW
 
         private void button_Repopulate_Hub(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
             PopulateHubCheckboxList(connOmd);
         }
 
@@ -8305,8 +8241,8 @@ namespace Virtual_EDW
                 //MessageBox.Show("There is no database connection! Please check the details in the information pane.","An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _errorCounter++;
                 //MessageBox.Show("There is no database connection! Please check the details in the information pane.","An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                errorMessage.AppendLine("Unable to populate the Staging Area selection, there is no database connection.");
-                errorDetails.AppendLine("Error logging details: " + ex);
+                _errorMessage.AppendLine("Unable to populate the Staging Area selection, there is no database connection.");
+                _errorDetails.AppendLine("Error logging details: " + ex);
             }
         }
 
@@ -8341,8 +8277,8 @@ namespace Virtual_EDW
             {
                 _errorCounter++;
                 //MessageBox.Show("There is no database connection! Please check the details in the information pane.","An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                errorMessage.AppendLine("Unable to populate the Persistent Staging Area selection, there is no database connection.");
-                errorDetails.AppendLine("Error logging details: " + ex);
+                _errorMessage.AppendLine("Unable to populate the Persistent Staging Area selection, there is no database connection.");
+                _errorDetails.AppendLine("Error logging details: " + ex);
             }
         }
 
@@ -8378,8 +8314,8 @@ namespace Virtual_EDW
             {
                 _errorCounter++;
                // MessageBox.Show("There is no database connection! Please check the details in the information pane.","An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                errorMessage.AppendLine("Unable to populate the Hub selection, there is no database connection.");
-                errorDetails.AppendLine("Verions error logging details: " + ex);
+                _errorMessage.AppendLine("Unable to populate the Hub selection, there is no database connection.");
+                _errorDetails.AppendLine("Verions error logging details: " + ex);
             }
         }
 
@@ -8417,8 +8353,8 @@ namespace Virtual_EDW
                 _errorCounter++;
                 //MessageBox.Show("There is no database connection! Please check the details in the information pane.",
                 // "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                errorMessage.AppendLine("Unable to populate the Satellite selection, there is no database connection.");
-                errorDetails.AppendLine("Eerror logging details: " + ex);
+                _errorMessage.AppendLine("Unable to populate the Satellite selection, there is no database connection.");
+                _errorDetails.AppendLine("Eerror logging details: " + ex);
             }
         }
 
@@ -8455,8 +8391,8 @@ namespace Virtual_EDW
                 _errorCounter++;
                 // MessageBox.Show("There is no database connection! Please check the details in the information pane.",
                 //  "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                errorMessage.AppendLine("Unable to populate the Link selection cannot be populated, there is no database connection.");
-                errorDetails.AppendLine("Verions error logging details: " + ex);
+                _errorMessage.AppendLine("Unable to populate the Link selection cannot be populated, there is no database connection.");
+                _errorDetails.AppendLine("Verions error logging details: " + ex);
             }
         }
 
@@ -8492,8 +8428,8 @@ namespace Virtual_EDW
                 _errorCounter++;
                 //MessageBox.Show("There is no database connection! Please check the details in the information pane.",
                    // "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                errorMessage.AppendLine("Unable to populate the Link Satellite selection, there is not database connection.");
-                errorDetails.AppendLine("Verions error logging details: " + exception);
+                _errorMessage.AppendLine("Unable to populate the Link Satellite selection, there is not database connection.");
+                _errorDetails.AppendLine("Verions error logging details: " + exception);
             }
         }
 
@@ -8509,71 +8445,71 @@ namespace Virtual_EDW
 
         private void button_Repopulate_STG(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connStg = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringStg };
-            errorMessage.Clear();
+            var connStg = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringStg };
+            _errorMessage.Clear();
             PopulateStgCheckboxList(connStg);
             if (_errorCounter > 0)
             {
                 richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = errorMessage.ToString();
+                richTextBoxInformation.Text = _errorMessage.ToString();
             }
         }
 
         private void button_Repopulate_PSA(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connPsa = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringHstg };
-            errorMessage.Clear();
+            var connPsa = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringHstg };
+            _errorMessage.Clear();
             PopulatePsaCheckboxList(connPsa);
             if (_errorCounter > 0)
             {
                 richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = errorMessage.ToString();
+                richTextBoxInformation.Text = _errorMessage.ToString();
             }
         }
 
         private void button_Repopulate_Sat(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
-            errorMessage.Clear();
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
+            _errorMessage.Clear();
             PopulateSatCheckboxList(connOmd);
             if (_errorCounter > 0)
             {
                 richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = errorMessage.ToString();
+                richTextBoxInformation.Text = _errorMessage.ToString();
             }
         }
 
         private void button_Repopulate_Lnk(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
-            errorMessage.Clear();
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
+            _errorMessage.Clear();
             PopulateLnkCheckboxList(connOmd);
             if (_errorCounter > 0)
             {
                 richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = errorMessage.ToString();
+                richTextBoxInformation.Text = _errorMessage.ToString();
             }
         }
 
         private void button_Repopulate_LSAT(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
 
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
-            errorMessage.Clear();
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
+            _errorMessage.Clear();
             PopulateLsatCheckboxList(connOmd);
             if (_errorCounter > 0)
             {
                 richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = errorMessage.ToString();
+                richTextBoxInformation.Text = _errorMessage.ToString();
             }
         }
 
@@ -8621,11 +8557,6 @@ namespace Virtual_EDW
             MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
         }
 
-
-        private void sourceSystemRegistryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-        }
 
         private void tabPageDefaultSettings_Click(object sender, EventArgs e)
         {
@@ -8687,27 +8618,29 @@ namespace Virtual_EDW
                 outfile.Close();
             }
 
-            //Set the global configuration variables so other forms can pick up the values
-            var configurationSetting = new ConfigurationSettings();
-
             //Set the saved values in memory too, for other forms to access
-            configurationSetting.OutputPath = textBoxOutputPath.Text;
-            configurationSetting.ConfigurationPath = textBoxConfigurationPath.Text;
+            //ConfigurationSetting.OutputPath = textBoxOutputPath.Text;
+            //ConfigurationSetting.ConfigurationPath = textBoxConfigurationPath.Text;
 
             richTextBoxInformation.Text = "The global parameter file ("+GlobalParameters.PathfileName+") has been updated in: " + GlobalParameters.ConfigurationPath;
         }
 
         private void openConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var configurationSettings = new ConfigurationSettings();
+            
             try
             {
-                Process.Start(configurationSettings.ConfigurationPath);
+                Process.Start(ConfigurationSettings.ConfigurationPath);
             }
             catch (Exception ex)
             {
                 richTextBoxInformation.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
             }
+        }
+
+        private void openTEAMToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("Team.exe");
         }
     }
 }

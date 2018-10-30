@@ -62,15 +62,13 @@ namespace Virtual_EDW
                 fs.Close();
 
                 // These variables are used as global vairables throughout the application
-                var configurationSettingObject = new ConfigurationSettings();
-                configurationSettingObject.ConfigurationPath = configList["ConfigurationPath"];
-                configurationSettingObject.OutputPath = configList["OutputPath"];
+                ConfigurationSettings.ConfigurationPath = configList["ConfigurationPath"];
+                ConfigurationSettings.OutputPath = configList["OutputPath"];
 
                 // And the same for some of the VEDW specific (i.e. not shared with TEAM) variables
-                var configurationSettingObjectVedwSpecific = new ConfigurationSettingsVedwSpecific();
-                configurationSettingObjectVedwSpecific.EnableUnicode = configList["EnableUnicode"];
-                configurationSettingObjectVedwSpecific.DisableHash = configList["DisableHash"];
-                configurationSettingObjectVedwSpecific.HashKeyOutputType = configList["HashKeyOutputType"];
+                ConfigurationSettingsVedwSpecific.EnableUnicode = configList["EnableUnicode"];
+                ConfigurationSettingsVedwSpecific.DisableHash = configList["DisableHash"];
+                ConfigurationSettingsVedwSpecific.HashKeyOutputType = configList["HashKeyOutputType"];
             }
             catch (Exception)
             {
@@ -119,64 +117,55 @@ namespace Virtual_EDW
 
                 // These variables are used as global vairables throughout the application
                 // They will be set once after startup
-                var configurationSettingObject = new ConfigurationSettings();
 
-                configurationSettingObject.ConnectionStringSource = connectionStringSource;
-                configurationSettingObject.ConnectionStringStg = connectionStringStg;
-                configurationSettingObject.ConnectionStringHstg = connectionStringHstg;
-                configurationSettingObject.ConnectionStringInt = connectionStringInt;
-                configurationSettingObject.ConnectionStringOmd = connectionStringOmd;
-                configurationSettingObject.ConnectionStringPres = connectionStringPres;
+                ConfigurationSettings.ConnectionStringSource = connectionStringSource;
+                ConfigurationSettings.ConnectionStringStg = connectionStringStg;
+                ConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
+                ConfigurationSettings.ConnectionStringInt = connectionStringInt;
+                ConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
+                ConfigurationSettings.ConnectionStringPres = connectionStringPres;
 
-                configurationSettingObject.metadataRepositoryType = configList["metadataRepositoryType"];
+                //ConfigurationSetting.metadataRepositoryType = configList["metadataRepositoryType"];
 
-                configurationSettingObject.StgTablePrefixValue = configList["StagingAreaPrefix"];
-                configurationSettingObject.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
-                configurationSettingObject.HubTablePrefixValue = configList["HubTablePrefix"];
-                configurationSettingObject.SatTablePrefixValue = configList["SatTablePrefix"];
-                configurationSettingObject.LinkTablePrefixValue = configList["LinkTablePrefix"];
-                configurationSettingObject.LsatPrefixValue = configList["LinkSatTablePrefix"];
+                ConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
+                ConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
+                ConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];
+                ConfigurationSettings.SatTablePrefixValue = configList["SatTablePrefix"];
+                ConfigurationSettings.LinkTablePrefixValue = configList["LinkTablePrefix"];
+                ConfigurationSettings.LsatPrefixValue = configList["LinkSatTablePrefix"];
+                ConfigurationSettings.DwhKeyIdentifier = configList["KeyIdentifier"];
+                ConfigurationSettings.PsaKeyLocation = configList["PSAKeyLocation"];
+                ConfigurationSettings.TableNamingLocation = configList["TableNamingLocation"];
+                ConfigurationSettings.KeyNamingLocation = configList["KeyNamingLocation"];
+                ConfigurationSettings.SchemaName = configList["SchemaName"];
+                ConfigurationSettings.SourceSystemPrefix = configList["SourceSystemPrefix"];
 
-                configurationSettingObject.DwhKeyIdentifier = configList["KeyIdentifier"];
-                configurationSettingObject.PsaKeyLocation = configList["PSAKeyLocation"];
-                configurationSettingObject.TableNamingLocation = configList["TableNamingLocation"];
-                configurationSettingObject.KeyNamingLocation = configList["KeyNamingLocation"];
-
-                configurationSettingObject.SchemaName = configList["SchemaName"];
-                configurationSettingObject.SourceSystemPrefix = configList["SourceSystemPrefix"];
-
-                configurationSettingObject.EventDateTimeAttribute = configList["EventDateTimeStamp"];
-                configurationSettingObject.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
-                configurationSettingObject.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
-                configurationSettingObject.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
-                configurationSettingObject.RecordSourceAttribute = configList["RecordSourceAttribute"];
-                configurationSettingObject.EtlProcessAttribute = configList["ETLProcessID"];
-                configurationSettingObject.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
-                configurationSettingObject.RowIdAttribute = configList["RowID"];
-                configurationSettingObject.RecordChecksumAttribute = configList["RecordChecksum"];
-                configurationSettingObject.CurrentRowAttribute = configList["CurrentRecordAttribute"];
-                configurationSettingObject.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
-
-                configurationSettingObject.EnableAlternativeRecordSourceAttribute = configList["AlternativeRecordSourceFunction"];
-                configurationSettingObject.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
-
-                configurationSettingObject.EnableAlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTSFunction"];
-                configurationSettingObject.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
-
-                configurationSettingObject.EnableAlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTSFunction"];
-                configurationSettingObject.AlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTS"];
-
-
-                configurationSettingObject.SourceDatabaseName = configList["SourceDatabase"];
-                configurationSettingObject.StagingDatabaseName = configList["StagingDatabase"];
-                configurationSettingObject.PsaDatabaseName = configList["PersistentStagingDatabase"];
-                configurationSettingObject.IntegrationDatabaseName = configList["IntegrationDatabase"];
-                configurationSettingObject.PresentationDatabaseName = configList["PresentationDatabase"];
-
-                configurationSettingObject.OutputPath = configList["OutputPath"];
-                configurationSettingObject.ConfigurationPath = configList["ConfigurationPath"];
-
-                configurationSettingObject.LinkedServer = configList["LinkedServerName"];
+                ConfigurationSettings.EventDateTimeAttribute = configList["EventDateTimeStamp"];
+                ConfigurationSettings.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
+                ConfigurationSettings.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
+                ConfigurationSettings.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
+                ConfigurationSettings.RecordSourceAttribute = configList["RecordSourceAttribute"];
+                ConfigurationSettings.EtlProcessAttribute = configList["ETLProcessID"];
+                ConfigurationSettings.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
+                ConfigurationSettings.RowIdAttribute = configList["RowID"];
+                ConfigurationSettings.RecordChecksumAttribute = configList["RecordChecksum"];
+                ConfigurationSettings.CurrentRowAttribute = configList["CurrentRecordAttribute"];
+                ConfigurationSettings.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
+                ConfigurationSettings.EnableAlternativeRecordSourceAttribute = configList["AlternativeRecordSourceFunction"];
+                ConfigurationSettings.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
+                ConfigurationSettings.EnableAlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTSFunction"];
+                ConfigurationSettings.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
+                
+                ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTSFunction"];
+                ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTS"];
+                ConfigurationSettings.SourceDatabaseName = configList["SourceDatabase"];
+                ConfigurationSettings.StagingDatabaseName = configList["StagingDatabase"];
+                ConfigurationSettings.PsaDatabaseName = configList["PersistentStagingDatabase"];
+                ConfigurationSettings.IntegrationDatabaseName = configList["IntegrationDatabase"];
+                ConfigurationSettings.PresentationDatabaseName = configList["PresentationDatabase"];
+                ConfigurationSettings.OutputPath = configList["OutputPath"];
+                ConfigurationSettings.ConfigurationPath = configList["ConfigurationPath"];
+                ConfigurationSettings.LinkedServer = configList["LinkedServerName"];
 
 
             }
@@ -186,403 +175,127 @@ namespace Virtual_EDW
             }
         }
 
-        public class ConfigurationSettingsVedwSpecific
+
+        /// <summary>
+        /// These are the VEDW specific configuration settings (i.e. not TEAM driven)
+        /// </summary>
+        internal static class ConfigurationSettingsVedwSpecific
         {
             // Unicode checkbox
-            private static string _enableUnicode;
-            public string EnableUnicode
-            {
-                get { return _enableUnicode; }
-                set { _enableUnicode = value; }
-            }
+            public static string EnableUnicode { get; set; }
 
             // Disable hash checkbox (use natural business key)
-            private static string _disableHash;
-            public string DisableHash
-            {
-                get { return _disableHash; }
-                set { _disableHash = value; }
-            }
+            public static string DisableHash { get; set; }
 
             // Toggle output for the hash (binary or character)
-            private static string _hashKeyOutputType;
-            public string HashKeyOutputType
-            {
-                get { return _hashKeyOutputType; }
-                set { _hashKeyOutputType = value; }
-            }
-
+            public static string HashKeyOutputType { get; set; }
         }
 
-        public class ConfigurationSettings
+        /// <summary>
+        /// These settings are driven by the TEAM application, so can't be saved from VEDW.
+        /// They have to be updated through TEAM.
+        /// </summary>
+        internal static class ConfigurationSettings
         {
-
             //Prefixes
-            private static string _localStgPrefix;
-            public string StgTablePrefixValue
-            {
-                get { return _localStgPrefix; }
-                set { _localStgPrefix = value; }
-            }
-
-            private static string _localPsaPrefix;
-            public string PsaTablePrefixValue
-            {
-                get { return _localPsaPrefix; }
-                set { _localPsaPrefix = value; }
-            }
-
-            private static string _localHubPrefix;
-            public string HubTablePrefixValue
-            {
-                get { return _localHubPrefix; }
-                set { _localHubPrefix = value; }
-            }
-
-            private static string _localSatPrefix;
-            public string SatTablePrefixValue
-            {
-                get { return _localSatPrefix; }
-                set { _localSatPrefix = value; }
-            }
-
-            private static string _localLnkPrefix;
-            public string LinkTablePrefixValue
-            {
-                get { return _localLnkPrefix; }
-                set { _localLnkPrefix = value; }
-            }
-
-            private static string _localLsatPrefix;
-            public string LsatPrefixValue
-            {
-                get { return _localLsatPrefix; }
-                set { _localLsatPrefix = value; }
-            }
+            internal static string StgTablePrefixValue { get; set; }
+            internal static string PsaTablePrefixValue { get; set; }
+            internal static string HubTablePrefixValue { get; set; }
+            internal static string SatTablePrefixValue { get; set; }
+            internal static string LinkTablePrefixValue { get; set; }
+            internal static string LsatPrefixValue { get; set; }
 
             //Connection strings
-            private static string _connectionStringSource;
-            public string ConnectionStringSource
-            {
-                get { return _connectionStringSource; }
-                set { _connectionStringSource = value; }
-            }
+            internal static string ConnectionStringSource { get; set; }
+            internal static string ConnectionStringStg { get; set; }
+            internal static string ConnectionStringHstg { get; set; }
+            internal static string ConnectionStringInt { get; set; }
+            internal static string ConnectionStringPres { get; set; }
+            internal static string ConnectionStringOmd { get; set; }
 
-            private static string _connectionStringStg;
-            public string ConnectionStringStg
-            {
-                get { return _connectionStringStg; }
-                set { _connectionStringStg = value; }
-            }
+            internal static string DwhKeyIdentifier { get; set; }
+            internal static string PsaKeyLocation { get; set; }
+            internal static string SchemaName { get; set; }
 
-            private static string _connectionStringHstg;
-            public string ConnectionStringHstg
-            {
-                get { return _connectionStringHstg; }
-                set { _connectionStringHstg = value; }
-            }
+            internal static string SourceSystemPrefix { get; set; }
 
-            private static string _connectionStringInt;
-            public string ConnectionStringInt
-            {
-                get { return _connectionStringInt; }
-                set { _connectionStringInt = value; }
-            }
+            internal static string EventDateTimeAttribute { get; set; }
 
-            private static string _connectionStringPres;
-            public string ConnectionStringPres
-            {
-                get { return _connectionStringPres; }
-                set { _connectionStringPres = value; }
-            }
+            internal static string LoadDateTimeAttribute { get; set; }
 
-            private static string _connectionStringOmd;
-            public string ConnectionStringOmd
-            {
-                get { return _connectionStringOmd; }
-                set { _connectionStringOmd = value; }
-            }
+            internal static string ExpiryDateTimeAttribute { get; set; }
+
+            internal static string ChangeDataCaptureAttribute { get; set; }
+
+            internal static string RecordSourceAttribute { get; set; }
+
+            internal static string EtlProcessAttribute { get; set; }
 
 
+            internal static string EtlProcessUpdateAttribute { get; set; }
 
-            private static string _dwhKeyIdentifier;
-            public string DwhKeyIdentifier
-            {
-                get { return _dwhKeyIdentifier; }
-                set { _dwhKeyIdentifier = value; }
-            }
+            internal static string RowIdAttribute { get; set; }
 
-            private static string _psaKeyLocation;
-            public string PsaKeyLocation
-            {
-                get { return _psaKeyLocation; }
-                set { _psaKeyLocation = value; }
-            }
+            internal static string RecordChecksumAttribute { get; set; }
 
-            private static string _schemaName;
-            public string SchemaName
-            {
-                get { return _schemaName; }
-                set { _schemaName = value; }
-            }
-
-            private static string _sourceSystemPrefix;
-            public string SourceSystemPrefix
-            {
-                get { return _sourceSystemPrefix; }
-                set { _sourceSystemPrefix = value; }
-            }
-
-            private static string _eventDateTimeAttribute;
-            public string EventDateTimeAttribute
-            {
-                get { return _eventDateTimeAttribute; }
-                set { _eventDateTimeAttribute = value; }
-            }
-
-            private static string _loadDateTimeAttribute;
-            public string LoadDateTimeAttribute
-            {
-                get { return _loadDateTimeAttribute; }
-                set { _loadDateTimeAttribute = value; }
-            }
-
-            private static string _expiryDateTimeAttribute;
-            public string ExpiryDateTimeAttribute
-            {
-                get { return _expiryDateTimeAttribute; }
-                set { _expiryDateTimeAttribute = value; }
-            }
-
-            private static string _changeDataCaptureAttribute;
-            public string ChangeDataCaptureAttribute
-            {
-                get { return _changeDataCaptureAttribute; }
-                set { _changeDataCaptureAttribute = value; }
-            }
-
-            private static string _recordSourceAttribute;
-            public string RecordSourceAttribute
-            {
-                get { return _recordSourceAttribute; }
-                set { _recordSourceAttribute = value; }
-            }
-
-            private static string _etlProcessAttribute;
-            public string EtlProcessAttribute
-            {
-                get { return _etlProcessAttribute; }
-                set { _etlProcessAttribute = value; }
-            }
+            internal static string CurrentRowAttribute { get; set; }
 
 
-            private static string _etlProcessUpdateAttribute;
-            public string EtlProcessUpdateAttribute
-            {
-                get { return _etlProcessUpdateAttribute; }
-                set { _etlProcessUpdateAttribute = value; }
-            }
+            internal static string AlternativeRecordSourceAttribute { get; set; }
 
-            private static string _rowIdAttribute;
-            public string RowIdAttribute
-            {
-                get { return _rowIdAttribute; }
-                set { _rowIdAttribute = value; }
-            }
+            internal static string AlternativeLoadDateTimeAttribute { get; set; }
 
-            private static string _recordChecksumAttribute;
-            public string RecordChecksumAttribute
-            {
-                get { return _recordChecksumAttribute; }
-                set { _recordChecksumAttribute = value; }
-            }
+            internal static string AlternativeSatelliteLoadDateTimeAttribute { get; set; }
 
-            private static string _currentRowAttribute;
-            public string CurrentRowAttribute
-            {
-                get { return _currentRowAttribute; }
-                set { _currentRowAttribute = value; }
-            }
+            internal static string LogicalDeleteAttribute { get; set; }
 
+            internal static string SourceDatabaseName { get; set; }
 
-            private static string _alternativeRecordSourceAttribute;
-            public string AlternativeRecordSourceAttribute
-            {
-                get { return _alternativeRecordSourceAttribute; }
-                set { _alternativeRecordSourceAttribute = value; }
-            }
+            internal static string StagingDatabaseName { get; set; }
 
-            private static string _alternativeLoadDateTimeAttribute;
-            public string AlternativeLoadDateTimeAttribute
-            {
-                get { return _alternativeLoadDateTimeAttribute; }
-                set { _alternativeLoadDateTimeAttribute = value; }
-            }
+            internal static string PsaDatabaseName { get; set; }
 
-            private static string _alternativeSatelliteLoadDateTimeAttribute;
-            public string AlternativeSatelliteLoadDateTimeAttribute
-            {
-                get { return _alternativeSatelliteLoadDateTimeAttribute; }
-                set { _alternativeSatelliteLoadDateTimeAttribute = value; }
-            }
+            internal static string IntegrationDatabaseName { get; set; }
 
-            private static string _logicalDeleteAttribute;
-            public string LogicalDeleteAttribute
-            {
-                get { return _logicalDeleteAttribute; }
-                set { _logicalDeleteAttribute = value; }
-            }
+            internal static string PresentationDatabaseName { get; set; }
 
-            private static string _SourceDatabaseName;
-            public string SourceDatabaseName
-            {
-                get { return _SourceDatabaseName; }
-                set { _SourceDatabaseName = value; }
-            }
+            internal static string OutputPath { get; set; }
 
-            private static string _StagingDatabaseName;
-            public string StagingDatabaseName
-            {
-                get { return _StagingDatabaseName; }
-                set { _StagingDatabaseName = value; }
-            }
+            internal static string ConfigurationPath { get; set; }
 
-            private static string _PsaDatabaseName;
-            public string PsaDatabaseName
-            {
-                get { return _PsaDatabaseName; }
-                set { _PsaDatabaseName = value; }
-            }
+            internal static string LinkedServer { get; set; }
 
-            private static string _IntegrationDatabaseName;
-            public string IntegrationDatabaseName
-            {
-                get { return _IntegrationDatabaseName; }
-                set { _IntegrationDatabaseName = value; }
-            }
+            internal static string TableNamingLocation { get; set; }
 
-            private static string _PresentationDatabaseName;
-            public string PresentationDatabaseName
-            {
-                get { return _PresentationDatabaseName; }
-                set { _PresentationDatabaseName = value; }
-            }
+            internal static string KeyNamingLocation { get; set; }
 
+            internal static string EnableAlternativeSatelliteLoadDateTimeAttribute { get; set; }
 
+            internal static string EnableAlternativeRecordSourceAttribute { get; set; }
 
-            private static string _OutputPath;
-            public string OutputPath
-            {
-                get { return _OutputPath; }
-                set { _OutputPath = value; }
-            }
+            internal static string EnableAlternativeLoadDateTimeAttribute { get; set; }
 
-            private static string _ConfigurationPath;
-            public string ConfigurationPath
-            {
-                get { return _ConfigurationPath; }
-                set { _ConfigurationPath = value; }
-            }
+            internal static string MetadataRepositoryType { get; set; }
 
-            private static string _LinkedServer;
-            public string LinkedServer
-            {
-                get { return _LinkedServer; }
-                set { _LinkedServer = value; }
-            }
-
-
-
-            private static string _TableNamingLocation;
-            public string TableNamingLocation
-            {
-                get { return _TableNamingLocation; }
-                set { _TableNamingLocation = value; }
-            }
-
-            private static string _KeyNamingLocation;
-            public string KeyNamingLocation
-            {
-                get { return _KeyNamingLocation; }
-                set { _KeyNamingLocation = value; }
-            }
-
-
-
-            private static string _EnableAlternativeSatelliteLoadDateTimeAttribute;
-            public string EnableAlternativeSatelliteLoadDateTimeAttribute
-            {
-                get { return _EnableAlternativeSatelliteLoadDateTimeAttribute; }
-                set { _EnableAlternativeSatelliteLoadDateTimeAttribute = value; }
-            }
-            private static string _EnableAlternativeRecordSourceAttribute;
-            public string EnableAlternativeRecordSourceAttribute
-            {
-                get { return _EnableAlternativeRecordSourceAttribute; }
-                set { _EnableAlternativeRecordSourceAttribute = value; }
-            }
-
-            private static string _EnableAlternativeLoadDateTimeAttribute;
-            public string EnableAlternativeLoadDateTimeAttribute
-            {
-                get { return _EnableAlternativeLoadDateTimeAttribute; }
-                set { _EnableAlternativeLoadDateTimeAttribute = value; }
-            }
-
-            private static string _metadataRepositoryType;
-            public string metadataRepositoryType
-            {
-                get { return _metadataRepositoryType; }
-                set { _metadataRepositoryType = value; }
-            }
+            internal static string WorkingEnvironment { get; set; }
         }
 
-        public class GlobalParameters
+        internal static class GlobalParameters
         {
-            // These variables are used as global vairables throughout the applicatoin
-            private static string _configurationLocalPath = Application.StartupPath + @"\Configuration\";
-            private static string _outputLocalPath = Application.StartupPath + @"\Output\";
+            // TEAM core path parameters
+            public static string ConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
+            public static string OutputPath { get; set; } = Application.StartupPath + @"\Output\";
 
-            private static string _fileConfigLocalName = "TEAM_configuration.txt";
-            private static string _filePathLocalName = "TEAM_Path_configuration.txt";
+            public static string ConfigfileName { get; set; } = "TEAM_configuration";
+            public static string PathfileName { get; set; } = "TEAM_Path_configuration";
+            public static string ValidationFileName { get; set; } = "TEAM_validation";
+            public static string FileExtension { get; set; } = ".txt";
 
-            private static string _jsonTableMappingFileName = "TEAM_Table_Mapping.json";
-            private static string _jsonAttributeMappingFileName = "TEAM_Attribute_Mapping.json";
-
-            public static string ConfigurationPath
-            {
-                get { return _configurationLocalPath; }
-                set { _configurationLocalPath = value; }
-            }
-
-            public static string OutputPath
-            {
-                get { return _outputLocalPath; }
-                set { _outputLocalPath = value; }
-            }
-
-            public static string ConfigfileName
-            {
-                get { return _fileConfigLocalName; }
-                set { _fileConfigLocalName = value; }
-            }
-
-            public static string PathfileName
-            {
-                get { return _filePathLocalName; }
-                set { _filePathLocalName = value; }
-            }
-
-            public static string jsonTableMappingFileName
-            {
-                get { return _jsonTableMappingFileName; }
-                set { _jsonTableMappingFileName = value; }
-            }
-            public static string jsonAttributeMappingFileName
-            {
-                get { return _jsonAttributeMappingFileName; }
-                set { _jsonAttributeMappingFileName = value; }
-            }
+            // Json file name parameters
+            public static string JsonTableMappingFileName { get; set; } = "TEAM_Table_Mapping";
+            public static string JsonAttributeMappingFileName { get; set; } = "TEAM_Attribute_Mapping";
+            public static string JsonModelMetadataFileName { get; set; } = "TEAM_Model_Metadata";
+            public static string JsonExtension { get; set; } = ".json";
         }
 
 
@@ -613,10 +326,8 @@ namespace Virtual_EDW
 
         public KeyValuePair<int, int> GetVersion(int selectedVersion)
         {
-            var configurationSettings = new ConfigurationSettings();
 
-
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
 
             var currentVersion = selectedVersion;
             var majorRelease = new int();
@@ -665,11 +376,13 @@ namespace Virtual_EDW
             }
         }
 
+        /// <summary>
+        /// Display the most recent version in order to display the most recent version
+        /// </summary>
+        /// <returns>The version ID as an integer</returns>
         protected int GetMaxVersionId()
         {
-            var configurationSettings = new ConfigurationSettings();
-
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
             var versionId = new int();
 
             try
@@ -704,9 +417,7 @@ namespace Virtual_EDW
         }
         protected int GetVersionCount()
         {
-            var configurationSettings = new ConfigurationSettings();
-
-            var connOmd = new SqlConnection { ConnectionString = configurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
             var versionCount = new int();
 
             try
