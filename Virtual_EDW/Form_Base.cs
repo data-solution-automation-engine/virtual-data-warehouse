@@ -39,42 +39,7 @@ namespace Virtual_EDW
         }
 
 
-        public static void InitialiseRootPath()
-        {
-            // This is the hardcoded base path that always needs to be accessible, it has the main file which can locate the rest of the configuration
-            var configList = new Dictionary<string, string>();
-            var fs = new FileStream(GlobalParameters.ConfigurationPath + GlobalParameters.PathfileName, FileMode.Open, FileAccess.Read);
-            var sr = new StreamReader(fs);
 
-            try
-            {
-                string textline;
-                while ((textline = sr.ReadLine()) != null)
-                {
-                    if (textline.IndexOf(@"/*", StringComparison.Ordinal) == -1)
-                    {
-                        var line = textline.Split('|');
-                        configList.Add(line[0], line[1]);
-                    }
-                }
-
-                sr.Close();
-                fs.Close();
-
-                // These variables are used as global vairables throughout the application
-                ConfigurationSettings.ConfigurationPath = configList["ConfigurationPath"];
-                ConfigurationSettings.OutputPath = configList["OutputPath"];
-
-                // And the same for some of the VEDW specific (i.e. not shared with TEAM) variables
-                ConfigurationSettingsVedwSpecific.EnableUnicode = configList["EnableUnicode"];
-                ConfigurationSettingsVedwSpecific.DisableHash = configList["DisableHash"];
-                ConfigurationSettingsVedwSpecific.HashKeyOutputType = configList["HashKeyOutputType"];
-            }
-            catch (Exception)
-            {
-                // richTextBoxInformation.AppendText("\r\n\r\nAn error occured while interpreting the configuration file. The original error is: '" + ex.Message + "'");
-            }
-        }
 
         public static void InitialiseConfiguration(string chosenFile)
         {
@@ -118,54 +83,53 @@ namespace Virtual_EDW
                 // These variables are used as global vairables throughout the application
                 // They will be set once after startup
 
-                ConfigurationSettings.ConnectionStringSource = connectionStringSource;
-                ConfigurationSettings.ConnectionStringStg = connectionStringStg;
-                ConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
-                ConfigurationSettings.ConnectionStringInt = connectionStringInt;
-                ConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
-                ConfigurationSettings.ConnectionStringPres = connectionStringPres;
+                TeamConfigurationSettings.ConnectionStringSource = connectionStringSource;
+                TeamConfigurationSettings.ConnectionStringStg = connectionStringStg;
+                TeamConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
+                TeamConfigurationSettings.ConnectionStringInt = connectionStringInt;
+                TeamConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
+                TeamConfigurationSettings.ConnectionStringPres = connectionStringPres;
 
                 //ConfigurationSetting.metadataRepositoryType = configList["metadataRepositoryType"];
 
-                ConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
-                ConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
-                ConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];
-                ConfigurationSettings.SatTablePrefixValue = configList["SatTablePrefix"];
-                ConfigurationSettings.LinkTablePrefixValue = configList["LinkTablePrefix"];
-                ConfigurationSettings.LsatPrefixValue = configList["LinkSatTablePrefix"];
-                ConfigurationSettings.DwhKeyIdentifier = configList["KeyIdentifier"];
-                ConfigurationSettings.PsaKeyLocation = configList["PSAKeyLocation"];
-                ConfigurationSettings.TableNamingLocation = configList["TableNamingLocation"];
-                ConfigurationSettings.KeyNamingLocation = configList["KeyNamingLocation"];
-                ConfigurationSettings.SchemaName = configList["SchemaName"];
-                ConfigurationSettings.SourceSystemPrefix = configList["SourceSystemPrefix"];
+                TeamConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
+                TeamConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
+                TeamConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];
+                TeamConfigurationSettings.SatTablePrefixValue = configList["SatTablePrefix"];
+                TeamConfigurationSettings.LinkTablePrefixValue = configList["LinkTablePrefix"];
+                TeamConfigurationSettings.LsatPrefixValue = configList["LinkSatTablePrefix"];
+                TeamConfigurationSettings.DwhKeyIdentifier = configList["KeyIdentifier"];
+                TeamConfigurationSettings.PsaKeyLocation = configList["PSAKeyLocation"];
+                TeamConfigurationSettings.TableNamingLocation = configList["TableNamingLocation"];
+                TeamConfigurationSettings.KeyNamingLocation = configList["KeyNamingLocation"];
+                TeamConfigurationSettings.SchemaName = configList["SchemaName"];
+                TeamConfigurationSettings.SourceSystemPrefix = configList["SourceSystemPrefix"];
 
-                ConfigurationSettings.EventDateTimeAttribute = configList["EventDateTimeStamp"];
-                ConfigurationSettings.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
-                ConfigurationSettings.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
-                ConfigurationSettings.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
-                ConfigurationSettings.RecordSourceAttribute = configList["RecordSourceAttribute"];
-                ConfigurationSettings.EtlProcessAttribute = configList["ETLProcessID"];
-                ConfigurationSettings.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
-                ConfigurationSettings.RowIdAttribute = configList["RowID"];
-                ConfigurationSettings.RecordChecksumAttribute = configList["RecordChecksum"];
-                ConfigurationSettings.CurrentRowAttribute = configList["CurrentRecordAttribute"];
-                ConfigurationSettings.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
-                ConfigurationSettings.EnableAlternativeRecordSourceAttribute = configList["AlternativeRecordSourceFunction"];
-                ConfigurationSettings.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
-                ConfigurationSettings.EnableAlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTSFunction"];
-                ConfigurationSettings.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
+                TeamConfigurationSettings.EventDateTimeAttribute = configList["EventDateTimeStamp"];
+                TeamConfigurationSettings.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
+                TeamConfigurationSettings.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
+                TeamConfigurationSettings.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
+                TeamConfigurationSettings.RecordSourceAttribute = configList["RecordSourceAttribute"];
+                TeamConfigurationSettings.EtlProcessAttribute = configList["ETLProcessID"];
+                TeamConfigurationSettings.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
+                TeamConfigurationSettings.RowIdAttribute = configList["RowID"];
+                TeamConfigurationSettings.RecordChecksumAttribute = configList["RecordChecksum"];
+                TeamConfigurationSettings.CurrentRowAttribute = configList["CurrentRecordAttribute"];
+                TeamConfigurationSettings.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
+                TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute = configList["AlternativeRecordSourceFunction"];
+                TeamConfigurationSettings.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
+                TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTSFunction"];
+                TeamConfigurationSettings.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
                 
-                ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTSFunction"];
-                ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTS"];
-                ConfigurationSettings.SourceDatabaseName = configList["SourceDatabase"];
-                ConfigurationSettings.StagingDatabaseName = configList["StagingDatabase"];
-                ConfigurationSettings.PsaDatabaseName = configList["PersistentStagingDatabase"];
-                ConfigurationSettings.IntegrationDatabaseName = configList["IntegrationDatabase"];
-                ConfigurationSettings.PresentationDatabaseName = configList["PresentationDatabase"];
-                ConfigurationSettings.OutputPath = configList["OutputPath"];
-                ConfigurationSettings.ConfigurationPath = configList["ConfigurationPath"];
-                ConfigurationSettings.LinkedServer = configList["LinkedServerName"];
+                TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTSFunction"];
+                TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTS"];
+                TeamConfigurationSettings.SourceDatabaseName = configList["SourceDatabase"];
+                TeamConfigurationSettings.StagingDatabaseName = configList["StagingDatabase"];
+                TeamConfigurationSettings.PsaDatabaseName = configList["PersistentStagingDatabase"];
+                TeamConfigurationSettings.IntegrationDatabaseName = configList["IntegrationDatabase"];
+                TeamConfigurationSettings.PresentationDatabaseName = configList["PresentationDatabase"];
+
+                TeamConfigurationSettings.LinkedServer = configList["LinkedServerName"];
 
 
             }
@@ -177,25 +141,42 @@ namespace Virtual_EDW
 
 
         /// <summary>
-        /// These are the VEDW specific configuration settings (i.e. not TEAM driven)
+        /// Application specific global parameters - not meant to be updated via the software
         /// </summary>
-        internal static class ConfigurationSettingsVedwSpecific
+        internal static class GlobalParameters
         {
-            // Unicode checkbox
-            public static string EnableUnicode { get; set; }
+            // VEDW core path parameters, not meant to be updated
+            public static string VedwConfigurationPath { get; } = Application.StartupPath + @"\Configuration\";
+            public static string VedwConfigurationfileName { get; } = "VEDW_configuration";
+            public static string VedwFileExtension { get; } = ".txt";
 
-            // Disable hash checkbox (use natural business key)
-            public static string DisableHash { get; set; }
-
-            // Toggle output for the hash (binary or character)
-            public static string HashKeyOutputType { get; set; }
+            // TEAM core file names, not meant to be updated
+            public static string TeamConfigurationfileName { get; } = "TEAM_configuration";
+            public static string TeamPathfileName { get; } = "TEAM_Path_configuration";
         }
+
+
+        /// <summary>
+        /// These are the VEDW specific configuration settings (i.e. not TEAM driven)
+        /// Elements in this class are saved to / retreived from the VEDW Core Settings file
+        /// </summary>
+        internal static class VedwConfigurationSettings
+        {
+            public static string EnableUnicode { get; set; } // Unicode checkbox
+            public static string DisableHash { get; set; } // Disable hash checkbox (use natural business key)
+            public static string HashKeyOutputType { get; set; } // Toggle output for the hash (binary or character)
+
+            public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
+            public static string VedwOutputPath { get; set; } = Application.StartupPath + @"\Configuration\";
+            public static string WorkingEnvironment { get; set; }
+        }
+
 
         /// <summary>
         /// These settings are driven by the TEAM application, so can't be saved from VEDW.
-        /// They have to be updated through TEAM.
+        /// They have to be updated through TEAM, i.e. via the Team Configuration / Settings file in the designated directory.
         /// </summary>
-        internal static class ConfigurationSettings
+        internal static class TeamConfigurationSettings
         {
             //Prefixes
             internal static string StgTablePrefixValue { get; set; }
@@ -207,14 +188,22 @@ namespace Virtual_EDW
 
             //Connection strings
             internal static string ConnectionStringSource { get; set; }
+
             internal static string ConnectionStringStg { get; set; }
+
             internal static string ConnectionStringHstg { get; set; }
+
             internal static string ConnectionStringInt { get; set; }
+
             internal static string ConnectionStringPres { get; set; }
+
             internal static string ConnectionStringOmd { get; set; }
 
+
             internal static string DwhKeyIdentifier { get; set; }
+
             internal static string PsaKeyLocation { get; set; }
+
             internal static string SchemaName { get; set; }
 
             internal static string SourceSystemPrefix { get; set; }
@@ -259,10 +248,6 @@ namespace Virtual_EDW
 
             internal static string PresentationDatabaseName { get; set; }
 
-            internal static string OutputPath { get; set; }
-
-            internal static string ConfigurationPath { get; set; }
-
             internal static string LinkedServer { get; set; }
 
             internal static string TableNamingLocation { get; set; }
@@ -276,27 +261,9 @@ namespace Virtual_EDW
             internal static string EnableAlternativeLoadDateTimeAttribute { get; set; }
 
             internal static string MetadataRepositoryType { get; set; }
-
-            internal static string WorkingEnvironment { get; set; }
         }
 
-        internal static class GlobalParameters
-        {
-            // TEAM core path parameters
-            public static string ConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
-            public static string OutputPath { get; set; } = Application.StartupPath + @"\Output\";
 
-            public static string ConfigfileName { get; set; } = "TEAM_configuration";
-            public static string PathfileName { get; set; } = "TEAM_Path_configuration";
-            public static string ValidationFileName { get; set; } = "TEAM_validation";
-            public static string FileExtension { get; set; } = ".txt";
-
-            // Json file name parameters
-            public static string JsonTableMappingFileName { get; set; } = "TEAM_Table_Mapping";
-            public static string JsonAttributeMappingFileName { get; set; } = "TEAM_Attribute_Mapping";
-            public static string JsonModelMetadataFileName { get; set; } = "TEAM_Model_Metadata";
-            public static string JsonExtension { get; set; } = ".json";
-        }
 
 
         public DataTable GetDataTable(ref SqlConnection sqlConnection, string sql)
@@ -327,7 +294,7 @@ namespace Virtual_EDW
         public KeyValuePair<int, int> GetVersion(int selectedVersion)
         {
 
-            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
 
             var currentVersion = selectedVersion;
             var majorRelease = new int();
@@ -382,7 +349,7 @@ namespace Virtual_EDW
         /// <returns>The version ID as an integer</returns>
         protected int GetMaxVersionId()
         {
-            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var versionId = new int();
 
             try
@@ -417,7 +384,7 @@ namespace Virtual_EDW
         }
         protected int GetVersionCount()
         {
-            var connOmd = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var versionCount = new int();
 
             try

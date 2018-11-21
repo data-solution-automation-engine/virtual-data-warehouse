@@ -35,7 +35,7 @@ namespace Virtual_EDW
         private void InitializeComboBox()
         {
             //Populate the dropdown combobox for time selection in PIT
-            comboBoxTimePerspective.Items.Add(ConfigurationSettings.LoadDateTimeAttribute);
+            comboBoxTimePerspective.Items.Add(TeamConfigurationSettings.LoadDateTimeAttribute);
 
             comboBoxTimePerspective.SelectedIndex = 0;
             comboBoxChangeCondensing.SelectedIndex = 0;
@@ -58,16 +58,16 @@ namespace Virtual_EDW
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    radioButtonPSA.Checked ? ConfigurationSettings.ConnectionStringHstg : ConfigurationSettings.ConnectionStringInt
+                    radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
             };
 
-            var hubIdentifier = ConfigurationSettings.HubTablePrefixValue;
+            var hubIdentifier = TeamConfigurationSettings.HubTablePrefixValue;
 
-            if (ConfigurationSettings.TableNamingLocation == "Prefix")
+            if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
             {
                 hubIdentifier = string.Concat(hubIdentifier, "_%"); // E.g. HSH_%, a prefix
             }
-            else if (ConfigurationSettings.TableNamingLocation == "Suffix")
+            else if (TeamConfigurationSettings.TableNamingLocation == "Suffix")
             {
                 hubIdentifier = string.Concat("%_", hubIdentifier); // E.g. %_HSH, a suffix
             }
@@ -141,24 +141,24 @@ namespace Virtual_EDW
             // Set connection depending on target area
             var conn = new SqlConnection
             {
-                ConnectionString = radioButtonPSA.Checked ? ConfigurationSettings.ConnectionStringHstg : ConfigurationSettings.ConnectionStringInt
+                ConnectionString = radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
             };
 
             // Retrieve the location of the key indicator (suffix or prefix)
-            var keyIdentifier = ConfigurationSettings.DwhKeyIdentifier;
+            var keyIdentifier = TeamConfigurationSettings.DwhKeyIdentifier;
             var suffixLocation ="Unknown";
-            var loadDateTimeStamp = ConfigurationSettings.LoadDateTimeAttribute;
+            var loadDateTimeStamp = TeamConfigurationSettings.LoadDateTimeAttribute;
 
-            var recordSource = ConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True" ? ConfigurationSettings.AlternativeRecordSourceAttribute : ConfigurationSettings.RecordSourceAttribute;
+            var recordSource = TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True" ? TeamConfigurationSettings.AlternativeRecordSourceAttribute : TeamConfigurationSettings.RecordSourceAttribute;
 
-            var etlProcessId = ConfigurationSettings.EtlProcessAttribute;
+            var etlProcessId = TeamConfigurationSettings.EtlProcessAttribute;
 
-            if (ConfigurationSettings.KeyNamingLocation == "Prefix")
+            if (TeamConfigurationSettings.KeyNamingLocation == "Prefix")
             {
                 keyIdentifier = string.Concat(keyIdentifier, "_%"); // E.g. HSH_%, a prefix
                 suffixLocation = "prefix";
             }
-            else if (ConfigurationSettings.KeyNamingLocation == "Suffix")
+            else if (TeamConfigurationSettings.KeyNamingLocation == "Suffix")
             {
                 keyIdentifier = string.Concat("%_", keyIdentifier); // E.g. %_HSH, a suffix
                 suffixLocation = "suffix";
@@ -169,17 +169,17 @@ namespace Virtual_EDW
             }
 
             // Retrieve the prefix/suffix settings for the tables (Hubs, Links, Sats)
-            var linkIdentifier = ConfigurationSettings.LinkTablePrefixValue;
-            var linkSatIdentifier = ConfigurationSettings.LinkTablePrefixValue;
-            var satIdentifier = ConfigurationSettings.SatTablePrefixValue;
+            var linkIdentifier = TeamConfigurationSettings.LinkTablePrefixValue;
+            var linkSatIdentifier = TeamConfigurationSettings.LinkTablePrefixValue;
+            var satIdentifier = TeamConfigurationSettings.SatTablePrefixValue;
 
-            if (ConfigurationSettings.TableNamingLocation == "Prefix")
+            if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
             {
                 linkIdentifier = string.Concat(linkIdentifier, "_%");
                 linkSatIdentifier = string.Concat(linkSatIdentifier, "_%");
                 satIdentifier = string.Concat(satIdentifier, "_%");
             }
-            else if (ConfigurationSettings.TableNamingLocation == "Suffix")
+            else if (TeamConfigurationSettings.TableNamingLocation == "Suffix")
             {
                 linkIdentifier = string.Concat("%_", linkIdentifier);
                 linkSatIdentifier = string.Concat("%_", linkSatIdentifier);
@@ -257,7 +257,7 @@ namespace Virtual_EDW
             var hubSk = "Unknown";
             foreach (DataRow attribute in attributeSelection.Rows)
             {
-                if ("'"+attribute["TABLE_NAME"]+"'" == hubList && attribute["COLUMN_NAME"].ToString().Contains(ConfigurationSettings.DwhKeyIdentifier))
+                if ("'"+attribute["TABLE_NAME"]+"'" == hubList && attribute["COLUMN_NAME"].ToString().Contains(TeamConfigurationSettings.DwhKeyIdentifier))
                 {
                     hubSk=attribute["COLUMN_NAME"].ToString();
                 }
@@ -267,8 +267,8 @@ namespace Virtual_EDW
             string[] defaultAttributes =
             {
                 //_myParent.ConfigurationSettings.AlternativeLoadDateTimeAttribute,
-                ConfigurationSettings.LoadDateTimeAttribute,
-                ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute,
+                TeamConfigurationSettings.LoadDateTimeAttribute,
+                TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute,
                 //_myParent.ConfigurationSettings.ExpiryDateTimeAttribute,
                 hubSk
             };
@@ -276,13 +276,13 @@ namespace Virtual_EDW
             // Create an array of process attributes so these can be selected/checked easily later
             string[] systemAttributes =
             {
-                ConfigurationSettings.RecordSourceAttribute,
-                ConfigurationSettings.RowIdAttribute,
-                ConfigurationSettings.RecordChecksumAttribute,
-                ConfigurationSettings.EtlProcessAttribute,
-                ConfigurationSettings.CurrentRowAttribute,
-                ConfigurationSettings.EtlProcessUpdateAttribute,
-                ConfigurationSettings.AlternativeRecordSourceAttribute,
+                TeamConfigurationSettings.RecordSourceAttribute,
+                TeamConfigurationSettings.RowIdAttribute,
+                TeamConfigurationSettings.RecordChecksumAttribute,
+                TeamConfigurationSettings.EtlProcessAttribute,
+                TeamConfigurationSettings.CurrentRowAttribute,
+                TeamConfigurationSettings.EtlProcessUpdateAttribute,
+                TeamConfigurationSettings.AlternativeRecordSourceAttribute,
                 "ROW_NR",
                 "ROW_NUMBER"
             };
@@ -382,7 +382,7 @@ namespace Virtual_EDW
             //        row.Cells[2].Value = true;
            //     }
 
-                if ("'"+row.Cells[0].Value+"'" == hubList && row.Cells[1].Value.ToString().Contains(ConfigurationSettings.DwhKeyIdentifier))
+                if ("'"+row.Cells[0].Value+"'" == hubList && row.Cells[1].Value.ToString().Contains(TeamConfigurationSettings.DwhKeyIdentifier))
                 {
                     row.Cells[2].ReadOnly = true;
                     row.Cells[2].Style.BackColor = Color.LightGray;
@@ -485,33 +485,33 @@ namespace Virtual_EDW
 
             // Understand what the effective dates are for the Hub
             string hubEffectiveDate;
-            if (ConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+            if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
             {
-                hubEffectiveDate = ConfigurationSettings.AlternativeLoadDateTimeAttribute;
+                hubEffectiveDate = TeamConfigurationSettings.AlternativeLoadDateTimeAttribute;
             }
             else
             {
-                hubEffectiveDate = ConfigurationSettings.LoadDateTimeAttribute;
+                hubEffectiveDate = TeamConfigurationSettings.LoadDateTimeAttribute;
             }
 
             // Understand what the effective dates are for the Sat
             var satEffectiveDate = "Unknown";
-            satEffectiveDate = ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True" ? ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute : ConfigurationSettings.LoadDateTimeAttribute;
+            satEffectiveDate = TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True" ? TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute : TeamConfigurationSettings.LoadDateTimeAttribute;
 
             // Build up Hub, Sat and Link identifiers
-            var linkIdentifier = ConfigurationSettings.LinkTablePrefixValue;
-            var linkSatIdentifier = ConfigurationSettings.LinkTablePrefixValue;
-            var satIdentifier = ConfigurationSettings.SatTablePrefixValue;
-            var hubIdentifier = ConfigurationSettings.HubTablePrefixValue;
+            var linkIdentifier = TeamConfigurationSettings.LinkTablePrefixValue;
+            var linkSatIdentifier = TeamConfigurationSettings.LinkTablePrefixValue;
+            var satIdentifier = TeamConfigurationSettings.SatTablePrefixValue;
+            var hubIdentifier = TeamConfigurationSettings.HubTablePrefixValue;
 
-            if (ConfigurationSettings.TableNamingLocation == "Prefix")
+            if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
             {
                 linkIdentifier = string.Concat(linkIdentifier, "_");
                 linkSatIdentifier = string.Concat(linkSatIdentifier, "_");
                 satIdentifier = string.Concat(satIdentifier, "_");
                 hubIdentifier = string.Concat(hubIdentifier, "_");
             }
-            else if (ConfigurationSettings.TableNamingLocation == "Suffix")
+            else if (TeamConfigurationSettings.TableNamingLocation == "Suffix")
             {
                 linkIdentifier = string.Concat("_", linkIdentifier);
                 linkSatIdentifier = string.Concat("_", linkSatIdentifier);
@@ -530,7 +530,7 @@ namespace Virtual_EDW
                 if (integrationTable.Contains(hubIdentifier))
                 {
                     hubTable = integrationTable;
-                    if (integrationAttribute.Contains(ConfigurationSettings.DwhKeyIdentifier))
+                    if (integrationAttribute.Contains(TeamConfigurationSettings.DwhKeyIdentifier))
                     hubKey = integrationAttribute;
                 }             
                         
@@ -540,13 +540,13 @@ namespace Virtual_EDW
             var outputQuery = new StringBuilder();
 
             var satLoadDateTime = "";
-            if (ConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+            if (TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
             {
-                satLoadDateTime = ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute;
+                satLoadDateTime = TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute;
             }
             else
             {
-                satLoadDateTime = ConfigurationSettings.LoadDateTimeAttribute;
+                satLoadDateTime = TeamConfigurationSettings.LoadDateTimeAttribute;
             }
 
             outputQuery.AppendLine("SELECT");
@@ -726,7 +726,7 @@ namespace Virtual_EDW
                         outputQuery.AppendLine("      LEFT OUTER JOIN " + tableName);
                         outputQuery.AppendLine("        ON " + tableName + "." + hubKey + " = TimeRanges." + hubKey);
                         outputQuery.AppendLine("        AND " + tableName + "." + satEffectiveDate +" <= TimeRanges.PIT_EFFECTIVE_DATETIME");
-                        outputQuery.AppendLine("        AND " + tableName + "." +ConfigurationSettings.ExpiryDateTimeAttribute +" >= TimeRanges.PIT_EXPIRY_DATETIME");
+                        outputQuery.AppendLine("        AND " + tableName + "." +TeamConfigurationSettings.ExpiryDateTimeAttribute +" >= TimeRanges.PIT_EXPIRY_DATETIME");
                     }
                 }
             }

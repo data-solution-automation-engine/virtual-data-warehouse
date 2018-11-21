@@ -72,7 +72,7 @@ namespace Virtual_EDW
 
         private void buttonShowLog_Click(object sender, EventArgs e)
         {
-            Process.Start(GlobalParameters.ConfigurationPath + @"\Error_Log.txt");
+            Process.Start(GlobalParameters.VedwConfigurationPath + @"\Error_Log.txt");
         }
     }
 }

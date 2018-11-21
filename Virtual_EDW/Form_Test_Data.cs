@@ -59,7 +59,7 @@ namespace Virtual_EDW
             var connVariable = new SqlConnection();
 
             // Assign database connection string
-            connStg.ConnectionString = ConfigurationSettings.ConnectionStringStg;
+            connStg.ConnectionString = TeamConfigurationSettings.ConnectionStringStg;
 
             try
             {
@@ -98,24 +98,24 @@ namespace Virtual_EDW
                         testCaseQuery.AppendLine("-- Creating testcases for " + stgTableName);
                         testCaseQuery.AppendLine();
 
-                        var localkeyLength = ConfigurationSettings.DwhKeyIdentifier.Length;
-                        var localkeySubstring = ConfigurationSettings.DwhKeyIdentifier.Length + 1;
+                        var localkeyLength = TeamConfigurationSettings.DwhKeyIdentifier.Length;
+                        var localkeySubstring = TeamConfigurationSettings.DwhKeyIdentifier.Length + 1;
 
                         var queryAttributeArray =
                             "SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION " +
                             "FROM INFORMATION_SCHEMA.COLUMNS " +
-                            "WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + ConfigurationSettings.DwhKeyIdentifier + "'" +
+                            "WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'" +
                             " AND TABLE_NAME= '" + stgTableName + "'" +
-                            " AND COLUMN_NAME NOT IN ('" + ConfigurationSettings.RecordSourceAttribute + "','" +
-                            ConfigurationSettings.AlternativeRecordSourceAttribute + "','" +
-                            ConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
-                            ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
-                            ConfigurationSettings.EtlProcessAttribute + "','" +
-                            ConfigurationSettings.EventDateTimeAttribute + "','" +
-                            ConfigurationSettings.ChangeDataCaptureAttribute + "','" +
-                            ConfigurationSettings.RecordChecksumAttribute + "','" +
-                            ConfigurationSettings.RowIdAttribute + "','" +
-                            ConfigurationSettings.LoadDateTimeAttribute + "')";
+                            " AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +
+                            TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +
+                            TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
+                            TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+                            TeamConfigurationSettings.EtlProcessAttribute + "','" +
+                            TeamConfigurationSettings.EventDateTimeAttribute + "','" +
+                            TeamConfigurationSettings.ChangeDataCaptureAttribute + "','" +
+                            TeamConfigurationSettings.RecordChecksumAttribute + "','" +
+                            TeamConfigurationSettings.RowIdAttribute + "','" +
+                            TeamConfigurationSettings.LoadDateTimeAttribute + "')";
 
                         var attributeArray = MyParent.GetDataTable(ref connStg, queryAttributeArray);
 
@@ -124,11 +124,11 @@ namespace Virtual_EDW
                             testCaseQuery.AppendLine("-- Testcase " + intCounter);
                             testCaseQuery.AppendLine("INSERT INTO [dbo].[" + stgTableName + "]");
                             testCaseQuery.AppendLine("(");
-                            testCaseQuery.AppendLine("[" + ConfigurationSettings.EtlProcessAttribute + "],");
-                            testCaseQuery.AppendLine("[" + ConfigurationSettings.EventDateTimeAttribute + "],");
-                            testCaseQuery.AppendLine("[" + ConfigurationSettings.RecordSourceAttribute + "],");
-                            testCaseQuery.AppendLine("[" + ConfigurationSettings.ChangeDataCaptureAttribute + "],");
-                            testCaseQuery.AppendLine("[" + ConfigurationSettings.RecordChecksumAttribute + "],");
+                            testCaseQuery.AppendLine("[" + TeamConfigurationSettings.EtlProcessAttribute + "],");
+                            testCaseQuery.AppendLine("[" + TeamConfigurationSettings.EventDateTimeAttribute + "],");
+                            testCaseQuery.AppendLine("[" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+                            testCaseQuery.AppendLine("[" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+                            testCaseQuery.AppendLine("[" + TeamConfigurationSettings.RecordChecksumAttribute + "],");
 
                             foreach (DataRow attributeRow in attributeArray.Rows)
                             {
@@ -184,15 +184,15 @@ namespace Virtual_EDW
                         {
                             if (radioButtonStagingArea.Checked)
                             {
-                                connVariable.ConnectionString = ConfigurationSettings.ConnectionStringStg;
+                                connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringStg;
                             }
                             if (radioButtonPSA.Checked)
                             {
-                                connVariable.ConnectionString = ConfigurationSettings.ConnectionStringHstg;
+                                connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
                             }
                             if (radiobuttonSource.Checked)
                             {
-                                connVariable.ConnectionString = ConfigurationSettings.ConnectionStringSource;
+                                connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringSource;
                                     //_myParent.textBoxSourceConnection.Text;
                             }
 

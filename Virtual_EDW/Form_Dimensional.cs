@@ -33,16 +33,16 @@ namespace Virtual_EDW
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    radioButtonPSA.Checked ? ConfigurationSettings.ConnectionStringHstg : ConfigurationSettings.ConnectionStringInt
+                    radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
             };
 
-            var hubIdentifier = ConfigurationSettings.HubTablePrefixValue;
+            var hubIdentifier = TeamConfigurationSettings.HubTablePrefixValue;
 
-            if (ConfigurationSettings.TableNamingLocation == "Prefix")
+            if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
             {
                 hubIdentifier = string.Concat(hubIdentifier, "_%");
             }
-            else if (ConfigurationSettings.TableNamingLocation == "Suffix")
+            else if (TeamConfigurationSettings.TableNamingLocation == "Suffix")
             {
                 hubIdentifier = string.Concat("%_", hubIdentifier);
             }
@@ -115,15 +115,15 @@ namespace Virtual_EDW
             var conn = new SqlConnection
             {
                 ConnectionString =
-                    radioButtonPSA.Checked ? ConfigurationSettings.ConnectionStringHstg : ConfigurationSettings.ConnectionStringInt
+                    radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
             };
 
-            var keyIdentifier = ConfigurationSettings.DwhKeyIdentifier;
-            if (ConfigurationSettings.KeyNamingLocation == "Prefix")//_myParent.keyPrefixRadiobutton.Checked)
+            var keyIdentifier = TeamConfigurationSettings.DwhKeyIdentifier;
+            if (TeamConfigurationSettings.KeyNamingLocation == "Prefix")//_myParent.keyPrefixRadiobutton.Checked)
             {
                 keyIdentifier = string.Concat(keyIdentifier, "_%");
             }
-            else if (ConfigurationSettings.KeyNamingLocation == "Suffix")
+            else if (TeamConfigurationSettings.KeyNamingLocation == "Suffix")
             {
                 keyIdentifier = string.Concat("%_", keyIdentifier);
             }
@@ -133,17 +133,17 @@ namespace Virtual_EDW
             }
 
             // Retrieve the prefix/suffix settings for the tables (Hubs, Links, Sats)
-            var linkIdentifier = ConfigurationSettings.LinkTablePrefixValue;
-            var linkSatIdentifier = ConfigurationSettings.LinkTablePrefixValue;
-            var satIdentifier = ConfigurationSettings.SatTablePrefixValue;
+            var linkIdentifier = TeamConfigurationSettings.LinkTablePrefixValue;
+            var linkSatIdentifier = TeamConfigurationSettings.LinkTablePrefixValue;
+            var satIdentifier = TeamConfigurationSettings.SatTablePrefixValue;
 
-            if (ConfigurationSettings.TableNamingLocation == "Prefix")//_myParent.tablePrefixRadiobutton.Checked)
+            if (TeamConfigurationSettings.TableNamingLocation == "Prefix")//_myParent.tablePrefixRadiobutton.Checked)
             {
                 linkIdentifier = string.Concat(linkIdentifier, "_%");
                 linkSatIdentifier = string.Concat(linkSatIdentifier, "_%");
                 satIdentifier = string.Concat(satIdentifier, "_%");
             }
-            else if (ConfigurationSettings.TableNamingLocation == "Suffix")
+            else if (TeamConfigurationSettings.TableNamingLocation == "Suffix")
             {
                 linkIdentifier = string.Concat("%_", linkIdentifier);
                 linkSatIdentifier = string.Concat("%_", linkSatIdentifier);
@@ -212,17 +212,17 @@ namespace Virtual_EDW
                     var attributeName = row["COLUMN_NAME"].ToString();
 
                     if (
-                        attributeName == ConfigurationSettings.RecordSourceAttribute || 
-                        attributeName == ConfigurationSettings.AlternativeRecordSourceAttribute ||
-                        attributeName == ConfigurationSettings.RowIdAttribute ||
-                        attributeName == ConfigurationSettings.RecordChecksumAttribute ||
-                        attributeName == ConfigurationSettings.AlternativeLoadDateTimeAttribute ||
-                        attributeName == ConfigurationSettings.EtlProcessAttribute ||
-                        attributeName == ConfigurationSettings.LoadDateTimeAttribute ||
-                        attributeName == ConfigurationSettings.CurrentRowAttribute ||
-                        attributeName == ConfigurationSettings.EtlProcessUpdateAttribute ||
-                        attributeName == ConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute ||
-                        attributeName == ConfigurationSettings.ExpiryDateTimeAttribute
+                        attributeName == TeamConfigurationSettings.RecordSourceAttribute || 
+                        attributeName == TeamConfigurationSettings.AlternativeRecordSourceAttribute ||
+                        attributeName == TeamConfigurationSettings.RowIdAttribute ||
+                        attributeName == TeamConfigurationSettings.RecordChecksumAttribute ||
+                        attributeName == TeamConfigurationSettings.AlternativeLoadDateTimeAttribute ||
+                        attributeName == TeamConfigurationSettings.EtlProcessAttribute ||
+                        attributeName == TeamConfigurationSettings.LoadDateTimeAttribute ||
+                        attributeName == TeamConfigurationSettings.CurrentRowAttribute ||
+                        attributeName == TeamConfigurationSettings.EtlProcessUpdateAttribute ||
+                        attributeName == TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute ||
+                        attributeName == TeamConfigurationSettings.ExpiryDateTimeAttribute
                        )
                     {
                         row.Delete();

@@ -24,8 +24,8 @@ namespace Virtual_EDW
 
         private void buttonGenerateTestcases_Click(object sender, EventArgs e)
         {
-            var connOmd = new SqlConnection {ConnectionString = ConfigurationSettings.ConnectionStringOmd};
-            var connStg = new SqlConnection { ConnectionString = ConfigurationSettings.ConnectionStringStg };
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
 
             var versionId = 0;//_myParent.trackBarVersioning.Value;
 
@@ -50,14 +50,14 @@ namespace Virtual_EDW
 
                 if (radioButtonPSA.Checked)
                 {
-                    queryRi.AppendLine("USE [" + ConfigurationSettings.PsaDatabaseName + "]");
+                    queryRi.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
                 }
                 else if (radioButtonIntegrationLayer.Checked)
                 {
-                    queryRi.AppendLine("USE [" + ConfigurationSettings.IntegrationDatabaseName + "]");
+                    queryRi.AppendLine("USE [" + TeamConfigurationSettings.IntegrationDatabaseName + "]");
                 }
 
-                var stringDataType = ConfigurationSettingsVedwSpecific.EnableUnicode == "True" ? "NVARCHAR" : "VARCHAR";
+                var stringDataType = VedwConfigurationSettings.EnableUnicode == "True" ? "NVARCHAR" : "VARCHAR";
 
                 // Satellite component
                 queryRi.AppendLine("GO");
@@ -97,7 +97,7 @@ namespace Virtual_EDW
                         var stagingAreaTableName = (string)row["STAGING_AREA_TABLE_NAME"];
                         var businessKeyDefinition = (string) row["BUSINESS_KEY_DEFINITION"];
                         var hubTableName = (string)row["HUB_TABLE_NAME"];
-                        var hubSk = hubTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
+                        var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
                         // Retrieving the business key attributes for the Hub                 
                         var hubKeyList = MyParent.GetHubTargetBusinessKeyList(hubTableName, versionId);
@@ -257,7 +257,7 @@ namespace Virtual_EDW
                             queryRi.AppendLine("    ),2) AS " + hubSk);
                             queryRi.AppendLine("  FROM ");
                             queryRi.AppendLine("  (");
-                            queryRi.AppendLine("    SELECT "+ hubQuerySelect + " FROM ["+ConfigurationSettings.StagingDatabaseName+ "].[dbo].["+stagingAreaTableName+"]");
+                            queryRi.AppendLine("    SELECT "+ hubQuerySelect + " FROM ["+TeamConfigurationSettings.StagingDatabaseName+ "].[dbo].["+stagingAreaTableName+"]");
                             queryRi.AppendLine("  ) stgsub");
                             queryRi.AppendLine(") staging ON ");
                             queryRi.AppendLine("A." + hubSk + " = staging." + hubSk);
@@ -305,7 +305,7 @@ namespace Virtual_EDW
                         foreach (DataRow hubRow in hubTables.Rows)
                         {
                             var hubTableName = (string)hubRow["HUB_TABLE_NAME"];
-                            var hubSk = hubTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
+                            var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
                             queryRi.AppendLine("LEFT OUTER JOIN " + hubTableName + " on " + linkTableName + "." + hubSk +
                                                " = " + hubTableName + "." + hubSk);
                         }
@@ -314,7 +314,7 @@ namespace Virtual_EDW
                         foreach (DataRow hubRow in hubTables.Rows)
                         {
                             var hubTableName = (string)hubRow["HUB_TABLE_NAME"];
-                            var hubSk = hubTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
+                            var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
                             queryRi.AppendLine("  " + hubTableName + "." + hubSk + " IS NULL OR");
                         }
                         queryRi.Remove(queryRi.Length - 5, 5);
@@ -365,7 +365,7 @@ namespace Virtual_EDW
                         {
                             var lsatTableName = (string)row["SATELLITE_TABLE_NAME"];
                             var linkTableName = (string)row["LINK_TABLE_NAME"];
-                            var hubSk = linkTableName.Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
+                            var hubSk = linkTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
                             queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + lsatTableName + "'");
                             queryRi.AppendLine("FROM " + lsatTableName + " A");

@@ -107,6 +107,9 @@
             this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveConfigurationFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.openTEAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dimensionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rawDataMartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -141,9 +144,10 @@
             this.trackBarVersioning = new System.Windows.Forms.TrackBar();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.openTEAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButtonProduction = new System.Windows.Forms.RadioButton();
+            this.radioButtonDevelopment = new System.Windows.Forms.RadioButton();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -166,6 +170,8 @@
             this.groupBoxVersionSelection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonGenerateHubs
@@ -871,9 +877,9 @@
             // 
             // tabPageSettings
             // 
-            this.tabPageSettings.Controls.Add(this.checkBoxUnicode);
+            this.tabPageSettings.Controls.Add(this.groupBox8);
+            this.tabPageSettings.Controls.Add(this.groupBox1);
             this.tabPageSettings.Controls.Add(this.groupBoxhashKeyoutput);
-            this.tabPageSettings.Controls.Add(this.checkBoxDisableHash);
             this.tabPageSettings.Controls.Add(this.label6);
             this.tabPageSettings.Controls.Add(this.textBoxConfigurationPath);
             this.tabPageSettings.Controls.Add(this.OutputPathLabel);
@@ -890,7 +896,7 @@
             // checkBoxUnicode
             // 
             this.checkBoxUnicode.AutoSize = true;
-            this.checkBoxUnicode.Location = new System.Drawing.Point(17, 268);
+            this.checkBoxUnicode.Location = new System.Drawing.Point(6, 42);
             this.checkBoxUnicode.Name = "checkBoxUnicode";
             this.checkBoxUnicode.Size = new System.Drawing.Size(112, 17);
             this.checkBoxUnicode.TabIndex = 89;
@@ -903,7 +909,7 @@
             this.groupBoxhashKeyoutput.Controls.Add(this.radioButtonBinaryHash);
             this.groupBoxhashKeyoutput.Location = new System.Drawing.Point(17, 155);
             this.groupBoxhashKeyoutput.Name = "groupBoxhashKeyoutput";
-            this.groupBoxhashKeyoutput.Size = new System.Drawing.Size(126, 70);
+            this.groupBoxhashKeyoutput.Size = new System.Drawing.Size(119, 70);
             this.groupBoxhashKeyoutput.TabIndex = 88;
             this.groupBoxhashKeyoutput.TabStop = false;
             this.groupBoxhashKeyoutput.Text = "Hash key output";
@@ -931,7 +937,7 @@
             // checkBoxDisableHash
             // 
             this.checkBoxDisableHash.AutoSize = true;
-            this.checkBoxDisableHash.Location = new System.Drawing.Point(17, 245);
+            this.checkBoxDisableHash.Location = new System.Drawing.Point(6, 19);
             this.checkBoxDisableHash.Name = "checkBoxDisableHash";
             this.checkBoxDisableHash.Size = new System.Drawing.Size(183, 17);
             this.checkBoxDisableHash.TabIndex = 87;
@@ -943,9 +949,9 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(14, 91);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(235, 13);
+            this.label6.Size = new System.Drawing.Size(306, 13);
             this.label6.TabIndex = 84;
-            this.label6.Text = "Configuration path (TEAM metadata file location)";
+            this.label6.Text = "TEAM configuration path (TEAM metadata settings file location)";
             // 
             // textBoxConfigurationPath
             // 
@@ -961,9 +967,9 @@
             this.OutputPathLabel.AutoSize = true;
             this.OutputPathLabel.Location = new System.Drawing.Point(14, 43);
             this.OutputPathLabel.Name = "OutputPathLabel";
-            this.OutputPathLabel.Size = new System.Drawing.Size(63, 13);
+            this.OutputPathLabel.Size = new System.Drawing.Size(288, 13);
             this.OutputPathLabel.TabIndex = 82;
-            this.OutputPathLabel.Text = "Output path";
+            this.OutputPathLabel.Text = "VEDW output path (location of the ETL output from VEDW)";
             // 
             // textBoxOutputPath
             // 
@@ -1034,6 +1040,24 @@
             this.saveConfigurationFileToolStripMenuItem.Text = "Save VEDW Settings";
             this.saveConfigurationFileToolStripMenuItem.Click += new System.EventHandler(this.saveConfigurationFileToolStripMenuItem_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(228, 6);
+            // 
+            // openTEAMToolStripMenuItem
+            // 
+            this.openTEAMToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.RavosLogo;
+            this.openTEAMToolStripMenuItem.Name = "openTEAMToolStripMenuItem";
+            this.openTEAMToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.openTEAMToolStripMenuItem.Text = "Open TEAM";
+            this.openTEAMToolStripMenuItem.Click += new System.EventHandler(this.openTEAMToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(228, 6);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ExitApplication;
@@ -1056,7 +1080,7 @@
             // 
             this.rawDataMartToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.CubeIcon;
             this.rawDataMartToolStripMenuItem.Name = "rawDataMartToolStripMenuItem";
-            this.rawDataMartToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rawDataMartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rawDataMartToolStripMenuItem.Text = "Raw Data Mart";
             this.rawDataMartToolStripMenuItem.Click += new System.EventHandler(this.rawDataMartToolStripMenuItem_Click);
             // 
@@ -1064,7 +1088,7 @@
             // 
             this.pointInTimeToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.Time;
             this.pointInTimeToolStripMenuItem.Name = "pointInTimeToolStripMenuItem";
-            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.pointInTimeToolStripMenuItem.Text = "Point In Time";
             this.pointInTimeToolStripMenuItem.Click += new System.EventHandler(this.pointInTimeToolStripMenuItem_Click);
             // 
@@ -1072,7 +1096,7 @@
             // 
             this.unknownKeysToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ghost_icon;
             this.unknownKeysToolStripMenuItem.Name = "unknownKeysToolStripMenuItem";
-            this.unknownKeysToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unknownKeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.unknownKeysToolStripMenuItem.Text = "Unknown Keys";
             this.unknownKeysToolStripMenuItem.Click += new System.EventHandler(this.unknownKeysToolStripMenuItem_Click);
             // 
@@ -1370,23 +1394,47 @@
             this.pictureBox1.TabIndex = 15;
             this.pictureBox1.TabStop = false;
             // 
-            // openTEAMToolStripMenuItem
+            // groupBox1
             // 
-            this.openTEAMToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.RavosLogo;
-            this.openTEAMToolStripMenuItem.Name = "openTEAMToolStripMenuItem";
-            this.openTEAMToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.openTEAMToolStripMenuItem.Text = "Open TEAM";
-            this.openTEAMToolStripMenuItem.Click += new System.EventHandler(this.openTEAMToolStripMenuItem_Click);
+            this.groupBox1.Controls.Add(this.radioButtonProduction);
+            this.groupBox1.Controls.Add(this.radioButtonDevelopment);
+            this.groupBox1.Location = new System.Drawing.Point(17, 245);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(119, 70);
+            this.groupBox1.TabIndex = 90;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Target environment";
             // 
-            // toolStripSeparator2
+            // radioButtonProduction
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(228, 6);
+            this.radioButtonProduction.AutoSize = true;
+            this.radioButtonProduction.Location = new System.Drawing.Point(6, 42);
+            this.radioButtonProduction.Name = "radioButtonProduction";
+            this.radioButtonProduction.Size = new System.Drawing.Size(76, 17);
+            this.radioButtonProduction.TabIndex = 39;
+            this.radioButtonProduction.Text = "Production";
+            this.radioButtonProduction.UseVisualStyleBackColor = true;
             // 
-            // toolStripSeparator3
+            // radioButtonDevelopment
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(228, 6);
+            this.radioButtonDevelopment.AutoSize = true;
+            this.radioButtonDevelopment.Location = new System.Drawing.Point(6, 19);
+            this.radioButtonDevelopment.Name = "radioButtonDevelopment";
+            this.radioButtonDevelopment.Size = new System.Drawing.Size(88, 17);
+            this.radioButtonDevelopment.TabIndex = 38;
+            this.radioButtonDevelopment.Text = "Development";
+            this.radioButtonDevelopment.UseVisualStyleBackColor = true;
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.checkBoxDisableHash);
+            this.groupBox8.Controls.Add(this.checkBoxUnicode);
+            this.groupBox8.Location = new System.Drawing.Point(280, 155);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(228, 70);
+            this.groupBox8.TabIndex = 89;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "ETL output options";
             // 
             // FormMain
             // 
@@ -1451,6 +1499,10 @@
             this.groupBoxVersionSelection.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1572,6 +1624,10 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem openTEAMToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        internal System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.GroupBox groupBox1;
+        internal System.Windows.Forms.RadioButton radioButtonProduction;
+        internal System.Windows.Forms.RadioButton radioButtonDevelopment;
     }
 }
 
