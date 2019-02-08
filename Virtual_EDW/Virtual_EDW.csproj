@@ -30,7 +30,7 @@
     <SupportUrl>http://www.roelantvos.com</SupportUrl>
     <ProductName>Ravos Virtual EDW</ProductName>
     <PublisherName>Roelant Vos</PublisherName>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.4.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
