@@ -118,100 +118,122 @@ namespace Virtual_EDW.Classes
         /// <summary>
         ///    Retrieve the TEAM configuration information from disk and save this to memory
         /// </summary>
-        internal static void LoadTeamConfigurationFile(string filename)
+        internal static StringBuilder LoadTeamConfigurationFile(string filename)
         {
+            var returnCode = new StringBuilder(); // Collecting information to feedback to user.
+
             try
             {
                 var configList = new Dictionary<string, string>();
                 var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
                 var sr = new StreamReader(fs);
 
-                string textline;
-                while ((textline = sr.ReadLine()) != null)
+                if (File.Exists(filename))
                 {
-                    if (textline.IndexOf(@"/*", StringComparison.Ordinal) == -1)
+                    string textline;
+                    while ((textline = sr.ReadLine()) != null)
                     {
-                        var line = textline.Split('|');
-                        configList.Add(line[0], line[1]);
+                        if (textline.IndexOf(@"/*", StringComparison.Ordinal) == -1)
+                        {
+                            var line = textline.Split('|');
+                            configList.Add(line[0], line[1]);
+                        }
                     }
+
+                    sr.Close();
+                    fs.Close();
+
+                    if (configList.Count == 0)
+                    {
+                        returnCode.AppendLine("No lines detected in file "+filename+". Is it empty?");
+                    }
+
+                    var connectionStringOmd = configList["connectionStringMetadata"];
+                    connectionStringOmd = connectionStringOmd.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                    var connectionStringSource = configList["connectionStringSource"];
+                    connectionStringSource = connectionStringSource.Replace("Provider=SQLNCLI10;", "")
+                        .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                    var connectionStringStg = configList["connectionStringStaging"];
+                    connectionStringStg = connectionStringStg.Replace("Provider=SQLNCLI10;", "")
+                        .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                    var connectionStringHstg = configList["connectionStringPersistentStaging"];
+                    connectionStringHstg = connectionStringHstg.Replace("Provider=SQLNCLI10;", "")
+                        .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                    var connectionStringInt = configList["connectionStringIntegration"];
+                    connectionStringInt = connectionStringInt.Replace("Provider=SQLNCLI10;", "")
+                        .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                    var connectionStringPres = configList["connectionStringPresentation"];
+                    connectionStringPres = connectionStringPres.Replace("Provider=SQLNCLI10;", "")
+                        .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                    // These variables are used as global variables throughout the application
+                    // They will be set once after startup
+                    FormBase.TeamConfigurationSettings.SourceDatabaseName = configList["SourceDatabase"];
+                    FormBase.TeamConfigurationSettings.StagingDatabaseName = configList["StagingDatabase"];
+                    FormBase.TeamConfigurationSettings.PsaDatabaseName = configList["PersistentStagingDatabase"];
+                    FormBase.TeamConfigurationSettings.IntegrationDatabaseName = configList["IntegrationDatabase"];
+                    FormBase.TeamConfigurationSettings.PresentationDatabaseName = configList["PresentationDatabase"];
+                    FormBase.TeamConfigurationSettings.MetadataDatabaseName = configList["MetadataDatabase"];
+                    FormBase.TeamConfigurationSettings.PhysicalModelServerName = configList["PhysicalModelServerName"];
+                    FormBase.TeamConfigurationSettings.MetadataServerName = configList["MetadataServerName"];
+                    FormBase.TeamConfigurationSettings.ConnectionStringSource = connectionStringSource;
+                    FormBase.TeamConfigurationSettings.ConnectionStringStg = connectionStringStg;
+                    // 10
+                    FormBase.TeamConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
+                    FormBase.TeamConfigurationSettings.ConnectionStringInt = connectionStringInt;
+                    FormBase.TeamConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
+                    FormBase.TeamConfigurationSettings.ConnectionStringPres = connectionStringPres;
+                    FormBase.TeamConfigurationSettings.SourceSystemPrefix = configList["SourceSystemPrefix"];
+                    FormBase.TeamConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
+                    FormBase.TeamConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
+                    FormBase.TeamConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];
+                    FormBase.TeamConfigurationSettings.SatTablePrefixValue = configList["SatTablePrefix"];
+                    FormBase.TeamConfigurationSettings.LinkTablePrefixValue = configList["LinkTablePrefix"];
+                    // 20
+                    FormBase.TeamConfigurationSettings.LsatPrefixValue = configList["LinkSatTablePrefix"];
+                    FormBase.TeamConfigurationSettings.DwhKeyIdentifier = configList["KeyIdentifier"];
+                    FormBase.TeamConfigurationSettings.SchemaName = configList["SchemaName"];
+                    FormBase.TeamConfigurationSettings.RowIdAttribute = configList["RowID"];
+                    FormBase.TeamConfigurationSettings.EventDateTimeAttribute = configList["EventDateTimeStamp"];
+                    FormBase.TeamConfigurationSettings.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
+                    FormBase.TeamConfigurationSettings.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
+                    FormBase.TeamConfigurationSettings.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
+                    FormBase.TeamConfigurationSettings.RecordSourceAttribute = configList["RecordSourceAttribute"];
+                    FormBase.TeamConfigurationSettings.EtlProcessAttribute = configList["ETLProcessID"];
+                    // 30
+                    FormBase.TeamConfigurationSettings.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
+                    FormBase.TeamConfigurationSettings.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
+                    FormBase.TeamConfigurationSettings.TableNamingLocation = configList["TableNamingLocation"];
+                    FormBase.TeamConfigurationSettings.KeyNamingLocation = configList["KeyNamingLocation"];
+                    FormBase.TeamConfigurationSettings.RecordChecksumAttribute = configList["RecordChecksum"];
+                    FormBase.TeamConfigurationSettings.CurrentRowAttribute = configList["CurrentRecordAttribute"];
+                    FormBase.TeamConfigurationSettings.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
+                    FormBase.TeamConfigurationSettings.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
+                    FormBase.TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute = configList["AlternativeRecordSourceFunction"];
+                    FormBase.TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTSFunction"];
+                    // 40
+                    FormBase.TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTSFunction"];
+                    FormBase.TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTS"];
+                    FormBase.TeamConfigurationSettings.PsaKeyLocation = configList["PSAKeyLocation"];
+                    FormBase.TeamConfigurationSettings.MetadataRepositoryType = configList["metadataRepositoryType"];
+
                 }
-
-                sr.Close();
-                fs.Close();
-
-                var connectionStringOmd = configList["connectionStringMetadata"];
-                connectionStringOmd = connectionStringOmd.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringSource = configList["connectionStringSource"];
-                connectionStringSource = connectionStringSource.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringStg = configList["connectionStringStaging"];
-                connectionStringStg = connectionStringStg.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringHstg = configList["connectionStringPersistentStaging"];
-                connectionStringHstg = connectionStringHstg.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringInt = configList["connectionStringIntegration"];
-                connectionStringInt = connectionStringInt.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringPres = configList["connectionStringPresentation"];
-                connectionStringPres = connectionStringPres.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                // These variables are used as global variables throughout the application
-                // They will be set once after startup
-                FormBase.TeamConfigurationSettings.ConnectionStringSource = connectionStringSource;
-                FormBase.TeamConfigurationSettings.ConnectionStringStg = connectionStringStg;
-                FormBase.TeamConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
-                FormBase.TeamConfigurationSettings.ConnectionStringInt = connectionStringInt;
-                FormBase.TeamConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
-                FormBase.TeamConfigurationSettings.ConnectionStringPres = connectionStringPres;
-                FormBase.TeamConfigurationSettings.MetadataRepositoryType = configList["metadataRepositoryType"];
-                FormBase.TeamConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
-                FormBase.TeamConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
-                FormBase.TeamConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];
-                FormBase.TeamConfigurationSettings.SatTablePrefixValue = configList["SatTablePrefix"];
-                FormBase.TeamConfigurationSettings.LinkTablePrefixValue = configList["LinkTablePrefix"];
-                FormBase.TeamConfigurationSettings.LsatPrefixValue = configList["LinkSatTablePrefix"];
-                FormBase.TeamConfigurationSettings.DwhKeyIdentifier = configList["KeyIdentifier"];
-                FormBase.TeamConfigurationSettings.PsaKeyLocation = configList["PSAKeyLocation"];
-                FormBase.TeamConfigurationSettings.TableNamingLocation = configList["TableNamingLocation"];
-                FormBase.TeamConfigurationSettings.KeyNamingLocation = configList["KeyNamingLocation"];
-                FormBase.TeamConfigurationSettings.SchemaName = configList["SchemaName"];
-                FormBase.TeamConfigurationSettings.SourceSystemPrefix = configList["SourceSystemPrefix"];
-                FormBase.TeamConfigurationSettings.EventDateTimeAttribute = configList["EventDateTimeStamp"];
-                FormBase.TeamConfigurationSettings.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
-                FormBase.TeamConfigurationSettings.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
-                FormBase.TeamConfigurationSettings.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
-                FormBase.TeamConfigurationSettings.RecordSourceAttribute = configList["RecordSourceAttribute"];
-                FormBase.TeamConfigurationSettings.EtlProcessAttribute = configList["ETLProcessID"];
-                FormBase.TeamConfigurationSettings.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
-                FormBase.TeamConfigurationSettings.RowIdAttribute = configList["RowID"];
-                FormBase.TeamConfigurationSettings.RecordChecksumAttribute = configList["RecordChecksum"];
-                FormBase.TeamConfigurationSettings.CurrentRowAttribute = configList["CurrentRecordAttribute"];
-                FormBase.TeamConfigurationSettings.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
-                FormBase.TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute =configList["AlternativeRecordSourceFunction"];
-                FormBase.TeamConfigurationSettings.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
-                FormBase.TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute =configList["AlternativeHubLDTSFunction"];
-                FormBase.TeamConfigurationSettings.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
-                FormBase.TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute =configList["AlternativeSatelliteLDTSFunction"];
-                FormBase.TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute =configList["AlternativeSatelliteLDTS"];
-                FormBase.TeamConfigurationSettings.SourceDatabaseName = configList["SourceDatabase"];
-                FormBase.TeamConfigurationSettings.StagingDatabaseName = configList["StagingDatabase"];
-                FormBase.TeamConfigurationSettings.PsaDatabaseName = configList["PersistentStagingDatabase"];
-                FormBase.TeamConfigurationSettings.IntegrationDatabaseName = configList["IntegrationDatabase"];
-                FormBase.TeamConfigurationSettings.PresentationDatabaseName = configList["PresentationDatabase"];
-                FormBase.TeamConfigurationSettings.LinkedServer = configList["LinkedServerName"];
+                else
+                {
+                    returnCode.AppendLine("An error was encountered: the file " + filename + " was not found.");
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // richTextBoxInformation.AppendText("\r\n\r\nAn error occured while interpreting the configuration file. The original error is: '" + ex.Message + "'");
+                returnCode.AppendLine("an exception was encountered attempting to load file '" + filename + "'. The error is:"+ex+".");
             }
+
+            return returnCode;
         }
     }
 }

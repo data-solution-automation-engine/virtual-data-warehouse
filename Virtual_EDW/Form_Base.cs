@@ -41,105 +41,6 @@ namespace Virtual_EDW
 
 
 
-        public static void InitialiseConfiguration(string chosenFile)
-        {
-            try
-            {
-                var configList = new Dictionary<string, string>();
-                var fs = new FileStream(chosenFile, FileMode.Open, FileAccess.Read);
-                var sr = new StreamReader(fs);
-
-                string textline;
-                while ((textline = sr.ReadLine()) != null)
-                {
-                    if (textline.IndexOf(@"/*", StringComparison.Ordinal) == -1)
-                    {
-                        var line = textline.Split('|');
-                        configList.Add(line[0], line[1]);
-                    }
-                }
-
-                sr.Close();
-                fs.Close();
-
-                var connectionStringOmd = configList["connectionStringMetadata"];
-                connectionStringOmd = connectionStringOmd.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringSource = configList["connectionStringSource"];
-                connectionStringSource = connectionStringSource.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringStg = configList["connectionStringStaging"];
-                connectionStringStg = connectionStringStg.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringHstg = configList["connectionStringPersistentStaging"];
-                connectionStringHstg = connectionStringHstg.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringInt = configList["connectionStringIntegration"];
-                connectionStringInt = connectionStringInt.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringPres = configList["connectionStringPresentation"];
-                connectionStringPres = connectionStringPres.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                // These variables are used as global vairables throughout the application
-                // They will be set once after startup
-
-                TeamConfigurationSettings.ConnectionStringSource = connectionStringSource;
-                TeamConfigurationSettings.ConnectionStringStg = connectionStringStg;
-                TeamConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
-                TeamConfigurationSettings.ConnectionStringInt = connectionStringInt;
-                TeamConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
-                TeamConfigurationSettings.ConnectionStringPres = connectionStringPres;
-
-                //ConfigurationSetting.metadataRepositoryType = configList["metadataRepositoryType"];
-
-                TeamConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
-                TeamConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
-                TeamConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];
-                TeamConfigurationSettings.SatTablePrefixValue = configList["SatTablePrefix"];
-                TeamConfigurationSettings.LinkTablePrefixValue = configList["LinkTablePrefix"];
-                TeamConfigurationSettings.LsatPrefixValue = configList["LinkSatTablePrefix"];
-                TeamConfigurationSettings.DwhKeyIdentifier = configList["KeyIdentifier"];
-                TeamConfigurationSettings.PsaKeyLocation = configList["PSAKeyLocation"];
-                TeamConfigurationSettings.TableNamingLocation = configList["TableNamingLocation"];
-                TeamConfigurationSettings.KeyNamingLocation = configList["KeyNamingLocation"];
-                TeamConfigurationSettings.SchemaName = configList["SchemaName"];
-                TeamConfigurationSettings.SourceSystemPrefix = configList["SourceSystemPrefix"];
-
-                TeamConfigurationSettings.EventDateTimeAttribute = configList["EventDateTimeStamp"];
-                TeamConfigurationSettings.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
-                TeamConfigurationSettings.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
-                TeamConfigurationSettings.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
-                TeamConfigurationSettings.RecordSourceAttribute = configList["RecordSourceAttribute"];
-                TeamConfigurationSettings.EtlProcessAttribute = configList["ETLProcessID"];
-                TeamConfigurationSettings.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
-                TeamConfigurationSettings.RowIdAttribute = configList["RowID"];
-                TeamConfigurationSettings.RecordChecksumAttribute = configList["RecordChecksum"];
-                TeamConfigurationSettings.CurrentRowAttribute = configList["CurrentRecordAttribute"];
-                TeamConfigurationSettings.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
-                TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute = configList["AlternativeRecordSourceFunction"];
-                TeamConfigurationSettings.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
-                TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTSFunction"];
-                TeamConfigurationSettings.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
-                
-                TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTSFunction"];
-                TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTS"];
-                TeamConfigurationSettings.SourceDatabaseName = configList["SourceDatabase"];
-                TeamConfigurationSettings.StagingDatabaseName = configList["StagingDatabase"];
-                TeamConfigurationSettings.PsaDatabaseName = configList["PersistentStagingDatabase"];
-                TeamConfigurationSettings.IntegrationDatabaseName = configList["IntegrationDatabase"];
-                TeamConfigurationSettings.PresentationDatabaseName = configList["PresentationDatabase"];
-
-                TeamConfigurationSettings.LinkedServer = configList["LinkedServerName"];
-
-
-            }
-            catch (Exception)
-            {
-                // richTextBoxInformation.AppendText("\r\n\r\nAn error occured while interpreting the configuration file. The original error is: '" + ex.Message + "'");
-            }
-        }
-
-
         /// <summary>
         /// Application specific global parameters - not meant to be updated via the software
         /// </summary>
@@ -247,6 +148,12 @@ namespace Virtual_EDW
             internal static string IntegrationDatabaseName { get; set; }
 
             internal static string PresentationDatabaseName { get; set; }
+
+            internal static string MetadataDatabaseName { get; set; }
+
+            internal static string PhysicalModelServerName { get; set; }
+
+            internal static string MetadataServerName { get; set; }
 
             internal static string LinkedServer { get; set; }
 

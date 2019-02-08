@@ -44,19 +44,27 @@ namespace Virtual_EDW
                                                           GlobalParameters.VedwConfigurationfileName +
                                                           GlobalParameters.VedwFileExtension);
 
-            // Load the rest of the (TEAM) configurations, from wherever they may be according to the VEDW settings (the TEAM configuration file)
-            EnvironmentConfiguration.LoadTeamConfigurationFile(VedwConfigurationSettings.TeamConfigurationPath +
+            // Load the rest of the (TEAM) configurations, from wherever they may be according to the VEDW settings (the TEAM configuration file)\
+            var teamConfigurationFileName = VedwConfigurationSettings.TeamConfigurationPath +
                                                            GlobalParameters.TeamConfigurationfileName + '_' +
                                                            VedwConfigurationSettings.WorkingEnvironment +
-                                                           GlobalParameters.VedwFileExtension);
+                                                           GlobalParameters.VedwFileExtension;
+
+            richTextBoxInformation.Text = "Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n";
+
+            StringBuilder teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
         
+            if (teamConfigResult.Length>0)
+            {
+                richTextBoxInformation.AppendText("Issues have been encountered while retrieving the TEAM configuration details. The following is returned: " + teamConfigResult.ToString() + "\r\n\r\n");
+            }
             // Make sure the retrieved variables are displayed on the form
             UpdateVedwConfigurationSettingsOnForm();
 
             // Start monitoring the configuration directories for file changes
             // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
 
-            richTextBoxInformation.Text = "Application initialised - welcome to Enterprise Data Warehouse Virtualisation. \r\n\r\n";
+            richTextBoxInformation.AppendText("Application initialised - welcome to Enterprise Data Warehouse Virtualisation. \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
             checkBoxIfExistsStatement.Checked = true;
@@ -83,7 +91,7 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Metadata Repository Database. Can you verify the connection information in the 'settings' tab? \r\n");
+                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '"+ FormBase.TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
 
             try
@@ -93,7 +101,7 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Staging Area Database. Can you verify the connection information in the 'settings' tab? \r\n");
+                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Staging Area Database. These are managed via the TEAM configuration files. The reported database connection string is '" + FormBase.TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
 
             try
@@ -103,7 +111,7 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Persistent Staging Area (PSA) Database. Can you verify the connection information in the 'settings' tab? \r\n");
+                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Persistent Staging Area (PSA) Database. These are managed via the TEAM configuration files. The reported database connection string is '" + FormBase.TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
 
             if (_errorCounter > 0)
@@ -8195,6 +8203,7 @@ namespace Virtual_EDW
                 {
                     queryMetadata.AppendLine("  AND TABLE_NAME NOT LIKE '%_LANDING'");
                 }
+                queryMetadata.AppendLine("  AND TABLE_NAME LIKE '"+TeamConfigurationSettings.StgTablePrefixValue+"_%'");
                 queryMetadata.AppendLine("ORDER BY TABLE_NAME");
 
                 var tables = GetDataTable(ref connStg, queryMetadata.ToString());
