@@ -171,7 +171,7 @@ namespace Virtual_EDW
             else
             {
                 richTextBoxInformation.AppendText(
-                    "An issue was encountered updating the Hash outpu setting on the application - please verify.");
+                    "An issue was encountered updating the Hash output setting on the application - please verify.");
             }
 
             // Environment radiobutton
@@ -409,8 +409,6 @@ namespace Virtual_EDW
 
         private void GenerateHubViews(int versionId)
         {
-            
-
             // Create the Hub views - representing the Hub entity
             var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
             var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
@@ -443,6 +441,7 @@ namespace Virtual_EDW
                     hubView.AppendLine("DROP VIEW [" + TeamConfigurationSettings.SchemaName + "].[" + hubTableName + "]");
                     hubView.AppendLine("GO");
                     hubView.AppendLine("CREATE VIEW [" + TeamConfigurationSettings.SchemaName + "].[" + hubTableName + "] AS  ");
+
                     // START OF MAIN QUERY
                     hubView.AppendLine("SELECT hub.*");
                     hubView.AppendLine("FROM(");
@@ -452,7 +451,18 @@ namespace Virtual_EDW
                     if (!checkBoxDisableHash.Checked)
                     {
                         //Regular Hash
-                        hubView.AppendLine("  CONVERT(CHAR(32),HASHBYTES('MD5',");
+                        if (VedwConfigurationSettings.HashKeyOutputType == "Character")
+                        {
+                            hubView.AppendLine("  CONVERT(CHAR(32),HASHBYTES('MD5',");
+                        }
+                        else if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
+                        {
+                            hubView.AppendLine("  HASHBYTES('MD5',");
+                        }
+                        else // Throw error
+                        {
+                            MessageBox.Show("Error defining key output type "+VedwConfigurationSettings.HashKeyOutputType);
+                        }
 
                         foreach (DataRow hubKey in hubKeyList.Rows)
                         {
@@ -460,7 +470,19 @@ namespace Virtual_EDW
                         }
                         hubView.Remove(hubView.Length - 3, 3);
                         hubView.AppendLine();
-                        hubView.AppendLine("  ),2) AS " + hubSk + ",");
+
+                        if (VedwConfigurationSettings.HashKeyOutputType == "Character")
+                        {
+                            hubView.AppendLine("  ),2) AS " + hubSk + ",");
+                        }
+                        else if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
+                        {
+                            hubView.AppendLine("  ) AS " + hubSk + ",");
+                        }
+                        else // Throw error
+                        {
+                            MessageBox.Show("Error defining key output type " + VedwConfigurationSettings.HashKeyOutputType);
+                        }
                     }
                     else
                     {
@@ -735,7 +757,21 @@ namespace Virtual_EDW
 
                     // Zero record insert
                     hubView.AppendLine("UNION");
-                    hubView.AppendLine("SELECT '00000000000000000000000000000000',");
+
+                    //Regular Hash
+                    if (VedwConfigurationSettings.HashKeyOutputType == "Character")
+                    {
+                        hubView.AppendLine("SELECT '00000000000000000000000000000000',");
+                    }
+                    else if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
+                    {
+                        hubView.AppendLine("SELECT 0x00000000000000000000000000000000,");
+                    }
+                    else // Throw error
+                    {
+                        MessageBox.Show("Error defining key output type " + VedwConfigurationSettings.HashKeyOutputType);
+                    }
+
                     hubView.AppendLine("- 1,");
                     hubView.AppendLine("'1900-01-01',");
                     hubView.AppendLine("'Data Warehouse',");
