@@ -815,8 +815,7 @@ namespace Virtual_EDW
 
 
         public DataTable GetBusinessKeyComponentList(string stagingTableName, string hubTableName, string businessKeyDefinition)
-        {
-            
+        {            
 
             // Retrieving the top level component to evaluate composite, concat or pivot 
             var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
