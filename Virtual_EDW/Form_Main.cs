@@ -8238,9 +8238,11 @@ namespace Virtual_EDW
                 // Query the metadata for the STG and HSTG tables
                 var queryMetadata = new StringBuilder();
 
-                queryMetadata.AppendLine("SELECT TABLE_SCHEMA,TABLE_NAME " +
-                                               "FROM INFORMATION_SCHEMA.TABLES " +
-                                               "WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME LIKE '%"+textBoxFilterCriterionPsa.Text+"%'");
+                queryMetadata.AppendLine(@"SELECT TABLE_SCHEMA,TABLE_NAME " +
+                                         "FROM INFORMATION_SCHEMA.TABLES " +
+                                         "WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME LIKE '%"+textBoxFilterCriterionPsa.Text+"%'" +
+                                         "  AND TABLE_NAME LIKE '" + TeamConfigurationSettings.PsaTablePrefixValue + "_%'");
+
 
                 var tables = GetDataTable(ref connPsa, queryMetadata.ToString());
 
