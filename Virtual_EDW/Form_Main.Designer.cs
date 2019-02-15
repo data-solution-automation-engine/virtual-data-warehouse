@@ -92,11 +92,15 @@
             this.richTextBoxLsat = new System.Windows.Forms.RichTextBox();
             this.buttonGenerateLsats = new System.Windows.Forms.Button();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.checkBoxDisableHash = new System.Windows.Forms.CheckBox();
             this.checkBoxUnicode = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButtonProduction = new System.Windows.Forms.RadioButton();
+            this.radioButtonDevelopment = new System.Windows.Forms.RadioButton();
             this.groupBoxhashKeyoutput = new System.Windows.Forms.GroupBox();
             this.radioButtonCharacterHash = new System.Windows.Forms.RadioButton();
             this.radioButtonBinaryHash = new System.Windows.Forms.RadioButton();
-            this.checkBoxDisableHash = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxConfigurationPath = new System.Windows.Forms.TextBox();
             this.OutputPathLabel = new System.Windows.Forms.Label();
@@ -144,10 +148,7 @@
             this.trackBarVersioning = new System.Windows.Forms.TrackBar();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonProduction = new System.Windows.Forms.RadioButton();
-            this.radioButtonDevelopment = new System.Windows.Forms.RadioButton();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -162,6 +163,8 @@
             this.tabPageLinkSat.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.groupBoxhashKeyoutput.SuspendLayout();
             this.menuStripMainMenu.SuspendLayout();
             this.TargetPlatformGroupBox.SuspendLayout();
@@ -170,8 +173,6 @@
             this.groupBoxVersionSelection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonGenerateHubs
@@ -190,6 +191,7 @@
             this.richTextBoxInformation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxInformation.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBoxInformation.Location = new System.Drawing.Point(585, 66);
             this.richTextBoxInformation.Name = "richTextBoxInformation";
             this.richTextBoxInformation.Size = new System.Drawing.Size(765, 716);
@@ -290,13 +292,14 @@
             // 
             this.checkedListBoxStgMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkedListBoxStgMetadata.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.checkedListBoxStgMetadata.CheckOnClick = true;
             this.checkedListBoxStgMetadata.ColumnWidth = 261;
             this.checkedListBoxStgMetadata.FormattingEnabled = true;
             this.checkedListBoxStgMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxStgMetadata.MultiColumn = true;
             this.checkedListBoxStgMetadata.Name = "checkedListBoxStgMetadata";
-            this.checkedListBoxStgMetadata.Size = new System.Drawing.Size(523, 274);
+            this.checkedListBoxStgMetadata.Size = new System.Drawing.Size(523, 272);
             this.checkedListBoxStgMetadata.TabIndex = 10;
             // 
             // label26
@@ -311,6 +314,7 @@
             // richTextBoxStaging
             // 
             this.richTextBoxStaging.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxStaging.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBoxStaging.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxStaging.Location = new System.Drawing.Point(17, 308);
             this.richTextBoxStaging.Name = "richTextBoxStaging";
@@ -391,13 +395,14 @@
             // 
             this.checkedListBoxPsaMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkedListBoxPsaMetadata.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.checkedListBoxPsaMetadata.CheckOnClick = true;
             this.checkedListBoxPsaMetadata.ColumnWidth = 261;
             this.checkedListBoxPsaMetadata.FormattingEnabled = true;
             this.checkedListBoxPsaMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxPsaMetadata.MultiColumn = true;
             this.checkedListBoxPsaMetadata.Name = "checkedListBoxPsaMetadata";
-            this.checkedListBoxPsaMetadata.Size = new System.Drawing.Size(523, 274);
+            this.checkedListBoxPsaMetadata.Size = new System.Drawing.Size(523, 272);
             this.checkedListBoxPsaMetadata.TabIndex = 10;
             // 
             // label20
@@ -412,6 +417,7 @@
             // richTextBoxPSA
             // 
             this.richTextBoxPSA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxPSA.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBoxPSA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxPSA.Location = new System.Drawing.Point(17, 308);
             this.richTextBoxPSA.Name = "richTextBoxPSA";
@@ -492,13 +498,14 @@
             // 
             this.checkedListBoxHubMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkedListBoxHubMetadata.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.checkedListBoxHubMetadata.CheckOnClick = true;
             this.checkedListBoxHubMetadata.ColumnWidth = 261;
             this.checkedListBoxHubMetadata.FormattingEnabled = true;
             this.checkedListBoxHubMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxHubMetadata.MultiColumn = true;
             this.checkedListBoxHubMetadata.Name = "checkedListBoxHubMetadata";
-            this.checkedListBoxHubMetadata.Size = new System.Drawing.Size(523, 274);
+            this.checkedListBoxHubMetadata.Size = new System.Drawing.Size(523, 272);
             this.checkedListBoxHubMetadata.TabIndex = 8;
             // 
             // label1
@@ -513,6 +520,7 @@
             // richTextBoxHub
             // 
             this.richTextBoxHub.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxHub.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBoxHub.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxHub.Location = new System.Drawing.Point(17, 308);
             this.richTextBoxHub.Name = "richTextBoxHub";
@@ -597,13 +605,14 @@
             // 
             this.checkedListBoxSatMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkedListBoxSatMetadata.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.checkedListBoxSatMetadata.CheckOnClick = true;
             this.checkedListBoxSatMetadata.ColumnWidth = 261;
             this.checkedListBoxSatMetadata.FormattingEnabled = true;
             this.checkedListBoxSatMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxSatMetadata.MultiColumn = true;
             this.checkedListBoxSatMetadata.Name = "checkedListBoxSatMetadata";
-            this.checkedListBoxSatMetadata.Size = new System.Drawing.Size(523, 274);
+            this.checkedListBoxSatMetadata.Size = new System.Drawing.Size(523, 272);
             this.checkedListBoxSatMetadata.TabIndex = 9;
             // 
             // checkBoxDisableSatZeroRecords
@@ -629,6 +638,7 @@
             // richTextBoxSat
             // 
             this.richTextBoxSat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxSat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBoxSat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxSat.Location = new System.Drawing.Point(17, 308);
             this.richTextBoxSat.Name = "richTextBoxSat";
@@ -709,13 +719,14 @@
             // 
             this.checkedListBoxLinkMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkedListBoxLinkMetadata.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.checkedListBoxLinkMetadata.CheckOnClick = true;
             this.checkedListBoxLinkMetadata.ColumnWidth = 261;
             this.checkedListBoxLinkMetadata.FormattingEnabled = true;
             this.checkedListBoxLinkMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxLinkMetadata.MultiColumn = true;
             this.checkedListBoxLinkMetadata.Name = "checkedListBoxLinkMetadata";
-            this.checkedListBoxLinkMetadata.Size = new System.Drawing.Size(523, 274);
+            this.checkedListBoxLinkMetadata.Size = new System.Drawing.Size(523, 272);
             this.checkedListBoxLinkMetadata.TabIndex = 10;
             // 
             // label3
@@ -730,6 +741,7 @@
             // richTextBoxLink
             // 
             this.richTextBoxLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxLink.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBoxLink.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxLink.Location = new System.Drawing.Point(17, 308);
             this.richTextBoxLink.Name = "richTextBoxLink";
@@ -836,13 +848,14 @@
             // 
             this.checkedListBoxLsatMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkedListBoxLsatMetadata.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.checkedListBoxLsatMetadata.CheckOnClick = true;
             this.checkedListBoxLsatMetadata.ColumnWidth = 261;
             this.checkedListBoxLsatMetadata.FormattingEnabled = true;
             this.checkedListBoxLsatMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxLsatMetadata.MultiColumn = true;
             this.checkedListBoxLsatMetadata.Name = "checkedListBoxLsatMetadata";
-            this.checkedListBoxLsatMetadata.Size = new System.Drawing.Size(523, 274);
+            this.checkedListBoxLsatMetadata.Size = new System.Drawing.Size(523, 272);
             this.checkedListBoxLsatMetadata.TabIndex = 11;
             // 
             // label5
@@ -857,6 +870,7 @@
             // richTextBoxLsat
             // 
             this.richTextBoxLsat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxLsat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBoxLsat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxLsat.Location = new System.Drawing.Point(17, 308);
             this.richTextBoxLsat.Name = "richTextBoxLsat";
@@ -893,6 +907,27 @@
             this.tabPageSettings.UseVisualStyleBackColor = true;
             this.tabPageSettings.Click += new System.EventHandler(this.tabPageDefaultSettings_Click);
             // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.checkBoxDisableHash);
+            this.groupBox8.Controls.Add(this.checkBoxUnicode);
+            this.groupBox8.Location = new System.Drawing.Point(280, 155);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(228, 70);
+            this.groupBox8.TabIndex = 89;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "ETL output options";
+            // 
+            // checkBoxDisableHash
+            // 
+            this.checkBoxDisableHash.AutoSize = true;
+            this.checkBoxDisableHash.Location = new System.Drawing.Point(6, 19);
+            this.checkBoxDisableHash.Name = "checkBoxDisableHash";
+            this.checkBoxDisableHash.Size = new System.Drawing.Size(183, 17);
+            this.checkBoxDisableHash.TabIndex = 87;
+            this.checkBoxDisableHash.Text = "Disable Hash Keys (experimental)";
+            this.checkBoxDisableHash.UseVisualStyleBackColor = true;
+            // 
             // checkBoxUnicode
             // 
             this.checkBoxUnicode.AutoSize = true;
@@ -902,6 +937,37 @@
             this.checkBoxUnicode.TabIndex = 89;
             this.checkBoxUnicode.Text = "Output in Unicode";
             this.checkBoxUnicode.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.radioButtonProduction);
+            this.groupBox1.Controls.Add(this.radioButtonDevelopment);
+            this.groupBox1.Location = new System.Drawing.Point(17, 245);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(119, 70);
+            this.groupBox1.TabIndex = 90;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Target environment";
+            // 
+            // radioButtonProduction
+            // 
+            this.radioButtonProduction.AutoSize = true;
+            this.radioButtonProduction.Location = new System.Drawing.Point(6, 42);
+            this.radioButtonProduction.Name = "radioButtonProduction";
+            this.radioButtonProduction.Size = new System.Drawing.Size(76, 17);
+            this.radioButtonProduction.TabIndex = 39;
+            this.radioButtonProduction.Text = "Production";
+            this.radioButtonProduction.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonDevelopment
+            // 
+            this.radioButtonDevelopment.AutoSize = true;
+            this.radioButtonDevelopment.Location = new System.Drawing.Point(6, 19);
+            this.radioButtonDevelopment.Name = "radioButtonDevelopment";
+            this.radioButtonDevelopment.Size = new System.Drawing.Size(88, 17);
+            this.radioButtonDevelopment.TabIndex = 38;
+            this.radioButtonDevelopment.Text = "Development";
+            this.radioButtonDevelopment.UseVisualStyleBackColor = true;
             // 
             // groupBoxhashKeyoutput
             // 
@@ -933,16 +999,6 @@
             this.radioButtonBinaryHash.TabIndex = 0;
             this.radioButtonBinaryHash.Text = "Binary";
             this.radioButtonBinaryHash.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxDisableHash
-            // 
-            this.checkBoxDisableHash.AutoSize = true;
-            this.checkBoxDisableHash.Location = new System.Drawing.Point(6, 19);
-            this.checkBoxDisableHash.Name = "checkBoxDisableHash";
-            this.checkBoxDisableHash.Size = new System.Drawing.Size(183, 17);
-            this.checkBoxDisableHash.TabIndex = 87;
-            this.checkBoxDisableHash.Text = "Disable Hash Keys (experimental)";
-            this.checkBoxDisableHash.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -1007,6 +1063,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openOutputDirectoryToolStripMenuItem,
             this.openConfigurationDirectoryToolStripMenuItem,
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem,
             this.saveConfigurationFileToolStripMenuItem,
             this.toolStripSeparator2,
             this.openTEAMToolStripMenuItem,
@@ -1394,47 +1451,13 @@
             this.pictureBox1.TabIndex = 15;
             this.pictureBox1.TabStop = false;
             // 
-            // groupBox1
+            // openTEAMConfigurationSettingsFileToolStripMenuItem
             // 
-            this.groupBox1.Controls.Add(this.radioButtonProduction);
-            this.groupBox1.Controls.Add(this.radioButtonDevelopment);
-            this.groupBox1.Location = new System.Drawing.Point(17, 245);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(119, 70);
-            this.groupBox1.TabIndex = 90;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Target environment";
-            // 
-            // radioButtonProduction
-            // 
-            this.radioButtonProduction.AutoSize = true;
-            this.radioButtonProduction.Location = new System.Drawing.Point(6, 42);
-            this.radioButtonProduction.Name = "radioButtonProduction";
-            this.radioButtonProduction.Size = new System.Drawing.Size(76, 17);
-            this.radioButtonProduction.TabIndex = 39;
-            this.radioButtonProduction.Text = "Production";
-            this.radioButtonProduction.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonDevelopment
-            // 
-            this.radioButtonDevelopment.AutoSize = true;
-            this.radioButtonDevelopment.Location = new System.Drawing.Point(6, 19);
-            this.radioButtonDevelopment.Name = "radioButtonDevelopment";
-            this.radioButtonDevelopment.Size = new System.Drawing.Size(88, 17);
-            this.radioButtonDevelopment.TabIndex = 38;
-            this.radioButtonDevelopment.Text = "Development";
-            this.radioButtonDevelopment.UseVisualStyleBackColor = true;
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.checkBoxDisableHash);
-            this.groupBox8.Controls.Add(this.checkBoxUnicode);
-            this.groupBox8.Location = new System.Drawing.Point(280, 155);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(228, 70);
-            this.groupBox8.TabIndex = 89;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "ETL output options";
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.OpenFileIcon;
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Name = "openTEAMConfigurationSettingsFileToolStripMenuItem";
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Text = "Open TEAM Configuration Settings File";
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openTEAMConfigurationSettingsFileToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1457,7 +1480,7 @@
             this.MinimumSize = new System.Drawing.Size(1378, 835);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Virtual Enterprise Data Warehouse - v1.4";
+            this.Text = "Virtual Enterprise Data Warehouse - v1.5";
             this.MainTabControl.ResumeLayout(false);
             this.tabPageStaging.ResumeLayout(false);
             this.tabPageStaging.PerformLayout();
@@ -1485,6 +1508,10 @@
             this.groupBox7.PerformLayout();
             this.tabPageSettings.ResumeLayout(false);
             this.tabPageSettings.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBoxhashKeyoutput.ResumeLayout(false);
             this.groupBoxhashKeyoutput.PerformLayout();
             this.menuStripMainMenu.ResumeLayout(false);
@@ -1499,10 +1526,6 @@
             this.groupBoxVersionSelection.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1628,6 +1651,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         internal System.Windows.Forms.RadioButton radioButtonProduction;
         internal System.Windows.Forms.RadioButton radioButtonDevelopment;
+        private System.Windows.Forms.ToolStripMenuItem openTEAMConfigurationSettingsFileToolStripMenuItem;
     }
 }
 

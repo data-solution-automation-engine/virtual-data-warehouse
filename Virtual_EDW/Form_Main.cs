@@ -52,14 +52,15 @@ namespace Virtual_EDW
 
             richTextBoxInformation.Text = "Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n";
 
-            StringBuilder teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
+            var teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
         
             if (teamConfigResult.Length>0)
             {
-                richTextBoxInformation.AppendText("Issues have been encountered while retrieving the TEAM configuration details. The following is returned: " + teamConfigResult.ToString() + "\r\n\r\n");
+                richTextBoxInformation.AppendText("Issues have been encountered while retrieving the TEAM configuration details. The following is returned: " + teamConfigResult + "\r\n\r\n");
             }
             // Make sure the retrieved variables are displayed on the form
             UpdateVedwConfigurationSettingsOnForm();
+            UpdateHashSnippets();
 
             // Start monitoring the configuration directories for file changes
             // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
@@ -91,7 +92,7 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '"+ FormBase.TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '"+ TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
 
             try
@@ -101,7 +102,7 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Staging Area Database. These are managed via the TEAM configuration files. The reported database connection string is '" + FormBase.TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Staging Area Database. These are managed via the TEAM configuration files. The reported database connection string is '" + TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
 
             try
@@ -111,18 +112,40 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Persistent Staging Area (PSA) Database. These are managed via the TEAM configuration files. The reported database connection string is '" + FormBase.TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+                richTextBoxInformation.AppendText("There was an issue establishing a database connection to the Persistent Staging Area (PSA) Database. These are managed via the TEAM configuration files. The reported database connection string is '" + TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
 
             if (_errorCounter > 0)
             {
                 richTextBoxInformation.AppendText(_errorMessage.ToString());
             }
-
         }
 
         /// <summary>
-        /// This is the local updates on the VEDW specific configuration 
+        /// Updating the SQL statements used for either Binary or Character hash value calculation.
+        /// </summary>
+        private void UpdateHashSnippets()
+        {
+            if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
+            {
+                VedwConfigurationSettings.hashingStartSnippet = "HASHBYTES('MD5',";
+                VedwConfigurationSettings.hashingEndSnippet = ")";
+                VedwConfigurationSettings.hasingCollation = "";
+            }
+            else if (VedwConfigurationSettings.HashKeyOutputType == "Character")
+            {
+                VedwConfigurationSettings.hashingStartSnippet = "CONVERT(CHAR(32),HASHBYTES('MD5',";
+                VedwConfigurationSettings.hashingEndSnippet = "),2)";
+                VedwConfigurationSettings.hasingCollation = "COLLATE DATABASE_DEFAULT";
+            }
+            else
+            {
+                richTextBoxInformation.AppendText("An issue was encountered updating the Hash output setting on the application - please verify.");
+            }
+        }
+
+        /// <summary>
+        /// This is the local updates on the VEDW specific configuration.
         /// </summary>
         private void UpdateVedwConfigurationSettingsOnForm()
         {
@@ -140,8 +163,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText(
-                    "An issue was encountered updating the Unicode setting on the application - please verify.");
+                richTextBoxInformation.AppendText("An issue was encountered updating the Unicode setting on the application - please verify.");
             }
 
             // Hash key vs natural key checkbox
@@ -155,8 +177,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText(
-                    "An issue was encountered updating the Unicode setting on the application - please verify.");
+                richTextBoxInformation.AppendText("An issue was encountered updating the Unicode setting on the application - please verify.");
             }
 
             // Hash key output radiobutton
@@ -896,8 +917,9 @@ namespace Virtual_EDW
         }
 
         //  Executing a SQL object against the databasa (SQL Server SMO API)
-        public void GenerateInDatabase(SqlConnection sqlConnection, string viewStatement)
+        public int GenerateInDatabase(SqlConnection sqlConnection, string viewStatement)
         {
+            int errorCounter = 0;
             using (var connection = sqlConnection)
             {
                 var server = new Server(new ServerConnection(connection));
@@ -910,9 +932,11 @@ namespace Virtual_EDW
                 {
                     SetTextDebug("Issues occurred executing the SQL statement.\r\n");
                     SetTextDebug(@"SQL error: " + exception.Message + "\r\n\r\n");
-                 // SetTextDebug(@"The executed query was: " + viewStatement);
+                    errorCounter++;
                 }
-            }               
+            }
+
+            return errorCounter;
         }
 
         private void openOutputDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -4740,9 +4764,7 @@ namespace Virtual_EDW
 
         private void PsaGenerateViews()
         {
-            
-
-            var mydocpath = textBoxOutputPath.Text;
+            int errorCounter = 0;
 
             if (checkedListBoxPsaMetadata.CheckedItems.Count != 0)
             {
@@ -4758,6 +4780,8 @@ namespace Virtual_EDW
 
                     var targetTableName = checkedListBoxPsaMetadata.CheckedItems[x].ToString();
                     var sourceTableName = targetTableName.Replace(TeamConfigurationSettings.PsaTablePrefixValue,TeamConfigurationSettings.StgTablePrefixValue);
+
+                    SetTextPsa($"Processing PSA entity view for {targetTableName}\r\n");
 
                     string targetTableIndexName;
                     if (TeamConfigurationSettings.PsaKeyLocation == "PrimaryKey")//radioButtonPSABusinessKeyIndex.Checked
@@ -4796,231 +4820,270 @@ namespace Virtual_EDW
                         SetTextDebug("There is an issue generating the PSA logic for "+targetTableName+". This is because no natural key can be derived from the available indices on the PSA table. Please check if either a Primary Key (with naming convention PK_<table name>) is available, or a Unique Index (with naming conventions IX_<table name>) is available. The VEDW tool will use the PK or IX depending on the PSA Key Location configuration in the 'settings' tab. With the current setting it would expect to derive the key from the "+ targetTableIndexName + " index.");
                         SetTextDebug("\n\n");
                     }
-                    else {
-
-                    var keycounter = 1;
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
+                    else
                     {
-                        if (keycounter == 1)
+
+                        var keycounter = 1;
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
                         {
-                            mainBusinessKey = businessKey["ATTRIBUTE_NAME"].ToString();
+                            if (keycounter == 1)
+                            {
+                                mainBusinessKey = businessKey["ATTRIBUTE_NAME"].ToString();
+                            }
+
+                            keycounter++;
                         }
-                        keycounter++;
-                    }
 
-                    // Add the main attribute list of the STG table for selection
-                    var sqlStatementForSourceQuery = new StringBuilder();
-                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + sourceTableName + "'");
-                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME !='"+TeamConfigurationSettings.EtlProcessAttribute+"'");
-                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_HUB%'");
-                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_LNK%'");
-                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_SAT%'");
-                    sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT IN ('" + etlProcessIdAttribute + "')");
-                    sqlStatementForSourceQuery.AppendLine("ORDER BY ORDINAL_POSITION");
+                        // Add the main attribute list of the STG table for selection
+                        var sqlStatementForSourceQuery = new StringBuilder();
+                        sqlStatementForSourceQuery.AppendLine(
+                            "SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                        sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+                        sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + sourceTableName + "'");
+                        sqlStatementForSourceQuery.AppendLine(
+                            "  AND COLUMN_NAME !='" + TeamConfigurationSettings.EtlProcessAttribute + "'");
+                        sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_HUB%'");
+                        sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_LNK%'");
+                        sqlStatementForSourceQuery.AppendLine("  AND COLUMN_NAME NOT LIKE '%HASH_SAT%'");
+                        sqlStatementForSourceQuery.AppendLine(
+                            "  AND COLUMN_NAME NOT IN ('" + etlProcessIdAttribute + "')");
+                        sqlStatementForSourceQuery.AppendLine("ORDER BY ORDINAL_POSITION");
 
-                    var sourceStructure = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
+                        var sourceStructure = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
 
-                    
-                    // Creating the  selection query
-                    var psaView = new StringBuilder();
 
-                    psaView.AppendLine("--");
-                    psaView.AppendLine("-- PSA View definition for "+targetTableName);
-                    psaView.AppendLine("-- Generated at 11/21/2014 11:52:15 AM");
-                    psaView.AppendLine("--");
-                    psaView.AppendLine();
-                    psaView.AppendLine("USE ["+TeamConfigurationSettings.StagingDatabaseName+"]");
-                    psaView.AppendLine("GO");
+                        // Creating the  selection query
+                        var psaView = new StringBuilder();
 
-                    if (checkBoxIfExistsStatement.Checked)
-                    {
-                        psaView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[" + targetTableName + "]') AND type in (N'V'))");
-                        psaView.AppendLine("DROP VIEW [" + TeamConfigurationSettings.SchemaName + "].[" + targetTableName + "];");
+                        psaView.AppendLine("--");
+                        psaView.AppendLine("-- PSA View definition for " + targetTableName);
+                        psaView.AppendLine("-- Generated at 11/21/2014 11:52:15 AM");
+                        psaView.AppendLine("--");
+                        psaView.AppendLine();
+                        psaView.AppendLine("USE [" + TeamConfigurationSettings.StagingDatabaseName + "]");
                         psaView.AppendLine("GO");
+
+                        if (checkBoxIfExistsStatement.Checked)
+                        {
+                            psaView.AppendLine(
+                                "IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[" +
+                                targetTableName + "]') AND type in (N'V'))");
+                            psaView.AppendLine("DROP VIEW [" + TeamConfigurationSettings.SchemaName + "].[" +
+                                               targetTableName + "];");
+                            psaView.AppendLine("GO");
+                        }
+
+                        psaView.AppendLine("CREATE VIEW [" + TeamConfigurationSettings.SchemaName + "].[" +
+                                           targetTableName + "] AS ");
+
+                        psaView.AppendLine("SELECT ");
+                        psaView.AppendLine("  " + targetTableName + "_" + TeamConfigurationSettings.DwhKeyIdentifier +
+                                           ",");
+
+                        foreach (DataRow attribute in sourceStructure.Rows)
+                        {
+                            psaView.AppendLine("  " + attribute["COLUMN_NAME"] + ",");
+                        }
+
+                        psaView.AppendLine("  LKP_" + TeamConfigurationSettings.RecordChecksumAttribute + ",");
+                        psaView.AppendLine("  LKP_" + TeamConfigurationSettings.ChangeDataCaptureAttribute + ",");
+                        psaView.AppendLine("  KEY_ROW_NUMBER");
+                        psaView.AppendLine("FROM");
+                        psaView.AppendLine("(");
+                        psaView.AppendLine("  SELECT");
+                        psaView.AppendLine("    CONVERT(CHAR(32),HASHBYTES('MD5',");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            psaView.AppendLine("       ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),STG." +
+                                               (string) businessKey["ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+
+                        }
+
+                        psaView.AppendLine("       CONVERT(" + stringDataType + "(100),STG.[" +
+                                           TeamConfigurationSettings.LoadDateTimeAttribute + "],126)+'|'");
+                        psaView.AppendLine("    ),2) AS " + targetTableName + "_" +
+                                           TeamConfigurationSettings.DwhKeyIdentifier + ",");
+
+                        foreach (DataRow attribute in sourceStructure.Rows)
+                        {
+                            psaView.AppendLine("    STG." + attribute["COLUMN_NAME"] + ",");
+                        }
+
+                        psaView.AppendLine("    COALESCE(maxsub.LKP_" +
+                                           TeamConfigurationSettings.RecordChecksumAttribute + ",'N/A') AS LKP_" +
+                                           TeamConfigurationSettings.RecordChecksumAttribute + ",");
+                        psaView.AppendLine("    COALESCE(maxsub.LKP_" + cdcOperationAttribute + ",'N/A') AS LKP_" +
+                                           cdcOperationAttribute + ",");
+
+                        // ROW_NUMBER over Partition By query element
+                        string currentBusinessKey;
+
+                        psaView.AppendLine("    CAST(ROW_NUMBER() OVER (PARTITION  BY ");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            currentBusinessKey = (string) businessKey["ATTRIBUTE_NAME"];
+                            psaView.Append("       STG." + currentBusinessKey);
+                            psaView.Append(",");
+                        }
+
+                        psaView.Remove(psaView.Length - 1, 1);
+                        psaView.AppendLine();
+                        psaView.AppendLine("    ORDER BY ");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            currentBusinessKey = (string) businessKey["ATTRIBUTE_NAME"];
+                            psaView.Append("       STG." + currentBusinessKey);
+                            psaView.Append(", ");
+                        }
+
+                        psaView.Append("STG." + loadDateTimeAttribute + ") AS INT) AS KEY_ROW_NUMBER");
+
+                        // End of the query			
+                        psaView.AppendLine();
+                        psaView.AppendLine("  FROM " + sourceTableName + " STG");
+                        psaView.AppendLine("  LEFT OUTER JOIN -- Prevent reprocessing");
+                        psaView.AppendLine("    " + TeamConfigurationSettings.PsaDatabaseName + "." +
+                                           TeamConfigurationSettings.SchemaName + "." + targetTableName + " HSTG");
+                        psaView.AppendLine("    ON");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            currentBusinessKey = (string) businessKey["ATTRIBUTE_NAME"];
+                            psaView.AppendLine("       HSTG." + currentBusinessKey + " = STG." + currentBusinessKey +
+                                               " AND");
+                        }
+
+                        psaView.AppendLine(
+                            "       HSTG." + loadDateTimeAttribute + "=STG." + loadDateTimeAttribute + "");
+
+                        psaView.AppendLine("  LEFT OUTER JOIN -- max HSTG checksum");
+                        psaView.AppendLine("  (");
+
+                        // Max subquery
+                        psaView.AppendLine("    SELECT");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            psaView.Append("      A.");
+                            psaView.Append(businessKey["ATTRIBUTE_NAME"]);
+                            psaView.AppendLine(",");
+                        }
+
+                        psaView.AppendLine("      A." + TeamConfigurationSettings.RecordChecksumAttribute + " AS LKP_" +
+                                           TeamConfigurationSettings.RecordChecksumAttribute + ",");
+                        psaView.AppendLine("      A." + cdcOperationAttribute + " AS LKP_" + cdcOperationAttribute +
+                                           "");
+                        psaView.AppendLine("    FROM " + TeamConfigurationSettings.PsaDatabaseName + "." +
+                                           TeamConfigurationSettings.SchemaName + "." + targetTableName + " A");
+                        psaView.AppendLine("    JOIN (");
+                        psaView.AppendLine("      SELECT ");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            psaView.Append("        B.");
+                            psaView.Append(businessKey["ATTRIBUTE_NAME"]);
+                            psaView.AppendLine(",");
+                        }
+
+                        psaView.AppendLine("        MAX(" + loadDateTimeAttribute + ") AS MAX_" +
+                                           loadDateTimeAttribute + " ");
+                        psaView.AppendLine("      FROM " + TeamConfigurationSettings.PsaDatabaseName + "." +
+                                           TeamConfigurationSettings.SchemaName + "." + targetTableName + " B");
+                        psaView.AppendLine("      GROUP BY ");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            psaView.Append("       B.");
+                            psaView.Append(businessKey["ATTRIBUTE_NAME"]);
+                            psaView.AppendLine(",");
+                        }
+
+                        psaView.Remove(psaView.Length - 3, 3);
+
+                        psaView.AppendLine();
+                        psaView.AppendLine("      ) C ON");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            psaView.AppendLine("        A." + businessKey["ATTRIBUTE_NAME"] + " = C." +
+                                               businessKey["ATTRIBUTE_NAME"] + " AND");
+                        }
+
+                        psaView.Remove(psaView.Length - 1, 1);
+
+                        psaView.AppendLine("        A." + loadDateTimeAttribute + " = C.MAX_" + loadDateTimeAttribute +
+                                           "");
+                        psaView.AppendLine("  ) maxsub ON");
+
+                        foreach (DataRow businessKey in partitionAttributes.Rows)
+                        {
+                            psaView.AppendLine("     STG." + (string) businessKey["ATTRIBUTE_NAME"] + " = maxsub." +
+                                               (string) businessKey["ATTRIBUTE_NAME"] + " AND");
+                        }
+
+                        psaView.Remove(psaView.Length - 5, 5);
+
+                        psaView.AppendLine();
+                        psaView.AppendLine("  WHERE");
+                        psaView.AppendLine("    HSTG." + mainBusinessKey + " IS NULL -- prevent reprocessing");
+                        psaView.AppendLine(") sub");
+                        psaView.AppendLine("WHERE");
+                        psaView.AppendLine("(");
+                        psaView.AppendLine("  KEY_ROW_NUMBER=1");
+                        psaView.AppendLine("  AND");
+                        psaView.AppendLine("  (");
+                        psaView.AppendLine("    (" + TeamConfigurationSettings.RecordChecksumAttribute + "!=LKP_" +
+                                           TeamConfigurationSettings.RecordChecksumAttribute + ")");
+                        psaView.AppendLine("    -- The checksums are different");
+                        psaView.AppendLine("    OR");
+                        psaView.AppendLine("    (" + TeamConfigurationSettings.RecordChecksumAttribute + "=LKP_" +
+                                           TeamConfigurationSettings.RecordChecksumAttribute + " AND " +
+                                           TeamConfigurationSettings.ChangeDataCaptureAttribute + "!=LKP_" +
+                                           TeamConfigurationSettings.ChangeDataCaptureAttribute + ")");
+                        psaView.AppendLine("    -- The checksums are the same but the CDC is different");
+                        psaView.AppendLine(
+                            "    -- In other words, if the hash is the same AND the CDC operation is the same then there is no change");
+                        psaView.AppendLine("  )");
+                        psaView.AppendLine(")");
+                        psaView.AppendLine("OR");
+                        psaView.AppendLine("(");
+                        psaView.AppendLine(
+                            "  -- It's not the most recent change in the set, so the record can be inserted as-is");
+                        psaView.AppendLine("  KEY_ROW_NUMBER!=1");
+                        psaView.AppendLine(")");
+                        psaView.AppendLine();
+                        psaView.AppendLine("GO");
+
+                        using (var outfile =
+                            new StreamWriter(VedwConfigurationSettings.VedwOutputPath + @"\VIEW_" + targetTableName +
+                                             ".sql"))
+                        {
+                            outfile.Write(psaView.ToString());
+                            outfile.Close();
+                        }
+
+                        if (checkBoxGenerateInDatabase.Checked)
+                        {
+                            connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                            int localError = GenerateInDatabase(connHstg, psaView.ToString());
+                            errorCounter = errorCounter + localError;
+                        }
+
+                        SetTextDebug(psaView.ToString());
+                        SetTextDebug("\n");
                     }
-
-                    psaView.AppendLine("CREATE VIEW [" + TeamConfigurationSettings.SchemaName + "].[" + targetTableName + "] AS "); 
-
-                    psaView.AppendLine("SELECT ");
-                    psaView.AppendLine("  " + targetTableName + "_" + TeamConfigurationSettings.DwhKeyIdentifier + ",");
-
-                    foreach (DataRow attribute in sourceStructure.Rows)
-                    {
-                        psaView.AppendLine("  " + attribute["COLUMN_NAME"] + ",");
-                    }
-                    psaView.AppendLine("  LKP_"+TeamConfigurationSettings.RecordChecksumAttribute+",");
-                    psaView.AppendLine("  LKP_"+TeamConfigurationSettings.ChangeDataCaptureAttribute+",");
-                    psaView.AppendLine("  KEY_ROW_NUMBER");
-                    psaView.AppendLine("FROM");
-                    psaView.AppendLine("(");
-                    psaView.AppendLine("  SELECT");
-                    psaView.AppendLine("    CONVERT(CHAR(32),HASHBYTES('MD5',");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        psaView.AppendLine("       ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),STG." + (string)businessKey["ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-
-                    }
-
-                    psaView.AppendLine("       CONVERT(" + stringDataType + "(100),STG.[" + TeamConfigurationSettings.LoadDateTimeAttribute + "],126)+'|'");
-                    psaView.AppendLine("    ),2) AS " + targetTableName + "_" + TeamConfigurationSettings.DwhKeyIdentifier + ",");
-                    
-                    foreach (DataRow attribute in sourceStructure.Rows)
-                    {
-                        psaView.AppendLine("    STG." + attribute["COLUMN_NAME"] + ",");
-                    }
-
-                    psaView.AppendLine("    COALESCE(maxsub.LKP_"+TeamConfigurationSettings.RecordChecksumAttribute+",'N/A') AS LKP_"+TeamConfigurationSettings.RecordChecksumAttribute+",");
-                    psaView.AppendLine("    COALESCE(maxsub.LKP_"+cdcOperationAttribute+",'N/A') AS LKP_"+cdcOperationAttribute+",");
-
-                    // ROW_NUMBER over Partition By query element
-                    string currentBusinessKey;
-
-                    psaView.AppendLine("    CAST(ROW_NUMBER() OVER (PARTITION  BY ");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        currentBusinessKey = (string)businessKey["ATTRIBUTE_NAME"];
-                        psaView.Append("       STG." + currentBusinessKey);
-                        psaView.Append(",");
-                    }
-
-                    psaView.Remove(psaView.Length - 1, 1);
-                    psaView.AppendLine();
-                    psaView.AppendLine("    ORDER BY ");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        currentBusinessKey = (string)businessKey["ATTRIBUTE_NAME"];
-                        psaView.Append("       STG." + currentBusinessKey);
-                        psaView.Append(", ");
-                    }
-
-                    psaView.Append("STG."+loadDateTimeAttribute+") AS INT) AS KEY_ROW_NUMBER");
-
-                    // End of the query			
-                    psaView.AppendLine();
-                    psaView.AppendLine("  FROM "+sourceTableName + " STG");
-                    psaView.AppendLine("  LEFT OUTER JOIN -- Prevent reprocessing");
-                    psaView.AppendLine("    " + TeamConfigurationSettings.PsaDatabaseName + "." + TeamConfigurationSettings.SchemaName + "." + targetTableName + " HSTG");
-                    psaView.AppendLine("    ON");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        currentBusinessKey = (string)businessKey["ATTRIBUTE_NAME"];
-                        psaView.AppendLine("       HSTG." + currentBusinessKey + " = STG." + currentBusinessKey + " AND");
-                    }
-
-                    psaView.AppendLine("       HSTG." + loadDateTimeAttribute + "=STG."+loadDateTimeAttribute+"");
-
-                    psaView.AppendLine("  LEFT OUTER JOIN -- max HSTG checksum");
-                    psaView.AppendLine("  (");
-
-                    // Max subquery
-                    psaView.AppendLine("    SELECT");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        psaView.Append("      A.");
-                        psaView.Append(businessKey["ATTRIBUTE_NAME"]);
-                        psaView.AppendLine(",");
-                    }
-
-                    psaView.AppendLine("      A."+TeamConfigurationSettings.RecordChecksumAttribute+" AS LKP_"+TeamConfigurationSettings.RecordChecksumAttribute+",");
-                    psaView.AppendLine("      A."+cdcOperationAttribute+" AS LKP_"+cdcOperationAttribute+"");
-                    psaView.AppendLine("    FROM " + TeamConfigurationSettings.PsaDatabaseName + "." + TeamConfigurationSettings.SchemaName + "." + targetTableName + " A");
-                    psaView.AppendLine("    JOIN (");
-                    psaView.AppendLine("      SELECT ");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        psaView.Append("        B.");
-                        psaView.Append(businessKey["ATTRIBUTE_NAME"]);
-                        psaView.AppendLine(",");
-                    }
-
-                    psaView.AppendLine("        MAX(" + loadDateTimeAttribute + ") AS MAX_" + loadDateTimeAttribute + " ");
-                    psaView.AppendLine("      FROM " + TeamConfigurationSettings.PsaDatabaseName + "." + TeamConfigurationSettings.SchemaName + "." + targetTableName + " B");
-                    psaView.AppendLine("      GROUP BY ");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        psaView.Append("       B.");
-                        psaView.Append(businessKey["ATTRIBUTE_NAME"]);
-                        psaView.AppendLine(",");
-                    }
-
-                    psaView.Remove(psaView.Length - 3, 3);
-
-                    psaView.AppendLine();
-                    psaView.AppendLine("      ) C ON");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        psaView.AppendLine("        A." + businessKey["ATTRIBUTE_NAME"] + " = C." + businessKey["ATTRIBUTE_NAME"] + " AND");
-                    }
-
-                    psaView.Remove(psaView.Length - 1, 1);
-
-                    psaView.AppendLine("        A." + loadDateTimeAttribute + " = C.MAX_" + loadDateTimeAttribute + "");
-                    psaView.AppendLine("  ) maxsub ON");
-
-                    foreach (DataRow businessKey in partitionAttributes.Rows)
-                    {
-                        psaView.AppendLine("     STG." + (string)businessKey["ATTRIBUTE_NAME"] + " = maxsub." + (string)businessKey["ATTRIBUTE_NAME"] + " AND");
-                    }
-                    psaView.Remove(psaView.Length - 5, 5);
-
-                    psaView.AppendLine();
-                    psaView.AppendLine("  WHERE");
-                    psaView.AppendLine("    HSTG." + mainBusinessKey + " IS NULL -- prevent reprocessing");
-                    psaView.AppendLine(") sub");
-                    psaView.AppendLine("WHERE");
-                    psaView.AppendLine("(");
-                    psaView.AppendLine("  KEY_ROW_NUMBER=1");
-                    psaView.AppendLine("  AND");
-                    psaView.AppendLine("  (");
-                    psaView.AppendLine("    (" + TeamConfigurationSettings.RecordChecksumAttribute + "!=LKP_"+TeamConfigurationSettings.RecordChecksumAttribute+")");
-                    psaView.AppendLine("    -- The checksums are different");
-                    psaView.AppendLine("    OR");
-                    psaView.AppendLine("    (" + TeamConfigurationSettings.RecordChecksumAttribute + "=LKP_"+TeamConfigurationSettings.RecordChecksumAttribute+" AND "+TeamConfigurationSettings.ChangeDataCaptureAttribute+"!=LKP_"+TeamConfigurationSettings.ChangeDataCaptureAttribute+")");
-                    psaView.AppendLine("    -- The checksums are the same but the CDC is different");
-                    psaView.AppendLine("    -- In other words, if the hash is the same AND the CDC operation is the same then there is no change");
-                    psaView.AppendLine("  )");
-                    psaView.AppendLine(")");
-                    psaView.AppendLine("OR");
-                    psaView.AppendLine("(");
-                    psaView.AppendLine("  -- It's not the most recent change in the set, so the record can be inserted as-is");
-                    psaView.AppendLine("  KEY_ROW_NUMBER!=1");
-                    psaView.AppendLine(")");
-                    psaView.AppendLine();
-                    psaView.AppendLine("GO");
-
-                    using (var outfile = new StreamWriter(mydocpath + @"\VIEW_" + targetTableName + ".sql"))
-                    {
-                        outfile.Write(psaView.ToString());
-                        outfile.Close();
-                    }
-
-                    if (checkBoxGenerateInDatabase.Checked)
-                    {
-                        connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                        GenerateInDatabase(connHstg, psaView.ToString());
-                    }
-
-                    SetTextDebug(psaView.ToString());
-                    SetTextDebug("\n");
-
-                    SetTextPsa($"Processing PSA entity view for {targetTableName}\r\n");
-                }
                 }
             }
             else
             {
                 SetTextPsa("There was no metadata selected to create Persistent Staging Area views. Please check the metadata schema - are there any Staging Area tables selected?");
             }
+
+            SetTextStaging($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextStaging($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void SchemaboundCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -5055,8 +5118,8 @@ namespace Virtual_EDW
 
         private void StagingGenerateInsertInto()
         {
-            
-
+            // Setup error handling to report back to the user
+            int errorCounter = 0;
             var mydocpath = textBoxOutputPath.Text;
 
             if (checkedListBoxStgMetadata.CheckedItems.Count != 0)
@@ -5064,7 +5127,9 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxStgMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxStgMetadata.CheckedItems[x].ToString();
-                    var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg }; 
+                    var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
+
+                    SetTextStaging($"Processing Staging Area insert statement for {targetTableName}\r\n");
 
                     // Build the main attribute list of the STG table for selection
                     var sqlStatementForSourceQuery = new StringBuilder();
@@ -5100,7 +5165,7 @@ namespace Virtual_EDW
 
                     foreach (DataRow attribute in sourceStructure.Rows)
                     {
-                        stgInsertIntoStatement.AppendLine("   " + attribute["COLUMN_NAME"] + ",");
+                        stgInsertIntoStatement.AppendLine("   [" + attribute["COLUMN_NAME"] + "],");
                     }
 
                     stgInsertIntoStatement.Remove(stgInsertIntoStatement.Length - 3, 3);
@@ -5112,17 +5177,17 @@ namespace Virtual_EDW
                     {
                         if ((string)attribute["COLUMN_NAME"] == TeamConfigurationSettings.EtlProcessAttribute)
                         {
-                            stgInsertIntoStatement.AppendLine("   -1 AS " + attribute["COLUMN_NAME"] + ",");
+                            stgInsertIntoStatement.AppendLine("   -1 AS [" + attribute["COLUMN_NAME"] + "],");
                         }
                         else
                         {
-                            stgInsertIntoStatement.AppendLine("   " + attribute["COLUMN_NAME"] + ",");
+                            stgInsertIntoStatement.AppendLine("   [" + attribute["COLUMN_NAME"] + "],");
                         }
                     }
 
                     stgInsertIntoStatement.Remove(stgInsertIntoStatement.Length - 3, 3);
                     stgInsertIntoStatement.AppendLine();
-                    stgInsertIntoStatement.AppendLine("FROM VW_" + targetTableName);
+                    stgInsertIntoStatement.AppendLine("FROM [VW_" + targetTableName + "]");
 
                     using (var outfile = new StreamWriter(mydocpath + @"\INSERT_STATEMENT_" + targetTableName + ".sql"))
                     {
@@ -5133,7 +5198,8 @@ namespace Virtual_EDW
                     if (checkBoxGenerateInDatabase.Checked)
                     {
                         connStg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                        GenerateInDatabase(connStg, stgInsertIntoStatement.ToString());
+                        int insertError = GenerateInDatabase(connStg, stgInsertIntoStatement.ToString());
+                        errorCounter = errorCounter + insertError;
                     }
 
                     SetTextDebug(stgInsertIntoStatement.ToString());
@@ -5144,31 +5210,29 @@ namespace Virtual_EDW
             {
                 SetTextStaging("There was no metadata selected to create Staging Area insert statements. Please check the metadata schema - are there any Staging Area tables selected?");
             }
+
+            SetTextStaging($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextStaging($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void StagingGenerateViews()
         {
-            
+            // Setup error handling to report back to the user
+            int errorCounter = 0;
 
             var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
             var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
 
-            var recordSourceAttribute = TeamConfigurationSettings.RecordSourceAttribute;
-            var loadDateTimeAttribute = TeamConfigurationSettings.LoadDateTimeAttribute;
             var etlProcessIdAttribute = TeamConfigurationSettings.EtlProcessAttribute;
             var cdcOperationAttribute = TeamConfigurationSettings.ChangeDataCaptureAttribute;
             var eventDateTimeAttribute = TeamConfigurationSettings.EventDateTimeAttribute;
             var sourceRowIdAttribute = TeamConfigurationSettings.RowIdAttribute;
-            var mydocpath = textBoxOutputPath.Text;
 
             if (checkedListBoxStgMetadata.CheckedItems.Count != 0)
             {
                 for (int x = 0; x <= checkedListBoxStgMetadata.CheckedItems.Count - 1; x++)
                 {
-                    // **************************************************************************************
                     // Variables and parameters
-                    // **************************************************************************************
-
                     var stagingAreaTableId = 0;
                     var hubTableId = 0;
                     var targetTableName = checkedListBoxStgMetadata.CheckedItems[x].ToString();
@@ -5190,12 +5254,15 @@ namespace Virtual_EDW
 
                     connStg.ConnectionString = TeamConfigurationSettings.ConnectionStringStg;
 
+                    SetTextStaging($"Processing Staging Area entity view for {targetTableName}\r\n");
+
+
                     // Creating the  selection query
                     var stgView = new StringBuilder();
 
                     stgView.AppendLine("--");
                     stgView.AppendLine("-- Staging Area View definition for " + targetTableName);
-                    stgView.AppendLine("-- Generated at 11/21/2014 11:52:15 AM");
+                    stgView.AppendLine("-- Generated at " + DateTime.Now);
                     stgView.AppendLine("--");
                     stgView.AppendLine();
                     stgView.AppendLine("USE [" + TeamConfigurationSettings.StagingDatabaseName + "]");
@@ -5203,7 +5270,7 @@ namespace Virtual_EDW
 
                     if (checkBoxIfExistsStatement.Checked)
                     {
-                        stgView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[VW_" +targetTableName + "]') AND type in (N'V'))");
+                        stgView.AppendLine("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[VW_" +targetTableName + "]') AND type in (N'V'))");
                         stgView.AppendLine("DROP VIEW ["+TeamConfigurationSettings.SchemaName+"].[VW_" + targetTableName + "]");
                         stgView.AppendLine("GO");
                     }
@@ -5213,15 +5280,15 @@ namespace Virtual_EDW
                     // Retrieving the Natural Key for the Staging Area table
                     sqlStatementForNaturalKey.Clear();
                     sqlStatementForNaturalKey.AppendLine("SELECT");
-                    sqlStatementForNaturalKey.AppendLine("st.name STAGING_AREA_TABLE_NAME,");
-                    sqlStatementForNaturalKey.AppendLine("sc.name AS STAGING_AREA_ATTRIBUTE_NAME,");
+                    sqlStatementForNaturalKey.AppendLine("  st.name STAGING_AREA_TABLE_NAME,");
+                    sqlStatementForNaturalKey.AppendLine("  sc.name AS STAGING_AREA_ATTRIBUTE_NAME,");
                     sqlStatementForNaturalKey.AppendLine("COALESCE(sep.value,'Error - no indicator present') AS NATURAL_KEY_INDICATOR");
                     sqlStatementForNaturalKey.AppendLine("FROM sys.tables st");
                     sqlStatementForNaturalKey.AppendLine("INNER JOIN sys.columns sc ");
-                    sqlStatementForNaturalKey.AppendLine("ON st.object_id = sc.object_id");
+                    sqlStatementForNaturalKey.AppendLine("  ON st.object_id = sc.object_id");
                     sqlStatementForNaturalKey.AppendLine("LEFT JOIN sys.extended_properties sep ");
-                    sqlStatementForNaturalKey.AppendLine("ON st.object_id = sep.major_id");
-                    sqlStatementForNaturalKey.AppendLine("AND sc.column_id = sep.minor_id");
+                    sqlStatementForNaturalKey.AppendLine("  ON st.object_id = sep.major_id");
+                    sqlStatementForNaturalKey.AppendLine(" AND sc.column_id = sep.minor_id");
                     sqlStatementForNaturalKey.AppendLine("WHERE COALESCE(sep.value,'Error - no indicator present')='Yes'");
                     sqlStatementForNaturalKey.AppendLine(" AND st.name = '" + targetTableName + "'");
 
@@ -5248,7 +5315,7 @@ namespace Virtual_EDW
                         sqlStatementForSourceAttribute.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION, NUMERIC_SCALE");
                         sqlStatementForSourceAttribute.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                         sqlStatementForSourceAttribute.AppendLine("WHERE TABLE_NAME= '" + targetTableName + "'");
-                        sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" + eventDateTimeAttribute + "','" + sourceRowIdAttribute + "','" + cdcOperationAttribute + "','" + recordSourceAttribute + "','" + etlProcessIdAttribute + "','" + loadDateTimeAttribute + "','"+TeamConfigurationSettings.RecordChecksumAttribute+"')");
+                        sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" + eventDateTimeAttribute + "','" + sourceRowIdAttribute + "','" + cdcOperationAttribute + "','" + TeamConfigurationSettings.RecordSourceAttribute + "','" + etlProcessIdAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "','"+TeamConfigurationSettings.RecordChecksumAttribute+"')");
                         sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
 
                         var sourceStructure = GetDataTable(ref connStg, sqlStatementForSourceAttribute.ToString());
@@ -5300,64 +5367,63 @@ namespace Virtual_EDW
 
                                     if (foundRow != null)
                                     {
-                                        if (attDataType == "bit")
+                                        switch (attDataType)
                                         {
-                                            sourceSqlStatement.AppendLine("   CONVERT(INT," + attName + ") AS " + attName +
-                                                                          ",");
-                                        }
-                                        else if (attDataType == "float" || attDataType == "real" || attDataType == "money" ||
-                                                 attDataType == "numeric")
-                                        {
-                                            if (attScale == "20")
+                                            case "bit":
+                                                sourceSqlStatement.AppendLine("   CONVERT(INT,[" + attName + "]) AS [" + attName +"],");
+                                                break;
+                                            case "float":
+                                            case "real":
+                                            case "money":
+                                            case "numeric":
                                             {
-                                                stgView.AppendLine("   CONVERT(NUMERIC(38,20)," + attName + ") AS " +
-                                                                   attName + ",");
+                                                if (attScale == "20")
+                                                {
+                                                    stgView.AppendLine("   CONVERT(NUMERIC(38,20),[" + attName + "]) AS [" +attName + "],");
+                                                }
+                                                else
+                                                {
+                                                    stgView.AppendLine("   CONVERT(NUMERIC(38,0),[" + attName + "]) AS [" +attName + "],");
+                                                }
+
+                                                break;
                                             }
-                                            else
-                                            {
-                                                stgView.AppendLine("   CONVERT(NUMERIC(38,0)," + attName + ") AS " +
-                                                                   attName + ",");
-                                            }
-                                        }
-                                        else if (attDataType == "text" || attDataType == "ntext")
-                                        {
-                                            stgView.AppendLine("   CONVERT(" + stringDataType + "(4000)," + attName + ") AS " + attName +
-                                                               ",");
-                                        }
-                                        else if (attDataType == "datetime" || attDataType == "datetime2")
-                                        {
-                                            stgView.AppendLine("   CONVERT(DATETIME2(7)," + attName + ") AS " + attName +
-                                                               ",");
-                                        }
-                                        else
-                                        {
-                                            stgView.AppendLine("   " + attName + " AS " + attName + ",");
+                                            case "text":
+                                            case "ntext":
+                                                stgView.AppendLine("   CONVERT(" + stringDataType + "(4000),[" + attName + "]) AS [" + attName +"],");
+                                                break;
+                                            case "datetime":
+                                            case "datetime2":
+                                                stgView.AppendLine("   CONVERT(DATETIME2(7),[" + attName + "]) AS [" + attName +"],");
+                                                break;
+                                            default:
+                                                stgView.AppendLine("   [" + attName + "] AS [" + attName + "],");
+                                                break;
                                         }
                                     }
                                     else
                                     {
                                         // This concerns all non-key attributes
-                                        stgView.AppendLine("   " + attName + " AS " + attName + ",");
+                                        stgView.AppendLine("   [" + attName + "] AS [" + attName + "],");
                                     }
                                 }
                             }
                         }
 
                         // Hash on full record
-                        stgView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                        stgView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
 
                         if (sourceStructure != null)
                         {
                             foreach (DataRow attribute in sourceStructure.Rows)
                             {
-                                stgView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + attribute["COLUMN_NAME"] +
-                                                   ")),'NA')+'|'+");
+                                stgView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + attribute["COLUMN_NAME"] + "])),'N/A')+'|'+");
                             }
                         }
 
                         stgView.Remove(stgView.Length - 3, 3);
                         stgView.AppendLine();
-                        stgView.AppendLine("   ),2) AS "+TeamConfigurationSettings.RecordChecksumAttribute+",");
+                        stgView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS ["+TeamConfigurationSettings.RecordChecksumAttribute+"],");
 
                         // Hash on Business Keys
                         if (hashList != null)
@@ -5373,10 +5439,10 @@ namespace Virtual_EDW
 
                                     // Retrieving the Business Keys for future parallel DV2.0 processing
                                     sqlStatementForBusinessKeyHub.AppendLine("SELECT");
-                                    sqlStatementForBusinessKeyHub.AppendLine(" c.STAGING_AREA_TABLE_ID,");
-                                    sqlStatementForBusinessKeyHub.AppendLine(" c.STAGING_AREA_TABLE_NAME,");
-                                    sqlStatementForBusinessKeyHub.AppendLine(" b.HUB_TABLE_ID,");                                
-                                    sqlStatementForBusinessKeyHub.AppendLine(" b.HUB_TABLE_NAME,");
+                                    sqlStatementForBusinessKeyHub.AppendLine("  c.STAGING_AREA_TABLE_ID,");
+                                    sqlStatementForBusinessKeyHub.AppendLine("  c.STAGING_AREA_TABLE_NAME,");
+                                    sqlStatementForBusinessKeyHub.AppendLine("  b.HUB_TABLE_ID,");                                
+                                    sqlStatementForBusinessKeyHub.AppendLine("  b.HUB_TABLE_NAME,");
                                     sqlStatementForBusinessKeyHub.AppendLine("FROM MD_STG_HUB_XREF a ");
                                     sqlStatementForBusinessKeyHub.AppendLine("JOIN MD_HUB b ON a.HUB_TABLE_ID = b.HUB_TABLE_ID ");
                                     sqlStatementForBusinessKeyHub.AppendLine("JOIN MD_STG c on a.STAGING_AREA_TABLE_ID = c.STAGING_AREA_TABLE_ID ");
@@ -5391,24 +5457,21 @@ namespace Virtual_EDW
                                         hubTableId = (int)businessKey["HUB_TABLE_ID"];
                                     }
 
-                                    // **************************************************************************************
-                                    // Retrieving the Business Keys attribute(s) as represented in the source for hashing
-                                    // **************************************************************************************
 
+                                    // Retrieving the Business Keys attribute(s) as represented in the source for hashing
                                     sqlStatementForBusinessKeyAttribute.AppendLine("SELECT comp.STAGING_AREA_TABLE_ID, comp.HUB_TABLE_ID, comp.COMPONENT_ID, COMPONENT_TYPE, COMPONENT_ELEMENT_TYPE, COMPONENT_ELEMENT_VALUE AS ATTRIBUTE_NAME");
-                                    sqlStatementForBusinessKeyAttribute.AppendLine("FROM");
-                                    sqlStatementForBusinessKeyAttribute.AppendLine("MD_BUSINESS_KEY_COMPONENT comp");
+                                    sqlStatementForBusinessKeyAttribute.AppendLine("FROM MD_BUSINESS_KEY_COMPONENT comp");
                                     sqlStatementForBusinessKeyAttribute.AppendLine("JOIN MD_BUSINESS_KEY_COMPONENT_PART elem ");
-                                    sqlStatementForBusinessKeyAttribute.AppendLine("ON comp.COMPONENT_ID=elem.COMPONENT_ID");
-                                    sqlStatementForBusinessKeyAttribute.AppendLine("AND elem.STAGING_AREA_TABLE_ID = comp.STAGING_AREA_TABLE_ID");
-                                    sqlStatementForBusinessKeyAttribute.AppendLine("AND elem.HUB_TABLE_ID = comp.HUB_TABLE_ID");
+                                    sqlStatementForBusinessKeyAttribute.AppendLine("  ON comp.COMPONENT_ID=elem.COMPONENT_ID");
+                                    sqlStatementForBusinessKeyAttribute.AppendLine(" AND elem.STAGING_AREA_TABLE_ID = comp.STAGING_AREA_TABLE_ID");
+                                    sqlStatementForBusinessKeyAttribute.AppendLine(" AND elem.HUB_TABLE_ID = comp.HUB_TABLE_ID");
                                     sqlStatementForBusinessKeyAttribute.AppendLine("WHERE comp.STAGING_AREA_TABLE_ID= '" + stagingAreaTableId + "'");
-                                    sqlStatementForBusinessKeyAttribute.AppendLine("WHERE comp.HUB_TABLE_ID= '" + hubTableId + "'");
+                                    sqlStatementForBusinessKeyAttribute.AppendLine("AND comp.HUB_TABLE_ID= '" + hubTableId + "'");
                                     sqlStatementForBusinessKeyAttribute.AppendLine("ORDER BY comp.COMPONENT_ORDER,COMPONENT_ELEMENT_ORDER");
 
                                     var businessKeyAttributeDataTable = GetDataTable(ref connOmd,sqlStatementForBusinessKeyAttribute.ToString());
 
-                                    stgView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                                    stgView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
 
                                     foreach (DataRow attribute in businessKeyAttributeDataTable.Rows)
                                     {
@@ -5417,7 +5480,7 @@ namespace Virtual_EDW
 
                                     stgView.Remove(stgView.Length - 3, 3);
                                     stgView.AppendLine();
-                                    stgView.AppendLine("   ),2) AS HASH_" + hubTableName + ",");
+                                    stgView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS HASH_" + hubTableName + ",");
                                 }
                                 else
                                 {
@@ -5435,10 +5498,7 @@ namespace Virtual_EDW
 
                                 if (lnk["TABLE_TYPE"].ToString() == "LNK")
                                 {
-                                    // **************************************************************************************
                                     // Retrieving the Business Keys attribute(s) as represented in the source for hashing
-                                    // *************************************************************************************
-
                                     sqlStatementForLnkBusinessKeyAttribute.Clear();
                                     sqlStatementForLnkBusinessKeyAttribute.AppendLine("SELECT ");
                                     sqlStatementForLnkBusinessKeyAttribute.AppendLine("  c.STAGING_AREA_TABLE_ID,");                                
@@ -5465,7 +5525,7 @@ namespace Virtual_EDW
 
                                     var lnkBusinessKeyAttributeDataTable = GetDataTable(ref connOmd,sqlStatementForLnkBusinessKeyAttribute.ToString());
 
-                                    stgView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                                    stgView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
 
                                     foreach (DataRow attribute in lnkBusinessKeyAttributeDataTable.Rows)
                                     {
@@ -5474,16 +5534,14 @@ namespace Virtual_EDW
 
                                     stgView.Remove(stgView.Length - 3, 3);
                                     stgView.AppendLine();
-                                    stgView.AppendLine("   ),2) AS HASH_" + lnkTableName + ",");
+                                    stgView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS HASH_" + lnkTableName + ",");
                                 }
                                 else
                                 {
-                                    errorCapture.AppendLine("There is no Link detected: processing " + lnkTableName + " as " +
-                                                            lnk["TABLE_TYPE"] + " with source as " + targetTableName);
+                                    errorCapture.AppendLine("There is no Link detected: processing " + lnkTableName + " as " + lnk["TABLE_TYPE"] + " with source as " + targetTableName);
                                 }
                             }
                         }
-
 
                         stgView.Remove(stgView.Length - 3, 3);
                         stgView.AppendLine();
@@ -5514,7 +5572,7 @@ namespace Virtual_EDW
 
                         foreach (DataRow businessKey in naturalKeyDataTable.Rows)
                         {
-                            stgView.Append("            " + businessKey["STAGING_AREA_ATTRIBUTE_NAME"]);
+                            stgView.Append("            [" + businessKey["STAGING_AREA_ATTRIBUTE_NAME"]+"]");
                             stgView.Append(",");
                         }
 
@@ -5557,7 +5615,6 @@ namespace Virtual_EDW
                                 var attName = attribute["COLUMN_NAME"].ToString();
                                 var attDataType = attribute["DATA_TYPE"].ToString();
 
-
                                 if (attDataType.ToUpper() == "VARCHAR" || attDataType.ToUpper() == "NVARCHAR")
                                 {
                                     stgView.AppendLine("  CASE WHEN STG_CTE.[" + mainBusinessKey + "] IS NULL THEN PSA_CTE.["+attName+"] ELSE STG_CTE.["+attName+"] COLLATE DATABASE_DEFAULT END AS ["+attName+"], ");
@@ -5569,7 +5626,7 @@ namespace Virtual_EDW
                                 }
                             }
 
-                            stgView.AppendLine("  CASE WHEN STG_CTE.[" + mainBusinessKey + "] IS NULL THEN PSA_CTE.[" + TeamConfigurationSettings.RecordChecksumAttribute + "] ELSE STG_CTE.[" + TeamConfigurationSettings.RecordChecksumAttribute + "] COLLATE DATABASE_DEFAULT END AS [" + TeamConfigurationSettings.RecordChecksumAttribute + "], ");
+                            stgView.AppendLine("  CASE WHEN STG_CTE.[" + mainBusinessKey + "] IS NULL THEN PSA_CTE.[" + TeamConfigurationSettings.RecordChecksumAttribute + "] ELSE STG_CTE.[" + TeamConfigurationSettings.RecordChecksumAttribute + "] "+VedwConfigurationSettings.hasingCollation+" END AS [" + TeamConfigurationSettings.RecordChecksumAttribute + "], ");
 
                             if (hashList != null)
                                 foreach (DataRow hashkey in hashList.Rows)
@@ -5658,7 +5715,7 @@ namespace Virtual_EDW
                                 {
                                     stgView.AppendLine("     WHEN STG_CTE." + mainBusinessKey + " IS NOT NULL AND PSA_CTE." +
                                                        mainBusinessKey + " IS NOT NULL AND STG_CTE." +
-                                                       TeamConfigurationSettings.RecordChecksumAttribute + " COLLATE DATABASE_DEFAULT != PSA_CTE." +
+                                                       TeamConfigurationSettings.RecordChecksumAttribute + " "+VedwConfigurationSettings.hasingCollation+" != PSA_CTE." +
                                                        TeamConfigurationSettings.RecordChecksumAttribute + " THEN 'Change' ");
                                 }
                                 else
@@ -5684,7 +5741,7 @@ namespace Virtual_EDW
                     stgView.AppendLine("GO");
                     stgView.AppendLine();
                     
-                    using (var outfile = new StreamWriter(mydocpath + @"\VIEW_" + targetTableName + ".sql"))
+                    using (var outfile = new StreamWriter(VedwConfigurationSettings.VedwOutputPath + @"\VIEW_" + targetTableName + ".sql"))
                     {
                         outfile.Write(stgView.ToString());
                         outfile.Close();
@@ -5693,20 +5750,21 @@ namespace Virtual_EDW
                     if (checkBoxGenerateInDatabase.Checked)
                     {
                         connStg.ConnectionString = TeamConfigurationSettings.ConnectionStringStg;
-                        GenerateInDatabase(connStg, stgView.ToString());
+                        var localError = GenerateInDatabase(connStg, stgView.ToString());
+                        errorCounter = errorCounter + localError;
                     }
 
                     SetTextDebug(stgView.ToString());
                     SetTextDebug("\n");
-
-                    SetTextStaging($"Processing Staging Area entity view for {targetTableName}\r\n");
-
                 }
             }
             else
             {
                 SetTextStaging("There was no metadata selected to create Staging Area views. Please check the metadata schema - are there any Staging Area tables selected?");
             }
+
+            SetTextStaging($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextStaging($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         // Threads starting for other (sub) forms
@@ -8645,7 +8703,6 @@ namespace Virtual_EDW
 
         private void openConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
             try
             {
                 Process.Start(VedwConfigurationSettings.TeamConfigurationPath);
@@ -8662,11 +8719,26 @@ namespace Virtual_EDW
             {
                 Process.Start("Team.exe");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("The TEAM application cannot be found. Is it installed?");
             }
 
+        }
+
+        private void openTEAMConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(VedwConfigurationSettings.TeamConfigurationPath +
+                              GlobalParameters.TeamConfigurationfileName + '_' +
+                              VedwConfigurationSettings.WorkingEnvironment +
+                              GlobalParameters.VedwFileExtension);
+            }
+            catch (Exception ex)
+            {
+                richTextBoxInformation.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
+            }
         }
     }
 }

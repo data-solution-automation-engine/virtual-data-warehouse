@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -22,23 +21,6 @@ namespace Virtual_EDW
             MyParent = myParent;
             InitializeComponent();
         }
-
-
-        delegate int GetVersionFromTrackBarCallBack();
-        private int GetVersionFromTrackBar()
-        {
-            if (MyParent.trackBarVersioning.InvokeRequired)
-            {
-                var d = new GetVersionFromTrackBarCallBack(GetVersionFromTrackBar);
-                return Int32.Parse(Invoke(d).ToString());
-            }
-            else
-            {
-                return MyParent.trackBarVersioning.Value;
-            }
-        }
-
-
 
 
         /// <summary>
@@ -70,8 +52,12 @@ namespace Virtual_EDW
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string VedwOutputPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string WorkingEnvironment { get; set; }
-        }
 
+            // Parameters that can be changed at runtime
+            public static string hashingStartSnippet { get; set; }
+            public static string hashingEndSnippet { get; set; }
+            public static string hasingCollation { get; set; }
+        }
 
         /// <summary>
         /// These settings are driven by the TEAM application, so can't be saved from VEDW.
@@ -171,8 +157,12 @@ namespace Virtual_EDW
         }
 
 
-
-
+        /// <summary>
+        /// Load a data set into an in-memory datatable
+        /// </summary>
+        /// <param name="sqlConnection"></param>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         public DataTable GetDataTable(ref SqlConnection sqlConnection, string sql)
         {
             // Pass the connection to a command object
@@ -182,7 +172,6 @@ namespace Virtual_EDW
             var dataTable = new DataTable();
 
             // Adds or refreshes rows in the DataSet to match those in the data source
-
             try
             {
                 sqlDataAdapter.Fill(dataTable);
@@ -190,8 +179,7 @@ namespace Virtual_EDW
 
             catch (Exception)
             {
-              //  MessageBox.Show(@"SQL error: " + exception.Message + "\r\n\r\n The executed query was: " + sql + "\r\n\r\n The connection used was " + sqlConnection.ConnectionString, "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
+               return null;
             }
             return dataTable;
         }
