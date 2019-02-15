@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Fi
 		Files\Virtualisation_Metadata_v1.3.erwin = Files\Virtualisation_Metadata_v1.3.erwin
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Virtual_EDW_Installer", "Virtual_EDW_Installer\Virtual_EDW_Installer.vdproj", "{FFFAA8D4-DD12-4659-A020-1B76795C6491}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -47,6 +49,11 @@ Global
 		{73971441-2782-43CF-862C-1F636528858A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73971441-2782-43CF-862C-1F636528858A}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{73971441-2782-43CF-862C-1F636528858A}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{FFFAA8D4-DD12-4659-A020-1B76795C6491}.CD_ROM|Any CPU.ActiveCfg = Release
+		{FFFAA8D4-DD12-4659-A020-1B76795C6491}.Debug|Any CPU.ActiveCfg = Debug
+		{FFFAA8D4-DD12-4659-A020-1B76795C6491}.DVD-5|Any CPU.ActiveCfg = Debug
+		{FFFAA8D4-DD12-4659-A020-1B76795C6491}.Release|Any CPU.ActiveCfg = Release
+		{FFFAA8D4-DD12-4659-A020-1B76795C6491}.SingleImage|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
