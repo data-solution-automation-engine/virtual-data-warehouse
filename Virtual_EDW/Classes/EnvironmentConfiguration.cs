@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Virtual_EDW.Classes
+namespace Virtual_EDW
 {
     class EnvironmentConfiguration
     {

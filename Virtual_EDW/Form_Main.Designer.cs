@@ -110,6 +110,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveConfigurationFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.openTEAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -148,7 +149,6 @@
             this.trackBarVersioning = new System.Windows.Forms.TrackBar();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -999,6 +999,7 @@
             this.radioButtonBinaryHash.TabIndex = 0;
             this.radioButtonBinaryHash.Text = "Binary";
             this.radioButtonBinaryHash.UseVisualStyleBackColor = true;
+            this.radioButtonBinaryHash.CheckedChanged += new System.EventHandler(this.radioButtonBinaryHash_CheckedChanged);
             // 
             // label6
             // 
@@ -1077,7 +1078,7 @@
             // 
             this.openOutputDirectoryToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.OpenDirectoryIcon;
             this.openOutputDirectoryToolStripMenuItem.Name = "openOutputDirectoryToolStripMenuItem";
-            this.openOutputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.openOutputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.openOutputDirectoryToolStripMenuItem.Text = "Open Output Directory";
             this.openOutputDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openOutputDirectoryToolStripMenuItem_Click);
             // 
@@ -1085,41 +1086,49 @@
             // 
             this.openConfigurationDirectoryToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.OpenDirectoryIcon;
             this.openConfigurationDirectoryToolStripMenuItem.Name = "openConfigurationDirectoryToolStripMenuItem";
-            this.openConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.openConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.openConfigurationDirectoryToolStripMenuItem.Text = "Open Configuration Directory";
             this.openConfigurationDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openConfigurationDirectoryToolStripMenuItem_Click);
+            // 
+            // openTEAMConfigurationSettingsFileToolStripMenuItem
+            // 
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.OpenFileIcon;
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Name = "openTEAMConfigurationSettingsFileToolStripMenuItem";
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Text = "Open TEAM Configuration Settings File";
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openTEAMConfigurationSettingsFileToolStripMenuItem_Click);
             // 
             // saveConfigurationFileToolStripMenuItem
             // 
             this.saveConfigurationFileToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.SaveFile;
             this.saveConfigurationFileToolStripMenuItem.Name = "saveConfigurationFileToolStripMenuItem";
-            this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.saveConfigurationFileToolStripMenuItem.Text = "Save VEDW Settings";
             this.saveConfigurationFileToolStripMenuItem.Click += new System.EventHandler(this.saveConfigurationFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(228, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(278, 6);
             // 
             // openTEAMToolStripMenuItem
             // 
             this.openTEAMToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.RavosLogo;
             this.openTEAMToolStripMenuItem.Name = "openTEAMToolStripMenuItem";
-            this.openTEAMToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.openTEAMToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.openTEAMToolStripMenuItem.Text = "Open TEAM";
             this.openTEAMToolStripMenuItem.Click += new System.EventHandler(this.openTEAMToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(228, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(278, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ExitApplication;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -1450,14 +1459,6 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 15;
             this.pictureBox1.TabStop = false;
-            // 
-            // openTEAMConfigurationSettingsFileToolStripMenuItem
-            // 
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.OpenFileIcon;
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Name = "openTEAMConfigurationSettingsFileToolStripMenuItem";
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Text = "Open TEAM Configuration Settings File";
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openTEAMConfigurationSettingsFileToolStripMenuItem_Click);
             // 
             // FormMain
             // 

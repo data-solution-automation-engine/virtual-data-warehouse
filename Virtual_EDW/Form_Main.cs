@@ -12,7 +12,6 @@ using System.Threading;
 using System.ComponentModel;
 using System.Drawing;
 using System.Security.Permissions;
-using Virtual_EDW.Classes;
 
 namespace Virtual_EDW
 {
@@ -130,13 +129,15 @@ namespace Virtual_EDW
             {
                 VedwConfigurationSettings.hashingStartSnippet = "HASHBYTES('MD5',";
                 VedwConfigurationSettings.hashingEndSnippet = ")";
-                VedwConfigurationSettings.hasingCollation = "";
+                VedwConfigurationSettings.hashingCollation = "";
+                VedwConfigurationSettings.hashingZeroKey = "0x00000000000000000000000000000000";
             }
             else if (VedwConfigurationSettings.HashKeyOutputType == "Character")
             {
                 VedwConfigurationSettings.hashingStartSnippet = "CONVERT(CHAR(32),HASHBYTES('MD5',";
                 VedwConfigurationSettings.hashingEndSnippet = "),2)";
-                VedwConfigurationSettings.hasingCollation = "COLLATE DATABASE_DEFAULT";
+                VedwConfigurationSettings.hashingCollation = "COLLATE DATABASE_DEFAULT";
+                VedwConfigurationSettings.hashingZeroKey = "'00000000000000000000000000000000'";
             }
             else
             {
@@ -333,7 +334,7 @@ namespace Virtual_EDW
 
         private void GenerateHubInsertInto(int versionId)
         {
-            
+            int errorCounter = 0;
 
             if (checkBoxIfExistsStatement.Checked)
             {
@@ -410,7 +411,9 @@ namespace Virtual_EDW
 
                     if (checkBoxGenerateInDatabase.Checked)
                     {
-                        GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+                        int insertError = GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+                        errorCounter = errorCounter + insertError;
+
                     }
 
                     SetTextDebug(insertIntoStatement.ToString());
@@ -426,10 +429,15 @@ namespace Virtual_EDW
             {
                 SetTextHub("There was no metadata selected to create Hub insert statements. Please check the metadata schema - are there any Hubs selected?");
             }
+
+            SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void GenerateHubViews(int versionId)
         {
+            int errorCounter = 0;
+
             // Create the Hub views - representing the Hub entity
             var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
             var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
@@ -472,18 +480,7 @@ namespace Virtual_EDW
                     if (!checkBoxDisableHash.Checked)
                     {
                         //Regular Hash
-                        if (VedwConfigurationSettings.HashKeyOutputType == "Character")
-                        {
-                            hubView.AppendLine("  CONVERT(CHAR(32),HASHBYTES('MD5',");
-                        }
-                        else if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
-                        {
-                            hubView.AppendLine("  HASHBYTES('MD5',");
-                        }
-                        else // Throw error
-                        {
-                            MessageBox.Show("Error defining key output type "+VedwConfigurationSettings.HashKeyOutputType);
-                        }
+                        hubView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
 
                         foreach (DataRow hubKey in hubKeyList.Rows)
                         {
@@ -492,18 +489,8 @@ namespace Virtual_EDW
                         hubView.Remove(hubView.Length - 3, 3);
                         hubView.AppendLine();
 
-                        if (VedwConfigurationSettings.HashKeyOutputType == "Character")
-                        {
-                            hubView.AppendLine("  ),2) AS " + hubSk + ",");
-                        }
-                        else if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
-                        {
-                            hubView.AppendLine("  ) AS " + hubSk + ",");
-                        }
-                        else // Throw error
-                        {
-                            MessageBox.Show("Error defining key output type " + VedwConfigurationSettings.HashKeyOutputType);
-                        }
+                        hubView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubSk + ",");
+
                     }
                     else
                     {
@@ -782,11 +769,11 @@ namespace Virtual_EDW
                     //Regular Hash
                     if (VedwConfigurationSettings.HashKeyOutputType == "Character")
                     {
-                        hubView.AppendLine("SELECT '00000000000000000000000000000000',");
+                        hubView.AppendLine("SELECT "+VedwConfigurationSettings.hashingZeroKey+",");
                     }
                     else if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
                     {
-                        hubView.AppendLine("SELECT 0x00000000000000000000000000000000,");
+                        hubView.AppendLine("SELECT "+VedwConfigurationSettings.hashingZeroKey+",");
                     }
                     else // Throw error
                     {
@@ -817,7 +804,8 @@ namespace Virtual_EDW
                     if (checkBoxGenerateInDatabase.Checked)
                     {
                         connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                        GenerateInDatabase(connPsa, hubView.ToString());
+                        int insertError = GenerateInDatabase(connPsa, hubView.ToString());
+                        errorCounter = errorCounter + insertError;
                     }
 
                     //Present in front-end
@@ -836,6 +824,9 @@ namespace Virtual_EDW
             connStg.Close();
             connPsa.Close();
             connInt.Close();
+
+            SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
         }
 
@@ -926,7 +917,7 @@ namespace Virtual_EDW
                 try
                 {
                     server.ConnectionContext.ExecuteNonQuery(viewStatement);
-                    SetTextDebug("The statement was executed succesfully.\r\n");
+                    SetTextDebug("The statement was executed successfully.\r\n");
                 }
                 catch (Exception exception)
                 {
@@ -987,7 +978,12 @@ namespace Virtual_EDW
         // Generate the Insert Into statement for the Satellites
         private void GenerateSatInsertInto(int versionId)
         {
-            
+            int errorCounter = 0;
+
+            if (checkBoxIfExistsStatement.Checked)
+            {
+                SetTextSat("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
+            }
 
             if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
             {
@@ -1006,10 +1002,6 @@ namespace Virtual_EDW
                                           "WHERE SATELLITE_TYPE = 'Normal' " +
                                           " AND SATELLITE_TABLE_NAME = '" + targetTableName + "'";
 
-                    if (checkBoxIfExistsStatement.Checked)
-                    {
-                        SetTextSat("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
-                    }
 
                     var tables = GetDataTable(ref connOmd, queryTableArray);
 
@@ -1104,7 +1096,8 @@ namespace Virtual_EDW
                         if (checkBoxGenerateInDatabase.Checked)
                         {
                             connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                            GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+                            int insertError = GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+                            errorCounter = errorCounter + insertError;
                         }
 
                         SetTextDebug(insertIntoStatement.ToString());
@@ -1122,11 +1115,14 @@ namespace Virtual_EDW
             {
                 SetTextSat("There was no metadata selected to create Satellite insert statements. Please check the metadata schema - are there any Satellites selected?");
             }
+
+            SetTextSat($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextSat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void GenerateSatViews(int versionId) //  Generate Satellite Views
         {
-            
+            int errorCounter = 0;
 
             if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
             {
@@ -1399,7 +1395,7 @@ namespace Virtual_EDW
                             else
                             {
                                 // Hash needs to be calculated
-                                satView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                                satView.AppendLine("   " + VedwConfigurationSettings.hashingStartSnippet);
 
                                 foreach (DataRow attribute in hubKeyList.Rows)
                                 {
@@ -1408,7 +1404,7 @@ namespace Virtual_EDW
 
                                 satView.Remove(satView.Length - 3, 3);
                                 satView.AppendLine();
-                                satView.AppendLine("   ),2) AS " + hubSk + ",");
+                                satView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubSk + ",");
                             }
                         }
                         else
@@ -1512,7 +1508,7 @@ namespace Virtual_EDW
          
 
                         //Hash key generation
-                        satView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                        satView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
                         satView.AppendLine("      ISNULL(RTRIM(CONVERT("+ stringDataType + "(100)," + TeamConfigurationSettings.ChangeDataCaptureAttribute + ")),'NA')+'|'+");
 
                         foreach (DataRow attribute in sourceStructure.Rows)
@@ -1527,7 +1523,7 @@ namespace Virtual_EDW
                         }
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
-                        satView.AppendLine("   ),2) AS " + TeamConfigurationSettings.RecordChecksumAttribute + ",");
+                        satView.AppendLine("   " +VedwConfigurationSettings.hashingEndSnippet+ " AS " + TeamConfigurationSettings.RecordChecksumAttribute + ",");
 
                         // Regular attributes
                         foreach (DataRow attribute in sourceStructure.Rows)
@@ -1750,7 +1746,7 @@ namespace Virtual_EDW
                         }
 
                         // Hash needs to be calculated for Combined Value
-                        satView.AppendLine("         CONVERT(CHAR(32),HASHBYTES('MD5',");
+                        satView.AppendLine("         "+VedwConfigurationSettings.hashingStartSnippet);
 
                         foreach (DataRow attribute in sourceStructure.Rows)
                         {
@@ -1759,7 +1755,7 @@ namespace Virtual_EDW
 
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
-                        satView.AppendLine("         ),2) AS COMBINED_VALUE");
+                        satView.AppendLine("         "+VedwConfigurationSettings.hashingEndSnippet+" AS COMBINED_VALUE");
                         satView.AppendLine("        FROM " + psaTableName);
 
                         // Filter criteria
@@ -1829,7 +1825,7 @@ namespace Virtual_EDW
 
                         // Zero record insert
                         satView.AppendLine("UNION");
-                        satView.AppendLine("SELECT '00000000000000000000000000000000',");
+                        satView.AppendLine("SELECT "+VedwConfigurationSettings.hashingZeroKey+",");
                         satView.AppendLine("'1900-01-01',");
                         satView.AppendLine("'9999-12-31',");
                         satView.AppendLine("'Y',"); // Current Row Indicator
@@ -1842,7 +1838,7 @@ namespace Virtual_EDW
                         {
                             satView.AppendLine("'N',"); // Logical Delete evaluation, if checked
                         }
-                        satView.AppendLine("'00000000000000000000000000000000',"); //Full Row Hash
+                        satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ","); //Full Row Hash
 
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
@@ -1853,7 +1849,7 @@ namespace Virtual_EDW
                             }
                             else
                             {
-                                satView.AppendLine("'00000000000000000000000000000000',");
+                                satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ",");
                             }
                         }
 
@@ -1882,7 +1878,8 @@ namespace Virtual_EDW
                         if (checkBoxGenerateInDatabase.Checked)
                         {
                             connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                            GenerateInDatabase(connHstg, satView.ToString());
+                            int insertError = GenerateInDatabase(connHstg, satView.ToString());
+                            errorCounter = errorCounter + insertError;
                         }
 
                         SetTextDebug(satView.ToString());
@@ -1895,6 +1892,9 @@ namespace Virtual_EDW
             {
                 SetTextSat("There was no metadata selected to create Satellite views. Please check the metadata schema - are there any Satellites selected?");
             }
+
+            SetTextSat($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextSat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void DoEverythingButtonClick (object sender, EventArgs e)
@@ -1951,7 +1951,12 @@ namespace Virtual_EDW
 
         private void GenerateLinkInsertInto(int versionId)
         {
-            
+            int errorCounter = 0;
+
+            if (checkBoxIfExistsStatement.Checked)
+            {
+                SetTextLink("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
+            }
 
             if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
             {
@@ -2032,7 +2037,8 @@ namespace Virtual_EDW
 
                     if (checkBoxGenerateInDatabase.Checked)
                     {
-                        GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+                        int insertError = GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+                        errorCounter = errorCounter + insertError;
                     }
 
                     SetTextDebug(insertIntoStatement.ToString());
@@ -2048,11 +2054,14 @@ namespace Virtual_EDW
             {
                 SetTextLink("There was no metadata selected to create Link insert statements. Please check the metadata schema - are there any Links selected?");
             }
+
+            SetTextLink($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void GenerateLinkViews(int versionId)
         {
-            
+            int errorCounter = 0;
 
             var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
             var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
@@ -2104,7 +2113,7 @@ namespace Virtual_EDW
                     if (!checkBoxDisableHash.Checked)
                     {
                         // Create Link Hash Key
-                        linkView.AppendLine("  CONVERT(CHAR(32),HASHBYTES('MD5',");
+                        linkView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
 
                         // Key fields (Hubs)
                         hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
@@ -2131,7 +2140,7 @@ namespace Virtual_EDW
 
                         linkView.Remove(linkView.Length - 3, 3);
                         linkView.AppendLine();
-                        linkView.AppendLine("  ),2) AS " + linkSk + ",");
+                        linkView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
                     }
                     else
                     {
@@ -2191,7 +2200,7 @@ namespace Virtual_EDW
 
                         if (!checkBoxDisableHash.Checked)
                         {
-                            linkView.AppendLine("  CONVERT(CHAR(32),HASHBYTES('MD5',");
+                            linkView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
                         }
 
                         foreach (var hubArray in hubFullBusinessKeyList)
@@ -2210,7 +2219,7 @@ namespace Virtual_EDW
                         {
                             linkView.Remove(linkView.Length - 3, 3);
                             linkView.AppendLine();
-                            linkView.AppendLine("  ),2) AS " + hubTargetBusinessKeyName + ",");
+                            linkView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubTargetBusinessKeyName + ",");
                         }
                         else
                         {
@@ -2547,7 +2556,8 @@ namespace Virtual_EDW
                         if (checkBoxGenerateInDatabase.Checked)
                         {
                             connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                            GenerateInDatabase(connHstg, linkView.ToString());
+                            int insertError = GenerateInDatabase(connHstg, linkView.ToString());
+                            errorCounter = errorCounter + insertError;
                         }
 
                         SetTextDebug(linkView.ToString());
@@ -2564,6 +2574,9 @@ namespace Virtual_EDW
             {
                 SetTextLink("There was no metadata selected to create Link views. Please check the metadata schema - are there any Links selected?");
             }
+
+            SetTextLink($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private DataTable GetBusinessKeyElementsBase (string stagingAreaTableName, string hubTableName, string businessKeyDefinition)
@@ -3026,7 +3039,7 @@ namespace Virtual_EDW
 
         private void GenerateLsatInsertInto(int versionId)
         {
-            
+            int errorCounter = 0;
 
             if (checkBoxIfExistsStatement.Checked)
             {
@@ -3152,7 +3165,8 @@ namespace Virtual_EDW
 
                         if (checkBoxGenerateInDatabase.Checked)
                         {
-                            GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+                            int insertError = GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+                            errorCounter = errorCounter + insertError;
                         }
 
                         SetTextDebug(insertIntoStatement.ToString());
@@ -3168,12 +3182,15 @@ namespace Virtual_EDW
             {
                 SetTextLsat("There was no metadata selected to create Link Satellite insert statements. Please check the metadata schema - are there any Link Satellites selected?");
             }
+
+            SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextLsat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         // Link Satellite generation - driving key based
         private void GenerateLsatDrivingKeyViews(int versionId)
         {
-            
+            int errorCounter = 0;
 
             if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
             {
@@ -3273,7 +3290,7 @@ namespace Virtual_EDW
 
                             if (!checkBoxDisableHash.Checked)
                             {
-                                linkSatView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                                linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
 
                                 foreach (var hubArray in hubBusinessKeyList)
                                 {
@@ -3288,7 +3305,7 @@ namespace Virtual_EDW
 
                                 linkSatView.Remove(linkSatView.Length - 3, 3);
                                 linkSatView.AppendLine();
-                                linkSatView.AppendLine("   ),2) AS " + linkSk + ",");
+                                linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
                             }
                             else
                             {
@@ -3464,7 +3481,7 @@ namespace Virtual_EDW
                             linkSatView.AppendLine("   AS ROW_NUMBER,");
 
                             // Checksum
-                            linkSatView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                            linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
                             linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +
                                                    TeamConfigurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
 
@@ -3485,7 +3502,7 @@ namespace Virtual_EDW
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("   ),2) AS " + TeamConfigurationSettings.RecordChecksumAttribute + "");
+                            linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + TeamConfigurationSettings.RecordChecksumAttribute + "");
 
                             // From statement
                             linkSatView.AppendLine("FROM ");
@@ -3874,7 +3891,8 @@ namespace Virtual_EDW
                             if (checkBoxGenerateInDatabase.Checked)
                             {
                                 connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                                GenerateInDatabase(connHstg, linkSatView.ToString());
+                                int insertError = GenerateInDatabase(connHstg, linkSatView.ToString());
+                                errorCounter = errorCounter + insertError;
                             }
 
                             SetTextDebug(linkSatView.ToString());
@@ -3889,6 +3907,9 @@ namespace Virtual_EDW
             {
                 SetTextLsat("There was no metadata selected to create Driving Key Link Satellite views. Please check the metadata schema - are there any Link Satellites selected?");
             }
+
+            SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextLsat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private DataTable GetMultiActiveAttributes(int targetTableId)
@@ -3918,7 +3939,7 @@ namespace Virtual_EDW
         // Link Satellite generation - historical
         private void GenerateLsatHistoryViews(int versionId)
         {
-            
+            int errorCounter = 0;
 
             if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
             {
@@ -3990,7 +4011,7 @@ namespace Virtual_EDW
                             if (!checkBoxDisableHash.Checked)
                             {
                                 // Link SK - combined hash key
-                                linkSatView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                                linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
 
                                 foreach (var hubArray in hubBusinessKeyList)
                                 {
@@ -4005,7 +4026,7 @@ namespace Virtual_EDW
 
                                 linkSatView.Remove(linkSatView.Length - 3, 3);
                                 linkSatView.AppendLine();
-                                linkSatView.AppendLine("  ),2) AS " + linkSk + ",");
+                                linkSatView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
                             }
                             else
                             {
@@ -4185,7 +4206,7 @@ namespace Virtual_EDW
                             linkSatView.AppendLine("   AS ROW_NUMBER,");
 
                             // Checksum
-                            linkSatView.AppendLine("   CONVERT(CHAR(32),HASHBYTES('MD5',");
+                            linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
                             linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +TeamConfigurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
 
                             foreach (var hubArray in hubBusinessKeyList)
@@ -4202,7 +4223,7 @@ namespace Virtual_EDW
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
                             linkSatView.AppendLine();
-                            linkSatView.AppendLine("   ),2) AS " + TeamConfigurationSettings.RecordChecksumAttribute + "");
+                            linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + TeamConfigurationSettings.RecordChecksumAttribute + "");
 
                             // From statement
                             linkSatView.AppendLine("FROM ");
@@ -4521,7 +4542,8 @@ namespace Virtual_EDW
 
                             if (checkBoxGenerateInDatabase.Checked)
                             {
-                                GenerateInDatabase(connHstg, linkSatView.ToString());
+                                int insertError = GenerateInDatabase(connHstg, linkSatView.ToString());
+                                errorCounter = errorCounter + insertError;
                             }
 
 
@@ -4538,6 +4560,9 @@ namespace Virtual_EDW
             {
                 SetTextLsat("There was no metadata selected to create regular Link Satellite views. Please check the metadata schema - are there any Link Satellites selected?");
             }
+
+            SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextLsat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private DataTable GetStagingToSatelliteAttributeMapping(int targetTableId, int stagingAreaTableId)
@@ -4674,7 +4699,7 @@ namespace Virtual_EDW
         // Create the Insert statement for the Persisten Staging Area (PSA)
         private void PsaGenerateInsertInto(int versionId)
         {
-            
+            int errorCounter = 0;
 
             if (checkBoxIfExistsStatement.Checked)
             {
@@ -4744,7 +4769,9 @@ namespace Virtual_EDW
                     if (checkBoxGenerateInDatabase.Checked)
                     {
                         connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                        GenerateInDatabase(connHstg, psaInsertIntoStatement.ToString());
+
+                        int insertError = GenerateInDatabase(connHstg, psaInsertIntoStatement.ToString());
+                        errorCounter = errorCounter + insertError;
                     }
 
                     SetTextDebug(psaInsertIntoStatement.ToString());
@@ -4760,10 +4787,14 @@ namespace Virtual_EDW
             {
                 SetTextPsa("There was no metadata selected to create Persistent Staging Area insert statements. Please check the metadata schema - are there any Staging Area tables selected?");
             }
+
+            SetTextPsa($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextPsa($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void PsaGenerateViews()
         {
+            // Setup error handling to report back to the user
             int errorCounter = 0;
 
             if (checkedListBoxPsaMetadata.CheckedItems.Count != 0)
@@ -4891,7 +4922,7 @@ namespace Virtual_EDW
                         psaView.AppendLine("FROM");
                         psaView.AppendLine("(");
                         psaView.AppendLine("  SELECT");
-                        psaView.AppendLine("    CONVERT(CHAR(32),HASHBYTES('MD5',");
+                        psaView.AppendLine("    "+VedwConfigurationSettings.hashingStartSnippet);
 
                         foreach (DataRow businessKey in partitionAttributes.Rows)
                         {
@@ -4902,7 +4933,7 @@ namespace Virtual_EDW
 
                         psaView.AppendLine("       CONVERT(" + stringDataType + "(100),STG.[" +
                                            TeamConfigurationSettings.LoadDateTimeAttribute + "],126)+'|'");
-                        psaView.AppendLine("    ),2) AS " + targetTableName + "_" +
+                        psaView.AppendLine("    "+VedwConfigurationSettings.hashingEndSnippet+" AS " + targetTableName + "_" +
                                            TeamConfigurationSettings.DwhKeyIdentifier + ",");
 
                         foreach (DataRow attribute in sourceStructure.Rows)
@@ -5082,8 +5113,8 @@ namespace Virtual_EDW
                 SetTextPsa("There was no metadata selected to create Persistent Staging Area views. Please check the metadata schema - are there any Staging Area tables selected?");
             }
 
-            SetTextStaging($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextStaging($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            SetTextPsa($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextPsa($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void SchemaboundCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -5120,7 +5151,6 @@ namespace Virtual_EDW
         {
             // Setup error handling to report back to the user
             int errorCounter = 0;
-            var mydocpath = textBoxOutputPath.Text;
 
             if (checkedListBoxStgMetadata.CheckedItems.Count != 0)
             {
@@ -5189,7 +5219,7 @@ namespace Virtual_EDW
                     stgInsertIntoStatement.AppendLine();
                     stgInsertIntoStatement.AppendLine("FROM [VW_" + targetTableName + "]");
 
-                    using (var outfile = new StreamWriter(mydocpath + @"\INSERT_STATEMENT_" + targetTableName + ".sql"))
+                    using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\INSERT_STATEMENT_" + targetTableName + ".sql"))
                     {
                         outfile.Write(stgInsertIntoStatement.ToString());
                         outfile.Close();
@@ -5626,7 +5656,7 @@ namespace Virtual_EDW
                                 }
                             }
 
-                            stgView.AppendLine("  CASE WHEN STG_CTE.[" + mainBusinessKey + "] IS NULL THEN PSA_CTE.[" + TeamConfigurationSettings.RecordChecksumAttribute + "] ELSE STG_CTE.[" + TeamConfigurationSettings.RecordChecksumAttribute + "] "+VedwConfigurationSettings.hasingCollation+" END AS [" + TeamConfigurationSettings.RecordChecksumAttribute + "], ");
+                            stgView.AppendLine("  CASE WHEN STG_CTE.[" + mainBusinessKey + "] IS NULL THEN PSA_CTE.[" + TeamConfigurationSettings.RecordChecksumAttribute + "] ELSE STG_CTE.[" + TeamConfigurationSettings.RecordChecksumAttribute + "] "+VedwConfigurationSettings.hashingCollation+" END AS [" + TeamConfigurationSettings.RecordChecksumAttribute + "], ");
 
                             if (hashList != null)
                                 foreach (DataRow hashkey in hashList.Rows)
@@ -5715,7 +5745,7 @@ namespace Virtual_EDW
                                 {
                                     stgView.AppendLine("     WHEN STG_CTE." + mainBusinessKey + " IS NOT NULL AND PSA_CTE." +
                                                        mainBusinessKey + " IS NOT NULL AND STG_CTE." +
-                                                       TeamConfigurationSettings.RecordChecksumAttribute + " "+VedwConfigurationSettings.hasingCollation+" != PSA_CTE." +
+                                                       TeamConfigurationSettings.RecordChecksumAttribute + " "+VedwConfigurationSettings.hashingCollation+" != PSA_CTE." +
                                                        TeamConfigurationSettings.RecordChecksumAttribute + " THEN 'Change' ");
                                 }
                                 else
@@ -8235,8 +8265,6 @@ namespace Virtual_EDW
 
         private void button_Repopulate_Hub(object sender, EventArgs e)
         {
-            
-
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             PopulateHubCheckboxList(connOmd);
         }
@@ -8739,6 +8767,11 @@ namespace Virtual_EDW
             {
                 richTextBoxInformation.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
             }
+        }
+
+        private void radioButtonBinaryHash_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateHashSnippets();
         }
     }
 }

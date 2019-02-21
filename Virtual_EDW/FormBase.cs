@@ -56,7 +56,8 @@ namespace Virtual_EDW
             // Parameters that can be changed at runtime
             public static string hashingStartSnippet { get; set; }
             public static string hashingEndSnippet { get; set; }
-            public static string hasingCollation { get; set; }
+            public static string hashingCollation { get; set; }
+            public static string hashingZeroKey { get; set; }
         }
 
         /// <summary>
