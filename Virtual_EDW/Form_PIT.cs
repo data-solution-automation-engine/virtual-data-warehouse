@@ -445,13 +445,21 @@ namespace Virtual_EDW
 
         private void butGenerate_Click(object sender, EventArgs e)
         {
-             
-
             // Build arrays - list of each table in and its columns
             var tableList = new SortedList<string, List<string>>();
 
             // Create a counter to see if anything is checked at all
             var checkedCounter = 0;
+
+            var schemaName = "";
+            if (radioButtonPSA.Checked)
+            {
+                schemaName = VedwConfigurationSettings.VedwSchema;
+            }
+            else
+            {
+                schemaName = "[dbo]";
+            }
 
             foreach (DataGridViewRow row in dataGridAttributes.Rows)
             {
@@ -550,7 +558,6 @@ namespace Virtual_EDW
             }
 
             outputQuery.AppendLine("SELECT");
-            //outputQuery.AppendLine("  "+hubTable+"."+hubKey+",");
 
             if (radioButtonSingleDateSnapshot.Checked)
             {
@@ -578,9 +585,7 @@ namespace Virtual_EDW
                     {
                         if (columnName == hubKey)
                         {
-                            outputQuery.AppendLine("  COALESCE([" + tableName + "." + columnName +
-                                                   "],'00000000000000000000000000000000') AS [" + tableName + "." +
-                                                   columnName + "],");
+                            outputQuery.AppendLine("  COALESCE([" + tableName + "." + columnName +"],"+VedwConfigurationSettings.hashingZeroKey+") AS [" + tableName + "." +columnName + "],");
                         }
                         else
                         {
@@ -610,11 +615,11 @@ namespace Virtual_EDW
             outputQuery.AppendLine("(");
             outputQuery.AppendLine("  SELECT");
             outputQuery.AppendLine("    *,");
-            outputQuery.AppendLine("    LAG(ATTRIBUTE_CHECKSUM, 1, '-1') OVER(PARTITION BY ["+hubTable+"."+hubKey+"] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PREVIOUS_ATTRIBUTE_CHECKSUM");
+            outputQuery.AppendLine("    LAG(ATTRIBUTE_CHECKSUM, 1, " + VedwConfigurationSettings.hashingZeroKey + ") OVER(PARTITION BY [" + hubTable+"."+hubKey+"] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PREVIOUS_ATTRIBUTE_CHECKSUM");
             outputQuery.AppendLine("  FROM");
             outputQuery.AppendLine("  (");
             outputQuery.AppendLine("    SELECT *,");
-            outputQuery.AppendLine("      CONVERT(CHAR(32),HASHBYTES('MD5',");
+            outputQuery.AppendLine("      "+VedwConfigurationSettings.hashingStartSnippet);
             foreach (String tableName in tableList.Keys)
             {
                 List<String> columnNames = new List<string>();
@@ -626,7 +631,7 @@ namespace Virtual_EDW
             }
             outputQuery.Remove(outputQuery.Length - 3, 3);
             outputQuery.AppendLine();
-            outputQuery.AppendLine("      ),2) AS ATTRIBUTE_CHECKSUM");
+            outputQuery.AppendLine("      "+VedwConfigurationSettings.hashingEndSnippet+" AS ATTRIBUTE_CHECKSUM");
 
             outputQuery.AppendLine("    FROM");
             outputQuery.AppendLine("    (");
@@ -670,18 +675,18 @@ namespace Virtual_EDW
             outputQuery.AppendLine("        (");
             if (checkBoxIncorporateZeroRecords.Checked)
             {
-                outputQuery.AppendLine("          SELECT " + hubKey +", CONVERT(datetime2(7), '1900-01-01') AS PIT_EFFECTIVE_DATETIME FROM  " +hubTable);
+                outputQuery.AppendLine("          SELECT " + hubKey +", CONVERT(datetime2(7), '1900-01-01') AS PIT_EFFECTIVE_DATETIME FROM "+schemaName+"." +hubTable);
                 outputQuery.AppendLine("          UNION");
             }
             foreach (String tablename in tableList.Keys)
             {
                 if (tablename.Contains(hubIdentifier) || tablename.Contains(linkIdentifier))
                 {
-                    outputQuery.AppendLine("          SELECT " + hubKey + ", " + hubEffectiveDate + " AS PIT_EFFECTIVE_DATETIME FROM " + tablename);
+                    outputQuery.AppendLine("          SELECT " + hubKey + ", " + hubEffectiveDate + " AS PIT_EFFECTIVE_DATETIME FROM " + schemaName + "." + tablename);
                 }
                 else
                 {
-                    outputQuery.AppendLine("          SELECT " + hubKey + ", " + satEffectiveDate + " AS PIT_EFFECTIVE_DATETIME FROM " + tablename);
+                    outputQuery.AppendLine("          SELECT " + hubKey + ", " + satEffectiveDate + " AS PIT_EFFECTIVE_DATETIME FROM " + schemaName + "." + tablename);
                 }
              
                 if (tableList.Keys.Last() != tablename)
@@ -706,8 +711,8 @@ namespace Virtual_EDW
             outputQuery.AppendLine("      ) TimeRanges");
 
             // Join the Hub for the business key
-            outputQuery.AppendLine("      INNER JOIN " + hubTable);
-            outputQuery.AppendLine("        ON TimeRanges." + hubKey +" = "+hubTable+"."+hubKey);
+            outputQuery.AppendLine("      INNER JOIN " + schemaName + "." + hubTable);
+            outputQuery.AppendLine("        ON TimeRanges." + hubKey + " = " + schemaName + "." + hubTable+"."+hubKey);
 
             // Join in the historised tables
             foreach (String tableName in tableList.Keys)
@@ -716,14 +721,14 @@ namespace Virtual_EDW
                 {
                     if (tableName.Contains(linkIdentifier))
                     {
-                        outputQuery.AppendLine("      LEFT OUTER JOIN " + tableName);
+                        outputQuery.AppendLine("      LEFT OUTER JOIN " + schemaName + "." + tableName);
                         outputQuery.AppendLine("        ON " + tableName + "." + hubKey + " = TimeRanges." + hubKey);
                        // outputQuery.AppendLine("        AND " + tableName + "." + satEffectiveDate + " <= TimeRanges.PIT_EFFECTIVE_DATETIME");
                        // outputQuery.AppendLine("        AND " + tableName + "." + _myParent.ConfigurationSettings.ExpiryDateTimeAttribute + " >= TimeRanges.PIT_EXPIRY_DATETIME");
                     }
                     if (tableName.Contains(satIdentifier))
                     {
-                        outputQuery.AppendLine("      LEFT OUTER JOIN " + tableName);
+                        outputQuery.AppendLine("      LEFT OUTER JOIN " + schemaName + "." + tableName);
                         outputQuery.AppendLine("        ON " + tableName + "." + hubKey + " = TimeRanges." + hubKey);
                         outputQuery.AppendLine("        AND " + tableName + "." + satEffectiveDate +" <= TimeRanges.PIT_EFFECTIVE_DATETIME");
                         outputQuery.AppendLine("        AND " + tableName + "." +TeamConfigurationSettings.ExpiryDateTimeAttribute +" >= TimeRanges.PIT_EXPIRY_DATETIME");

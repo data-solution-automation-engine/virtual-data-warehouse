@@ -33,9 +33,11 @@ namespace Virtual_EDW
             public static string VedwConfigurationfileName { get; } = "VEDW_configuration";
             public static string VedwFileExtension { get; } = ".txt";
 
+
             // TEAM core file names, not meant to be updated
             public static string TeamConfigurationfileName { get; } = "TEAM_configuration";
             public static string TeamPathfileName { get; } = "TEAM_Path_configuration";
+
         }
 
 
@@ -48,7 +50,7 @@ namespace Virtual_EDW
             public static string EnableUnicode { get; set; } // Unicode checkbox
             public static string DisableHash { get; set; } // Disable hash checkbox (use natural business key)
             public static string HashKeyOutputType { get; set; } // Toggle output for the hash (binary or character)
-
+            public static string VedwSchema { get; set; } = "dbo";
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string VedwOutputPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string WorkingEnvironment { get; set; }

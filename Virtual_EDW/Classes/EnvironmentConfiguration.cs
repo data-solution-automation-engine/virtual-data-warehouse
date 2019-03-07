@@ -56,6 +56,7 @@ namespace Virtual_EDW
                     initialConfigurationFile.AppendLine("DisableHash|False");
                     initialConfigurationFile.AppendLine("HashKeyOutputType|Binary");
                     initialConfigurationFile.AppendLine("WorkingEnvironment|Development");
+                    initialConfigurationFile.AppendLine("VedwSchema|dbo");
                     initialConfigurationFile.AppendLine("/* End of file */");
 
                     using (var outfile = new StreamWriter(FormBase.GlobalParameters.VedwConfigurationPath + FormBase.GlobalParameters.VedwConfigurationfileName + FormBase.GlobalParameters.VedwFileExtension))
@@ -107,6 +108,7 @@ namespace Virtual_EDW
                 FormBase.VedwConfigurationSettings.DisableHash = configList["DisableHash"];
                 FormBase.VedwConfigurationSettings.HashKeyOutputType = configList["HashKeyOutputType"];
                 FormBase.VedwConfigurationSettings.WorkingEnvironment = configList["WorkingEnvironment"];
+                FormBase.VedwConfigurationSettings.VedwSchema = configList["VedwSchema"];
             }
             catch (Exception)
             {

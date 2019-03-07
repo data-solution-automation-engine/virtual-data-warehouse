@@ -93,6 +93,8 @@
             this.buttonGenerateLsats = new System.Windows.Forms.Button();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.textBoxSchemaName = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.checkBoxDisableHash = new System.Windows.Forms.CheckBox();
             this.checkBoxUnicode = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -280,6 +282,8 @@
             // checkBoxSelectAllStg
             // 
             this.checkBoxSelectAllStg.AutoSize = true;
+            this.checkBoxSelectAllStg.Checked = true;
+            this.checkBoxSelectAllStg.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSelectAllStg.Location = new System.Drawing.Point(140, 11);
             this.checkBoxSelectAllStg.Name = "checkBoxSelectAllStg";
             this.checkBoxSelectAllStg.Size = new System.Drawing.Size(69, 17);
@@ -321,6 +325,7 @@
             this.richTextBoxStaging.Size = new System.Drawing.Size(523, 115);
             this.richTextBoxStaging.TabIndex = 4;
             this.richTextBoxStaging.Text = "";
+            this.richTextBoxStaging.TextChanged += new System.EventHandler(this.richTextBoxStaging_TextChanged);
             // 
             // buttonGenerateStaging
             // 
@@ -383,6 +388,8 @@
             // checkBoxSelectAllPsa
             // 
             this.checkBoxSelectAllPsa.AutoSize = true;
+            this.checkBoxSelectAllPsa.Checked = true;
+            this.checkBoxSelectAllPsa.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSelectAllPsa.Location = new System.Drawing.Point(219, 11);
             this.checkBoxSelectAllPsa.Name = "checkBoxSelectAllPsa";
             this.checkBoxSelectAllPsa.Size = new System.Drawing.Size(69, 17);
@@ -424,6 +431,7 @@
             this.richTextBoxPSA.Size = new System.Drawing.Size(523, 115);
             this.richTextBoxPSA.TabIndex = 2;
             this.richTextBoxPSA.Text = "";
+            this.richTextBoxPSA.TextChanged += new System.EventHandler(this.richTextBoxPSA_TextChanged);
             // 
             // buttonGeneratePSA
             // 
@@ -475,6 +483,8 @@
             // checkBoxSelectAllHubs
             // 
             this.checkBoxSelectAllHubs.AutoSize = true;
+            this.checkBoxSelectAllHubs.Checked = true;
+            this.checkBoxSelectAllHubs.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSelectAllHubs.Location = new System.Drawing.Point(102, 11);
             this.checkBoxSelectAllHubs.Name = "checkBoxSelectAllHubs";
             this.checkBoxSelectAllHubs.Size = new System.Drawing.Size(69, 17);
@@ -527,6 +537,7 @@
             this.richTextBoxHub.Size = new System.Drawing.Size(523, 115);
             this.richTextBoxHub.TabIndex = 0;
             this.richTextBoxHub.Text = "";
+            this.richTextBoxHub.TextChanged += new System.EventHandler(this.richTextBoxHub_TextChanged);
             // 
             // tabPageSat
             // 
@@ -593,6 +604,8 @@
             // checkBoxSelectAllSats
             // 
             this.checkBoxSelectAllSats.AutoSize = true;
+            this.checkBoxSelectAllSats.Checked = true;
+            this.checkBoxSelectAllSats.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSelectAllSats.Location = new System.Drawing.Point(115, 11);
             this.checkBoxSelectAllSats.Name = "checkBoxSelectAllSats";
             this.checkBoxSelectAllSats.Size = new System.Drawing.Size(69, 17);
@@ -645,6 +658,7 @@
             this.richTextBoxSat.Size = new System.Drawing.Size(523, 115);
             this.richTextBoxSat.TabIndex = 2;
             this.richTextBoxSat.Text = "";
+            this.richTextBoxSat.TextChanged += new System.EventHandler(this.richTextBoxSat_TextChanged);
             // 
             // buttonGenerateSats
             // 
@@ -707,6 +721,8 @@
             // checkBoxSelectAllLinks
             // 
             this.checkBoxSelectAllLinks.AutoSize = true;
+            this.checkBoxSelectAllLinks.Checked = true;
+            this.checkBoxSelectAllLinks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSelectAllLinks.Location = new System.Drawing.Point(102, 11);
             this.checkBoxSelectAllLinks.Name = "checkBoxSelectAllLinks";
             this.checkBoxSelectAllLinks.Size = new System.Drawing.Size(69, 17);
@@ -748,6 +764,7 @@
             this.richTextBoxLink.Size = new System.Drawing.Size(523, 115);
             this.richTextBoxLink.TabIndex = 5;
             this.richTextBoxLink.Text = "";
+            this.richTextBoxLink.TextChanged += new System.EventHandler(this.richTextBoxLink_TextChanged);
             // 
             // buttonGenerateLinks
             // 
@@ -836,6 +853,8 @@
             // checkBoxSelectAllLsats
             // 
             this.checkBoxSelectAllLsats.AutoSize = true;
+            this.checkBoxSelectAllLsats.Checked = true;
+            this.checkBoxSelectAllLsats.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSelectAllLsats.Location = new System.Drawing.Point(139, 11);
             this.checkBoxSelectAllLsats.Name = "checkBoxSelectAllLsats";
             this.checkBoxSelectAllLsats.Size = new System.Drawing.Size(69, 17);
@@ -874,9 +893,10 @@
             this.richTextBoxLsat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxLsat.Location = new System.Drawing.Point(17, 308);
             this.richTextBoxLsat.Name = "richTextBoxLsat";
-            this.richTextBoxLsat.Size = new System.Drawing.Size(523, 71);
+            this.richTextBoxLsat.Size = new System.Drawing.Size(523, 115);
             this.richTextBoxLsat.TabIndex = 8;
             this.richTextBoxLsat.Text = "";
+            this.richTextBoxLsat.TextChanged += new System.EventHandler(this.richTextBoxLsat_TextChanged);
             // 
             // buttonGenerateLsats
             // 
@@ -909,14 +929,32 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.textBoxSchemaName);
+            this.groupBox8.Controls.Add(this.label12);
             this.groupBox8.Controls.Add(this.checkBoxDisableHash);
             this.groupBox8.Controls.Add(this.checkBoxUnicode);
-            this.groupBox8.Location = new System.Drawing.Point(280, 155);
+            this.groupBox8.Location = new System.Drawing.Point(142, 155);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(228, 70);
+            this.groupBox8.Size = new System.Drawing.Size(366, 160);
             this.groupBox8.TabIndex = 89;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "ETL output options";
+            // 
+            // textBoxSchemaName
+            // 
+            this.textBoxSchemaName.Location = new System.Drawing.Point(84, 63);
+            this.textBoxSchemaName.Name = "textBoxSchemaName";
+            this.textBoxSchemaName.Size = new System.Drawing.Size(273, 20);
+            this.textBoxSchemaName.TabIndex = 91;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(3, 66);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(75, 13);
+            this.label12.TabIndex = 92;
+            this.label12.Text = "Schema name";
             // 
             // checkBoxDisableHash
             // 
@@ -968,6 +1006,7 @@
             this.radioButtonDevelopment.TabIndex = 38;
             this.radioButtonDevelopment.Text = "Development";
             this.radioButtonDevelopment.UseVisualStyleBackColor = true;
+            this.radioButtonDevelopment.CheckedChanged += new System.EventHandler(this.radioButtonDevelopment_CheckedChanged);
             // 
             // groupBoxhashKeyoutput
             // 
@@ -1012,7 +1051,7 @@
             // 
             // textBoxConfigurationPath
             // 
-            this.textBoxConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxConfigurationPath.Location = new System.Drawing.Point(17, 109);
             this.textBoxConfigurationPath.Multiline = true;
             this.textBoxConfigurationPath.Name = "textBoxConfigurationPath";
@@ -1030,7 +1069,7 @@
             // 
             // textBoxOutputPath
             // 
-            this.textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxOutputPath.Location = new System.Drawing.Point(17, 61);
             this.textBoxOutputPath.Multiline = true;
             this.textBoxOutputPath.Name = "textBoxOutputPath";
@@ -1102,6 +1141,7 @@
             // 
             this.saveConfigurationFileToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.SaveFile;
             this.saveConfigurationFileToolStripMenuItem.Name = "saveConfigurationFileToolStripMenuItem";
+            this.saveConfigurationFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.saveConfigurationFileToolStripMenuItem.Text = "Save VEDW Settings";
             this.saveConfigurationFileToolStripMenuItem.Click += new System.EventHandler(this.saveConfigurationFileToolStripMenuItem_Click);
@@ -1653,6 +1693,8 @@
         internal System.Windows.Forms.RadioButton radioButtonProduction;
         internal System.Windows.Forms.RadioButton radioButtonDevelopment;
         private System.Windows.Forms.ToolStripMenuItem openTEAMConfigurationSettingsFileToolStripMenuItem;
+        internal System.Windows.Forms.TextBox textBoxSchemaName;
+        private System.Windows.Forms.Label label12;
     }
 }
 
