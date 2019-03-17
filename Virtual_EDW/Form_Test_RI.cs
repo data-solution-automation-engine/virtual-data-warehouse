@@ -80,7 +80,7 @@ namespace Virtual_EDW
                 queryTableArraySat.AppendLine(" ,[BUSINESS_KEY_DEFINITION]");
                 queryTableArraySat.AppendLine(" ,[LINK_TABLE_ID]");
                 queryTableArraySat.AppendLine(" ,[LINK_TABLE_NAME]");
-                queryTableArraySat.AppendLine("FROM[interface].[INTERFACE_STAGING_SATELLITE_XREF]");
+                queryTableArraySat.AppendLine("FROM[interface].[INTERFACE_SOURCE_SATELLITE_XREF]");
                 queryTableArraySat.AppendLine("WHERE [SATELLITE_TYPE]='Normal'");
 
                 var satTables = MyParent.GetDataTable(ref connOmd, queryTableArraySat.ToString());
@@ -350,7 +350,7 @@ namespace Virtual_EDW
                     queryTableArrayLinkSat.AppendLine(" ,[BUSINESS_KEY_DEFINITION]");
                     queryTableArrayLinkSat.AppendLine(" ,[LINK_TABLE_ID]");
                     queryTableArrayLinkSat.AppendLine(" ,[LINK_TABLE_NAME]");
-                    queryTableArrayLinkSat.AppendLine("FROM[interface].[INTERFACE_STAGING_SATELLITE_XREF]");
+                    queryTableArrayLinkSat.AppendLine("FROM[interface].[INTERFACE_SOURCE_SATELLITE_XREF]");
                     queryTableArrayLinkSat.AppendLine("WHERE [SATELLITE_TYPE]='Link Satellite'");
 
                     var linkSatTables = MyParent.GetDataTable(ref connOmd, queryTableArrayLinkSat.ToString());
