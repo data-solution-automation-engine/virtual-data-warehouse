@@ -459,7 +459,7 @@ namespace Virtual_EDW
                 SetTextHub("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
             }
 
-            // Determine metadata retrieval connection (dependant on option selected)
+            // Determine metadata retrieval connection (dependent on option selected)
             if (checkedListBoxHubMetadata.CheckedItems.Count != 0)
             {
                 for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
@@ -510,6 +510,9 @@ namespace Virtual_EDW
                         {
                             insertIntoStatement.AppendLine("   hub_view.[" + attribute["COLUMN_NAME"] + "],");
                         }
+
+
+
                     }
 
                     insertIntoStatement.Remove(insertIntoStatement.Length - 3, 3);
@@ -550,6 +553,159 @@ namespace Virtual_EDW
 
             SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
             SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+        }
+
+        private List<String> GetHubClauses(string stagingAreaTableName, string hubTableName, string businessKeyDefinition, int versionId, string groupCounter)
+        {
+            var fieldList = new StringBuilder();
+            var compositeKey = new StringBuilder();
+            var fieldDict = new Dictionary<string, string>();
+            var fieldOrderedList = new List<string>();
+            // Retrieving the business key attributes for the Hub                 
+            var hubKeyList = GetHubTargetBusinessKeyList(hubTableName, versionId);
+
+            var hubQuerySelect = new StringBuilder();
+            var hubQueryWhere = new StringBuilder();
+            var hubQueryGroupBy = new StringBuilder();
+
+            string firstKey;
+            var sqlStatementForSourceQuery = new StringBuilder();
+            var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
+            var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
+
+            // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
+            var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
+
+            foreach (DataRow component in componentList.Rows)
+            {
+                var componentId = (int)component["BUSINESS_KEY_COMPONENT_ID"] - 1;
+
+                // Retrieve the elements of each business key component
+                // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
+                var elementList = GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
+
+                if (elementList == null)
+                {
+                    SetTextDebug("\n");
+                    SetTextHub($"An error occurred for the Hub Insert Into statement for {hubTableName}. The collection of Business Keys is empty.\r\n");
+                }
+                else
+                {
+                    if (elementList.Rows.Count > 1) // Build a concatenated key if the count of elements is greater than 1 for a component (key part)
+                    {
+                        fieldList.Clear();
+                        fieldDict.Clear();
+
+                        foreach (DataRow element in elementList.Rows)
+                        {
+                            var elementType = element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString();
+
+                            if (elementType == "Attribute")
+                            {
+                                fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "',");
+
+                                sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+                                sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
+                                sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+                                sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
+
+                                var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString()) ;
+
+                                foreach (DataRow attribute in elementDataTypes.Rows)
+                                {
+                                    fieldDict.Add(attribute["COLUMN_NAME"].ToString(), attribute["DATA_TYPE"].ToString());
+                                }
+                            }
+                            else if (elementType == "User Defined Value")
+                            {
+                                fieldList.Append("''" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "'',");
+                            }
+
+                            fieldOrderedList.Add(element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
+                        }
+
+
+                        // Build the concatenated key
+                        foreach (var busKey in fieldOrderedList)
+                        {
+                            if (fieldDict.ContainsKey(busKey))
+                            {
+                                var key = "ISNULL([" + busKey + "], '')";
+
+                                if ((fieldDict[busKey] == "datetime2") || (fieldDict[busKey] == "datetime"))
+                                {
+                                    key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CONVERT(" + stringDataType + "(100), [" + busKey + "], 112) ELSE '' END";
+                                }
+                                else if ((fieldDict[busKey] == "numeric") || (fieldDict[busKey] == "integer") || (fieldDict[busKey] == "int") || (fieldDict[busKey] == "tinyint") || (fieldDict[busKey] == "decimal"))
+                                {
+                                    key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CAST([" + busKey + "] AS " + stringDataType + "(100)) ELSE '' END";
+                                }
+
+                                compositeKey.Append(key).Append(" + ");
+                            }
+                            else
+                            {
+                                var key = " " + busKey;
+                                compositeKey.Append(key).Append(" + ");
+                            }
+                        }
+
+                        hubQuerySelect.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
+                        hubQueryWhere.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " != '' AND");
+                        hubQueryGroupBy.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + ",");
+                    }
+                    else // Handle a component of a single or composite key 
+                    {
+                        foreach (DataRow element in elementList.Rows) // Only a single element...
+                        {
+                            if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() == "User Defined Value")
+                            {
+                                firstKey = element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
+                                hubQuerySelect.AppendLine("    " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
+                            }
+                            else // It's a normal attribute
+                            {
+                                // We need the data type again
+                                sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+                                sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
+                                sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+                                sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
+
+                                firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "]";
+
+                                var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
+
+                                foreach (DataRow attribute in elementDataTypes.Rows)
+                                {
+                                    if (attribute["DATA_TYPE"].ToString() == "numeric" || attribute["DATA_TYPE"].ToString() == "int")
+                                    {
+                                        hubQuerySelect.AppendLine("    CAST(" + firstKey + " AS " + stringDataType + "(100)) AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
+                                    }
+                                    else
+                                    {
+                                        hubQuerySelect.AppendLine("      " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
+                                    }
+                                }
+
+                                hubQueryWhere.AppendLine(" " + firstKey + " IS NOT NULL AND");
+                                hubQueryGroupBy.AppendLine("    " + firstKey + ",");
+                            }
+
+                        } // End of element loop (for single element)
+                    }
+                }
+            } // End of component elements
+
+            // Return the results
+            var outputList = new List<String>();
+
+            outputList.Add(hubQuerySelect.ToString());
+            outputList.Add(hubQueryWhere.ToString());
+            outputList.Add(hubQueryGroupBy.ToString());
+
+            return outputList;
         }
 
         private void GenerateHubViews(int versionId)
@@ -684,153 +840,27 @@ namespace Virtual_EDW
 
                         foreach (DataRow hubDetailRow in hubTables.Rows)
                         {
-                            var fieldList = new StringBuilder();
-                            var compositeKey = new StringBuilder();
                             var sqlSourceStatement = new StringBuilder();
-                            var fieldDict = new Dictionary<string, string>();
-                            var fieldOrderedList = new List<string>();
-                            string firstKey;
-                            var sqlStatementForSourceQuery = new StringBuilder();
-                            var hubQuerySelect = new StringBuilder();
-                            var hubQueryWhere = new StringBuilder();
-                            var hubQueryGroupBy = new StringBuilder();
-                            
+                           
                             var stagingAreaTableName = (string)hubDetailRow["SOURCE_NAME"];
                             var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
                             var businessKeyDefinition = (string) hubDetailRow["SOURCE_BUSINESS_KEY_DEFINITION"];
                             var filterCriteria = (string)hubDetailRow["FILTER_CRITERIA"];
 
 
-                            // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
-                            var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
+                            // Construct the join clauses, where clauses etc. for the Hubs
+                            var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, "");
 
-                            // Components are key parts, such as a composite key (2 or more components) or regular and concatenated keys (1 component)
-                            foreach (DataRow component in componentList.Rows)
-                            {
-                                var componentId = (int)component["BUSINESS_KEY_COMPONENT_ID"] - 1;
+                            var hubQuerySelect = queryClauses[0];
+                            var hubQueryWhere = queryClauses[1];
+                            var hubQueryGroupBy = queryClauses[2];
 
-                                // Retrieve the elements of each business key component
-                                // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
-                                var elementList = GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
-
-                                if (elementList == null)
-                                {
-                                    SetTextDebug("\n");
-                                    SetTextHub($"An error occurred for the Hub Insert Into statement for {hubTableName}. The collection of Business Keys is empty.\r\n");
-                                }
-                                else
-                                {
-                                    if (elementList.Rows.Count > 1) // Build a concatinated key if the count of elements is greater than 1 for a component (key part)
-                                    {
-                                        fieldList.Clear();
-                                        fieldDict.Clear();
-
-                                        foreach (DataRow element in elementList.Rows)
-                                        {
-                                            var elementType = element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString();
-
-                                            if (elementType == "Attribute")
-                                            {
-                                                fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"',");
-
-                                                sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                                sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                                sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                                sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                                sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
-
-                                                var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
-
-                                                foreach (DataRow attribute in elementDataTypes.Rows)
-                                                {
-                                                    fieldDict.Add(attribute["COLUMN_NAME"].ToString(), attribute["DATA_TYPE"].ToString());
-                                                }
-                                            }
-                                            else if (elementType == "User Defined Value")
-                                            {
-                                                fieldList.Append("''" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"'',");
-                                            }
-
-                                            fieldOrderedList.Add(element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
-                                        }
-
-
-                                        // Build the concatenated key
-                                        foreach (var busKey in fieldOrderedList)
-                                        {
-                                            if (fieldDict.ContainsKey(busKey))
-                                            {
-                                                var key = "ISNULL([" + busKey + "], '')";
-
-                                                if ((fieldDict[busKey] == "datetime2") || (fieldDict[busKey] == "datetime"))
-                                                {
-                                                    key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CONVERT(" + stringDataType + "(100), [" + busKey + "], 112) ELSE '' END";
-                                                }
-                                                else if ((fieldDict[busKey] == "numeric") ||(fieldDict[busKey] == "integer") || (fieldDict[busKey] == "int") ||(fieldDict[busKey] == "tinyint") ||(fieldDict[busKey] == "decimal"))
-                                                {
-                                                    key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CAST([" +busKey + "] AS " + stringDataType + "(100)) ELSE '' END";
-                                                }
-
-                                                compositeKey.Append(key).Append(" + ");
-                                            }
-                                            else
-                                            {
-                                                var key = " " + busKey;
-                                                compositeKey.Append(key).Append(" + ");
-                                            }
-                                        }
-
-                                        hubQuerySelect.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) +" AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                        hubQueryWhere.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) +" != '' AND");
-                                        hubQueryGroupBy.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) +",");
-                                    }
-                                    else // Handle a component of a single or composite key 
-                                    {
-                                        foreach (DataRow element in elementList.Rows) // Only a single element...
-                                        {
-                                            if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() =="User Defined Value")
-                                            {
-                                                firstKey = element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
-                                                hubQuerySelect.AppendLine("    " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                            }
-                                            else // It's a normal attribute
-                                            {
-                                                // We need the data type again
-                                                sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                                sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                                sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" +stagingAreaTableName + "'");
-                                                sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                                sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" +element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
-
-                                                firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"]";
-
-                                                var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
-
-                                                foreach (DataRow attribute in elementDataTypes.Rows)
-                                                {
-                                                    if (attribute["DATA_TYPE"].ToString() == "numeric" || attribute["DATA_TYPE"].ToString() == "int")
-                                                    {
-                                                        hubQuerySelect.AppendLine("    CAST(" + firstKey + " AS " + stringDataType + "(100)) AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                                    }
-                                                    else
-                                                    {
-                                                        hubQuerySelect.AppendLine("      " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                                    }
-                                                }
-
-                                                hubQueryWhere.AppendLine(" " + firstKey + " IS NOT NULL AND");
-                                                hubQueryGroupBy.AppendLine("    " + firstKey + ",");
-                                            }
-
-                                        } // End of element loop (for single element)
-                                    } 
-                                }
-                            } // End of component elements
-
+                            //hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
                             hubQueryWhere.Remove(hubQueryWhere.Length - 6, 6);
+                            //hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
 
                             //Troubleshooting
-                            if (hubQuerySelect.ToString() == "")
+                            if (hubQuerySelect == "")
                             {
                                 SetTextLink("Keys missing, please check the metadata for table " + hubTableName + "\r\n");
                             }
@@ -838,12 +868,13 @@ namespace Virtual_EDW
                             sqlSourceStatement.AppendLine("  SELECT ");
                             sqlSourceStatement.AppendLine("    " + hubQuerySelect);
                             sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
-                            sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute + ",");
-                            sqlSourceStatement.AppendLine("    MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute +"");
+                            sqlSourceStatement.AppendLine("       " + TeamConfigurationSettings.RecordSourceAttribute + ",");
+                            sqlSourceStatement.AppendLine("       MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute +"");
                             sqlSourceStatement.AppendLine("  FROM "+TeamConfigurationSettings.SchemaName+"." + psaTableName);
                             sqlSourceStatement.AppendLine("  WHERE");
                             sqlSourceStatement.AppendLine("    " + hubQueryWhere);
-                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 1, 1);
+                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 7, 7);
+                            sqlSourceStatement.AppendLine();
 
                             if (string.IsNullOrEmpty(filterCriteria))
                             {}
@@ -1302,9 +1333,9 @@ namespace Virtual_EDW
                         var fieldOrderedList = new List<string>();
                         string firstKey;
                         var sqlStatementForSourceQuery = new StringBuilder();
-                        var hubQuerySelect = new StringBuilder();
-                        var hubQueryWhere = new StringBuilder();
-                        var hubQueryGroupBy = new StringBuilder();
+                        string hubQuerySelect = "";
+                        string hubQueryWhere = "";
+                        string hubQueryGroupBy = "";
 
                         string multiActiveAttributeFromName;
 
@@ -1372,136 +1403,12 @@ namespace Virtual_EDW
                         // Retrieving the business key attributes for the Hub                 
                         var hubKeyList = GetHubTargetBusinessKeyList(hubTableName, versionId);
 
-                        // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
-                        var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
-
-                        // Components are key parts, such as a composite key (2 or more components) or regular and concatenated keys (1 component)
-                        foreach (DataRow component in componentList.Rows)
-                        {
-                            var componentId = (int)component["BUSINESS_KEY_COMPONENT_ID"] - 1;
-
-                            // Retrieve the elements of each business key component
-                            // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
-                            var elementList = GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
-
-                            if (elementList == null)
-                            {
-                                SetTextDebug("\n");
-                                SetTextHub($"An error occurred for the Hub Insert Into statement for {hubTableName}. The collection of Business Keys is empty.\r\n");
-                            }
-                            else
-                            {
-                                if (elementList.Rows.Count > 1) // Build a concatenated key if the count of elements is greater than 1 for a component (key part)
-                                {
-                                    fieldList.Clear();
-                                    fieldDict.Clear();
-
-                                    foreach (DataRow element in elementList.Rows)
-                                    {
-                                        var elementType = element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString();
-
-                                        if (elementType == "Attribute")
-                                        {
-                                            fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "',");
-
-                                            sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                            sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                            sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                            sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                            sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
-
-                                            var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
-
-                                            foreach (DataRow attribute in elementDataTypes.Rows)
-                                            {
-                                                fieldDict.Add(attribute["COLUMN_NAME"].ToString(), attribute["DATA_TYPE"].ToString());
-                                            }
-                                        }
-                                        else if (elementType == "User Defined Value")
-                                        {
-                                            fieldList.Append("''" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "'',");
-                                        }
-
-                                        fieldOrderedList.Add(element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
-                                    }
-
-
-                                    // Build the concatenated key
-                                    foreach (var busKey in fieldOrderedList)
-                                    {
-                                        if (fieldDict.ContainsKey(busKey))
-                                        {
-                                            var key = "ISNULL([" + busKey + "], '')";
-
-                                            if ((fieldDict[busKey] == "datetime2") || (fieldDict[busKey] == "datetime"))
-                                            {
-                                                key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CONVERT(" + stringDataType + "(100), [" + busKey + "], 112) ELSE '' END";
-                                            }
-                                            else if ((fieldDict[busKey] == "numeric") || (fieldDict[busKey] == "integer") || (fieldDict[busKey] == "int") || (fieldDict[busKey] == "tinyint") || (fieldDict[busKey] == "decimal"))
-                                            {
-                                                key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CAST([" + busKey + "] AS " + stringDataType + "(100)) ELSE '' END";
-                                            }
-
-                                            compositeKey.Append(key).Append(" + ");
-                                        }
-                                        else
-                                        {
-                                            var key = " " + busKey;
-                                            compositeKey.Append(key).Append(" + ");
-                                        }
-                                    }
-
-                                    hubQuerySelect.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                    hubQueryWhere.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " != '' AND");
-                                    hubQueryGroupBy.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + ",");
-                                }
-                                else // Handle a component of a single or composite key 
-                                {
-                                    foreach (DataRow element in elementList.Rows) // Only a single element...
-                                    {
-                                        if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() == "User Defined Value")
-                                        {
-                                            firstKey = element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
-                                            hubQuerySelect.AppendLine("    " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                        }
-                                        else // It's a normal attribute
-                                        {
-                                            // We need the data type again
-                                            sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                            sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                            sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                            sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                            sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
-
-                                            firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "]";
-
-                                            var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
-
-                                            foreach (DataRow attribute in elementDataTypes.Rows)
-                                            {
-                                                if (attribute["DATA_TYPE"].ToString() == "numeric" || attribute["DATA_TYPE"].ToString() == "int")
-                                                {
-                                                    hubQuerySelect.AppendLine("    CAST(" + firstKey + " AS " + stringDataType + "(100)) AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                                }
-                                                else
-                                                {
-                                                    hubQuerySelect.AppendLine("      " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + "],");
-                                                }
-                                            }
-
-                                            hubQueryWhere.AppendLine(" " + firstKey + " IS NOT NULL AND");
-                                            hubQueryGroupBy.AppendLine("    " + firstKey + ",");
-                                        }
-
-                                    } // End of element loop (for single element)
-                                }
-                            }
-                        } // End of component elements
-
-                        hubQueryWhere.Remove(hubQueryWhere.Length - 6, 6);
+                        // Construct the join clauses, where clauses etc. for the Hubs
+                        var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, "");
+                        hubQuerySelect = queryClauses[0];
 
                         //Troubleshooting
-                        if (hubQuerySelect.ToString() == "")
+                        if (hubQuerySelect == "")
                         {
                             SetTextLink("Keys missing, please check the metadata for table " + hubTableName + "\r\n");
                         }
@@ -1748,7 +1655,7 @@ namespace Virtual_EDW
                         // Record condensing
                         satView.AppendLine("         COMBINED_VALUE,");
                         satView.AppendLine("         CASE ");
-                        satView.AppendLine("           WHEN LAG(COMBINED_VALUE,1,'N/A') OVER (PARTITION BY ");
+                        satView.AppendLine("           WHEN LAG(COMBINED_VALUE,1,"+ VedwConfigurationSettings.hashingZeroKey + ") OVER (PARTITION BY ");
 
 
                         // Satellite / Hub key
@@ -1937,7 +1844,7 @@ namespace Virtual_EDW
                                 }
                             }
 
-                            satView.AppendLine("          'N/A' AS COMBINED_VALUE");
+                            satView.AppendLine("          "+ VedwConfigurationSettings.hashingZeroKey + " AS COMBINED_VALUE");
                             satView.AppendLine("        FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
                             // End of zero record
                         }
@@ -1951,47 +1858,54 @@ namespace Virtual_EDW
                         satView.AppendLine("  (CDC_CHANGE_INDICATOR = 'Different' and TIME_CHANGE_INDICATOR = 'Different')");
 
                         // Zero record insert
-                        satView.AppendLine("UNION");
-                        satView.AppendLine("SELECT "+VedwConfigurationSettings.hashingZeroKey+",");
-                        satView.AppendLine("'1900-01-01',");
-                        satView.AppendLine("'9999-12-31',");
-                        satView.AppendLine("'Y',"); // Current Row Indicator
-                        satView.AppendLine("- 1,"); // ETL insert ID
-                        satView.AppendLine("- 1,"); // ETL update ID
-                        satView.AppendLine("'N/A',"); // CDC operation
-                        satView.AppendLine("1,"); // Row Nr
-                        satView.AppendLine("'Data Warehouse',");
-                        if (checkBoxEvaluateSatDelete.Checked)
+                        if (checkBoxDisableSatZeroRecords.Checked == false)
                         {
-                            satView.AppendLine("'N',"); // Logical Delete evaluation, if checked
-                        }
-                        satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ","); //Full Row Hash
-
-                        foreach (DataRow attribute in multiActiveAttributes.Rows)
-                        {
-                            // Requires handling of data types
-                            if ( attribute["ATTRIBUTE_NAME_TO"].ToString().Contains("DATE"))
+                            satView.AppendLine("UNION");
+                            satView.AppendLine("SELECT " + VedwConfigurationSettings.hashingZeroKey + ",");
+                            satView.AppendLine("'1900-01-01',");
+                            satView.AppendLine("'9999-12-31',");
+                            satView.AppendLine("'Y',"); // Current Row Indicator
+                            satView.AppendLine("- 1,"); // ETL insert ID
+                            satView.AppendLine("- 1,"); // ETL update ID
+                            satView.AppendLine("'N/A',"); // CDC operation
+                            satView.AppendLine("1,"); // Row Nr
+                            satView.AppendLine("'Data Warehouse',");
+                            if (checkBoxEvaluateSatDelete.Checked)
                             {
-                                satView.AppendLine("CAST('1900-01-01' AS DATE),");
+                                satView.AppendLine("'N',"); // Logical Delete evaluation, if checked
                             }
-                            else
-                            {
-                                satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ",");
-                            }
-                        }
 
-                        foreach (DataRow attribute in sourceStructure.Rows)
-                        {
-                            var localAttribute = attribute["ATTRIBUTE_NAME_FROM"];
-                            var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
-                            var foundMultiActiveAttribute = multiActiveAttributes.Rows.Find(localAttribute);
+                            satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ","); //Full Row Hash
 
-                            if (foundBusinessKeyAttribute == null && foundMultiActiveAttribute == null)
+                            foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                satView.AppendLine("NULL,");
+                                // Requires handling of data types
+                                if (attribute["ATTRIBUTE_NAME_TO"].ToString().Contains("DATE"))
+                                {
+                                    satView.AppendLine("CAST('1900-01-01' AS DATE),");
+                                }
+                                else
+                                {
+                                    satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ",");
+                                }
                             }
+
+                            foreach (DataRow attribute in sourceStructure.Rows)
+                            {
+                                var localAttribute = attribute["ATTRIBUTE_NAME_FROM"];
+                                var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
+                                var foundMultiActiveAttribute = multiActiveAttributes.Rows.Find(localAttribute);
+
+                                if (foundBusinessKeyAttribute == null && foundMultiActiveAttribute == null)
+                                {
+                                    satView.AppendLine("NULL,");
+                                }
+                            }
+
+                            satView.AppendLine("1"); // Row Nr
                         }
-                        satView.AppendLine("1"); // Row Nr
+                        // END OF ZERO RECORD CREATION
+
 
                         satView.AppendLine();
                         satView.AppendLine("GO");
@@ -2439,11 +2353,11 @@ namespace Virtual_EDW
                     {
                         var rowcounter = 1;
 
+                        // Loop through the mappings to add a union
                         foreach (DataRow linkDetailRow in linkStagingTables.Rows)
                         {
                             var sqlStatementForComponent = new StringBuilder();
                             var sqlSourceStatement = new StringBuilder();
-                            var sqlStatementForSourceQuery = new StringBuilder();
 
                             var stagingAreaTableName = (string) linkDetailRow["SOURCE_NAME"];
                             var filterCriteria = (string) linkDetailRow["FILTER_CRITERIA"];
@@ -2465,147 +2379,22 @@ namespace Virtual_EDW
                             {
                                 sqlStatementForComponent.Clear();
 
-                                var fieldList = new StringBuilder();
-                                var compositeKey = new StringBuilder();
-                                var fieldDict = new Dictionary<string, string>();
-                                var fieldOrderedList = new List<string>();
-
                                 var hubTableName = (string)hubDetailRow["HUB_NAME"];
                                 var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
 
-                                // Getting the target Business Key name(s) for the Hub. This may be composite, so more than 1 which is matched to the source definition
-                                var hubKeyList = GetHubTargetBusinessKeyList(hubTableName, versionId);
+                                // Construct the join clauses, where clauses etc. for the Hubs
+                                var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, groupCounter.ToString());
 
-                                // Retrieving the top level component to evaluate composite, concat or pivot 
-                                var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
+                                hubQuerySelect.AppendLine(queryClauses[0]);
+                                hubQueryWhere.AppendLine(queryClauses[1]);
+                                hubQueryGroupBy.AppendLine(queryClauses[2]);
 
-                                // Components are key parts, such as a composite key (2 or more components) or regular and concatenated keys (1 component)
-                                foreach (DataRow component in componentList.Rows)
-                                {
-                                    var componentId = (int)component["BUSINESS_KEY_COMPONENT_ID"] - 1;
-
-                                    // Retrieve the elements of each business key component
-                                    // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
-                                    var elementList = GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
-
-                                    if (elementList == null)
-                                    {
-                                        SetTextDebug("\n");
-                                        SetTextHub($"An error occurred for the Hub Insert Into statement for {hubTableName}. The collection of Business Keys is empty.\r\n");
-                                    }
-                                    else
-                                    {
-                                        if (elementList.Rows.Count > 1) // Build a concatinated key if the count of elements is greater than 1 for a component (key part)
-                                        {
-                                            fieldList.Clear();
-                                            fieldDict.Clear();
-
-                                            foreach (DataRow element in elementList.Rows)
-                                            {
-                                                var elementType = element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString();
-
-                                                if (elementType == "Attribute")
-                                                {
-                                                    fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "',");
-
-                                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                                    sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
-
-                                                    var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
-
-                                                    foreach (DataRow attribute in elementDataTypes.Rows)
-                                                    {
-                                                        fieldDict.Add(attribute["COLUMN_NAME"].ToString(), attribute["DATA_TYPE"].ToString());
-                                                    }
-                                                }
-                                                else if (elementType == "User Defined Value")
-                                                {
-                                                    fieldList.Append("''" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "'',");
-                                                }
-
-                                                fieldOrderedList.Add(element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
-                                            }
-
-
-                                            // Build the concatenated key
-                                            foreach (var busKey in fieldOrderedList)
-                                            {
-                                                if (fieldDict.ContainsKey(busKey))
-                                                {
-                                                    var key = "ISNULL([" + busKey + "], '')";
-
-                                                    if ((fieldDict[busKey] == "datetime2") || (fieldDict[busKey] == "datetime"))
-                                                    {
-                                                        key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CONVERT(" + stringDataType + "(100), [" + busKey + "], 112) ELSE '' END";
-                                                    }
-                                                    else if ((fieldDict[busKey] == "numeric") || (fieldDict[busKey] == "integer") || (fieldDict[busKey] == "int") || (fieldDict[busKey] == "tinyint") || (fieldDict[busKey] == "decimal"))
-                                                    {
-                                                        key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CAST([" + busKey + "] AS " + stringDataType + "(100)) ELSE '' END";
-                                                    }
-
-                                                    compositeKey.Append(key).Append(" + ");
-                                                }
-                                                else
-                                                {
-                                                    var key = " " + busKey;
-                                                    compositeKey.Append(key).Append(" + ");
-                                                }
-                                            }
-
-                                            hubQuerySelect.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                                            hubQueryWhere.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " != '' AND");
-                                            hubQueryGroupBy.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + ",");
-                                        }
-                                        else // Handle a component of a single or composite key 
-                                        {
-                                            foreach (DataRow element in elementList.Rows) // Only a single element...
-                                            {
-                                                string firstKey;
-                                                if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() == "User Defined Value")
-                                                {
-                                                    firstKey = element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
-                                                    hubQuerySelect.AppendLine("    " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                                                }
-                                                else // It's a normal attribute
-                                                {
-                                                    // We need the data type again
-                                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                                    sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
-
-                                                    firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "]";
-
-                                                    var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
-
-                                                    foreach (DataRow attribute in elementDataTypes.Rows)
-                                                    {
-                                                        if (attribute["DATA_TYPE"].ToString() == "numeric" || attribute["DATA_TYPE"].ToString() == "int")
-                                                        {
-                                                            hubQuerySelect.AppendLine("    CAST(" + firstKey + " AS " + stringDataType + "(100)) AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                                                        }
-                                                        else
-                                                        {
-                                                            hubQuerySelect.AppendLine("      " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                                                        }
-                                                    }
-
-                                                    hubQueryWhere.AppendLine(" " + firstKey + " IS NOT NULL AND");
-                                                    hubQueryGroupBy.AppendLine("    " + firstKey + ",");
-                                                }
-                                            } // End of element loop (for single element)
-                                        }
-                                    }
-                                } // End of component elements
-
+                                hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
+                                hubQueryWhere.Remove(hubQueryWhere.Length - 3, 3);
+                                hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
+                                
                                 groupCounter++;
                             } // End of business key creation
-
-                            hubQueryWhere.Remove(hubQueryWhere.Length - 6, 6);
 
                             //Troubleshooting
                             if (hubQuerySelect.ToString() == "")
@@ -2616,7 +2405,6 @@ namespace Virtual_EDW
                             // Initiating select statement for subquery
                             sqlSourceStatement.AppendLine("  SELECT ");
                             sqlSourceStatement.AppendLine("   " + hubQuerySelect);
-                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
                             sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute + ",");
 
                             if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
@@ -2633,7 +2421,9 @@ namespace Virtual_EDW
                             sqlSourceStatement.AppendLine("  FROM [" + TeamConfigurationSettings.PsaDatabaseName + "].[" + TeamConfigurationSettings.SchemaName + "].[" + currentTableName + "]");
                             sqlSourceStatement.AppendLine("  WHERE");
                             sqlSourceStatement.AppendLine(" " + hubQueryWhere);
-                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 1, 1);
+                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 6, 6);
+                            sqlSourceStatement.AppendLine();
+
                             if (string.IsNullOrEmpty(filterCriteria))
                             {
                             }
@@ -2643,7 +2433,6 @@ namespace Virtual_EDW
                             }
                             sqlSourceStatement.AppendLine("  GROUP BY ");
                             sqlSourceStatement.AppendLine("" + hubQueryGroupBy);
-                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
 
                             // Add degenerate attributes
                             if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
@@ -2658,7 +2447,8 @@ namespace Virtual_EDW
                             sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute);
 
                             linkView.AppendLine(sqlSourceStatement.ToString());
-                            linkView.Remove(linkView.Length - 3, 3);
+                            linkView.Remove(linkView.Length -4, 4);
+                            linkView.AppendLine();
 
                             // Add a union if there's more to add
                             if (rowcounter < linkStagingTables.Rows.Count)
@@ -4466,171 +4256,18 @@ namespace Virtual_EDW
 
 
 
-                                // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
-                                var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
+                                // Construct the join clauses, where clauses etc. for the Hubs
+                                var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, groupCounter.ToString());
 
-                                // Components are key parts, such as a composite key (2 or more components) or regular and concatenated keys (1 component)
-                                foreach (DataRow component in componentList.Rows)
-                                {
-                                    var componentId = (int) component["BUSINESS_KEY_COMPONENT_ID"] - 1;
+                                hubQuerySelect.AppendLine(queryClauses[0]);
+                                hubQueryWhere.AppendLine(queryClauses[1]);
+                                hubQueryGroupBy.AppendLine(queryClauses[2]);
 
-                                    // Retrieve the elements of each business key component
-                                    // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
-                                    var elementList = GetBusinessKeyElements(stagingAreaTableName, hubTableName,
-                                        businessKeyDefinition, (int) component["BUSINESS_KEY_COMPONENT_ID"]);
+                                hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
+                                hubQueryWhere.Remove(hubQueryWhere.Length - 3, 3);
+                                hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
 
-                                    if (elementList == null)
-                                    {
-                                        SetTextDebug("\n");
-                                        SetTextHub(
-                                            $"An error occurred for the Hub Insert Into statement for {hubTableName}. The collection of Business Keys is empty.\r\n");
-                                    }
-                                    else
-                                    {
-                                        if (elementList.Rows.Count > 1)
-                                            // Build a concatinated key if the count of elements is greater than 1 for a component (key part)
-                                        {
-                                            fieldList.Clear();
-                                            fieldDict.Clear();
-
-                                            foreach (DataRow element in elementList.Rows)
-                                            {
-                                                var elementType =
-                                                    element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString();
-
-                                                if (elementType == "Attribute")
-                                                {
-                                                    fieldList.Append("'" +element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"',");
-
-                                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" +stagingAreaTableName + "'");
-                                                    sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" +fieldList.ToString().Substring(0,fieldList.ToString().Length - 1) + ")");
-
-                                                    var elementDataTypes = GetDataTable(ref connStg,
-                                                        sqlStatementForSourceQuery.ToString());
-
-                                                    foreach (DataRow attribute in elementDataTypes.Rows)
-                                                    {
-                                                        fieldDict.Add(attribute["COLUMN_NAME"].ToString(),
-                                                            attribute["DATA_TYPE"].ToString());
-                                                    }
-                                                }
-                                                else if (elementType == "User Defined Value")
-                                                {
-                                                    fieldList.Append("''" +
-                                                                     element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +
-                                                                     "'',");
-                                                }
-
-                                                fieldOrderedList.Add(
-                                                    element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
-                                            }
-
-
-                                            // Build the concatenated key
-                                            foreach (var busKey in fieldOrderedList)
-                                            {
-                                                if (fieldDict.ContainsKey(busKey))
-                                                {
-                                                    var key = "ISNULL([" + busKey + "], '')";
-
-                                                    if ((fieldDict[busKey] == "datetime2") ||
-                                                        (fieldDict[busKey] == "datetime"))
-                                                    {
-                                                        key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CONVERT(" +
-                                                              stringDataType + "(100), [" + busKey +
-                                                              "], 112) ELSE '' END";
-                                                    }
-                                                    else if ((fieldDict[busKey] == "numeric") ||
-                                                             (fieldDict[busKey] == "integer") ||
-                                                             (fieldDict[busKey] == "int") ||
-                                                             (fieldDict[busKey] == "tinyint") ||
-                                                             (fieldDict[busKey] == "decimal"))
-                                                    {
-                                                        key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CAST([" +
-                                                              busKey + "] AS " + stringDataType +
-                                                              "(100)) ELSE '' END";
-                                                    }
-
-                                                    compositeKey.Append(key).Append(" + ");
-                                                }
-                                                else
-                                                {
-                                                    var key = " " + busKey;
-                                                    compositeKey.Append(key).Append(" + ");
-                                                }
-                                            }
-
-                                            hubQuerySelect.AppendLine(
-                                                compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) +
-                                                " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter +
-                                                "],");
-                                            hubQueryWhere.AppendLine(
-                                                compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) +
-                                                " != '' AND");
-                                            hubQueryGroupBy.AppendLine(
-                                                compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) +
-                                                ",");
-                                        }
-                                        else // Handle a component of a single or composite key 
-                                        {
-                                            foreach (DataRow element in elementList.Rows) // Only a single element...
-                                            {
-                                                if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() ==
-                                                    "User Defined Value")
-                                                {
-                                                    firstKey =
-                                                        element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
-                                                    hubQuerySelect.AppendLine("    " + firstKey + " AS [" +
-                                                                              hubKeyList.Rows[componentId]["COLUMN_NAME"
-                                                                                  ] + groupCounter + "],");
-                                                }
-                                                else // It's a normal attribute
-                                                {
-                                                    // We need the data type again
-                                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" +stagingAreaTableName + "'");
-                                                    sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" +element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
-
-                                                    firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"]";
-
-                                                    var elementDataTypes = GetDataTable(ref connStg,
-                                                        sqlStatementForSourceQuery.ToString());
-
-                                                    foreach (DataRow attribute in elementDataTypes.Rows)
-                                                    {
-                                                        if (attribute["DATA_TYPE"].ToString() == "numeric" ||
-                                                            attribute["DATA_TYPE"].ToString() == "int")
-                                                        {
-                                                            hubQuerySelect.AppendLine("    CAST(" + firstKey + " AS " +
-                                                                                      stringDataType + "(100)) AS [" +
-                                                                                      hubKeyList.Rows[componentId][
-                                                                                          "COLUMN_NAME"] + groupCounter +
-                                                                                      "],");
-                                                        }
-                                                        else
-                                                        {
-                                                            hubQuerySelect.AppendLine("      " + firstKey + " AS [" +
-                                                                                      hubKeyList.Rows[componentId][
-                                                                                          "COLUMN_NAME"] + groupCounter +
-                                                                                      "],");
-                                                        }
-                                                    }
-
-                                                    hubQueryWhere.AppendLine(" " + firstKey + " IS NOT NULL AND");
-                                                    hubQueryGroupBy.AppendLine("    " + firstKey + ",");
-                                                }
-
-                                            } // End of element loop (for single element)
-                                        }
-                                    }
-                                } // End of component elements
-
-                                groupCounter++;
+                            groupCounter++;
 
                             } // End of business key creation
 
@@ -4644,7 +4281,7 @@ namespace Virtual_EDW
                             {
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
-                                    linkSatView.AppendLine("    [" + (string) attribute["ATTRIBUTE_NAME_FROM"] +
+                                    linkSatView.AppendLine("    ,[" + (string) attribute["ATTRIBUTE_NAME_FROM"] +
                                                            "] AS [" + attribute["ATTRIBUTE_NAME_TO"] + "],");
                                 }
                             }
@@ -4652,7 +4289,7 @@ namespace Virtual_EDW
                             // Add the multi-active attributes
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("    [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "] AS [" + attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                linkSatView.AppendLine("    ,[" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "] AS [" + attribute["ATTRIBUTE_NAME_TO"] + "],");
                             }
 
                             // Add all the attributes
