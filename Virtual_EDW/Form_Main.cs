@@ -697,7 +697,7 @@ namespace Virtual_EDW
                             
                             var stagingAreaTableName = (string)hubDetailRow["SOURCE_NAME"];
                             var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
-                            var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
+                            var businessKeyDefinition = (string) hubDetailRow["SOURCE_BUSINESS_KEY_DEFINITION"];
                             var filterCriteria = (string)hubDetailRow["FILTER_CRITERIA"];
 
 
@@ -2827,8 +2827,6 @@ namespace Virtual_EDW
 
         public DataTable GetHubTargetBusinessKeyList(string hubTableName, int versionId)
         {
-            
-
             // Obtain the business key as it is known in the target Hub table. Can be multiple due to composite keys
             var conn = new SqlConnection
             {
