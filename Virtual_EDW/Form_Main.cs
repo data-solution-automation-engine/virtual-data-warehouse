@@ -1237,7 +1237,7 @@ namespace Virtual_EDW
 
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            insertIntoStatement.AppendLine("AND sat_view.[" + (string)attribute["ATTRIBUTE_NAME_TO"] + "] = sat_table.["+(string)attribute["ATTRIBUTE_NAME_TO"]+"]");
+                            insertIntoStatement.AppendLine("AND sat_view.[" + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + "] = sat_table.["+(string)attribute["SATELLITE_ATTRIBUTE_NAME"] +"]");
                         }
 
                         insertIntoStatement.AppendLine("WHERE sat_table." + hubSk + " IS NULL");
@@ -1320,7 +1320,7 @@ namespace Virtual_EDW
                         var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
                         var hubTableName = (string) row["HUB_NAME"];
                         var filterCriteria = (string)row["FILTER_CRITERIA"];
-                        var businessKeyDefinition = (string)row["BUSINESS_KEY_DEFINITION"];
+                        var businessKeyDefinition = (string)row["SOURCE_BUSINESS_KEY_DEFINITION"];
 
                         var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
@@ -1480,7 +1480,7 @@ namespace Virtual_EDW
                         satView.AppendLine();
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                             satView.AppendLine("              " + multiActiveAttributeFromName + ",");
                         }
 
@@ -1505,7 +1505,7 @@ namespace Virtual_EDW
                         satView.AppendLine();
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                             satView.AppendLine("         " + multiActiveAttributeFromName + ",");
                         }
 
@@ -1547,7 +1547,7 @@ namespace Virtual_EDW
 
                         foreach (DataRow attribute in sourceStructure.Rows)
                         {
-                            var localAttribute = attribute["ATTRIBUTE_NAME_FROM"];
+                            var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
                             var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
 
                             if (foundBusinessKeyAttribute == null)
@@ -1562,8 +1562,8 @@ namespace Virtual_EDW
                         // Regular attributes
                         foreach (DataRow attribute in sourceStructure.Rows)
                         {
-                            var localAttribute = attribute["ATTRIBUTE_NAME_FROM"];
-                            var localAttributeTarget = attribute["ATTRIBUTE_NAME_TO"];
+                            var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
+                            var localAttributeTarget = attribute["SATELLITE_ATTRIBUTE_NAME"];
                             var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
 
                             if (foundBusinessKeyAttribute == null)
@@ -1588,7 +1588,7 @@ namespace Virtual_EDW
 
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                             satView.AppendLine("         " + multiActiveAttributeFromName + ",");
                         }
 
@@ -1608,7 +1608,7 @@ namespace Virtual_EDW
 
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                             satView.AppendLine("         " + multiActiveAttributeFromName + ",");
                         }
                         satView.AppendLine("         [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
@@ -1643,7 +1643,7 @@ namespace Virtual_EDW
                         // Regular attributes
                         foreach (DataRow attribute in sourceStructure.Rows)
                         {
-                            var localAttribute = attribute["ATTRIBUTE_NAME_FROM"];
+                            var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
                             var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
 
                             if (foundBusinessKeyAttribute == null)
@@ -1674,7 +1674,7 @@ namespace Virtual_EDW
                         // Handle Multi-Active
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            satView.AppendLine("             [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "],");
+                            satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
                         }
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
@@ -1702,7 +1702,7 @@ namespace Virtual_EDW
                         // Handle Multi-Active
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            satView.AppendLine("             [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "],");
+                            satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
                         }
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
@@ -1732,7 +1732,7 @@ namespace Virtual_EDW
                         // Handle Multi-Active
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            satView.AppendLine("             [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "],");
+                            satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
                         }
                         satView.Remove(satView.Length - 3, 3);
                         satView.AppendLine();
@@ -1770,7 +1770,7 @@ namespace Virtual_EDW
                         // Regular attributes
                         foreach (DataRow attribute in sourceStructure.Rows)
                         {
-                            var localAttribute = attribute["ATTRIBUTE_NAME_FROM"];
+                            var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
                             var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
 
                             if (foundBusinessKeyAttribute == null)
@@ -1784,7 +1784,7 @@ namespace Virtual_EDW
 
                         foreach (DataRow attribute in sourceStructure.Rows)
                         {
-                            satView.AppendLine("             ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + attribute["ATTRIBUTE_NAME_FROM"] + "])),'NA')+'|'+");
+                            satView.AppendLine("             ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + attribute["SOURCE_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
                         }
 
                         satView.Remove(satView.Length - 3, 3);
@@ -1827,14 +1827,14 @@ namespace Virtual_EDW
                             // Multi-active attributes
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                satView.AppendLine("          "+ attribute["ATTRIBUTE_NAME_FROM"]+ ",");
+                                satView.AppendLine("          "+ attribute["SOURCE_ATTRIBUTE_NAME"] + ",");
                             }
 
 
                             // Adding regular attributes as NULLs, skipping the key and any multi-active attributes
                             foreach (DataRow attribute in sourceStructure.Rows)
                             {
-                                var localAttribute = attribute["ATTRIBUTE_NAME_FROM"]; // Get the key
+                                var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"]; // Get the key
                                 var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute); // Get the multi-active attribute
                                 var foundMultiActiveAttribute = multiActiveAttributes.Rows.Find(localAttribute);
 
@@ -1880,7 +1880,7 @@ namespace Virtual_EDW
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
                                 // Requires handling of data types
-                                if (attribute["ATTRIBUTE_NAME_TO"].ToString().Contains("DATE"))
+                                if (attribute["SATELLITE_ATTRIBUTE_NAME"].ToString().Contains("DATE"))
                                 {
                                     satView.AppendLine("CAST('1900-01-01' AS DATE),");
                                 }
@@ -1892,7 +1892,7 @@ namespace Virtual_EDW
 
                             foreach (DataRow attribute in sourceStructure.Rows)
                             {
-                                var localAttribute = attribute["ATTRIBUTE_NAME_FROM"];
+                                var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
                                 var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
                                 var foundMultiActiveAttribute = multiActiveAttributes.Rows.Find(localAttribute);
 
@@ -2182,7 +2182,7 @@ namespace Virtual_EDW
                             foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                             {
                                 linkView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                    (string) attribute["ATTRIBUTE_NAME_TO"] + ")),'NA')+'|'+");
+                                                    (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
                             }
                         }
 
@@ -2214,7 +2214,7 @@ namespace Virtual_EDW
                             foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                             {
                                 linkView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                (string) attribute["ATTRIBUTE_NAME_TO"] + ")),'NA')+'|'+");
+                                                (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
                             }
                         }
 
@@ -2287,7 +2287,7 @@ namespace Virtual_EDW
                     {
                         foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                         {
-                            linkView.AppendLine("  " + (string) attribute["ATTRIBUTE_NAME_TO"] + ",");
+                            linkView.AppendLine("  " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
                         }
                     }
 
@@ -2315,7 +2315,7 @@ namespace Virtual_EDW
                     {
                         foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                         {
-                            linkView.AppendLine("      [" + (string) attribute["ATTRIBUTE_NAME_TO"] + "],");
+                            linkView.AppendLine("      [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
                         }
                     }
 
@@ -2412,8 +2412,8 @@ namespace Virtual_EDW
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
                                     sqlSourceStatement.AppendLine(
-                                        "    [" + (string) attribute["ATTRIBUTE_NAME_FROM"] + "] AS [" +
-                                        (string) attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                        "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" +
+                                        (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
                                 }
                             }
 
@@ -2440,7 +2440,7 @@ namespace Virtual_EDW
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
                                     sqlSourceStatement.AppendLine(
-                                        "    [" + (string) attribute["ATTRIBUTE_NAME_FROM"] + "],");
+                                        "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
                                 }
                             }
 
@@ -2482,7 +2482,7 @@ namespace Virtual_EDW
                         {
                             foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                             {
-                                linkView.AppendLine("  [" + (string) attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                linkView.AppendLine("  [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
                             }
                         }
 
@@ -2586,8 +2586,8 @@ namespace Virtual_EDW
             var degenerateLinkAttributeQuery = new StringBuilder();
 
             degenerateLinkAttributeQuery.AppendLine("SELECT ");
-            degenerateLinkAttributeQuery.AppendLine("  c.ATTRIBUTE_NAME AS ATTRIBUTE_NAME_FROM,");
-            degenerateLinkAttributeQuery.AppendLine("  b.ATTRIBUTE_NAME AS ATTRIBUTE_NAME_TO");
+            degenerateLinkAttributeQuery.AppendLine("  c.ATTRIBUTE_NAME AS SOURCE_ATTRIBUTE_NAME,");
+            degenerateLinkAttributeQuery.AppendLine("  b.ATTRIBUTE_NAME AS LINK_ATTRIBUTE_NAME");
             degenerateLinkAttributeQuery.AppendLine("FROM MD_SOURCE_LINK_ATTRIBUTE_XREF a");
             degenerateLinkAttributeQuery.AppendLine("JOIN MD_ATTRIBUTE b ON a.ATTRIBUTE_ID_TO=b.ATTRIBUTE_ID");
             degenerateLinkAttributeQuery.AppendLine("JOIN MD_ATTRIBUTE c ON a.ATTRIBUTE_ID_FROM=c.ATTRIBUTE_ID");
@@ -3098,7 +3098,7 @@ namespace Virtual_EDW
                         // Multi-active
                         foreach (DataRow attribute in multiActiveAttributes.Rows)
                         {
-                            insertIntoStatement.AppendLine("AND lsat_view.[" + (string) attribute["ATTRIBUTE_NAME_TO"] +"] = lsat_table.[" + (string) attribute["ATTRIBUTE_NAME_TO"] +"]");
+                            insertIntoStatement.AppendLine("AND lsat_view.[" + (string) attribute["SATELLITE_ATTRIBUTE_NAME"] +"] = lsat_table.[" + (string) attribute["SATELLITE_ATTRIBUTE_NAME"] +"]");
                         }
 
                         insertIntoStatement.AppendLine("WHERE lsat_table." + linkSk + " IS NULL");
@@ -3251,7 +3251,7 @@ namespace Virtual_EDW
                                     {
                                         linkSatView.AppendLine(
                                             "    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                            (string) attribute["ATTRIBUTE_NAME_TO"] + ")),'NA')+'|'+");
+                                            (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
                                     }
                                 }
 
@@ -3272,7 +3272,7 @@ namespace Virtual_EDW
                                     foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                     {
                                         linkSatView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                           (string) attribute["ATTRIBUTE_NAME_TO"] + ")),'NA')+'|'+");
+                                                           (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
                                     }
                                 }
 
@@ -3300,7 +3300,7 @@ namespace Virtual_EDW
                             //Multi-Active attributes
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("   [" + (string)attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                linkSatView.AppendLine("   [" + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
                             }
 
                             // Expiry Datetime
@@ -3326,14 +3326,14 @@ namespace Virtual_EDW
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
                                     linkSatView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                           (string) attribute["ATTRIBUTE_NAME_TO"] + ")),'NA')+'|'+");
+                                                           (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
                                 }
                             }
 
                             // Multi-active attributes
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                                multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                                 linkSatView.AppendLine("       [" + multiActiveAttributeFromName + "],");
                             }
 
@@ -3362,7 +3362,7 @@ namespace Virtual_EDW
 
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("       [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "],");
+                                linkSatView.AppendLine("       [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
                             }
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
@@ -3412,7 +3412,7 @@ namespace Virtual_EDW
 
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                                multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                                 linkSatView.AppendLine("          [" + multiActiveAttributeFromName + "],");
                             }
 
@@ -3434,7 +3434,7 @@ namespace Virtual_EDW
 
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("          [" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "],");
+                                linkSatView.AppendLine("          [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
                             }
 
                             linkSatView.AppendLine("          [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
@@ -3452,7 +3452,7 @@ namespace Virtual_EDW
 
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "])),'NA')+'|'+");
+                                linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
                             }
 
                             if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
@@ -3460,7 +3460,7 @@ namespace Virtual_EDW
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
                                     linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +
-                                                           (string) attribute["ATTRIBUTE_NAME_TO"] + "])),'NA')+'|'+");
+                                                           (string) attribute["LINK_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
                                 }
                             }
 
@@ -3647,7 +3647,7 @@ namespace Virtual_EDW
                             {
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
-                                    linkSatView.AppendLine("    [" + (string) attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                    linkSatView.AppendLine("    [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
                                 }
                             }
 
@@ -3741,7 +3741,7 @@ namespace Virtual_EDW
 
                                 foreach (DataRow attribute in multiActiveAttributes.Rows)
                                 {
-                                    multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                                     linkSatView.AppendLine("    " + multiActiveAttributeFromName + ",");
                                 }
 
@@ -3772,7 +3772,7 @@ namespace Virtual_EDW
 
                                 foreach (DataRow attribute in multiActiveAttributes.Rows)
                                 {
-                                    multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                                     linkSatView.AppendLine("   " + multiActiveAttributeFromName + ",");
                                 }
 
@@ -3792,7 +3792,7 @@ namespace Virtual_EDW
 
                                 foreach (DataRow attribute in multiActiveAttributes.Rows)
                                 {
-                                    multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                                     linkSatView.AppendLine("        [" + multiActiveAttributeFromName + "],");
                                 }
 
@@ -3814,7 +3814,7 @@ namespace Virtual_EDW
 
                                 foreach (DataRow attribute in multiActiveAttributes.Rows)
                                 {
-                                    multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_FROM"];
+                                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
                                     linkSatView.Append("         " + multiActiveAttributeFromName + ",");
                                 }
                                 linkSatView.Remove(linkSatView.Length - 1, 1);
@@ -3889,8 +3889,8 @@ namespace Virtual_EDW
             var multiActiveAttributeQuery = new StringBuilder();
 
             multiActiveAttributeQuery.AppendLine("SELECT ");
-            multiActiveAttributeQuery.AppendLine("c.ATTRIBUTE_NAME AS ATTRIBUTE_NAME_FROM,");
-            multiActiveAttributeQuery.AppendLine("b.ATTRIBUTE_NAME AS ATTRIBUTE_NAME_TO");
+            multiActiveAttributeQuery.AppendLine("c.ATTRIBUTE_NAME AS SOURCE_ATTRIBUTE_NAME,");
+            multiActiveAttributeQuery.AppendLine("b.ATTRIBUTE_NAME AS SATELLITE_ATTRIBUTE_NAME");
             multiActiveAttributeQuery.AppendLine("FROM MD_SOURCE_SATELLITE_ATTRIBUTE_XREF a");
             multiActiveAttributeQuery.AppendLine("JOIN MD_ATTRIBUTE b ON a.ATTRIBUTE_ID_TO=b.ATTRIBUTE_ID");
             multiActiveAttributeQuery.AppendLine("	JOIN MD_ATTRIBUTE c ON a.ATTRIBUTE_ID_FROM=c.ATTRIBUTE_ID");
@@ -3899,7 +3899,7 @@ namespace Virtual_EDW
             multiActiveAttributeQuery.AppendLine(" AND SATELLITE_ID=" + targetTableId);
 
             var multiActiveAttributes = GetDataTable(ref connOmd, multiActiveAttributeQuery.ToString());
-            multiActiveAttributes.PrimaryKey = new[] { multiActiveAttributes.Columns["ATTRIBUTE_NAME_FROM"] };
+            multiActiveAttributes.PrimaryKey = new[] { multiActiveAttributes.Columns["SOURCE_ATTRIBUTE_NAME"] };
 
             return multiActiveAttributes;
         }
@@ -3993,7 +3993,7 @@ namespace Virtual_EDW
                                     {
                                         linkSatView.AppendLine(
                                             "    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                            (string) attribute["ATTRIBUTE_NAME_TO"] + ")),'NA')+'|'+");
+                                            (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
                                     }
                                 }
 
@@ -4014,7 +4014,7 @@ namespace Virtual_EDW
                                     foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                     {
                                         linkSatView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                           (string) attribute["ATTRIBUTE_NAME_TO"] + ")),'NA')+'|'+");
+                                                           (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
                                     }
                                 }
 
@@ -4036,7 +4036,7 @@ namespace Virtual_EDW
                             //Multi-Active attributes
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                var multiActiveAttributeFromName = (string) attribute["ATTRIBUTE_NAME_TO"];
+                                var multiActiveAttributeFromName = (string) attribute["SATELLITE_ATTRIBUTE_NAME"];
                                 linkSatView.AppendLine("          [" + multiActiveAttributeFromName + "],");
                             }
 
@@ -4056,7 +4056,7 @@ namespace Virtual_EDW
                             {
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
-                                    linkSatView.AppendLine("              " + (string) attribute["ATTRIBUTE_NAME_TO"] +
+                                    linkSatView.AppendLine("              " + (string) attribute["LINK_ATTRIBUTE_NAME"] +
                                                            ",");
                                 }
                             }
@@ -4064,7 +4064,7 @@ namespace Virtual_EDW
                             // Add the multi-active attributes
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("              " + (string)attribute["ATTRIBUTE_NAME_TO"] + ",");
+                                linkSatView.AppendLine("              " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
                             }
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
@@ -4088,7 +4088,7 @@ namespace Virtual_EDW
                             {
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
-                                    linkSatView.AppendLine("            " + (string) attribute["ATTRIBUTE_NAME_TO"] +
+                                    linkSatView.AppendLine("            " + (string) attribute["LINK_ATTRIBUTE_NAME"] +
                                                            ",");
                                 }
                             }
@@ -4096,7 +4096,7 @@ namespace Virtual_EDW
                             // Multi-Active
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("         " + (string)attribute["ATTRIBUTE_NAME_TO"] + ",");
+                                linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
                             }
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
@@ -4136,7 +4136,7 @@ namespace Virtual_EDW
                             {
                                 if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
                                 {
-                                    linkSatView.Append("   " + attribute["ATTRIBUTE_NAME_TO"] + ",");
+                                    linkSatView.Append("   " + attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
                                     linkSatView.AppendLine();
                                 }
                             }
@@ -4157,14 +4157,14 @@ namespace Virtual_EDW
                             {
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
-                                    linkSatView.AppendLine("         " + (string) attribute["ATTRIBUTE_NAME_TO"] + ",");
+                                    linkSatView.AppendLine("         " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
                                 }
                             }
 
                             // Multi-active
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("         " + (string)attribute["ATTRIBUTE_NAME_TO"] + ",");
+                                linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
                             }
 
                             linkSatView.Remove(linkSatView.Length - 3, 3);
@@ -4183,14 +4183,14 @@ namespace Virtual_EDW
                             {
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
-                                    linkSatView.AppendLine("         " + (string) attribute["ATTRIBUTE_NAME_TO"] + ",");
+                                    linkSatView.AppendLine("         " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
                                 }
                             }
 
                             // Multi-active
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("         " + (string)attribute["ATTRIBUTE_NAME_TO"] + ",");
+                                linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
                             }
 
                             linkSatView.AppendLine("         [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
@@ -4208,7 +4208,7 @@ namespace Virtual_EDW
 
                             foreach (DataRow attribute in sourceStructure.Rows)
                             {
-                                linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +attribute["ATTRIBUTE_NAME_TO"] + ")),'NA')+'|'+");
+                                linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +attribute["SATELLITE_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
                             }
                             // End of checksum
 
@@ -4281,15 +4281,15 @@ namespace Virtual_EDW
                             {
                                 foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                 {
-                                    linkSatView.AppendLine("    ,[" + (string) attribute["ATTRIBUTE_NAME_FROM"] +
-                                                           "] AS [" + attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                    linkSatView.AppendLine("    ,[" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] +
+                                                           "] AS [" + attribute["LINK_ATTRIBUTE_NAME"] + "],");
                                 }
                             }
 
                             // Add the multi-active attributes
                             foreach (DataRow attribute in multiActiveAttributes.Rows)
                             {
-                                linkSatView.AppendLine("    ,[" + (string)attribute["ATTRIBUTE_NAME_FROM"] + "] AS [" + attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                linkSatView.AppendLine("    ,[" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
                             }
 
                             // Add all the attributes
@@ -4297,7 +4297,7 @@ namespace Virtual_EDW
                             {
                                 if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
                                 {
-                                    linkSatView.AppendLine("    " + attribute["ATTRIBUTE_NAME_FROM"] + " AS " + attribute["ATTRIBUTE_NAME_TO"] + ",");
+                                    linkSatView.AppendLine("    " + attribute["SOURCE_ATTRIBUTE_NAME"] + " AS " + attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
                                 }
                             }
 
@@ -4334,15 +4334,15 @@ namespace Virtual_EDW
                                     foreach (DataRow attribute in degenerateLinkAttributes.Rows)
                                     {
                                         linkSatView.AppendLine(
-                                            "    [" + (string) attribute["ATTRIBUTE_NAME_FROM"] + "] AS [" +
-                                            attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                            "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" +
+                                            attribute["LINK_ATTRIBUTE_NAME"] + "],");
                                     }
                                 }
 
                                 // Add the multi-active attribute
                                 foreach (DataRow attribute in multiActiveAttributes.Rows)
                                 {
-                                    linkSatView.AppendLine("    " + (string)attribute["ATTRIBUTE_NAME_FROM"] + " AS [" + attribute["ATTRIBUTE_NAME_TO"] + "],");
+                                    linkSatView.AppendLine("    " + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + " AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
                                 }
 
                                 // Add the rest of the attributes as NULL values (nothing was known at this stage)
@@ -4350,7 +4350,7 @@ namespace Virtual_EDW
                                 {
                                     if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
                                     {
-                                        linkSatView.AppendLine("    NULL AS [" + attribute["ATTRIBUTE_NAME_TO"] +"],");
+                                        linkSatView.AppendLine("    NULL AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] +"],");
                                     }
                                 }
 
@@ -4400,8 +4400,6 @@ namespace Virtual_EDW
 
         private DataTable GetStagingToSatelliteAttributeMapping(int targetTableId, int stagingAreaTableId)
         {
-            
-
             var sqlStatementForAttributes = new StringBuilder();
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
 
@@ -4412,15 +4410,15 @@ namespace Virtual_EDW
             sqlStatementForAttributes.AppendLine(",[SOURCE_SCHEMA_NAME]");
             sqlStatementForAttributes.AppendLine(",[SATELLITE_ID]");
             sqlStatementForAttributes.AppendLine(",[SATELLITE_NAME]");
-            sqlStatementForAttributes.AppendLine(",[ATTRIBUTE_ID_FROM]");
-            sqlStatementForAttributes.AppendLine(",[ATTRIBUTE_NAME_FROM]");
-            sqlStatementForAttributes.AppendLine(",[ATTRIBUTE_ID_TO]");
-            sqlStatementForAttributes.AppendLine(",[ATTRIBUTE_NAME_TO]");
+            sqlStatementForAttributes.AppendLine(",[SOURCE_ATTRIBUTE_ID]");
+            sqlStatementForAttributes.AppendLine(",[SOURCE_ATTRIBUTE_NAME]");
+            sqlStatementForAttributes.AppendLine(",[SATELLITE_ATTRIBUTE_ID]");
+            sqlStatementForAttributes.AppendLine(",[SATELLITE_ATTRIBUTE_NAME]");
             sqlStatementForAttributes.AppendLine(",[MULTI_ACTIVE_KEY_INDICATOR]");
             sqlStatementForAttributes.AppendLine("FROM [interface].[INTERFACE_SOURCE_SATELLITE_ATTRIBUTE_XREF]");
-            sqlStatementForAttributes.AppendLine("WHERE SATELLITE_ID = " + targetTableId);
-            sqlStatementForAttributes.AppendLine("  AND SOURCE_ID = " + stagingAreaTableId);
-            sqlStatementForAttributes.AppendLine("  AND ATTRIBUTE_NAME_TO NOT IN ('" +
+            sqlStatementForAttributes.AppendLine("WHERE [SATELLITE_ID] = " + targetTableId);
+            sqlStatementForAttributes.AppendLine("  AND [SOURCE_ID] = " + stagingAreaTableId);
+            sqlStatementForAttributes.AppendLine("  AND [SATELLITE_ATTRIBUTE_NAME] NOT IN ('" +
                                                  TeamConfigurationSettings.RecordSourceAttribute + "','" +
                                                  TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +
                                                  TeamConfigurationSettings.RowIdAttribute + "','" +
@@ -4432,6 +4430,7 @@ namespace Virtual_EDW
                                                  TeamConfigurationSettings.LoadDateTimeAttribute + "')");
 
             var sourceStructure = GetDataTable(ref connOmd, sqlStatementForAttributes.ToString());
+
             return sourceStructure;
         }
 
