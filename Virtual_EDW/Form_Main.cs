@@ -4268,17 +4268,9 @@ namespace Virtual_EDW
                             {
                                 sqlStatementForComponent.Clear();
                                 sqlStatementForHubBusinessKeys.Clear();
-                                var fieldList = new StringBuilder();
-                                var compositeKey = new StringBuilder();
-                                var fieldDict = new Dictionary<string, string>();
-                                var fieldOrderedList = new List<string>();
-                                string firstKey;
 
                                 var hubTableName = (string) hubDetailRow["HUB_NAME"];
                                 var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
-                                var hubKeyList = GetHubTargetBusinessKeyList(hubTableName, versionId);
-
-
 
                                 // Construct the join clauses, where clauses etc. for the Hubs
                                 var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, groupCounter.ToString());
