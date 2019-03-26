@@ -146,11 +146,11 @@
             this.radiobuttonViews = new System.Windows.Forms.RadioButton();
             this.SQLGenerationGroupBox = new System.Windows.Forms.GroupBox();
             this.checkBoxIgnoreVersion = new System.Windows.Forms.CheckBox();
-            this.groupBoxVersionSelection = new System.Windows.Forms.GroupBox();
-            this.labelVersion = new System.Windows.Forms.Label();
-            this.trackBarVersioning = new System.Windows.Forms.TrackBar();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.trackBarVersioning = new System.Windows.Forms.TrackBar();
+            this.labelVersion = new System.Windows.Forms.Label();
+            this.groupBoxVersionSelection = new System.Windows.Forms.GroupBox();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -172,9 +172,9 @@
             this.TargetPlatformGroupBox.SuspendLayout();
             this.OutputGroupBox.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
-            this.groupBoxVersionSelection.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).BeginInit();
+            this.groupBoxVersionSelection.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonGenerateHubs
@@ -1440,8 +1440,6 @@
             // checkBoxIgnoreVersion
             // 
             this.checkBoxIgnoreVersion.AutoSize = true;
-            this.checkBoxIgnoreVersion.Checked = true;
-            this.checkBoxIgnoreVersion.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxIgnoreVersion.Location = new System.Drawing.Point(6, 86);
             this.checkBoxIgnoreVersion.Name = "checkBoxIgnoreVersion";
             this.checkBoxIgnoreVersion.Size = new System.Drawing.Size(219, 17);
@@ -1449,37 +1447,6 @@
             this.checkBoxIgnoreVersion.Text = "Use live database / ignore model version";
             this.checkBoxIgnoreVersion.UseVisualStyleBackColor = true;
             this.checkBoxIgnoreVersion.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // groupBoxVersionSelection
-            // 
-            this.groupBoxVersionSelection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBoxVersionSelection.Controls.Add(this.labelVersion);
-            this.groupBoxVersionSelection.Controls.Add(this.trackBarVersioning);
-            this.groupBoxVersionSelection.Location = new System.Drawing.Point(148, 682);
-            this.groupBoxVersionSelection.Name = "groupBoxVersionSelection";
-            this.groupBoxVersionSelection.Size = new System.Drawing.Size(178, 101);
-            this.groupBoxVersionSelection.TabIndex = 19;
-            this.groupBoxVersionSelection.TabStop = false;
-            this.groupBoxVersionSelection.Text = "Version Selection";
-            this.groupBoxVersionSelection.Enter += new System.EventHandler(this.groupBoxVersionSelection_Enter);
-            // 
-            // labelVersion
-            // 
-            this.labelVersion.AutoSize = true;
-            this.labelVersion.Location = new System.Drawing.Point(6, 63);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(42, 13);
-            this.labelVersion.TabIndex = 18;
-            this.labelVersion.Text = "Version";
-            // 
-            // trackBarVersioning
-            // 
-            this.trackBarVersioning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBarVersioning.Location = new System.Drawing.Point(4, 24);
-            this.trackBarVersioning.Name = "trackBarVersioning";
-            this.trackBarVersioning.Size = new System.Drawing.Size(163, 45);
-            this.trackBarVersioning.TabIndex = 17;
-            this.trackBarVersioning.Scroll += new System.EventHandler(this.trackBarVersioning_Scroll);
             // 
             // backgroundWorkerActivateMetadata
             // 
@@ -1499,6 +1466,38 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 15;
             this.pictureBox1.TabStop = false;
+            // 
+            // trackBarVersioning
+            // 
+            this.trackBarVersioning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBarVersioning.Location = new System.Drawing.Point(4, 24);
+            this.trackBarVersioning.Name = "trackBarVersioning";
+            this.trackBarVersioning.Size = new System.Drawing.Size(163, 45);
+            this.trackBarVersioning.TabIndex = 17;
+            this.trackBarVersioning.Scroll += new System.EventHandler(this.trackBarVersioning_Scroll);
+            // 
+            // labelVersion
+            // 
+            this.labelVersion.AutoSize = true;
+            this.labelVersion.Location = new System.Drawing.Point(6, 63);
+            this.labelVersion.Name = "labelVersion";
+            this.labelVersion.Size = new System.Drawing.Size(42, 13);
+            this.labelVersion.TabIndex = 18;
+            this.labelVersion.Text = "Version";
+            // 
+            // groupBoxVersionSelection
+            // 
+            this.groupBoxVersionSelection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxVersionSelection.Controls.Add(this.labelVersion);
+            this.groupBoxVersionSelection.Controls.Add(this.trackBarVersioning);
+            this.groupBoxVersionSelection.Enabled = false;
+            this.groupBoxVersionSelection.Location = new System.Drawing.Point(148, 682);
+            this.groupBoxVersionSelection.Name = "groupBoxVersionSelection";
+            this.groupBoxVersionSelection.Size = new System.Drawing.Size(178, 101);
+            this.groupBoxVersionSelection.TabIndex = 19;
+            this.groupBoxVersionSelection.TabStop = false;
+            this.groupBoxVersionSelection.Text = "Version Selection";
+            this.groupBoxVersionSelection.Enter += new System.EventHandler(this.groupBoxVersionSelection_Enter);
             // 
             // FormMain
             // 
@@ -1563,10 +1562,10 @@
             this.OutputGroupBox.PerformLayout();
             this.SQLGenerationGroupBox.ResumeLayout(false);
             this.SQLGenerationGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).EndInit();
             this.groupBoxVersionSelection.ResumeLayout(false);
             this.groupBoxVersionSelection.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1632,10 +1631,7 @@
         private System.Windows.Forms.ToolStripMenuItem testingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateTestDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateRIValidationToolStripMenuItem;
-        private System.Windows.Forms.GroupBox groupBoxVersionSelection;
-        private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.CheckBox checkBoxIgnoreVersion;
-        internal System.Windows.Forms.TrackBar trackBarVersioning;
         private System.Windows.Forms.CheckBox checkBoxDisableSatZeroRecords;
         private System.Windows.Forms.Button buttonRepopulateHubs;
         private System.Windows.Forms.CheckedListBox checkedListBoxHubMetadata;
@@ -1695,6 +1691,9 @@
         private System.Windows.Forms.ToolStripMenuItem openTEAMConfigurationSettingsFileToolStripMenuItem;
         internal System.Windows.Forms.TextBox textBoxSchemaName;
         private System.Windows.Forms.Label label12;
+        internal System.Windows.Forms.TrackBar trackBarVersioning;
+        private System.Windows.Forms.Label labelVersion;
+        private System.Windows.Forms.GroupBox groupBoxVersionSelection;
     }
 }
 

@@ -506,11 +506,14 @@ namespace Virtual_EDW
                         {
                             insertIntoStatement.AppendLine("   -1 AS " + attribute["COLUMN_NAME"] + ",");
                         }
+                        else if ((string)attribute["COLUMN_NAME"] == TeamConfigurationSettings.AlternativeRecordSourceAttribute)
+                        {
+                            insertIntoStatement.AppendLine("   CHECKSUM(hub_view." + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ") AS " + attribute["COLUMN_NAME"] + ",");
+                        }
                         else
                         {
                             insertIntoStatement.AppendLine("   hub_view.[" + attribute["COLUMN_NAME"] + "],");
                         }
-
 
 
                     }
@@ -570,7 +573,10 @@ namespace Virtual_EDW
 
             string firstKey;
             var sqlStatementForSourceQuery = new StringBuilder();
-            var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
+
+            // Depending on the ignore version the connection is set.
+            var conn = checkBoxIgnoreVersion.Checked ? new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg } : new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+
             var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
             // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
@@ -604,13 +610,26 @@ namespace Virtual_EDW
                             {
                                 fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "',");
 
-                                sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
+                                if (checkBoxIgnoreVersion.Checked)
+                                {
+                                    // Make sure the live database is hit when the checkbox is ticked
+                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
+                                    sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
+                                }
+                                else
+                                {
+                                    //Ignore version is not checked, so versioning is used based on the activated metadata
+                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                    sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+                                    sqlStatementForSourceQuery.AppendLine("WHERE [TABLE_NAME] = '" + stagingAreaTableName + "'");
+                                    sqlStatementForSourceQuery.AppendLine("AND [SCHEMA_NAME] = '" + TeamConfigurationSettings.SchemaName + "'");
+                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
+                                }
 
-                                var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString()) ;
+                                var elementDataTypes = GetDataTable(ref conn, sqlStatementForSourceQuery.ToString()) ;
 
                                 foreach (DataRow attribute in elementDataTypes.Rows)
                                 {
@@ -667,15 +686,30 @@ namespace Virtual_EDW
                             else // It's a normal attribute
                             {
                                 // We need the data type again
-                                sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
+
+                                if (checkBoxIgnoreVersion.Checked)
+                                {
+                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
+                                    sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
+                                }
+                                else
+                                {
+                                    //Ignore version is not checked, so versioning is used based on the activated metadata
+                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                    sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
+                                    sqlStatementForSourceQuery.AppendLine("AND SCHEMA_NAME = '" + TeamConfigurationSettings.SchemaName + "'");
+                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
+                              }
+
+
 
                                 firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "]";
 
-                                var elementDataTypes = GetDataTable(ref connStg, sqlStatementForSourceQuery.ToString());
+                                var elementDataTypes = GetDataTable(ref conn, sqlStatementForSourceQuery.ToString());
 
                                 foreach (DataRow attribute in elementDataTypes.Rows)
                                 {
@@ -833,7 +867,7 @@ namespace Virtual_EDW
                     var hubTables = GetDataTable(ref connOmd, queryHubGen);
 
 
-                    // This loop runs throught the various STG / Hub relationships to create the union statements
+                    // This loop runs through the various STG / Hub relationships to create the union statements
                     if (hubTables != null)
                     {
                         var rowcounter = 1;
@@ -989,9 +1023,8 @@ namespace Virtual_EDW
             if (!checkBoxIgnoreVersion.Checked && tableType != "PSA")
             {
                 sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                sqlStatementForSourceQuery.AppendLine("FROM MD_VERSION_ATTRIBUTE");
+                sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
                 sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + targetTableName + "'");
-                sqlStatementForSourceQuery.AppendLine("AND VERSION_ID= " + selectedVersion + "");
             }
 
             if (checkBoxIgnoreVersion.Checked || tableType == "PSA")
@@ -1208,6 +1241,10 @@ namespace Virtual_EDW
                                 insertIntoStatement.Append("   -1 AS [" + sourceAttribute + "],");
                                 insertIntoStatement.AppendLine();
                             }
+                            else if ((string)attribute["COLUMN_NAME"] == TeamConfigurationSettings.AlternativeRecordSourceAttribute)
+                            {
+                                insertIntoStatement.AppendLine("   CHECKSUM(sat_view." + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ") AS " + attribute["COLUMN_NAME"] + ",");
+                            }
                             else
                             {
                                 insertIntoStatement.Append("   sat_view.[" + sourceAttribute + "],");
@@ -1326,13 +1363,7 @@ namespace Virtual_EDW
 
                         // The name of the Hub hash key as it may be available in the Staging Area (if added here)
                         var stgHubSk = TeamConfigurationSettings.DwhKeyIdentifier + "_" + hubTableName;
-                        var fieldList = new StringBuilder();
-                        var compositeKey = new StringBuilder();
 
-                        var fieldDict = new Dictionary<string, string>();
-                        var fieldOrderedList = new List<string>();
-                        string firstKey;
-                        var sqlStatementForSourceQuery = new StringBuilder();
                         string hubQuerySelect = "";
                         string hubQueryWhere = "";
                         string hubQueryGroupBy = "";
@@ -1375,9 +1406,9 @@ namespace Virtual_EDW
                         else
                         {
                             sqlStatementForSourceAttribute.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION, ORDINAL_POSITION");
-                            sqlStatementForSourceAttribute.AppendLine("FROM MD_VERSION_ATTRIBUTE");
-                            sqlStatementForSourceAttribute.AppendLine("WHERE VERSION_ID = " + versionId);
-                            sqlStatementForSourceAttribute.AppendLine("  AND TABLE_NAME= '" + psaTableName + "'");
+                            sqlStatementForSourceAttribute.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+                            //sqlStatementForSourceAttribute.AppendLine("WHERE VERSION_ID = " + versionId);
+                            sqlStatementForSourceAttribute.AppendLine("  WHERE TABLE_NAME= '" + psaTableName + "'");
                             sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +TeamConfigurationSettings.DwhKeyIdentifier + "'");
                             sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.EtlProcessAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.LoadDateTimeAttribute + "')");
                             sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
@@ -2055,6 +2086,10 @@ namespace Virtual_EDW
                             insertIntoStatement.Append("   -1 AS " + sourceAttribute + ",");
                             insertIntoStatement.AppendLine();
                         }
+                        else if ((string)attribute["COLUMN_NAME"] == TeamConfigurationSettings.AlternativeRecordSourceAttribute)
+                        {
+                            insertIntoStatement.AppendLine("   CHECKSUM(link_view." + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ") AS " + attribute["COLUMN_NAME"] + ",");
+                        }
                         else
                         {
                             insertIntoStatement.Append("   link_view.[" + sourceAttribute + "],");
@@ -2586,13 +2621,10 @@ namespace Virtual_EDW
             var degenerateLinkAttributeQuery = new StringBuilder();
 
             degenerateLinkAttributeQuery.AppendLine("SELECT ");
-            degenerateLinkAttributeQuery.AppendLine("  c.ATTRIBUTE_NAME AS SOURCE_ATTRIBUTE_NAME,");
-            degenerateLinkAttributeQuery.AppendLine("  b.ATTRIBUTE_NAME AS LINK_ATTRIBUTE_NAME");
-            degenerateLinkAttributeQuery.AppendLine("FROM MD_SOURCE_LINK_ATTRIBUTE_XREF a");
-            degenerateLinkAttributeQuery.AppendLine("JOIN MD_ATTRIBUTE b ON a.ATTRIBUTE_ID_TO=b.ATTRIBUTE_ID");
-            degenerateLinkAttributeQuery.AppendLine("JOIN MD_ATTRIBUTE c ON a.ATTRIBUTE_ID_FROM=c.ATTRIBUTE_ID");
-            degenerateLinkAttributeQuery.AppendLine("JOIN MD_LINK d ON a.LINK_ID=d.LINK_ID");
-            degenerateLinkAttributeQuery.AppendLine("WHERE d.LINK_NAME = '" + targetTableName + "'");
+            degenerateLinkAttributeQuery.AppendLine("  SOURCE_ATTRIBUTE_NAME,");
+            degenerateLinkAttributeQuery.AppendLine("  LINK_ATTRIBUTE_NAME");
+            degenerateLinkAttributeQuery.AppendLine("FROM [interface].[INTERFACE_SOURCE_LINK_ATTRIBUTE_XREF]");
+            degenerateLinkAttributeQuery.AppendLine("WHERE LINK_NAME = '" + targetTableName + "'");
 
             var degenerateLinkAttributes = GetDataTable(ref conn, degenerateLinkAttributeQuery.ToString());
             return degenerateLinkAttributes;
@@ -2653,12 +2685,12 @@ namespace Virtual_EDW
             {
                 //Ignore version is not checked, so versioning is used - meaning the business key metadata is sourced from the version history metadata.
                 sqlStatementForHubBusinessKeys.AppendLine("SELECT COLUMN_NAME");
-                sqlStatementForHubBusinessKeys.AppendLine("FROM MD_VERSION_ATTRIBUTE");
+                sqlStatementForHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
                 sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
                 sqlStatementForHubBusinessKeys.AppendLine("  AND TABLE_NAME= '" + hubTableName + "'");
                 sqlStatementForHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
                                                           TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                sqlStatementForHubBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
+                //sqlStatementForHubBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
             }
 
 
@@ -2706,11 +2738,11 @@ namespace Virtual_EDW
             {
                 //Ignore version is not checked, so versioning is used - meaning the business key metadata is sourced from the version history metadata.
                 sqlStatementForLinkBusinessKeys.AppendLine("SELECT COLUMN_NAME");
-                sqlStatementForLinkBusinessKeys.AppendLine("FROM MD_VERSION_ATTRIBUTE");
+                sqlStatementForLinkBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
                 sqlStatementForLinkBusinessKeys.AppendLine("WHERE TABLE_NAME= '" + linkTableName + "'");
                 sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
                                                           TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                sqlStatementForLinkBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
+                //sqlStatementForLinkBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
                 sqlStatementForLinkBusinessKeys.AppendLine("ORDER BY ORDINAL_POSITION");
             }
 
@@ -2810,18 +2842,18 @@ namespace Virtual_EDW
                 else //Get the key details from the metadata
                 {
                     queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("FROM MD_VERSION_ATTRIBUTE a");
+                    queryHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL] a");
                     queryHubBusinessKeys.AppendLine("JOIN ");
                     queryHubBusinessKeys.AppendLine("	(SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("	 FROM   MD_VERSION_ATTRIBUTE");
-                    queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("      AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" +TeamConfigurationSettings.HubTablePrefixValue + "_'");
+                    queryHubBusinessKeys.AppendLine("	 FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+                    //queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
+                    queryHubBusinessKeys.AppendLine("      WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" +TeamConfigurationSettings.HubTablePrefixValue + "_'");
                     queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
                     queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
                     queryHubBusinessKeys.AppendLine("	) b");
                     queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
+                    //queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
+                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
                     queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
                     queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
                 }
@@ -2914,18 +2946,18 @@ namespace Virtual_EDW
                 else //Get the key details from the metadata
                 {
                     queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("FROM MD_VERSION_ATTRIBUTE a");
+                    queryHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL] a");
                     queryHubBusinessKeys.AppendLine("JOIN ");
                     queryHubBusinessKeys.AppendLine("	(SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("	 FROM   MD_VERSION_ATTRIBUTE");
-                    queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("      AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + TeamConfigurationSettings.HubTablePrefixValue + "_'");
+                    queryHubBusinessKeys.AppendLine("	 FROM   [interface].[INTERFACE_PHYSICAL_MODEL]");
+                    //queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
+                    queryHubBusinessKeys.AppendLine("      WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + TeamConfigurationSettings.HubTablePrefixValue + "_'");
                     queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
                     queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
                     queryHubBusinessKeys.AppendLine("	) b");
                     queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
+                    //queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
+                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
                     queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
                     queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
                 }
@@ -3072,6 +3104,10 @@ namespace Virtual_EDW
                                 insertIntoStatement.Append("   -1 AS [" + sourceAttribute + "],");
                                 insertIntoStatement.AppendLine();
                             }
+                            else if ((string)attribute["COLUMN_NAME"] == TeamConfigurationSettings.AlternativeRecordSourceAttribute)
+                            {
+                                insertIntoStatement.AppendLine("   CHECKSUM(lsat_view." + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ") AS " + attribute["COLUMN_NAME"] + ",");
+                            }
                             else
                             {
                                 insertIntoStatement.Append("   lsat_view.[" + sourceAttribute + "],");
@@ -3192,18 +3228,6 @@ namespace Virtual_EDW
 
                             // Create a list of Driving Key(s) for the Link table
                             var queryDrivingKeys = new StringBuilder();
-
-                            //queryLinkDrivingKeys.AppendLine("SELECT ");
-                            //queryLinkDrivingKeys.AppendLine(" a.HUB_ID, ");
-                            //queryLinkDrivingKeys.AppendLine(" c.HUB_NAME, ");
-                            //queryLinkDrivingKeys.AppendLine(" a.LINK_ID, ");
-                            //queryLinkDrivingKeys.AppendLine(" b.LINK_NAME, ");
-                            //queryLinkDrivingKeys.AppendLine(" a.DRIVING_KEY_INDICATOR ");
-                            //queryLinkDrivingKeys.AppendLine("FROM MD_HUB_LINK_XREF a ");
-                            //queryLinkDrivingKeys.AppendLine("JOIN MD_LINK b ON a.LINK_ID=b.LINK_ID ");
-                            //queryLinkDrivingKeys.AppendLine("JOIN MD_HUB c ON a.HUB_ID=c.HUB_ID ");
-                            //queryLinkDrivingKeys.AppendLine("WHERE b.LINK_ID = '" + linkTableId + "'");
-                            //queryLinkDrivingKeys.AppendLine("AND DRIVING_KEY_INDICATOR='Y'");
 
                             queryDrivingKeys.AppendLine("SELECT ");
                             queryDrivingKeys.AppendLine("  [SATELLITE_ID]");
@@ -5183,7 +5207,7 @@ namespace Virtual_EDW
                         sqlStatementForSourceAttribute.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                         sqlStatementForSourceAttribute.AppendLine("WHERE TABLE_NAME= '" + targetTableName + "'");
                         sqlStatementForSourceAttribute.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                        sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" + eventDateTimeAttribute + "','" + sourceRowIdAttribute + "','" + cdcOperationAttribute + "','" + TeamConfigurationSettings.RecordSourceAttribute + "','" + etlProcessIdAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "','"+TeamConfigurationSettings.RecordChecksumAttribute+"')");
+                        sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" + eventDateTimeAttribute + "','" + sourceRowIdAttribute + "','" + cdcOperationAttribute + "', '"+TeamConfigurationSettings.AlternativeRecordSourceAttribute+"', '" + TeamConfigurationSettings.RecordSourceAttribute + "','" + etlProcessIdAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "','"+TeamConfigurationSettings.RecordChecksumAttribute+"')");
                         sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
 
                         var sourceStructure = GetDataTable(ref connStg, sqlStatementForSourceAttribute.ToString());
@@ -6040,11 +6064,11 @@ namespace Virtual_EDW
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             // Retrieve the current version and store these in local variables
-            var versionMajorMinor = GetVersion(trackBarVersioning.Value);
-            var majorVersion = versionMajorMinor.Key;
-            var minorVersion = versionMajorMinor.Value;
+            //var versionMajorMinor = GetVersion(trackBarVersioning.Value);
+            //var majorVersion = versionMajorMinor.Key;
+            //var minorVersion = versionMajorMinor.Value;
 
-            PrepareMetadata(majorVersion, minorVersion);
+            //PrepareMetadata(majorVersion, minorVersion);
         }
 
         private void PrepareMetadata(int majorVersion, int minorVersion)
