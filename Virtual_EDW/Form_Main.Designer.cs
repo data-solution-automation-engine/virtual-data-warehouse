@@ -148,9 +148,6 @@
             this.checkBoxIgnoreVersion = new System.Windows.Forms.CheckBox();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.trackBarVersioning = new System.Windows.Forms.TrackBar();
-            this.labelVersion = new System.Windows.Forms.Label();
-            this.groupBoxVersionSelection = new System.Windows.Forms.GroupBox();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -173,8 +170,6 @@
             this.OutputGroupBox.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).BeginInit();
-            this.groupBoxVersionSelection.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonGenerateHubs
@@ -261,7 +256,7 @@
             // 
             // textBoxFilterCriterionStg
             // 
-            this.textBoxFilterCriterionStg.Location = new System.Drawing.Point(6, 16);
+            this.textBoxFilterCriterionStg.Location = new System.Drawing.Point(6, 15);
             this.textBoxFilterCriterionStg.Name = "textBoxFilterCriterionStg";
             this.textBoxFilterCriterionStg.Size = new System.Drawing.Size(151, 20);
             this.textBoxFilterCriterionStg.TabIndex = 23;
@@ -368,7 +363,7 @@
             // 
             // textBoxFilterCriterionPsa
             // 
-            this.textBoxFilterCriterionPsa.Location = new System.Drawing.Point(6, 16);
+            this.textBoxFilterCriterionPsa.Location = new System.Drawing.Point(6, 15);
             this.textBoxFilterCriterionPsa.Name = "textBoxFilterCriterionPsa";
             this.textBoxFilterCriterionPsa.Size = new System.Drawing.Size(151, 20);
             this.textBoxFilterCriterionPsa.TabIndex = 23;
@@ -474,7 +469,7 @@
             // 
             // textBoxFilterCriterionHub
             // 
-            this.textBoxFilterCriterionHub.Location = new System.Drawing.Point(6, 16);
+            this.textBoxFilterCriterionHub.Location = new System.Drawing.Point(6, 15);
             this.textBoxFilterCriterionHub.Name = "textBoxFilterCriterionHub";
             this.textBoxFilterCriterionHub.Size = new System.Drawing.Size(151, 20);
             this.textBoxFilterCriterionHub.TabIndex = 23;
@@ -584,7 +579,7 @@
             // 
             // textBoxFilterCriterionSat
             // 
-            this.textBoxFilterCriterionSat.Location = new System.Drawing.Point(6, 16);
+            this.textBoxFilterCriterionSat.Location = new System.Drawing.Point(6, 15);
             this.textBoxFilterCriterionSat.Name = "textBoxFilterCriterionSat";
             this.textBoxFilterCriterionSat.Size = new System.Drawing.Size(151, 20);
             this.textBoxFilterCriterionSat.TabIndex = 23;
@@ -701,7 +696,7 @@
             // 
             // textBoxFilterCriterionLnk
             // 
-            this.textBoxFilterCriterionLnk.Location = new System.Drawing.Point(6, 16);
+            this.textBoxFilterCriterionLnk.Location = new System.Drawing.Point(6, 15);
             this.textBoxFilterCriterionLnk.Name = "textBoxFilterCriterionLnk";
             this.textBoxFilterCriterionLnk.Size = new System.Drawing.Size(151, 20);
             this.textBoxFilterCriterionLnk.TabIndex = 23;
@@ -822,7 +817,7 @@
             // 
             // textBoxFilterCriterionLsat
             // 
-            this.textBoxFilterCriterionLsat.Location = new System.Drawing.Point(6, 16);
+            this.textBoxFilterCriterionLsat.Location = new System.Drawing.Point(6, 15);
             this.textBoxFilterCriterionLsat.Name = "textBoxFilterCriterionLsat";
             this.textBoxFilterCriterionLsat.Size = new System.Drawing.Size(151, 20);
             this.textBoxFilterCriterionLsat.TabIndex = 23;
@@ -1294,7 +1289,7 @@
             this.buttonDoEverything.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonDoEverything.BackColor = System.Drawing.SystemColors.ControlDark;
             this.buttonDoEverything.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonDoEverything.Location = new System.Drawing.Point(33, 568);
+            this.buttonDoEverything.Location = new System.Drawing.Point(33, 572);
             this.buttonDoEverything.Name = "buttonDoEverything";
             this.buttonDoEverything.Size = new System.Drawing.Size(109, 40);
             this.buttonDoEverything.TabIndex = 6;
@@ -1340,9 +1335,9 @@
             this.TargetPlatformGroupBox.Controls.Add(this.SQL2014Radiobutton);
             this.TargetPlatformGroupBox.Controls.Add(this.OracleRadiobutton);
             this.TargetPlatformGroupBox.Controls.Add(this.radiobuttonANSISQL);
-            this.TargetPlatformGroupBox.Location = new System.Drawing.Point(148, 567);
+            this.TargetPlatformGroupBox.Location = new System.Drawing.Point(350, 683);
             this.TargetPlatformGroupBox.Name = "TargetPlatformGroupBox";
-            this.TargetPlatformGroupBox.Size = new System.Drawing.Size(178, 109);
+            this.TargetPlatformGroupBox.Size = new System.Drawing.Size(225, 99);
             this.TargetPlatformGroupBox.TabIndex = 11;
             this.TargetPlatformGroupBox.TabStop = false;
             this.TargetPlatformGroupBox.Text = "Target Platform";
@@ -1385,9 +1380,9 @@
             this.OutputGroupBox.Controls.Add(this.radioButtonIntoStatement);
             this.OutputGroupBox.Controls.Add(this.radiobuttonStoredProc);
             this.OutputGroupBox.Controls.Add(this.radiobuttonViews);
-            this.OutputGroupBox.Location = new System.Drawing.Point(332, 682);
+            this.OutputGroupBox.Location = new System.Drawing.Point(148, 567);
             this.OutputGroupBox.Name = "OutputGroupBox";
-            this.OutputGroupBox.Size = new System.Drawing.Size(242, 101);
+            this.OutputGroupBox.Size = new System.Drawing.Size(196, 108);
             this.OutputGroupBox.TabIndex = 13;
             this.OutputGroupBox.TabStop = false;
             this.OutputGroupBox.Text = "Output Type";
@@ -1430,9 +1425,9 @@
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateInDatabase);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxSchemaBound);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxIfExistsStatement);
-            this.SQLGenerationGroupBox.Location = new System.Drawing.Point(332, 568);
+            this.SQLGenerationGroupBox.Location = new System.Drawing.Point(350, 567);
             this.SQLGenerationGroupBox.Name = "SQLGenerationGroupBox";
-            this.SQLGenerationGroupBox.Size = new System.Drawing.Size(242, 108);
+            this.SQLGenerationGroupBox.Size = new System.Drawing.Size(224, 108);
             this.SQLGenerationGroupBox.TabIndex = 14;
             this.SQLGenerationGroupBox.TabStop = false;
             this.SQLGenerationGroupBox.Text = "SQL Generation Options";
@@ -1442,11 +1437,10 @@
             this.checkBoxIgnoreVersion.AutoSize = true;
             this.checkBoxIgnoreVersion.Location = new System.Drawing.Point(6, 86);
             this.checkBoxIgnoreVersion.Name = "checkBoxIgnoreVersion";
-            this.checkBoxIgnoreVersion.Size = new System.Drawing.Size(219, 17);
+            this.checkBoxIgnoreVersion.Size = new System.Drawing.Size(182, 17);
             this.checkBoxIgnoreVersion.TabIndex = 11;
-            this.checkBoxIgnoreVersion.Text = "Use live database / ignore model version";
+            this.checkBoxIgnoreVersion.Text = "Use live database / ignore virtual";
             this.checkBoxIgnoreVersion.UseVisualStyleBackColor = true;
-            this.checkBoxIgnoreVersion.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // backgroundWorkerActivateMetadata
             // 
@@ -1467,45 +1461,12 @@
             this.pictureBox1.TabIndex = 15;
             this.pictureBox1.TabStop = false;
             // 
-            // trackBarVersioning
-            // 
-            this.trackBarVersioning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBarVersioning.Location = new System.Drawing.Point(4, 24);
-            this.trackBarVersioning.Name = "trackBarVersioning";
-            this.trackBarVersioning.Size = new System.Drawing.Size(163, 45);
-            this.trackBarVersioning.TabIndex = 17;
-            this.trackBarVersioning.Scroll += new System.EventHandler(this.trackBarVersioning_Scroll);
-            // 
-            // labelVersion
-            // 
-            this.labelVersion.AutoSize = true;
-            this.labelVersion.Location = new System.Drawing.Point(6, 63);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(42, 13);
-            this.labelVersion.TabIndex = 18;
-            this.labelVersion.Text = "Version";
-            // 
-            // groupBoxVersionSelection
-            // 
-            this.groupBoxVersionSelection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBoxVersionSelection.Controls.Add(this.labelVersion);
-            this.groupBoxVersionSelection.Controls.Add(this.trackBarVersioning);
-            this.groupBoxVersionSelection.Enabled = false;
-            this.groupBoxVersionSelection.Location = new System.Drawing.Point(148, 682);
-            this.groupBoxVersionSelection.Name = "groupBoxVersionSelection";
-            this.groupBoxVersionSelection.Size = new System.Drawing.Size(178, 101);
-            this.groupBoxVersionSelection.TabIndex = 19;
-            this.groupBoxVersionSelection.TabStop = false;
-            this.groupBoxVersionSelection.Text = "Version Selection";
-            this.groupBoxVersionSelection.Enter += new System.EventHandler(this.groupBoxVersionSelection_Enter);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1362, 797);
-            this.Controls.Add(this.groupBoxVersionSelection);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.SQLGenerationGroupBox);
             this.Controls.Add(this.OutputGroupBox);
@@ -1563,9 +1524,6 @@
             this.SQLGenerationGroupBox.ResumeLayout(false);
             this.SQLGenerationGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarVersioning)).EndInit();
-            this.groupBoxVersionSelection.ResumeLayout(false);
-            this.groupBoxVersionSelection.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1691,9 +1649,6 @@
         private System.Windows.Forms.ToolStripMenuItem openTEAMConfigurationSettingsFileToolStripMenuItem;
         internal System.Windows.Forms.TextBox textBoxSchemaName;
         private System.Windows.Forms.Label label12;
-        internal System.Windows.Forms.TrackBar trackBarVersioning;
-        private System.Windows.Forms.Label labelVersion;
-        private System.Windows.Forms.GroupBox groupBoxVersionSelection;
     }
 }
 

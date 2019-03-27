@@ -362,15 +362,10 @@ namespace Virtual_EDW
             //Initialise the versioning
             var selectedVersion = GetMaxVersionId();
 
-            trackBarVersioning.Maximum = selectedVersion;
-            trackBarVersioning.TickFrequency = GetVersionCount();
-            trackBarVersioning.Value = selectedVersion;
-
             var versionMajorMinor = GetVersion(selectedVersion);
             var majorVersion = versionMajorMinor.Key;
             var minorVersion = versionMajorMinor.Value;
 
-            labelVersion.Text = majorVersion + "." + minorVersion;
         }
 
 
@@ -425,20 +420,17 @@ namespace Virtual_EDW
             richTextBoxInformation.Clear();
 
             var newThread = new Thread(BackgroundDoHub);
-            newThread.Start(trackBarVersioning.Value);
+            newThread.Start();
         }
 
-        private void BackgroundDoHub(Object obj)
+        private void BackgroundDoHub()
         {
-            var versionId = (int)obj;
-
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
-
             if (radiobuttonViews.Checked) // Views
             {
-                GenerateHubViews(versionId);
+                GenerateHubViews();
             }
             else if (radiobuttonStoredProc.Checked)
             {
@@ -446,11 +438,11 @@ namespace Virtual_EDW
             }
             else if (radioButtonIntoStatement.Checked) // Insert into
             {
-                GenerateHubInsertInto(versionId);
+                GenerateHubInsertInto();
             }
         }
 
-        private void GenerateHubInsertInto(int versionId)
+        private void GenerateHubInsertInto()
         {
             int errorCounter = 0;
 
@@ -474,7 +466,7 @@ namespace Virtual_EDW
                     var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
                     // Build the main attribute list of the Hub table for selection
-                    var sourceTableStructure = GetTableStructure(hubTableName, ref conn, versionId, "HUB");
+                    var sourceTableStructure = GetTableStructure(hubTableName, ref conn, "HUB");
 
                     // Initial SQL
                     var insertIntoStatement = new StringBuilder();
@@ -558,14 +550,14 @@ namespace Virtual_EDW
             SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
-        private List<String> GetHubClauses(string stagingAreaTableName, string hubTableName, string businessKeyDefinition, int versionId, string groupCounter)
+        internal List<String> GetHubClauses(string stagingAreaTableName, string hubTableName, string businessKeyDefinition, string groupCounter)
         {
             var fieldList = new StringBuilder();
             var compositeKey = new StringBuilder();
             var fieldDict = new Dictionary<string, string>();
             var fieldOrderedList = new List<string>();
             // Retrieving the business key attributes for the Hub                 
-            var hubKeyList = GetHubTargetBusinessKeyList(hubTableName, versionId);
+            var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
 
             var hubQuerySelect = new StringBuilder();
             var hubQueryWhere = new StringBuilder();
@@ -742,7 +734,7 @@ namespace Virtual_EDW
             return outputList;
         }
 
-        private void GenerateHubViews(int versionId)
+        private void GenerateHubViews()
         {
             int errorCounter = 0;
 
@@ -763,7 +755,7 @@ namespace Virtual_EDW
                     var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
                     // Retrieving the business key attributes for the Hub                 
-                    var hubKeyList = GetHubTargetBusinessKeyList(hubTableName, versionId);
+                    var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
 
                     // Initial SQL
                     hubView.AppendLine("--");
@@ -883,7 +875,7 @@ namespace Virtual_EDW
 
 
                             // Construct the join clauses, where clauses etc. for the Hubs
-                            var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, "");
+                            var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, "");
 
                             var hubQuerySelect = queryClauses[0];
                             var hubQueryWhere = queryClauses[1];
@@ -1016,7 +1008,7 @@ namespace Virtual_EDW
         }
 
         //Retrieve the table structure for a given table, in a given version
-        private DataTable GetTableStructure(string targetTableName, ref SqlConnection sqlConnection, int selectedVersion, string tableType)
+        private DataTable GetTableStructure(string targetTableName, ref SqlConnection sqlConnection, string tableType)
         {
             var sqlStatementForSourceQuery = new StringBuilder();
 
@@ -1139,7 +1131,7 @@ namespace Virtual_EDW
             richTextBoxInformation.Clear();
 
             var newThread = new Thread(BackgroundDoSat);
-            newThread.Start(trackBarVersioning.Value);
+            newThread.Start();
         }
 
         private void BackgroundDoSat(Object obj)
@@ -1147,11 +1139,9 @@ namespace Virtual_EDW
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
-            var versionId = (int)obj;
-
             if (radiobuttonViews.Checked)
             {
-                GenerateSatViews(versionId);
+                GenerateSatViews();
             }
             else if (radiobuttonStoredProc.Checked)
             {
@@ -1159,12 +1149,12 @@ namespace Virtual_EDW
             }
             else if (radioButtonIntoStatement.Checked)
             {
-                GenerateSatInsertInto(versionId);
+                GenerateSatInsertInto();
             }
         }
 
         // Generate the Insert Into statement for the Satellites
-        private void GenerateSatInsertInto(int versionId)
+        private void GenerateSatInsertInto()
         {
             int errorCounter = 0;
 
@@ -1198,7 +1188,7 @@ namespace Virtual_EDW
                         var hubSk = row["HUB_NAME"].ToString().Substring(4) + "_"+TeamConfigurationSettings.DwhKeyIdentifier;
 
                         // Build the main attribute list of the Satellite table for selection
-                        var sourceTableStructure = GetTableStructure(targetTableName, ref conn, versionId, "SAT");
+                        var sourceTableStructure = GetTableStructure(targetTableName, ref conn, "SAT");
 
                         // Query to detect multi-active attributes
                         var multiActiveAttributes = GetMultiActiveAttributes((int)row["SATELLITE_ID"]);
@@ -1312,7 +1302,7 @@ namespace Virtual_EDW
             SetTextSat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
-        private void GenerateSatViews(int versionId) //  Generate Satellite Views
+        private void GenerateSatViews() //  Generate Satellite Views
         {
             int errorCounter = 0;
 
@@ -1432,10 +1422,10 @@ namespace Virtual_EDW
                         var foundRow = stgStructure.Rows.Find(stgHubSk);
 
                         // Retrieving the business key attributes for the Hub                 
-                        var hubKeyList = GetHubTargetBusinessKeyList(hubTableName, versionId);
+                        var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
 
                         // Construct the join clauses, where clauses etc. for the Hubs
-                        var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, "");
+                        var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, "");
                         hubQuerySelect = queryClauses[0];
 
                         //Troubleshooting
@@ -2000,7 +1990,7 @@ namespace Virtual_EDW
             richTextBoxInformation.Clear();
 
             var newThread = new Thread(BackgroundDoLink);
-            newThread.Start(trackBarVersioning.Value);
+            newThread.Start();
         }
 
         private void BackgroundDoLink(Object obj)
@@ -2008,11 +1998,9 @@ namespace Virtual_EDW
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
-            var versionId = (int)obj;
-
             if (radiobuttonViews.Checked)
             {
-                GenerateLinkViews(versionId);
+                GenerateLinkViews();
             }
             else if (radiobuttonStoredProc.Checked)
             {
@@ -2020,11 +2008,11 @@ namespace Virtual_EDW
             }
             else if (radioButtonIntoStatement.Checked)
             {
-                GenerateLinkInsertInto(versionId);
+                GenerateLinkInsertInto();
             }
         }
 
-        private void GenerateLinkInsertInto(int versionId)
+        private void GenerateLinkInsertInto()
         {
             int errorCounter = 0;
 
@@ -2065,7 +2053,7 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine("   (");
 
                     // Build the main attribute list of the Hub table for selection
-                    var sourceTableStructure = GetTableStructure(targetTableName, ref conn, versionId, "LNK");
+                    var sourceTableStructure = GetTableStructure(targetTableName, ref conn, "LNK");
 
                     foreach (DataRow attribute in sourceTableStructure.Rows)
                     {
@@ -2138,7 +2126,7 @@ namespace Virtual_EDW
             SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
-        private void GenerateLinkViews(int versionId)
+        private void GenerateLinkViews()
         {
             int errorCounter = 0;
 
@@ -2160,12 +2148,12 @@ namespace Virtual_EDW
                     var linkView = new StringBuilder();
 
                     // Get the associated Hub tables and its target business key attributes for the Link
-                    var hubBusinessKeyList = GetHubTablesForLink(linkTableName, versionId);
-                    var hubFullBusinessKeyList = GetAllHubTablesForLink(linkTableName, versionId);
+                    var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
+                    var hubFullBusinessKeyList = GetAllHubTablesForLink(linkTableName);
                     
 
                     // Get the target business key names as they are in the Link (may be aliased compared to the Hub)
-                    var linkBusinessKeyList = GetLinkTargetBusinessKeyList(linkTableName, versionId);
+                    var linkBusinessKeyList = GetLinkTargetBusinessKeyList(linkTableName);
 
                     var degenerateLinkAttributes = GetDegenerateLinkAttributes(linkTableName);
 
@@ -2418,7 +2406,7 @@ namespace Virtual_EDW
                                 var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
 
                                 // Construct the join clauses, where clauses etc. for the Hubs
-                                var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, groupCounter.ToString());
+                                var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, groupCounter.ToString());
 
                                 hubQuerySelect.AppendLine(queryClauses[0]);
                                 hubQueryWhere.AppendLine(queryClauses[1]);
@@ -2566,8 +2554,6 @@ namespace Virtual_EDW
 
         private DataTable GetBusinessKeyElementsBase (string stagingAreaTableName, string hubTableName, string businessKeyDefinition)
         {
-            
-
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var sqlStatementForSourceBusinessKey = new StringBuilder();
 
@@ -2585,8 +2571,6 @@ namespace Virtual_EDW
 
         internal DataTable GetBusinessKeyElements(string stagingAreaTableName,string hubTableName, string businessKeyDefinition, int businessKeyComponentId)
         {
-            
-
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var sqlStatementForSourceBusinessKey = new StringBuilder();
 
@@ -2647,7 +2631,7 @@ namespace Virtual_EDW
         }
 
 
-        public DataTable GetHubTargetBusinessKeyList(string hubTableName, int versionId)
+        public DataTable GetHubTargetBusinessKeyList(string hubTableName)
         {
             // Obtain the business key as it is known in the target Hub table. Can be multiple due to composite keys
             var conn = new SqlConnection
@@ -2704,7 +2688,7 @@ namespace Virtual_EDW
             return hubKeyList;
         }
 
-        public LinkedList<string[]> GetLinkTargetBusinessKeyList(string linkTableName, int versionId)
+        public LinkedList<string[]> GetLinkTargetBusinessKeyList(string linkTableName)
         {
             // Obtain the business keys are they are known in the target Link table. Can be different due to same-as links etc.
             var conn = new SqlConnection
@@ -2780,7 +2764,7 @@ namespace Virtual_EDW
             return null;
         }
 
-        private LinkedList<string[]> GetHubTablesForLink(string targetTableName, int versionId)
+        private LinkedList<string[]> GetHubTablesForLink(string targetTableName)
         {
             
 
@@ -2881,7 +2865,7 @@ namespace Virtual_EDW
             return hubTargetBusinessKeyListForLink;
         }
 
-        private LinkedList<string[]> GetAllHubTablesForLink(string targetTableName, int versionId)
+        private LinkedList<string[]> GetAllHubTablesForLink(string targetTableName)
         {
             
 
@@ -2994,17 +2978,16 @@ namespace Virtual_EDW
             richTextBoxInformation.Clear();
 
             var newThread = new Thread(BackgroundDoLsat);
-            newThread.Start(trackBarVersioning.Value);
+            newThread.Start();
         }
 
         private void BackgroundDoLsat(Object obj)
         {
-            var versionId = (int)obj;
-
+          
             if (radiobuttonViews.Checked)
             {
-                GenerateLsatHistoryViews(versionId);
-                GenerateLsatDrivingKeyViews(versionId);
+                GenerateLsatHistoryViews();
+                GenerateLsatDrivingKeyViews();
             }
             else if (radiobuttonStoredProc.Checked)
             {
@@ -3012,11 +2995,11 @@ namespace Virtual_EDW
             }
             else if (radioButtonIntoStatement.Checked)
             {
-                GenerateLsatInsertInto(versionId);
+                GenerateLsatInsertInto();
             }
         }
 
-        private void GenerateLsatInsertInto(int versionId)
+        private void GenerateLsatInsertInto()
         {
             int errorCounter = 0;
 
@@ -3065,7 +3048,7 @@ namespace Virtual_EDW
                         var linkSk = row["LINK_NAME"].ToString().Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
                         // Build the main attribute list of the Satellite table for selection
-                        var sourceTableStructure = GetTableStructure(targetTableName, ref conn, versionId, "LSAT");
+                        var sourceTableStructure = GetTableStructure(targetTableName, ref conn, "LSAT");
 
                         // Query to detect multi-active attributes
                         var multiActiveAttributes = GetMultiActiveAttributes((int) row["SATELLITE_ID"]);
@@ -3171,7 +3154,7 @@ namespace Virtual_EDW
         }
 
         // Link Satellite generation - driving key based
-        private void GenerateLsatDrivingKeyViews(int versionId)
+        private void GenerateLsatDrivingKeyViews()
         {
             int errorCounter = 0;
 
@@ -3219,7 +3202,7 @@ namespace Virtual_EDW
                             var multiActiveAttributes = GetMultiActiveAttributes(targetTableId);
 
                             // Get the associated Hub tables for the Link
-                            var hubBusinessKeyList = GetHubTablesForLink(linkTableName, versionId);
+                            var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
 
                             // Retrieving the business key attributes for the Hubs associated with the Link
                             //var hubBusinessKeyList = GetHubBusinessKeysForLink(linkHubTables, versionId);
@@ -3532,7 +3515,7 @@ namespace Virtual_EDW
                                 var hubTableName = (string) hubDetailRow["HUB_NAME"];
                                 var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
 
-                                var hubKeyList = GetHubTargetBusinessKeyList(hubTableName, versionId);
+                                var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
 
                                 // Retrieving the top level component to evaluate composite, concat or pivot 
                                 var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
@@ -3929,7 +3912,7 @@ namespace Virtual_EDW
         }
 
         // Link Satellite generation - historical
-        private void GenerateLsatHistoryViews(int versionId)
+        private void GenerateLsatHistoryViews()
         {
             int errorCounter = 0;
 
@@ -3975,7 +3958,7 @@ namespace Virtual_EDW
                             var sourceStructure = GetStagingToSatelliteAttributeMapping(targetTableId, stagingAreaTableId);
 
                             // Get the associated Hub tables and its target business key attributes for the Link
-                            var hubBusinessKeyList = GetHubTablesForLink(linkTableName, versionId);
+                            var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
 
                             // Understand the degenerate fields, so these can be added later
                             var degenerateLinkAttributes = GetDegenerateLinkAttributes(linkTableName);
@@ -4251,8 +4234,6 @@ namespace Virtual_EDW
 
                             var sqlStatementForComponent = new StringBuilder();
                             var sqlStatementForHubBusinessKeys = new StringBuilder();
-                            var sqlStatementForSourceQuery = new StringBuilder();
-
 
                             // Get the Hubs for each Link/STG combination - both need to be represented in the query
                             var hubTables = GetHubLinkCombination(stagingAreaTableName, linkTableName);
@@ -4273,7 +4254,7 @@ namespace Virtual_EDW
                                 var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
 
                                 // Construct the join clauses, where clauses etc. for the Hubs
-                                var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, versionId, groupCounter.ToString());
+                                var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, groupCounter.ToString());
 
                                 hubQuerySelect.AppendLine(queryClauses[0]);
                                 hubQueryWhere.AppendLine(queryClauses[1]);
@@ -4522,15 +4503,13 @@ namespace Virtual_EDW
             richTextBoxInformation.Clear();
 
             var newThread = new Thread(BackgroundDoPsa);
-            newThread.Start(trackBarVersioning.Value);
+            newThread.Start();
         }
 
         private void BackgroundDoPsa(Object obj)
         {
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringHstg);
-
-            var versionId = (int)obj;
 
             if (radiobuttonViews.Checked)
             {
@@ -4543,12 +4522,12 @@ namespace Virtual_EDW
             }
             else if (radioButtonIntoStatement.Checked)
             {
-                PsaGenerateInsertInto(versionId);
+                PsaGenerateInsertInto();
             }
         }
 
         // Create the Insert statement for the Persisten Staging Area (PSA)
-        private void PsaGenerateInsertInto(int versionId)
+        private void PsaGenerateInsertInto()
         {
             int errorCounter = 0;
 
@@ -4567,7 +4546,7 @@ namespace Virtual_EDW
                     var targetTableName = checkedListBoxPsaMetadata.CheckedItems[x].ToString();
                 
                     // Build the main attribute list of the PSA table for selection
-                    var sourceTableStructure = GetTableStructure(targetTableName, ref connHstg, versionId, "PSA");
+                    var sourceTableStructure = GetTableStructure(targetTableName, ref connHstg, "PSA");
 
                     // Initial SQL
                     var psaInsertIntoStatement = new StringBuilder();
@@ -4977,7 +4956,7 @@ namespace Virtual_EDW
             richTextBoxInformation.Clear();
 
             var newThread = new Thread(BackgroundDoStaging);
-            newThread.Start(trackBarVersioning.Value);
+            newThread.Start();
         }
 
         private void BackgroundDoStaging(Object obj)
@@ -5914,21 +5893,21 @@ namespace Virtual_EDW
             }
         }
 
-        // Multithreading for changing version stuff
-        delegate void SetVersionCallBack(int versionId);
-        internal void SetVersion(int versionId)
-        {
-            if (trackBarVersioning.InvokeRequired)
-            {
-                var d = new SetVersionCallBack(SetVersion);
-                Invoke(d, versionId);
-            }
-            else
-            {
-                InitialiseVersion();
-                trackBarVersioning.Value = versionId;
-            }
-        }
+        //// Multithreading for changing version stuff
+        //delegate void SetVersionCallBack(int versionId);
+        //internal void SetVersion(int versionId)
+        //{
+        //    if (trackBarVersioning.InvokeRequired)
+        //    {
+        //        var d = new SetVersionCallBack(SetVersion);
+        //        Invoke(d, versionId);
+        //    }
+        //    else
+        //    {
+        //        InitialiseVersion();
+        //        trackBarVersioning.Value = versionId;
+        //    }
+        //}
 
         // Multithreading for updating the user (Sat form)
         delegate void SetTextCallBackSat(string text);
@@ -5977,33 +5956,6 @@ namespace Virtual_EDW
 
         # region Background worker
 
-        // This event handler cancels the backgroundworker, fired from Cancel button in AlertForm.
-        private void buttonCancel_Click(object sender, EventArgs e)
-        {
-            if (backgroundWorkerActivateMetadata.WorkerSupportsCancellation)
-            {
-                // Cancel the asynchronous operation.
-                backgroundWorkerActivateMetadata.CancelAsync();
-                // Close the AlertForm
-                _alert.Close();
-            }
-        }
-
-        // Multithreading for updating the user (Link Satellite form)
-        delegate int GetVersionFromTrackBarCallBack();
-        private int GetVersionFromTrackBar()
-        {
-            if (trackBarVersioning.InvokeRequired)
-            {
-                var d = new GetVersionFromTrackBarCallBack(GetVersionFromTrackBar);
-                return Int32.Parse(Invoke(d).ToString());
-            }
-            else
-            {
-                return trackBarVersioning.Value;
-            }
-        }
-
         // This event handler deals with the results of the background operation.
         private void backgroundWorkerActivateMetadata_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -6050,105 +6002,6 @@ namespace Virtual_EDW
             if (worker != null && worker.CancellationPending)
             {
                 e.Cancel = true;
-            }
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            // Retrieve the current version and store these in local variables
-            //var versionMajorMinor = GetVersion(trackBarVersioning.Value);
-            //var majorVersion = versionMajorMinor.Key;
-            //var minorVersion = versionMajorMinor.Value;
-
-            //PrepareMetadata(majorVersion, minorVersion);
-        }
-
-        private void PrepareMetadata(int majorVersion, int minorVersion)
-        {
-
-            
-
-            if (checkBoxIgnoreVersion.Checked)
-            {
-                var ignoreVersionDialog =
-                    MessageBox.Show(
-                        "Selection this option will activate the selected version of the automation metadata against the model (metadata / Data Vault table structures) that is deployed in the live Integration Layer database (" +
-                        TeamConfigurationSettings.IntegrationDatabaseName +
-                        ").\r\n Model versioning for the Data Vault model will thus be igored. Are you sure this is what you want?",
-                        "Model versioning will be ignored", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-
-                if (ignoreVersionDialog == DialogResult.Yes)
-                {
-                    //Active the selected version into the MD schema
-                    using (new SqlConnection(TeamConfigurationSettings.ConnectionStringOmd))
-                    {
-                        // Reset back to latest automation metadata / latest model metadata
-                        richTextBoxInformation.Clear();
-                        richTextBoxInformation.AppendText("Commencing preparation / activation for version " + majorVersion +
-                                                          "." + minorVersion + ".\r\n");
-
-                        if (backgroundWorkerActivateMetadata.IsBusy != true)
-                        {
-                            // create a new instance of the alert form
-                            _alert = new Form_Alert();
-                            // event handler for the Cancel button in AlertForm
-                            _alert.Canceled += buttonCancel_Click;
-                            _alert.Show();
-                            // Start the asynchronous operation.
-                            backgroundWorkerActivateMetadata.RunWorkerAsync();
-                        }
-                    }
-                }
-                else
-                {
-                    checkBoxIgnoreVersion.Checked = false;
-                }
-            }
-            else if (!checkBoxIgnoreVersion.Checked)
-            {
-                // Reset back to latest automation metadata / latest model metadata
-                richTextBoxInformation.Clear();
-                richTextBoxInformation.AppendText("Commencing preparation / activation for version " + majorVersion + "." +
-                                                  minorVersion + ".\r\n");
-
-                if (checkBoxIgnoreVersion.Checked == false)
-                {
-                    var versionExistenceCheck = new StringBuilder();
-
-                    versionExistenceCheck.AppendLine("SELECT * FROM MD_VERSION_ATTRIBUTE WHERE VERSION_ID = " + trackBarVersioning.Value);
-
-                    var connOmd = new SqlConnection(TeamConfigurationSettings.ConnectionStringOmd);
-
-                    var versionExistenceCheckDataTable = GetDataTable(ref connOmd, versionExistenceCheck.ToString());
-
-                    if (versionExistenceCheckDataTable != null && versionExistenceCheckDataTable.Rows.Count > 0)
-                    {
-                        if (backgroundWorkerActivateMetadata.IsBusy) return;
-                        // create a new instance of the alert form
-                        _alert = new Form_Alert();
-                        // event handler for the Cancel button in AlertForm
-                        _alert.Canceled += buttonCancel_Click;
-                        _alert.Show();
-                        // Start the asynchronous operation.
-                        backgroundWorkerActivateMetadata.RunWorkerAsync();
-                    }
-                    else
-                    {
-                        richTextBoxInformation.Text +=
-                            "There is no model metadata available for this version, so the metadata can only be actived with the 'Ignore Version' enabled for this specific version.\r\n ";
-                    }
-                }
-                else
-                {
-                    if (backgroundWorkerActivateMetadata.IsBusy) return;
-                    // create a new instance of the alert form
-                    _alert = new Form_Alert();
-                    // event handler for the Cancel button in AlertForm
-                    _alert.Canceled += buttonCancel_Click;
-                    _alert.Show();
-                    // Start the asynchronous operation.
-                    backgroundWorkerActivateMetadata.RunWorkerAsync();
-                }
             }
         }
 
@@ -6551,17 +6404,6 @@ namespace Virtual_EDW
             // this.CheckKeyword("if", Color.Green, 0);
         }
 
-        private void trackBarVersioning_Scroll(object sender, EventArgs e)
-        {
-            var versionMajorMinor = GetVersion(trackBarVersioning.Value);
-            var majorVersion = versionMajorMinor.Key;
-            var minorVersion = versionMajorMinor.Value;
-
-            labelVersion.Text = majorVersion + "." + minorVersion;
-
-            PrepareMetadata(majorVersion, minorVersion);
-            //MessageBox.Show(trackBarVersioning.Value.ToString());
-        }
 
         private void unknownKeysToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -6574,24 +6416,18 @@ namespace Virtual_EDW
 
         }
 
-        private void groupBoxVersionSelection_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-
         private void CreateSchema(string connString)
         {
             var createStatement = new StringBuilder();
 
             createStatement.AppendLine("-- Creating the schema");
             createStatement.AppendLine("IF NOT EXISTS (");
-            createStatement.AppendLine("SELECT schema_name");
-            createStatement.AppendLine("FROM information_schema.schemata");
-            createStatement.AppendLine("WHERE   schema_name = '" + VedwConfigurationSettings.VedwSchema + "')");
+            createStatement.AppendLine("SELECT SCHEMA_NAME");
+            createStatement.AppendLine("FROM INFORMATION_SCHEMA.SCHEMATA");
+            createStatement.AppendLine("WHERE SCHEMA_NAME = '" + VedwConfigurationSettings.VedwSchema + "')");
             createStatement.AppendLine("");
             createStatement.AppendLine("BEGIN");
-            createStatement.AppendLine("    EXEC sp_executesql N'CREATE SCHEMA [" + VedwConfigurationSettings.VedwSchema + "]'");
+            createStatement.AppendLine(" EXEC sp_executesql N'CREATE SCHEMA [" + VedwConfigurationSettings.VedwSchema + "]'");
             createStatement.AppendLine("END");
 
             using (var connectionVersion = new SqlConnection(connString))
@@ -6605,7 +6441,7 @@ namespace Virtual_EDW
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxInformation.AppendText("An issue occured creating the VEDW schema " + VedwConfigurationSettings.VedwSchema + ". The reported error is " + ex);
+                    SetTextDebug("An issue occured creating the VEDW schema '" + VedwConfigurationSettings.VedwSchema + "'. The reported error is " + ex);
                 }
             }
         }
