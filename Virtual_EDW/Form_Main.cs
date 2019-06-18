@@ -479,7 +479,7 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
                     insertIntoStatement.AppendLine("GO");
                     insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("INSERT INTO " + TeamConfigurationSettings.IntegrationDatabaseName + "." +TeamConfigurationSettings.SchemaName + "." + hubTableName);
+                    insertIntoStatement.AppendLine("INSERT INTO [" + TeamConfigurationSettings.IntegrationDatabaseName + "]." +TeamConfigurationSettings.SchemaName + "." + hubTableName);
                     insertIntoStatement.AppendLine("(");
                     
                     foreach (DataRow attribute in sourceTableStructure.Rows)
@@ -514,7 +514,7 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine();
                     insertIntoStatement.AppendLine("FROM [" + VedwConfigurationSettings.VedwSchema + "]." + hubTableName + " hub_view");
                     insertIntoStatement.AppendLine("LEFT OUTER JOIN ");
-                    insertIntoStatement.AppendLine(" " + TeamConfigurationSettings.IntegrationDatabaseName + "." +TeamConfigurationSettings.SchemaName +
+                    insertIntoStatement.AppendLine(" [" + TeamConfigurationSettings.IntegrationDatabaseName + "]." +TeamConfigurationSettings.SchemaName +
                                                     "." + hubTableName + " hub_table");
                     insertIntoStatement.AppendLine(" ON hub_view." + hubSk + " = hub_table." + hubSk);
                     insertIntoStatement.AppendLine("WHERE hub_table." + hubSk + " IS NULL");
@@ -2049,7 +2049,7 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
                     insertIntoStatement.AppendLine("GO");
                     insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("INSERT INTO " + TeamConfigurationSettings.IntegrationDatabaseName + "." +TeamConfigurationSettings.SchemaName + "." + targetTableName);
+                    insertIntoStatement.AppendLine("INSERT INTO [" + TeamConfigurationSettings.IntegrationDatabaseName + "]." +TeamConfigurationSettings.SchemaName + "." + targetTableName);
                     insertIntoStatement.AppendLine("   (");
 
                     // Build the main attribute list of the Hub table for selection
@@ -2089,7 +2089,7 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine();
                     insertIntoStatement.AppendLine("FROM [" + VedwConfigurationSettings.VedwSchema + "]." + targetTableName + " link_view");
                     insertIntoStatement.AppendLine("LEFT OUTER JOIN ");
-                    insertIntoStatement.AppendLine(" " + TeamConfigurationSettings.IntegrationDatabaseName + "." + TeamConfigurationSettings.SchemaName +
+                    insertIntoStatement.AppendLine(" [" + TeamConfigurationSettings.IntegrationDatabaseName + "]." + TeamConfigurationSettings.SchemaName +
                                                    "." + targetTableName + " link_table");
                     insertIntoStatement.AppendLine(" ON link_view." + linkSk + " = link_table." + linkSk);
                     insertIntoStatement.AppendLine("WHERE link_table." + linkSk + " IS NULL");
@@ -4804,7 +4804,7 @@ namespace Virtual_EDW
                         psaView.AppendLine();
                         psaView.AppendLine("  FROM ["+TeamConfigurationSettings.SchemaName+"]." + sourceTableName + " STG");
                         psaView.AppendLine("  LEFT OUTER JOIN -- Prevent reprocessing");
-                        psaView.AppendLine("    " + TeamConfigurationSettings.PsaDatabaseName + "." +
+                        psaView.AppendLine("    [" + TeamConfigurationSettings.PsaDatabaseName + "]." +
                                            TeamConfigurationSettings.SchemaName + "." + targetTableName + " HSTG");
                         psaView.AppendLine("    ON");
 
@@ -4835,7 +4835,7 @@ namespace Virtual_EDW
                                            TeamConfigurationSettings.RecordChecksumAttribute + ",");
                         psaView.AppendLine("      A." + cdcOperationAttribute + " AS LKP_" + cdcOperationAttribute +
                                            "");
-                        psaView.AppendLine("    FROM " + TeamConfigurationSettings.PsaDatabaseName + "." +
+                        psaView.AppendLine("    FROM [" + TeamConfigurationSettings.PsaDatabaseName + "]." +
                                            TeamConfigurationSettings.SchemaName + "." + targetTableName + " A");
                         psaView.AppendLine("    JOIN (");
                         psaView.AppendLine("      SELECT ");
@@ -4849,7 +4849,7 @@ namespace Virtual_EDW
 
                         psaView.AppendLine("        MAX(" + loadDateTimeAttribute + ") AS MAX_" +
                                            loadDateTimeAttribute + " ");
-                        psaView.AppendLine("      FROM " + TeamConfigurationSettings.PsaDatabaseName + "." +
+                        psaView.AppendLine("      FROM [" + TeamConfigurationSettings.PsaDatabaseName + "]." +
                                            TeamConfigurationSettings.SchemaName + "." + targetTableName + " B");
                         psaView.AppendLine("      GROUP BY ");
 
@@ -5429,7 +5429,7 @@ namespace Virtual_EDW
 
                         stgView.Remove(stgView.Length - 3, 3);
                         stgView.AppendLine();
-                        stgView.AppendLine("FROM " + TeamConfigurationSettings.PsaDatabaseName+"."+TeamConfigurationSettings.SchemaName+"."+historyAreaTableName + " A");
+                        stgView.AppendLine("FROM [" + TeamConfigurationSettings.PsaDatabaseName+"]."+TeamConfigurationSettings.SchemaName+"."+historyAreaTableName + " A");
 
                         stgView.AppendLine("   JOIN (");
                         stgView.AppendLine("        SELECT");
@@ -5442,7 +5442,7 @@ namespace Virtual_EDW
 
                         stgView.AppendLine();
                         stgView.AppendLine("            MAX(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS MAX_" + TeamConfigurationSettings.LoadDateTimeAttribute + "");
-                        stgView.AppendLine("        FROM " + TeamConfigurationSettings.PsaDatabaseName+"."+TeamConfigurationSettings.SchemaName+"."+historyAreaTableName);
+                        stgView.AppendLine("        FROM [" + TeamConfigurationSettings.PsaDatabaseName+"]."+TeamConfigurationSettings.SchemaName+"."+historyAreaTableName);
                         stgView.AppendLine("        GROUP BY");
 
                         foreach (DataRow businessKey in naturalKeyDataTable.Rows)
