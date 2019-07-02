@@ -98,7 +98,7 @@
             // 
             // closeToolStripMenuItem
             // 
-            this.closeToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ExitApplication;
+            this.closeToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.ExitApplication;
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem.Text = "Close";

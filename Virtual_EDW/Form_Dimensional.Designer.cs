@@ -185,7 +185,7 @@
             // 
             // pictureBoxCheck
             // 
-            this.pictureBoxCheck.Image = global::Virtual_EDW.Properties.Resources.transparent_green_checkmark_hi;
+            this.pictureBoxCheck.Image = global::Virtual_Data_Warehouse.Properties.Resources.transparent_green_checkmark_hi;
             this.pictureBoxCheck.Location = new System.Drawing.Point(22, 406);
             this.pictureBoxCheck.Name = "pictureBoxCheck";
             this.pictureBoxCheck.Size = new System.Drawing.Size(20, 24);
@@ -341,7 +341,7 @@
             // 
             // pictureBoxPathway
             // 
-            this.pictureBoxPathway.Image = global::Virtual_EDW.Properties.Resources.transparent_green_checkmark_hi;
+            this.pictureBoxPathway.Image = global::Virtual_Data_Warehouse.Properties.Resources.transparent_green_checkmark_hi;
             this.pictureBoxPathway.Location = new System.Drawing.Point(22, 443);
             this.pictureBoxPathway.Name = "pictureBoxPathway";
             this.pictureBoxPathway.Size = new System.Drawing.Size(20, 24);
@@ -361,7 +361,7 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Image = global::Virtual_EDW.Properties.Resources.transparent_green_checkmark_hi;
+            this.pictureBox2.Image = global::Virtual_Data_Warehouse.Properties.Resources.transparent_green_checkmark_hi;
             this.pictureBox2.Location = new System.Drawing.Point(22, 482);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(20, 24);

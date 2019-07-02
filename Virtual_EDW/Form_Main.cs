@@ -53,7 +53,7 @@ namespace Virtual_EDW
             // Start monitoring the configuration directories for file changes
             // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
 
-            richTextBoxInformation.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
+            richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
             checkBoxIfExistsStatement.Checked = true;
@@ -100,7 +100,7 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText(
+                richTextBoxInformationMain.AppendText(
                     "There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
                     TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
@@ -112,7 +112,7 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText(
+                richTextBoxInformationMain.AppendText(
                     "There was an issue establishing a database connection to the Staging Area Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
                     TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
@@ -124,14 +124,14 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformation.AppendText(
+                richTextBoxInformationMain.AppendText(
                     "There was an issue establishing a database connection to the Persistent Staging Area (PSA) Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
                     TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
             }
 
             if (_errorCounter > 0)
             {
-                richTextBoxInformation.AppendText(_errorMessage.ToString());
+                richTextBoxInformationMain.AppendText(_errorMessage.ToString());
             }
         }
 
@@ -221,13 +221,13 @@ namespace Virtual_EDW
                                             VedwConfigurationSettings.WorkingEnvironment +
                                             GlobalParameters.VedwFileExtension;
 
-            richTextBoxInformation.Text = "Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n";
+            richTextBoxInformationMain.Text = "Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n";
 
             var teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
 
             if (teamConfigResult.Length > 0)
             {
-                richTextBoxInformation.AppendText(
+                richTextBoxInformationMain.AppendText(
                     "Issues have been encountered while retrieving the TEAM configuration details. The following is returned: " +
                     teamConfigResult + "\r\n\r\n");
             }
@@ -254,7 +254,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText("An issue was encountered updating the Hash output setting on the application - please verify.");
+                richTextBoxInformationMain.AppendText("An issue was encountered updating the Hash output setting on the application - please verify.");
             }
         }
 
@@ -278,7 +278,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText("An issue was encountered updating the Unicode setting on the application - please verify.");
+                richTextBoxInformationMain.AppendText("An issue was encountered updating the Unicode setting on the application - please verify.");
             }
 
             // Hash key vs natural key checkbox
@@ -292,7 +292,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText("An issue was encountered updating the Unicode setting on the application - please verify.");
+                richTextBoxInformationMain.AppendText("An issue was encountered updating the Unicode setting on the application - please verify.");
             }
 
             // Hash key output radiobutton
@@ -306,7 +306,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText(
+                richTextBoxInformationMain.AppendText(
                     "An issue was encountered updating the Hash output setting on the application - please verify.");
             }
 
@@ -321,7 +321,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText("An issue was encountered updating the Hash outpu setting on the application - please verify.");
+                richTextBoxInformationMain.AppendText("An issue was encountered updating the Hash outpu setting on the application - please verify.");
             }
         }
 
@@ -373,17 +373,17 @@ namespace Virtual_EDW
 
         private void CheckKeyword(string word, Color color, int startIndex)
         {
-            if (richTextBoxInformation.Text.Contains(word))
+            if (richTextBoxInformationMain.Text.Contains(word))
             {
                 int index = -1;
-                int selectStart = richTextBoxInformation.SelectionStart;
+                int selectStart = richTextBoxInformationMain.SelectionStart;
 
-                while ((index = richTextBoxInformation.Text.IndexOf(word, (index + 1), StringComparison.Ordinal)) != -1)
+                while ((index = richTextBoxInformationMain.Text.IndexOf(word, (index + 1), StringComparison.Ordinal)) != -1)
                 {
-                    richTextBoxInformation.Select((index + startIndex), word.Length);
-                    richTextBoxInformation.SelectionColor = color;
-                    richTextBoxInformation.Select(selectStart, 0);
-                    richTextBoxInformation.SelectionColor = Color.Black;
+                    richTextBoxInformationMain.Select((index + startIndex), word.Length);
+                    richTextBoxInformationMain.SelectionColor = color;
+                    richTextBoxInformationMain.Select(selectStart, 0);
+                    richTextBoxInformationMain.SelectionColor = Color.Black;
                 }
             }
         }
@@ -417,7 +417,7 @@ namespace Virtual_EDW
         private void HubButtonClick(object sender, EventArgs e)
         {
             richTextBoxHub.Clear();
-            richTextBoxInformation.Clear();
+            richTextBoxHubOutput.Clear();
 
             var newThread = new Thread(BackgroundDoHub);
             newThread.Start();
@@ -986,8 +986,8 @@ namespace Virtual_EDW
                     }
 
                     //Present in front-end
-                    SetTextDebug(hubView.ToString());
-                    SetTextDebug("\n");
+                    SetTextDebugHub(hubView.ToString());
+                    SetTextDebugHub("\n");
 
                     SetTextHub($"Processing Hub entity view for {hubTableName}\r\n");
                 }
@@ -1116,7 +1116,7 @@ namespace Virtual_EDW
             }
             catch (Exception ex)
             {
-                richTextBoxInformation.Text = "An error has occured while attempting to open the output directory. The error message is: "+ex;
+                richTextBoxInformationMain.Text = "An error has occured while attempting to open the output directory. The error message is: "+ex;
             }
         }
 
@@ -1128,7 +1128,7 @@ namespace Virtual_EDW
         private void SatelliteButtonClick (object sender, EventArgs e)
         {
             richTextBoxSat.Clear();
-            richTextBoxInformation.Clear();
+            richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoSat);
             newThread.Start();
@@ -1959,35 +1959,12 @@ namespace Virtual_EDW
             SetTextSat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
-        private void DoEverythingButtonClick (object sender, EventArgs e)
-        {
-            //Select everything
-            checkBoxSelectAllStg.Checked = true;
-            checkBoxSelectAllPsa.Checked = true;
-            checkBoxSelectAllHubs.Checked = true;
-            checkBoxSelectAllSats.Checked = true;
-            checkBoxSelectAllLsats.Checked = true;
-            checkBoxSelectAllLinks.Checked = true;
 
-            //Run Staging to Integration
-            MainTabControl.SelectTab(0);
-            buttonGenerateStaging.PerformClick();
-            MainTabControl.SelectTab(1);
-            buttonGeneratePSA.PerformClick();
-            MainTabControl.SelectTab(2);
-            buttonGenerateHubs.PerformClick();
-            MainTabControl.SelectTab(3);
-            buttonGenerateSats.PerformClick();
-            MainTabControl.SelectTab(4);
-            buttonGenerateLinks.PerformClick();
-            MainTabControl.SelectTab(5);
-            buttonGenerateLsats.PerformClick();
-        }
 
         private void LinkButtonClick (object sender, EventArgs e)
         {
             richTextBoxLink.Clear();
-            richTextBoxInformation.Clear();
+            richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoLink);
             newThread.Start();
@@ -2975,7 +2952,7 @@ namespace Virtual_EDW
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
             richTextBoxLsat.Clear();
-            richTextBoxInformation.Clear();
+            richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoLsat);
             newThread.Start();
@@ -4500,7 +4477,7 @@ namespace Virtual_EDW
         private void buttonGeneratePSA_Click(object sender, EventArgs e)
         {
             richTextBoxPSA.Clear();
-            richTextBoxInformation.Clear();
+            richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoPsa);
             newThread.Start();
@@ -4953,7 +4930,7 @@ namespace Virtual_EDW
         private void buttonGenerateStaging_Click(object sender, EventArgs e)
         {
             richTextBoxStaging.Clear();
-            richTextBoxInformation.Clear();
+            richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoStaging);
             newThread.Start();
@@ -5837,14 +5814,29 @@ namespace Virtual_EDW
         delegate void SetTextCallBackDebug(string text);
         private void SetTextDebug(string text)
         {
-            if (richTextBoxInformation.InvokeRequired)
+            if (richTextBoxInformationMain.InvokeRequired)
             {
                 var d = new SetTextCallBackDebug(SetTextDebug);
                 Invoke(d, text);
             }
             else
             {
-                richTextBoxInformation.AppendText(text);
+                richTextBoxInformationMain.AppendText(text);
+            }
+        }
+
+        // Multithreading for updating the user (debugging form)
+        delegate void SetTextCallBackDebugHub(string text);
+        private void SetTextDebugHub(string text)
+        {
+            if (richTextBoxHubOutput.InvokeRequired)
+            {
+                var d = new SetTextCallBackDebugHub(SetTextDebugHub);
+                Invoke(d, text);
+            }
+            else
+            {
+                richTextBoxHubOutput.AppendText(text);
             }
         }
 
@@ -5962,15 +5954,15 @@ namespace Virtual_EDW
             if (e.Cancelled)
             {
                // labelResult.Text = "Cancelled!";
-                richTextBoxInformation.AppendText("Cancelled!");
+                richTextBoxInformationMain.AppendText("Cancelled!");
             }
             else if (e.Error != null)
             {
-                richTextBoxInformation.AppendText("Error: " + e.Error.Message);
+                richTextBoxInformationMain.AppendText("Error: " + e.Error.Message);
             }
             else
             {
-                richTextBoxInformation.AppendText("Done. The metadata was processed succesfully!\r\n");
+                richTextBoxInformationMain.AppendText("Done. The metadata was processed succesfully!\r\n");
                 //SetVersion(trackBarVersioning.Value);
             }
             // Close the AlertForm
@@ -6316,8 +6308,8 @@ namespace Virtual_EDW
             PopulateStgCheckboxList(connStg);
             if (_errorCounter > 0)
             {
-                richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = _errorMessage.ToString();
+                richTextBoxInformationMain.Clear();
+                richTextBoxInformationMain.Text = _errorMessage.ToString();
             }
         }
 
@@ -6330,8 +6322,8 @@ namespace Virtual_EDW
             PopulatePsaCheckboxList(connPsa);
             if (_errorCounter > 0)
             {
-                richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = _errorMessage.ToString();
+                richTextBoxInformationMain.Clear();
+                richTextBoxInformationMain.Text = _errorMessage.ToString();
             }
         }
 
@@ -6344,8 +6336,8 @@ namespace Virtual_EDW
             PopulateSatCheckboxList(connOmd);
             if (_errorCounter > 0)
             {
-                richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = _errorMessage.ToString();
+                richTextBoxInformationMain.Clear();
+                richTextBoxInformationMain.Text = _errorMessage.ToString();
             }
         }
 
@@ -6358,8 +6350,8 @@ namespace Virtual_EDW
             PopulateLnkCheckboxList(connOmd);
             if (_errorCounter > 0)
             {
-                richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = _errorMessage.ToString();
+                richTextBoxInformationMain.Clear();
+                richTextBoxInformationMain.Text = _errorMessage.ToString();
             }
         }
 
@@ -6372,8 +6364,8 @@ namespace Virtual_EDW
             PopulateLsatCheckboxList(connOmd);
             if (_errorCounter > 0)
             {
-                richTextBoxInformation.Clear();
-                richTextBoxInformation.Text = _errorMessage.ToString();
+                richTextBoxInformationMain.Clear();
+                richTextBoxInformationMain.Text = _errorMessage.ToString();
             }
         }
 
@@ -6471,7 +6463,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText("An issue was encountered saving the Unicode checkbox, can you verify the settings file in the Configuration directory?");
+                richTextBoxInformationMain.AppendText("An issue was encountered saving the Unicode checkbox, can you verify the settings file in the Configuration directory?");
             }
 
             // Hashing vs natural BK checkbox
@@ -6485,7 +6477,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
+                richTextBoxInformationMain.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
             }
             
             // Hash type radiobutton
@@ -6499,7 +6491,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
+                richTextBoxInformationMain.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
             }
 
             // Working environment radiobutton
@@ -6513,7 +6505,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformation.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
+                richTextBoxInformationMain.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
             }
 
 
@@ -6547,7 +6539,7 @@ namespace Virtual_EDW
             // Reset / reload the checkbox lists
             SetDatabaseConnections();
 
-            richTextBoxInformation.Text = "The global parameter file ("+GlobalParameters.VedwConfigurationfileName + GlobalParameters.VedwFileExtension+ ") has been updated in: " + GlobalParameters.VedwConfigurationPath;
+            richTextBoxInformationMain.Text = "The global parameter file ("+GlobalParameters.VedwConfigurationfileName + GlobalParameters.VedwFileExtension+ ") has been updated in: " + GlobalParameters.VedwConfigurationPath;
         }
 
         private void openConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -6558,7 +6550,7 @@ namespace Virtual_EDW
             }
             catch (Exception ex)
             {
-                richTextBoxInformation.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
+                richTextBoxInformationMain.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
             }
         }
 
@@ -6586,7 +6578,7 @@ namespace Virtual_EDW
             }
             catch (Exception ex)
             {
-                richTextBoxInformation.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
+                richTextBoxInformationMain.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
             }
         }
 
@@ -6646,6 +6638,36 @@ namespace Virtual_EDW
             richTextBoxLsat.SelectionStart = richTextBoxLsat.Text.Length;
             // Scroll automatically
             richTextBoxLsat.ScrollToCaret();
+        }
+
+        private void runEverythingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Select everything
+            checkBoxSelectAllStg.Checked = true;
+            checkBoxSelectAllPsa.Checked = true;
+            checkBoxSelectAllHubs.Checked = true;
+            checkBoxSelectAllSats.Checked = true;
+            checkBoxSelectAllLsats.Checked = true;
+            checkBoxSelectAllLinks.Checked = true;
+
+            //Run Staging to Integration
+            MainTabControl.SelectTab(0);
+            buttonGenerateStaging.PerformClick();
+            MainTabControl.SelectTab(1);
+            buttonGeneratePSA.PerformClick();
+            MainTabControl.SelectTab(2);
+            buttonGenerateHubs.PerformClick();
+            MainTabControl.SelectTab(3);
+            buttonGenerateSats.PerformClick();
+            MainTabControl.SelectTab(4);
+            buttonGenerateLinks.PerformClick();
+            MainTabControl.SelectTab(5);
+            buttonGenerateLsats.PerformClick();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
         }
     }
 }

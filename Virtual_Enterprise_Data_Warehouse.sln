@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual_EDW", "Virtual_EDW\Virtual_EDW.csproj", "{73971441-2782-43CF-862C-1F636528858A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual_Data_Warehouse", "Virtual_EDW\Virtual_Data_Warehouse.csproj", "{73971441-2782-43CF-862C-1F636528858A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{8221AA80-A2A2-4CE4-BD5D-9270307C36C2}"
 	ProjectSection(SolutionItems) = preProject
@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Fi
 		Files\Virtualisation_Metadata_v1.3.erwin = Files\Virtualisation_Metadata_v1.3.erwin
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Virtual_EDW_Installer", "Virtual_EDW_Installer\Virtual_EDW_Installer.vdproj", "{FFFAA8D4-DD12-4659-A020-1B76795C6491}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Virtual_Data_Warehouse_Installer", "Virtual_EDW_Installer\Virtual_EDW_Installer.vdproj", "{FFFAA8D4-DD12-4659-A020-1B76795C6491}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

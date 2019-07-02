@@ -31,7 +31,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.buttonGenerateHubs = new System.Windows.Forms.Button();
-            this.richTextBoxInformation = new System.Windows.Forms.RichTextBox();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.tabPageStaging = new System.Windows.Forms.TabPage();
             this.checkBoxExcludeLanding = new System.Windows.Forms.CheckBox();
@@ -53,6 +52,17 @@
             this.richTextBoxPSA = new System.Windows.Forms.RichTextBox();
             this.buttonGeneratePSA = new System.Windows.Forms.Button();
             this.tabPageHub = new System.Windows.Forms.TabPage();
+            this.tabControlHub = new System.Windows.Forms.TabControl();
+            this.tabPageHubOutput = new System.Windows.Forms.TabPage();
+            this.richTextBoxHubOutput = new System.Windows.Forms.RichTextBox();
+            this.tabPageHubPattern = new System.Windows.Forms.TabPage();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.richTextBoxHubPattern = new System.Windows.Forms.RichTextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBoxFilterCriterionHub = new System.Windows.Forms.TextBox();
             this.checkBoxSelectAllHubs = new System.Windows.Forms.CheckBox();
@@ -122,6 +132,7 @@
             this.rawDataMartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pointInTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unknownKeysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runEverythingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateTestDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateRIValidationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -131,8 +142,6 @@
             this.linksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label4 = new System.Windows.Forms.Label();
-            this.buttonDoEverything = new System.Windows.Forms.Button();
             this.checkBoxGenerateInDatabase = new System.Windows.Forms.CheckBox();
             this.checkBoxSchemaBound = new System.Windows.Forms.CheckBox();
             this.checkBoxIfExistsStatement = new System.Windows.Forms.CheckBox();
@@ -148,12 +157,17 @@
             this.checkBoxIgnoreVersion = new System.Windows.Forms.CheckBox();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabPagePSA.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPageHub.SuspendLayout();
+            this.tabControlHub.SuspendLayout();
+            this.tabPageHubOutput.SuspendLayout();
+            this.tabPageHubPattern.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabPageSat.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -170,31 +184,19 @@
             this.OutputGroupBox.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonGenerateHubs
             // 
             this.buttonGenerateHubs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonGenerateHubs.Location = new System.Drawing.Point(17, 432);
+            this.buttonGenerateHubs.Location = new System.Drawing.Point(17, 542);
             this.buttonGenerateHubs.Name = "buttonGenerateHubs";
             this.buttonGenerateHubs.Size = new System.Drawing.Size(109, 40);
             this.buttonGenerateHubs.TabIndex = 0;
             this.buttonGenerateHubs.Text = "Generate Hubs";
             this.buttonGenerateHubs.UseVisualStyleBackColor = true;
             this.buttonGenerateHubs.Click += new System.EventHandler(this.HubButtonClick);
-            // 
-            // richTextBoxInformation
-            // 
-            this.richTextBoxInformation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBoxInformation.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.richTextBoxInformation.Location = new System.Drawing.Point(585, 66);
-            this.richTextBoxInformation.Name = "richTextBoxInformation";
-            this.richTextBoxInformation.Size = new System.Drawing.Size(765, 716);
-            this.richTextBoxInformation.TabIndex = 2;
-            this.richTextBoxInformation.Text = "";
-            this.richTextBoxInformation.TextChanged += new System.EventHandler(this.richTextBoxInformation_TextChanged);
             // 
             // MainTabControl
             // 
@@ -210,7 +212,7 @@
             this.MainTabControl.Location = new System.Drawing.Point(12, 44);
             this.MainTabControl.Name = "MainTabControl";
             this.MainTabControl.SelectedIndex = 0;
-            this.MainTabControl.Size = new System.Drawing.Size(566, 517);
+            this.MainTabControl.Size = new System.Drawing.Size(1338, 627);
             this.MainTabControl.TabIndex = 3;
             // 
             // tabPageStaging
@@ -225,7 +227,7 @@
             this.tabPageStaging.Controls.Add(this.buttonGenerateStaging);
             this.tabPageStaging.Location = new System.Drawing.Point(4, 22);
             this.tabPageStaging.Name = "tabPageStaging";
-            this.tabPageStaging.Size = new System.Drawing.Size(558, 491);
+            this.tabPageStaging.Size = new System.Drawing.Size(1330, 601);
             this.tabPageStaging.TabIndex = 11;
             this.tabPageStaging.Text = "Staging Area";
             this.tabPageStaging.UseVisualStyleBackColor = true;
@@ -236,7 +238,7 @@
             this.checkBoxExcludeLanding.AutoSize = true;
             this.checkBoxExcludeLanding.Checked = true;
             this.checkBoxExcludeLanding.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxExcludeLanding.Location = new System.Drawing.Point(416, 432);
+            this.checkBoxExcludeLanding.Location = new System.Drawing.Point(416, 542);
             this.checkBoxExcludeLanding.Name = "checkBoxExcludeLanding";
             this.checkBoxExcludeLanding.Size = new System.Drawing.Size(140, 17);
             this.checkBoxExcludeLanding.TabIndex = 25;
@@ -247,7 +249,7 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.textBoxFilterCriterionStg);
-            this.groupBox2.Location = new System.Drawing.Point(247, 429);
+            this.groupBox2.Location = new System.Drawing.Point(247, 539);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(163, 43);
             this.groupBox2.TabIndex = 24;
@@ -265,7 +267,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(132, 432);
+            this.button1.Location = new System.Drawing.Point(132, 542);
             this.button1.MinimumSize = new System.Drawing.Size(109, 40);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(109, 40);
@@ -298,7 +300,7 @@
             this.checkedListBoxStgMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxStgMetadata.MultiColumn = true;
             this.checkedListBoxStgMetadata.Name = "checkedListBoxStgMetadata";
-            this.checkedListBoxStgMetadata.Size = new System.Drawing.Size(523, 272);
+            this.checkedListBoxStgMetadata.Size = new System.Drawing.Size(523, 377);
             this.checkedListBoxStgMetadata.TabIndex = 10;
             // 
             // label26
@@ -315,7 +317,7 @@
             this.richTextBoxStaging.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBoxStaging.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBoxStaging.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxStaging.Location = new System.Drawing.Point(17, 308);
+            this.richTextBoxStaging.Location = new System.Drawing.Point(17, 418);
             this.richTextBoxStaging.Name = "richTextBoxStaging";
             this.richTextBoxStaging.Size = new System.Drawing.Size(523, 115);
             this.richTextBoxStaging.TabIndex = 4;
@@ -325,7 +327,7 @@
             // buttonGenerateStaging
             // 
             this.buttonGenerateStaging.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonGenerateStaging.Location = new System.Drawing.Point(17, 432);
+            this.buttonGenerateStaging.Location = new System.Drawing.Point(17, 542);
             this.buttonGenerateStaging.Name = "buttonGenerateStaging";
             this.buttonGenerateStaging.Size = new System.Drawing.Size(109, 40);
             this.buttonGenerateStaging.TabIndex = 5;
@@ -345,7 +347,7 @@
             this.tabPagePSA.Location = new System.Drawing.Point(4, 22);
             this.tabPagePSA.Name = "tabPagePSA";
             this.tabPagePSA.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPagePSA.Size = new System.Drawing.Size(558, 491);
+            this.tabPagePSA.Size = new System.Drawing.Size(1330, 601);
             this.tabPagePSA.TabIndex = 9;
             this.tabPagePSA.Text = "PSA";
             this.tabPagePSA.UseVisualStyleBackColor = true;
@@ -441,6 +443,7 @@
             // 
             // tabPageHub
             // 
+            this.tabPageHub.Controls.Add(this.tabControlHub);
             this.tabPageHub.Controls.Add(this.groupBox4);
             this.tabPageHub.Controls.Add(this.checkBoxSelectAllHubs);
             this.tabPageHub.Controls.Add(this.buttonRepopulateHubs);
@@ -451,16 +454,126 @@
             this.tabPageHub.Location = new System.Drawing.Point(4, 22);
             this.tabPageHub.Name = "tabPageHub";
             this.tabPageHub.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageHub.Size = new System.Drawing.Size(558, 491);
+            this.tabPageHub.Size = new System.Drawing.Size(1330, 601);
             this.tabPageHub.TabIndex = 0;
             this.tabPageHub.Text = "Hubs";
             this.tabPageHub.UseVisualStyleBackColor = true;
+            // 
+            // tabControlHub
+            // 
+            this.tabControlHub.Controls.Add(this.tabPageHubOutput);
+            this.tabControlHub.Controls.Add(this.tabPageHubPattern);
+            this.tabControlHub.Location = new System.Drawing.Point(416, 9);
+            this.tabControlHub.Name = "tabControlHub";
+            this.tabControlHub.SelectedIndex = 0;
+            this.tabControlHub.Size = new System.Drawing.Size(896, 573);
+            this.tabControlHub.TabIndex = 27;
+            // 
+            // tabPageHubOutput
+            // 
+            this.tabPageHubOutput.Controls.Add(this.richTextBoxHubOutput);
+            this.tabPageHubOutput.Location = new System.Drawing.Point(4, 22);
+            this.tabPageHubOutput.Name = "tabPageHubOutput";
+            this.tabPageHubOutput.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageHubOutput.Size = new System.Drawing.Size(888, 547);
+            this.tabPageHubOutput.TabIndex = 0;
+            this.tabPageHubOutput.Text = "Hub Generation Output";
+            this.tabPageHubOutput.UseVisualStyleBackColor = true;
+            // 
+            // richTextBoxHubOutput
+            // 
+            this.richTextBoxHubOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxHubOutput.Location = new System.Drawing.Point(3, 6);
+            this.richTextBoxHubOutput.Name = "richTextBoxHubOutput";
+            this.richTextBoxHubOutput.Size = new System.Drawing.Size(882, 535);
+            this.richTextBoxHubOutput.TabIndex = 0;
+            this.richTextBoxHubOutput.Text = "No Hubs have been generated at the moment.";
+            // 
+            // tabPageHubPattern
+            // 
+            this.tabPageHubPattern.Controls.Add(this.button9);
+            this.tabPageHubPattern.Controls.Add(this.button8);
+            this.tabPageHubPattern.Controls.Add(this.button7);
+            this.tabPageHubPattern.Controls.Add(this.button3);
+            this.tabPageHubPattern.Controls.Add(this.label4);
+            this.tabPageHubPattern.Controls.Add(this.comboBox1);
+            this.tabPageHubPattern.Controls.Add(this.richTextBoxHubPattern);
+            this.tabPageHubPattern.Location = new System.Drawing.Point(4, 22);
+            this.tabPageHubPattern.Name = "tabPageHubPattern";
+            this.tabPageHubPattern.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageHubPattern.Size = new System.Drawing.Size(888, 547);
+            this.tabPageHubPattern.TabIndex = 1;
+            this.tabPageHubPattern.Text = "Hub Pattern";
+            this.tabPageHubPattern.UseVisualStyleBackColor = true;
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(159, 479);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(75, 23);
+            this.button9.TabIndex = 7;
+            this.button9.Text = "testButton2";
+            this.button9.UseVisualStyleBackColor = true;
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(48, 479);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.TabIndex = 6;
+            this.button8.Text = "testButton1";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(717, 24);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(101, 23);
+            this.button7.TabIndex = 5;
+            this.button7.Text = "Save updates";
+            this.button7.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(610, 24);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(101, 23);
+            this.button3.TabIndex = 4;
+            this.button3.Text = "Set / Select";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(2, 7);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(97, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Active Hub Pattern";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(2, 26);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(602, 21);
+            this.comboBox1.TabIndex = 2;
+            // 
+            // richTextBoxHubPattern
+            // 
+            this.richTextBoxHubPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxHubPattern.Location = new System.Drawing.Point(3, 53);
+            this.richTextBoxHubPattern.Name = "richTextBoxHubPattern";
+            this.richTextBoxHubPattern.Size = new System.Drawing.Size(882, 396);
+            this.richTextBoxHubPattern.TabIndex = 1;
+            this.richTextBoxHubPattern.Text = resources.GetString("richTextBoxHubPattern.Text");
             // 
             // groupBox4
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox4.Controls.Add(this.textBoxFilterCriterionHub);
-            this.groupBox4.Location = new System.Drawing.Point(247, 429);
+            this.groupBox4.Location = new System.Drawing.Point(247, 539);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(163, 43);
             this.groupBox4.TabIndex = 25;
@@ -491,7 +604,7 @@
             // buttonRepopulateHubs
             // 
             this.buttonRepopulateHubs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonRepopulateHubs.Location = new System.Drawing.Point(132, 432);
+            this.buttonRepopulateHubs.Location = new System.Drawing.Point(132, 542);
             this.buttonRepopulateHubs.Name = "buttonRepopulateHubs";
             this.buttonRepopulateHubs.Size = new System.Drawing.Size(109, 40);
             this.buttonRepopulateHubs.TabIndex = 9;
@@ -510,7 +623,7 @@
             this.checkedListBoxHubMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxHubMetadata.MultiColumn = true;
             this.checkedListBoxHubMetadata.Name = "checkedListBoxHubMetadata";
-            this.checkedListBoxHubMetadata.Size = new System.Drawing.Size(523, 272);
+            this.checkedListBoxHubMetadata.Size = new System.Drawing.Size(393, 362);
             this.checkedListBoxHubMetadata.TabIndex = 8;
             // 
             // label1
@@ -525,11 +638,11 @@
             // richTextBoxHub
             // 
             this.richTextBoxHub.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBoxHub.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBoxHub.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxHub.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxHub.Location = new System.Drawing.Point(17, 308);
+            this.richTextBoxHub.Location = new System.Drawing.Point(17, 418);
             this.richTextBoxHub.Name = "richTextBoxHub";
-            this.richTextBoxHub.Size = new System.Drawing.Size(523, 115);
+            this.richTextBoxHub.Size = new System.Drawing.Size(393, 115);
             this.richTextBoxHub.TabIndex = 0;
             this.richTextBoxHub.Text = "";
             this.richTextBoxHub.TextChanged += new System.EventHandler(this.richTextBoxHub_TextChanged);
@@ -548,7 +661,7 @@
             this.tabPageSat.Location = new System.Drawing.Point(4, 22);
             this.tabPageSat.Name = "tabPageSat";
             this.tabPageSat.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSat.Size = new System.Drawing.Size(558, 491);
+            this.tabPageSat.Size = new System.Drawing.Size(1330, 601);
             this.tabPageSat.TabIndex = 1;
             this.tabPageSat.Text = "Satellites";
             this.tabPageSat.UseVisualStyleBackColor = true;
@@ -678,7 +791,7 @@
             this.tabPageLink.Location = new System.Drawing.Point(4, 22);
             this.tabPageLink.Name = "tabPageLink";
             this.tabPageLink.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLink.Size = new System.Drawing.Size(558, 491);
+            this.tabPageLink.Size = new System.Drawing.Size(1330, 601);
             this.tabPageLink.TabIndex = 2;
             this.tabPageLink.Text = "Links";
             this.tabPageLink.UseVisualStyleBackColor = true;
@@ -786,7 +899,7 @@
             this.tabPageLinkSat.Location = new System.Drawing.Point(4, 22);
             this.tabPageLinkSat.Name = "tabPageLinkSat";
             this.tabPageLinkSat.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLinkSat.Size = new System.Drawing.Size(558, 491);
+            this.tabPageLinkSat.Size = new System.Drawing.Size(1330, 601);
             this.tabPageLinkSat.TabIndex = 4;
             this.tabPageLinkSat.Text = "Link-Satellites";
             this.tabPageLinkSat.UseVisualStyleBackColor = true;
@@ -916,7 +1029,7 @@
             this.tabPageSettings.Controls.Add(this.label31);
             this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
             this.tabPageSettings.Name = "tabPageSettings";
-            this.tabPageSettings.Size = new System.Drawing.Size(558, 491);
+            this.tabPageSettings.Size = new System.Drawing.Size(1330, 601);
             this.tabPageSettings.TabIndex = 8;
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
@@ -1110,7 +1223,7 @@
             // 
             // openOutputDirectoryToolStripMenuItem
             // 
-            this.openOutputDirectoryToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.OpenDirectoryIcon;
+            this.openOutputDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
             this.openOutputDirectoryToolStripMenuItem.Name = "openOutputDirectoryToolStripMenuItem";
             this.openOutputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.openOutputDirectoryToolStripMenuItem.Text = "Open Output Directory";
@@ -1118,7 +1231,7 @@
             // 
             // openConfigurationDirectoryToolStripMenuItem
             // 
-            this.openConfigurationDirectoryToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.OpenDirectoryIcon;
+            this.openConfigurationDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
             this.openConfigurationDirectoryToolStripMenuItem.Name = "openConfigurationDirectoryToolStripMenuItem";
             this.openConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.openConfigurationDirectoryToolStripMenuItem.Text = "Open Configuration Directory";
@@ -1126,7 +1239,7 @@
             // 
             // openTEAMConfigurationSettingsFileToolStripMenuItem
             // 
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.OpenFileIcon;
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Name = "openTEAMConfigurationSettingsFileToolStripMenuItem";
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Text = "Open TEAM Configuration Settings File";
@@ -1134,7 +1247,7 @@
             // 
             // saveConfigurationFileToolStripMenuItem
             // 
-            this.saveConfigurationFileToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.SaveFile;
+            this.saveConfigurationFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.SaveFile;
             this.saveConfigurationFileToolStripMenuItem.Name = "saveConfigurationFileToolStripMenuItem";
             this.saveConfigurationFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
@@ -1148,7 +1261,7 @@
             // 
             // openTEAMToolStripMenuItem
             // 
-            this.openTEAMToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.RavosLogo;
+            this.openTEAMToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
             this.openTEAMToolStripMenuItem.Name = "openTEAMToolStripMenuItem";
             this.openTEAMToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.openTEAMToolStripMenuItem.Text = "Open TEAM";
@@ -1161,7 +1274,7 @@
             // 
             // exitToolStripMenuItem
             // 
-            this.exitToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ExitApplication;
+            this.exitToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.ExitApplication;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.exitToolStripMenuItem.Text = "Exit";
@@ -1172,34 +1285,43 @@
             this.dimensionalToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.rawDataMartToolStripMenuItem,
             this.pointInTimeToolStripMenuItem,
-            this.unknownKeysToolStripMenuItem});
+            this.unknownKeysToolStripMenuItem,
+            this.runEverythingToolStripMenuItem});
             this.dimensionalToolStripMenuItem.Name = "dimensionalToolStripMenuItem";
             this.dimensionalToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.dimensionalToolStripMenuItem.Text = "Delivery";
             // 
             // rawDataMartToolStripMenuItem
             // 
-            this.rawDataMartToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.CubeIcon;
+            this.rawDataMartToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.CubeIcon;
             this.rawDataMartToolStripMenuItem.Name = "rawDataMartToolStripMenuItem";
-            this.rawDataMartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rawDataMartToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.rawDataMartToolStripMenuItem.Text = "Raw Data Mart";
             this.rawDataMartToolStripMenuItem.Click += new System.EventHandler(this.rawDataMartToolStripMenuItem_Click);
             // 
             // pointInTimeToolStripMenuItem
             // 
-            this.pointInTimeToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.Time;
+            this.pointInTimeToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.Time;
             this.pointInTimeToolStripMenuItem.Name = "pointInTimeToolStripMenuItem";
-            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.pointInTimeToolStripMenuItem.Text = "Point In Time";
             this.pointInTimeToolStripMenuItem.Click += new System.EventHandler(this.pointInTimeToolStripMenuItem_Click);
             // 
             // unknownKeysToolStripMenuItem
             // 
-            this.unknownKeysToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ghost_icon;
+            this.unknownKeysToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.ghost_icon;
             this.unknownKeysToolStripMenuItem.Name = "unknownKeysToolStripMenuItem";
-            this.unknownKeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.unknownKeysToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.unknownKeysToolStripMenuItem.Text = "Unknown Keys";
             this.unknownKeysToolStripMenuItem.Click += new System.EventHandler(this.unknownKeysToolStripMenuItem_Click);
+            // 
+            // runEverythingToolStripMenuItem
+            // 
+            this.runEverythingToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.CogIcon;
+            this.runEverythingToolStripMenuItem.Name = "runEverythingToolStripMenuItem";
+            this.runEverythingToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.runEverythingToolStripMenuItem.Text = "Run Everything";
+            this.runEverythingToolStripMenuItem.Click += new System.EventHandler(this.runEverythingToolStripMenuItem_Click);
             // 
             // testingToolStripMenuItem
             // 
@@ -1240,7 +1362,7 @@
             // 
             // helpToolStripMenuItem1
             // 
-            this.helpToolStripMenuItem1.Image = global::Virtual_EDW.Properties.Resources.HelpIconSmall;
+            this.helpToolStripMenuItem1.Image = global::Virtual_Data_Warehouse.Properties.Resources.HelpIconSmall;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
             this.helpToolStripMenuItem1.Size = new System.Drawing.Size(188, 22);
             this.helpToolStripMenuItem1.Text = "Help";
@@ -1248,7 +1370,7 @@
             // 
             // toolStripMenuItem1
             // 
-            this.toolStripMenuItem1.Image = global::Virtual_EDW.Properties.Resources.DocumentationIcon;
+            this.toolStripMenuItem1.Image = global::Virtual_Data_Warehouse.Properties.Resources.DocumentationIcon;
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(188, 22);
             this.toolStripMenuItem1.Text = "Reset Documentation";
@@ -1256,7 +1378,7 @@
             // 
             // linksToolStripMenuItem
             // 
-            this.linksToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.LinkIcon;
+            this.linksToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.LinkIcon;
             this.linksToolStripMenuItem.Name = "linksToolStripMenuItem";
             this.linksToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.linksToolStripMenuItem.Text = "Links";
@@ -1274,28 +1396,6 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.ToolTipText = "Information about Virtual Enterprise Data Warehouse";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(584, 50);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(39, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Output";
-            // 
-            // buttonDoEverything
-            // 
-            this.buttonDoEverything.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonDoEverything.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.buttonDoEverything.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonDoEverything.Location = new System.Drawing.Point(33, 572);
-            this.buttonDoEverything.Name = "buttonDoEverything";
-            this.buttonDoEverything.Size = new System.Drawing.Size(109, 40);
-            this.buttonDoEverything.TabIndex = 6;
-            this.buttonDoEverything.Text = "Run everything";
-            this.buttonDoEverything.UseVisualStyleBackColor = false;
-            this.buttonDoEverything.Click += new System.EventHandler(this.DoEverythingButtonClick);
             // 
             // checkBoxGenerateInDatabase
             // 
@@ -1335,9 +1435,9 @@
             this.TargetPlatformGroupBox.Controls.Add(this.SQL2014Radiobutton);
             this.TargetPlatformGroupBox.Controls.Add(this.OracleRadiobutton);
             this.TargetPlatformGroupBox.Controls.Add(this.radiobuttonANSISQL);
-            this.TargetPlatformGroupBox.Location = new System.Drawing.Point(350, 683);
+            this.TargetPlatformGroupBox.Location = new System.Drawing.Point(445, 677);
             this.TargetPlatformGroupBox.Name = "TargetPlatformGroupBox";
-            this.TargetPlatformGroupBox.Size = new System.Drawing.Size(225, 99);
+            this.TargetPlatformGroupBox.Size = new System.Drawing.Size(225, 108);
             this.TargetPlatformGroupBox.TabIndex = 11;
             this.TargetPlatformGroupBox.TabStop = false;
             this.TargetPlatformGroupBox.Text = "Target Platform";
@@ -1380,7 +1480,7 @@
             this.OutputGroupBox.Controls.Add(this.radioButtonIntoStatement);
             this.OutputGroupBox.Controls.Add(this.radiobuttonStoredProc);
             this.OutputGroupBox.Controls.Add(this.radiobuttonViews);
-            this.OutputGroupBox.Location = new System.Drawing.Point(148, 567);
+            this.OutputGroupBox.Location = new System.Drawing.Point(13, 677);
             this.OutputGroupBox.Name = "OutputGroupBox";
             this.OutputGroupBox.Size = new System.Drawing.Size(196, 108);
             this.OutputGroupBox.TabIndex = 13;
@@ -1425,7 +1525,7 @@
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateInDatabase);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxSchemaBound);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxIfExistsStatement);
-            this.SQLGenerationGroupBox.Location = new System.Drawing.Point(350, 567);
+            this.SQLGenerationGroupBox.Location = new System.Drawing.Point(215, 677);
             this.SQLGenerationGroupBox.Name = "SQLGenerationGroupBox";
             this.SQLGenerationGroupBox.Size = new System.Drawing.Size(224, 108);
             this.SQLGenerationGroupBox.TabIndex = 14;
@@ -1452,14 +1552,36 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBox1.Image = global::Virtual_EDW.Properties.Resources.RavosLogo;
-            this.pictureBox1.Location = new System.Drawing.Point(33, 683);
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
+            this.pictureBox1.Location = new System.Drawing.Point(1237, 685);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(109, 100);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 15;
             this.pictureBox1.TabStop = false;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox9.Controls.Add(this.richTextBoxInformationMain);
+            this.groupBox9.Location = new System.Drawing.Point(676, 677);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(555, 108);
+            this.groupBox9.TabIndex = 12;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Information";
+            // 
+            // richTextBoxInformationMain
+            // 
+            this.richTextBoxInformationMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxInformationMain.BackColor = System.Drawing.SystemColors.Control;
+            this.richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 19);
+            this.richTextBoxInformationMain.Name = "richTextBoxInformationMain";
+            this.richTextBoxInformationMain.Size = new System.Drawing.Size(543, 82);
+            this.richTextBoxInformationMain.TabIndex = 29;
+            this.richTextBoxInformationMain.Text = "";
             // 
             // FormMain
             // 
@@ -1467,21 +1589,19 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1362, 797);
+            this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.SQLGenerationGroupBox);
             this.Controls.Add(this.OutputGroupBox);
             this.Controls.Add(this.TargetPlatformGroupBox);
-            this.Controls.Add(this.buttonDoEverything);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.MainTabControl);
-            this.Controls.Add(this.richTextBoxInformation);
             this.Controls.Add(this.menuStripMainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMainMenu;
             this.MinimumSize = new System.Drawing.Size(1378, 835);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Virtual Enterprise Data Warehouse - v1.5";
+            this.Text = "Virtual Enterprise Data Warehouse - v1.6";
             this.MainTabControl.ResumeLayout(false);
             this.tabPageStaging.ResumeLayout(false);
             this.tabPageStaging.PerformLayout();
@@ -1493,6 +1613,10 @@
             this.groupBox3.PerformLayout();
             this.tabPageHub.ResumeLayout(false);
             this.tabPageHub.PerformLayout();
+            this.tabControlHub.ResumeLayout(false);
+            this.tabPageHubOutput.ResumeLayout(false);
+            this.tabPageHubPattern.ResumeLayout(false);
+            this.tabPageHubPattern.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.tabPageSat.ResumeLayout(false);
@@ -1524,6 +1648,7 @@
             this.SQLGenerationGroupBox.ResumeLayout(false);
             this.SQLGenerationGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox9.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1532,7 +1657,6 @@
         #endregion
 
         private System.Windows.Forms.Button buttonGenerateHubs;
-        private System.Windows.Forms.RichTextBox richTextBoxInformation;
         private System.Windows.Forms.TabControl MainTabControl;
         private System.Windows.Forms.TabPage tabPageHub;
         private System.Windows.Forms.TabPage tabPageSat;
@@ -1548,9 +1672,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxLink;
         private System.Windows.Forms.Button buttonGenerateLinks;
         private System.Windows.Forms.ToolStripMenuItem openOutputDirectoryToolStripMenuItem;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.Button buttonDoEverything;
         private System.Windows.Forms.CheckBox checkBoxGenerateInDatabase;
         private System.Windows.Forms.TabPage tabPageLinkSat;
         private System.Windows.Forms.Label label5;
@@ -1649,6 +1771,20 @@
         private System.Windows.Forms.ToolStripMenuItem openTEAMConfigurationSettingsFileToolStripMenuItem;
         internal System.Windows.Forms.TextBox textBoxSchemaName;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TabControl tabControlHub;
+        private System.Windows.Forms.TabPage tabPageHubOutput;
+        private System.Windows.Forms.TabPage tabPageHubPattern;
+        private System.Windows.Forms.ToolStripMenuItem runEverythingToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.RichTextBox richTextBoxInformationMain;
+        private System.Windows.Forms.RichTextBox richTextBoxHubOutput;
+        private System.Windows.Forms.RichTextBox richTextBoxHubPattern;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button8;
     }
 }
 
