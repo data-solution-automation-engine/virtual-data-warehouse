@@ -24,6 +24,7 @@ namespace Virtual_EDW
         private StringBuilder _errorMessage;
         private StringBuilder _errorDetails;
         private int _errorCounter;
+        internal bool startUpIndicator = true;
 
         public FormMain()
         {
@@ -79,6 +80,7 @@ namespace Virtual_EDW
 
             // Load the patterns into the tool based on the available list
             LoadHubPatternCombobox();
+            startUpIndicator = false;
         }
 
         private void SetDatabaseConnections()
@@ -512,7 +514,7 @@ namespace Virtual_EDW
             if (radiobuttonViews.Checked) // Views
             {
                 //GenerateHubViews();
-                GenerateHubViewsFromPattern();
+                GenerateHubViewsFromPattern(richTextBoxHubPattern.Text);
             }
             else if (radiobuttonStoredProc.Checked)
             {
@@ -819,7 +821,7 @@ namespace Virtual_EDW
         /// <summary>
         ///   Create Hub Views using Handlebars as templating
         /// </summary>
-        private void GenerateHubViewsFromPattern()
+        private void GenerateHubViewsFromPattern(string loadPattern)
         {
             int errorCounter = 0;
 
@@ -835,7 +837,7 @@ namespace Virtual_EDW
                     var hubView = new StringBuilder();
                     var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
 
-                    var template = Handlebars.Compile(richTextBoxHubPattern.Text);
+                    var template = Handlebars.Compile(loadPattern);
 
                     // Retrieve metadata and store in a data table object
                     var queryHubGen = 
@@ -904,6 +906,8 @@ namespace Virtual_EDW
             SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
             SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
+            // Call a delegate to handle multi-threading for syntax highlighting
+            GetTextHubOutput(richTextBoxHubOutput);
         }
 
         private void GenerateHubViews()
@@ -5982,7 +5986,7 @@ namespace Virtual_EDW
         }
 
   
-        // Multithreading for updating the user (debugging form)
+        // Multi-threading for updating the user (debugging form)
         delegate void SetTextCallBackDebug(string text);
         private void SetTextMain(string text)
         {
@@ -5997,7 +6001,7 @@ namespace Virtual_EDW
             }
         }
 
-        // Multithreading for updating the user (debugging form)
+        // Multi-threading for updating the user (debugging form)
         delegate void SetTextCallBackDebugHub(string text);
         private void SetTextHubOutput(string text)
         {
@@ -6012,7 +6016,21 @@ namespace Virtual_EDW
             }
         }
 
-        // Multithreading for updating the user (Staging Area form)
+        delegate void GetTextCallbackHub(RichTextBox textBox);
+        private void GetTextHubOutput(RichTextBox textBox)
+        {
+            if (richTextBoxHubOutput.InvokeRequired)
+            {
+                var d = new GetTextCallbackHub(GetTextHubOutput);
+                Invoke(d, textBox);
+            }
+            else
+            {
+                TextHandling.SyntaxHighlightSql(richTextBoxHubOutput, richTextBoxHubOutput.Text);
+            }
+        }
+
+        // Multi-threading for updating the user (Staging Area form)
         delegate void SetTextCallBackStaging(string text);
         private void SetTextStaging(string text)
         {
@@ -6862,6 +6880,7 @@ namespace Virtual_EDW
             }
 
             comboBoxHubPattern.SelectedItem = comboBoxHubPattern.Items[0];
+            //TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
         }
 
         private void comboBoxHubPattern_SelectedIndexChanged(object sender, EventArgs e)
@@ -6872,24 +6891,29 @@ namespace Virtual_EDW
             var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
 
             richTextBoxHubPattern.Text = loadPatternTemplate;
+
+            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
+            if (startUpIndicator == false)
+            {
+                TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
+            }
         }
 
         private void richTextBoxHubPattern_TextChanged(object sender, EventArgs e)
         {
-            Point curPos = Cursor.Position;
-            // Place position in textbox
-            var cursorPosition = richTextBoxHubPattern.GetCharIndexFromPosition(curPos).ToString();
-            TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
-            richTextBoxHubPattern.SelectionStart = int.Parse(cursorPosition) - 1;
-            richTextBoxHubPattern.SelectionLength = 0;
-            // Scroll to position
-            richTextBoxHubPattern.ScrollToCaret();
+            //Point curPos = Cursor.Position;
+            //// Place position in textbox
+            //var cursorPosition = richTextBoxHubPattern.GetCharIndexFromPosition(curPos).ToString();
+            //TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
+            //richTextBoxHubPattern.SelectionStart = int.Parse(cursorPosition) - 1;
+            //richTextBoxHubPattern.SelectionLength = 0;
+            //// Scroll to position
+            //richTextBoxHubPattern.ScrollToCaret();
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void tabControlHub_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GenerateHubViewsFromPattern();
+            TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
         }
-
     }
 }

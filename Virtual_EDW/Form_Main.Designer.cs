@@ -59,7 +59,6 @@
             this.labelLoadPatternPathHubDetail = new System.Windows.Forms.Label();
             this.labelLoadPatternPathHub = new System.Windows.Forms.Label();
             this.button7 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxHubPattern = new System.Windows.Forms.ComboBox();
             this.richTextBoxHubPattern = new System.Windows.Forms.RichTextBox();
@@ -468,6 +467,7 @@
             this.tabControlHub.SelectedIndex = 0;
             this.tabControlHub.Size = new System.Drawing.Size(896, 573);
             this.tabControlHub.TabIndex = 27;
+            this.tabControlHub.SelectedIndexChanged += new System.EventHandler(this.tabControlHub_SelectedIndexChanged);
             // 
             // tabPageHubOutput
             // 
@@ -494,7 +494,6 @@
             this.tabPageHubPattern.Controls.Add(this.labelLoadPatternPathHubDetail);
             this.tabPageHubPattern.Controls.Add(this.labelLoadPatternPathHub);
             this.tabPageHubPattern.Controls.Add(this.button7);
-            this.tabPageHubPattern.Controls.Add(this.button3);
             this.tabPageHubPattern.Controls.Add(this.label4);
             this.tabPageHubPattern.Controls.Add(this.comboBoxHubPattern);
             this.tabPageHubPattern.Controls.Add(this.richTextBoxHubPattern);
@@ -509,7 +508,7 @@
             // labelLoadPatternPathHubDetail
             // 
             this.labelLoadPatternPathHubDetail.AutoSize = true;
-            this.labelLoadPatternPathHubDetail.Location = new System.Drawing.Point(58, 50);
+            this.labelLoadPatternPathHubDetail.Location = new System.Drawing.Point(105, 34);
             this.labelLoadPatternPathHubDetail.Name = "labelLoadPatternPathHubDetail";
             this.labelLoadPatternPathHubDetail.Size = new System.Drawing.Size(40, 13);
             this.labelLoadPatternPathHubDetail.TabIndex = 17;
@@ -518,7 +517,7 @@
             // labelLoadPatternPathHub
             // 
             this.labelLoadPatternPathHub.AutoSize = true;
-            this.labelLoadPatternPathHub.Location = new System.Drawing.Point(3, 50);
+            this.labelLoadPatternPathHub.Location = new System.Drawing.Point(2, 34);
             this.labelLoadPatternPathHub.Name = "labelLoadPatternPathHub";
             this.labelLoadPatternPathHub.Size = new System.Drawing.Size(50, 13);
             this.labelLoadPatternPathHub.TabIndex = 8;
@@ -526,37 +525,28 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(717, 24);
+            this.button7.Location = new System.Drawing.Point(610, 7);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(101, 23);
             this.button7.TabIndex = 5;
             this.button7.Text = "Save updates";
             this.button7.UseVisualStyleBackColor = true;
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(610, 24);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(101, 23);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "Set / Select";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(2, 7);
+            this.label4.Location = new System.Drawing.Point(2, 11);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(97, 13);
+            this.label4.Size = new System.Drawing.Size(100, 13);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Active Hub Pattern";
+            this.label4.Text = "Active Hub Pattern:";
             // 
             // comboBoxHubPattern
             // 
             this.comboBoxHubPattern.FormattingEnabled = true;
-            this.comboBoxHubPattern.Location = new System.Drawing.Point(2, 26);
+            this.comboBoxHubPattern.Location = new System.Drawing.Point(108, 8);
             this.comboBoxHubPattern.Name = "comboBoxHubPattern";
-            this.comboBoxHubPattern.Size = new System.Drawing.Size(602, 21);
+            this.comboBoxHubPattern.Size = new System.Drawing.Size(496, 21);
             this.comboBoxHubPattern.TabIndex = 2;
             this.comboBoxHubPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxHubPattern_SelectedIndexChanged);
             // 
@@ -565,7 +555,7 @@
             this.richTextBoxHubPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxHubPattern.Location = new System.Drawing.Point(3, 84);
             this.richTextBoxHubPattern.Name = "richTextBoxHubPattern";
-            this.richTextBoxHubPattern.Size = new System.Drawing.Size(882, 365);
+            this.richTextBoxHubPattern.Size = new System.Drawing.Size(882, 460);
             this.richTextBoxHubPattern.TabIndex = 1;
             this.richTextBoxHubPattern.Text = "";
             this.richTextBoxHubPattern.TextChanged += new System.EventHandler(this.richTextBoxHubPattern_TextChanged);
@@ -1781,7 +1771,6 @@
         private System.Windows.Forms.RichTextBox richTextBoxHubOutput;
         private System.Windows.Forms.RichTextBox richTextBoxHubPattern;
         private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBoxHubPattern;
         private System.Windows.Forms.Label labelLoadPatternPathHub;
