@@ -56,7 +56,7 @@
             this.tabPageHubOutput = new System.Windows.Forms.TabPage();
             this.richTextBoxHubOutput = new System.Windows.Forms.RichTextBox();
             this.tabPageHubPattern = new System.Windows.Forms.TabPage();
-            this.labelLoadPatternPathHubDetail = new System.Windows.Forms.Label();
+            this.labelLoadPatternHubPath = new System.Windows.Forms.Label();
             this.labelLoadPatternPathHub = new System.Windows.Forms.Label();
             this.button7 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
@@ -491,7 +491,7 @@
             // 
             // tabPageHubPattern
             // 
-            this.tabPageHubPattern.Controls.Add(this.labelLoadPatternPathHubDetail);
+            this.tabPageHubPattern.Controls.Add(this.labelLoadPatternHubPath);
             this.tabPageHubPattern.Controls.Add(this.labelLoadPatternPathHub);
             this.tabPageHubPattern.Controls.Add(this.button7);
             this.tabPageHubPattern.Controls.Add(this.label4);
@@ -505,14 +505,14 @@
             this.tabPageHubPattern.Text = "Hub Pattern";
             this.tabPageHubPattern.UseVisualStyleBackColor = true;
             // 
-            // labelLoadPatternPathHubDetail
+            // labelLoadPatternHubPath
             // 
-            this.labelLoadPatternPathHubDetail.AutoSize = true;
-            this.labelLoadPatternPathHubDetail.Location = new System.Drawing.Point(105, 34);
-            this.labelLoadPatternPathHubDetail.Name = "labelLoadPatternPathHubDetail";
-            this.labelLoadPatternPathHubDetail.Size = new System.Drawing.Size(40, 13);
-            this.labelLoadPatternPathHubDetail.TabIndex = 17;
-            this.labelLoadPatternPathHubDetail.Text = "<path>";
+            this.labelLoadPatternHubPath.AutoSize = true;
+            this.labelLoadPatternHubPath.Location = new System.Drawing.Point(105, 34);
+            this.labelLoadPatternHubPath.Name = "labelLoadPatternHubPath";
+            this.labelLoadPatternHubPath.Size = new System.Drawing.Size(40, 13);
+            this.labelLoadPatternHubPath.TabIndex = 17;
+            this.labelLoadPatternHubPath.Text = "<path>";
             // 
             // labelLoadPatternPathHub
             // 
@@ -531,6 +531,7 @@
             this.button7.TabIndex = 5;
             this.button7.Text = "Save updates";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // label4
             // 
@@ -1774,7 +1775,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBoxHubPattern;
         private System.Windows.Forms.Label labelLoadPatternPathHub;
-        private System.Windows.Forms.Label labelLoadPatternPathHubDetail;
+        private System.Windows.Forms.Label labelLoadPatternHubPath;
     }
 }
 

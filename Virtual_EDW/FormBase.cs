@@ -62,7 +62,8 @@ namespace Virtual_EDW
             public static string hashingCollation { get; set; }
             public static string hashingZeroKey { get; set; }
 
-            public static List<LoadPatternDetail> patternList { get; set; }
+            public static List<LoadPattern> patternList { get; set; }
+            public static string activeLoadPatternHub { get; set; }
     }
 
         /// <summary>

@@ -1,0 +1,45 @@
+{{#each metadataMapping }}
+--
+-- Working on mapping to {{hubTable}} from source table {{sourceTable}}
+--
+
+INSERT INTO [200_Integration_Layer].dbo.{{hubTable}}
+(
+  {{hubTableHashKey}},
+  {{businessKeyTarget}},
+  LOAD_DATETIME,
+  ETL_INSERT_RUN_ID,
+  RECORD_SOURCE
+)
+SELECT
+  HASHBYTES('MD5',
+    ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{businessKeyTarget}})), 'N/A') + '|'
+  ) AS {{hubTableHashKey}},
+  {{businessKeyTarget}},
+  LOAD_DATETIME,
+  ETL_INSERT_RUN_ID,
+  RECORD_SOURCE
+FROM
+(
+  SELECT 
+    sub.*,
+    ROW_NUMBER() OVER (PARTITION BY {{businessKeyTarget}} ORDER BY LOAD_DATETIME ASC) AS LDTS_ORDER
+  FROM 
+  (
+	SELECT
+	  stg.{{businessKeySource}} as {{businessKeyTarget}},
+	  stg.LOAD_DATETIME,
+	  -1 AS ETL_INSERT_RUN_ID,
+	  stg.RECORD_SOURCE
+	FROM {{sourceTable}} stg
+	WHERE NOT EXISTS
+    (
+	  SELECT 1
+	  FROM [200_Integration_Layer].dbo.{{hubTable}} hub
+	  WHERE stg.{{businessKeySource}} = hub.{{businessKeyTarget}}
+	)
+  ) sub
+) supersub
+WHERE LDTS_ORDER=1
+
+{{/each}}
