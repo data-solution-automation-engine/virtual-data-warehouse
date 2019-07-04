@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using System.Windows.Forms;
+using Virtual_Data_Warehouse.Classes;
 
 namespace Virtual_EDW
 {
@@ -43,7 +44,7 @@ namespace Virtual_EDW
 
         /// <summary>
         /// These are the VEDW specific configuration settings (i.e. not TEAM driven)
-        /// Elements in this class are saved to / retreived from the VEDW Core Settings file
+        /// Elements in this class are saved to / retrieved from the VEDW Core Settings file
         /// </summary>
         internal static class VedwConfigurationSettings
         {
@@ -60,7 +61,9 @@ namespace Virtual_EDW
             public static string hashingEndSnippet { get; set; }
             public static string hashingCollation { get; set; }
             public static string hashingZeroKey { get; set; }
-        }
+
+            public static List<LoadPatternDetail> patternList { get; set; }
+    }
 
         /// <summary>
         /// These settings are driven by the TEAM application, so can't be saved from VEDW.

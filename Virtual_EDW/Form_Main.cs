@@ -11,7 +11,10 @@ using Microsoft.SqlServer.Management.Common;
 using System.Threading;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Security.Permissions;
+using HandlebarsDotNet;
+using Virtual_Data_Warehouse.Classes;
 
 namespace Virtual_EDW
 {
@@ -73,14 +76,14 @@ namespace Virtual_EDW
             CheckAllSatValues();
             CheckAllLinkValues();
             CheckAllLsatValues();
+
+            // Load the patterns into the tool based on the available list
+            LoadHubPatternCombobox();
         }
 
         private void SetDatabaseConnections()
         {
-            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-            var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-
+            // Make sure nothing is checked in the various CheckboxLists
             ClearStgCheckBoxList();
             ClearPsaCheckBoxList();
             ClearHubCheckBoxList();
@@ -88,6 +91,74 @@ namespace Virtual_EDW
             ClearSatCheckBoxList();
             ClearLsatCheckBoxList();
 
+            #region Database connections
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
+            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+
+            // Attempt to gracefully capture connection troubles
+            if (connOmd.ConnectionString != "Server=<>;Initial Catalog=<Metadata>;user id=sa;password=<>")
+                try
+                {
+                    connOmd.Open();
+                    connOmd.Close();
+                   // connOmd.Dispose();
+                }
+                catch
+                {
+                    SetTextMain("There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+                                 TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+                    return;
+                }
+            else
+            {
+                SetTextMain("Metadata Repository Connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+                return;
+            }
+
+
+            if (connPsa.ConnectionString != "Server=<>;Initial Catalog=<Persistent_Staging_Area>;user id = sa;password =<> ")
+                try
+                {
+                    connPsa.Open();
+                    connPsa.Close();
+                    //connPsa.Dispose();
+                }
+                catch
+                {
+                    SetTextMain("There was an issue establishing a database connection to the Persistent Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+                        TeamConfigurationSettings.ConnectionStringHstg + "'.\r\n");
+                    return;
+                }
+            else
+            {
+                SetTextMain("The Persistent Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+                return;
+            }
+
+
+            if (connStg.ConnectionString != "Server=<>;Initial Catalog=<Staging_Area>;user id = sa;password =<> ")
+                try
+                {
+                    connStg.Open();
+                    connStg.Close();
+                    //connStg.Dispose();
+                }
+                catch
+                {
+                    SetTextMain("There was an issue establishing a database connection to the Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+                                 TeamConfigurationSettings.ConnectionStringStg + "'.\r\n");
+                    return;
+                }
+            else
+            {
+                SetTextMain("The Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+                return;
+            }
+            #endregion
+
+
+            // Use the database connections
             try
             {
                 connOmd.Open();
@@ -98,12 +169,17 @@ namespace Virtual_EDW
                 PopulateSatCheckboxList(connOmd);
                 PopulateLsatCheckboxList(connOmd);
             }
-            catch
+            catch (Exception ex)
             {
-                richTextBoxInformationMain.AppendText(
-                    "There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-                    TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+                SetTextMain("An issue was encountered while populating the available metadata for the selected version. The error message is: " + ex);
             }
+            finally
+            {
+                connOmd.Close();
+                connOmd.Dispose();
+            }
+
+
 
             try
             {
@@ -112,10 +188,15 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformationMain.AppendText(
-                    "There was an issue establishing a database connection to the Staging Area Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-                    TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+                SetTextMain("The Staging Area objects could not be retrieved from metadata.");
             }
+            finally
+            {
+                connStg.Close();
+                connStg.Dispose();
+            }
+
+
 
             try
             {
@@ -124,14 +205,12 @@ namespace Virtual_EDW
             }
             catch
             {
-                richTextBoxInformationMain.AppendText(
-                    "There was an issue establishing a database connection to the Persistent Staging Area (PSA) Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-                    TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+                SetTextMain("The Persistent Staging Area objects could not be retrieved from metadata.");
             }
-
-            if (_errorCounter > 0)
+            finally
             {
-                richTextBoxInformationMain.AppendText(_errorMessage.ToString());
+                connPsa.Close();
+                connPsa.Dispose();
             }
         }
 
@@ -421,6 +500,8 @@ namespace Virtual_EDW
 
             var newThread = new Thread(BackgroundDoHub);
             newThread.Start();
+
+            tabControlHub.SelectedIndex = 0;
         }
 
         private void BackgroundDoHub()
@@ -430,7 +511,8 @@ namespace Virtual_EDW
 
             if (radiobuttonViews.Checked) // Views
             {
-                GenerateHubViews();
+                //GenerateHubViews();
+                GenerateHubViewsFromPattern();
             }
             else if (radiobuttonStoredProc.Checked)
             {
@@ -532,8 +614,8 @@ namespace Virtual_EDW
 
                     }
 
-                    SetTextDebug(insertIntoStatement.ToString());
-                    SetTextDebug("\n");
+                    SetTextMain(insertIntoStatement.ToString());
+                    SetTextMain("\n");
 
                     SetTextHub($"Processing Hub Insert Into statement for {hubTableName}\r\n");
 
@@ -584,7 +666,7 @@ namespace Virtual_EDW
 
                 if (elementList == null)
                 {
-                    SetTextDebug("\n");
+                    SetTextMain("\n");
                     SetTextHub($"An error occurred for the Hub Insert Into statement for {hubTableName}. The collection of Business Keys is empty.\r\n");
                 }
                 else
@@ -732,6 +814,96 @@ namespace Virtual_EDW
             outputList.Add(hubQueryGroupBy.ToString());
 
             return outputList;
+        }
+
+        /// <summary>
+        ///   Create Hub Views using Handlebars as templating
+        /// </summary>
+        private void GenerateHubViewsFromPattern()
+        {
+            int errorCounter = 0;
+
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
+            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+            var connInt = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringInt };
+
+            if (checkedListBoxHubMetadata.CheckedItems.Count != 0)
+            {
+                for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
+                {
+                    var hubView = new StringBuilder();
+                    var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
+
+                    var template = Handlebars.Compile(richTextBoxHubPattern.Text);
+
+                    // Retrieve metadata and store in a data table object
+                    var queryHubGen = 
+                               @"SELECT 
+                                   [SOURCE_NAME]
+                                  ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                                  ,[HUB_NAME]
+                                  ,[HUB_BUSINESS_KEY_DEFINITION]
+                                FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
+                                WHERE [HUB_NAME] = '"+hubTableName+"'";
+
+                    var hubTables = GetDataTable(ref connOmd, queryHubGen);
+
+                    // Create an instance of the 'MappingList' class / object model 
+                    MappingList listing = new MappingList();
+
+                    // Move the data table to the class instance
+                    List<IndividualMetadataMapping> mappings = hubTables.AsEnumerable().Select(row =>
+                        new IndividualMetadataMapping
+                        {
+                            hubTable = (string)row["HUB_NAME"],
+                            hubTableHashKey = row["HUB_NAME"].ToString().Replace("HUB_", "") + "_HSH",
+                            sourceTable = (string)row["SOURCE_NAME"],
+                            businessKeySource = (string)row["SOURCE_BUSINESS_KEY_DEFINITION"],
+                            businessKeyTarget = (string)row["HUB_BUSINESS_KEY_DEFINITION"]
+                        }).ToList();
+
+                    listing.metadataMapping = mappings;
+
+                    // Return the result to the user
+                    var result = template(listing);
+                    SetTextHubOutput(result);
+
+                    //Output to file
+                    using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + hubTableName + ".sql"))
+                    {
+                        outfile.Write(result);
+                        outfile.Close();
+                    }
+
+                    //Generate in database
+                    if (checkBoxGenerateInDatabase.Checked)
+                    {
+                        connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                        int insertError = GenerateInDatabase(connPsa, hubView.ToString());
+                        errorCounter = errorCounter + insertError;
+                    }
+
+                    //Present in front-end
+                    SetTextHubOutput(hubView.ToString());
+                    SetTextHubOutput("\n");
+
+                    SetTextHub($"Processing Hub entity view for {hubTableName}\r\n");
+                }
+            }
+            else
+            {
+                SetTextHub("There was no metadata selected to create Hub views. Please check the metadata schema - are there any Hubs selected?");
+            }
+
+            connOmd.Close();
+            connStg.Close();
+            connPsa.Close();
+            connInt.Close();
+
+            SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+
         }
 
         private void GenerateHubViews()
@@ -986,8 +1158,8 @@ namespace Virtual_EDW
                     }
 
                     //Present in front-end
-                    SetTextDebugHub(hubView.ToString());
-                    SetTextDebugHub("\n");
+                    SetTextHubOutput(hubView.ToString());
+                    SetTextHubOutput("\n");
 
                     SetTextHub($"Processing Hub entity view for {hubTableName}\r\n");
                 }
@@ -1032,7 +1204,7 @@ namespace Virtual_EDW
 
             if (sourceStructure == null)
             {
-                SetTextDebug("An error has occurred retrieving the table structure for table "+targetTableName+". If the 'ignore version' option is checked this information is retrieved from the data dictionary. If unchecked the metadata ('manage model metadata') will be used.");
+                SetTextMain("An error has occurred retrieving the table structure for table "+targetTableName+". If the 'ignore version' option is checked this information is retrieved from the data dictionary. If unchecked the metadata ('manage model metadata') will be used.");
             }
 
             return sourceStructure;
@@ -1051,7 +1223,7 @@ namespace Virtual_EDW
             }
             catch (Exception exception)
             {
-                SetTextDebug("An error has occurred interpreting the components of the Business Key for "+ hubTableName + " due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
+                SetTextMain("An error has occurred interpreting the components of the Business Key for "+ hubTableName + " due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
    
             }
 
@@ -1078,7 +1250,7 @@ namespace Virtual_EDW
 
             if (componentList == null)
             {
-                SetTextDebug("An error has occurred interpreting the Hub Business Key (components) in the model for " + hubTableName + ". The Business Key was not found when querying the underlying metadata.");
+                SetTextMain("An error has occurred interpreting the Hub Business Key (components) in the model for " + hubTableName + ". The Business Key was not found when querying the underlying metadata.");
             }
 
             return componentList;
@@ -1094,12 +1266,12 @@ namespace Virtual_EDW
                 try
                 {
                     server.ConnectionContext.ExecuteNonQuery(viewStatement);
-                    SetTextDebug("The statement was executed successfully.\r\n");
+                    SetTextMain("The statement was executed successfully.\r\n");
                 }
                 catch (Exception exception)
                 {
-                    SetTextDebug("Issues occurred executing the SQL statement.\r\n");
-                    SetTextDebug(@"SQL error: " + exception.Message + "\r\n\r\n");
+                    SetTextMain("Issues occurred executing the SQL statement.\r\n");
+                    SetTextMain(@"SQL error: " + exception.Message + "\r\n\r\n");
                     errorCounter++;
                 }
             }
@@ -1282,8 +1454,8 @@ namespace Virtual_EDW
                             errorCounter = errorCounter + insertError;
                         }
 
-                        SetTextDebug(insertIntoStatement.ToString());
-                        SetTextDebug("\n");
+                        SetTextMain(insertIntoStatement.ToString());
+                        SetTextMain("\n");
 
                         SetTextSat(string.Format("Processing Satellite Insert Into statement for {0}\r\n",targetTableName));
                     }
@@ -1944,8 +2116,8 @@ namespace Virtual_EDW
                             errorCounter = errorCounter + insertError;
                         }
 
-                        SetTextDebug(satView.ToString());
-                        SetTextDebug("\n");
+                        SetTextMain(satView.ToString());
+                        SetTextMain("\n");
                         SetTextSat(@"Processing Sat entity view for " + targetTableName + "\r\n");
                     }
                 }
@@ -2085,8 +2257,8 @@ namespace Virtual_EDW
                         errorCounter = errorCounter + insertError;
                     }
 
-                    SetTextDebug(insertIntoStatement.ToString());
-                    SetTextDebug("\n");
+                    SetTextMain(insertIntoStatement.ToString());
+                    SetTextMain("\n");
                     SetTextLink(string.Format("Processing Link Insert Into statement for {0}\r\n", targetTableName));
 
                     connStg.Close();
@@ -2510,8 +2682,8 @@ namespace Virtual_EDW
                             errorCounter = errorCounter + insertError;
                         }
 
-                        SetTextDebug(linkView.ToString());
-                        SetTextDebug("\n");
+                        SetTextMain(linkView.ToString());
+                        SetTextMain("\n");
 
                     }
 
@@ -2574,7 +2746,7 @@ namespace Virtual_EDW
             }
             catch (Exception exception)
             {
-                SetTextDebug("An error has occurred selecting Link table degenerate attributes: " + conn.ConnectionString + "). The associated message is " + exception.Message);
+                SetTextMain("An error has occurred selecting Link table degenerate attributes: " + conn.ConnectionString + "). The associated message is " + exception.Message);
 
             }
 
@@ -2622,7 +2794,7 @@ namespace Virtual_EDW
             }
             catch (Exception exception)
             {
-                SetTextDebug("An error has occurred defining the Hub Business Key in the model due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
+                SetTextMain("An error has occurred defining the Hub Business Key in the model due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
             }
 
             var sqlStatementForHubBusinessKeys = new StringBuilder();
@@ -2659,7 +2831,7 @@ namespace Virtual_EDW
 
             if (hubKeyList == null)
             {
-                SetTextDebug("An error has occurred defining the Hub Business Key in the model for " + hubTableName + ". The Business Key was not found when querying the underlying metadata. This can be either that the attribute is missing in the metadata or in the table (depending if versioning is used). If the 'ignore versioning' option is checked, then the metadata will be retrieved directly from the data dictionary. Otherwise the metadata needs to be available in the repository (manage model metadata).");
+                SetTextMain("An error has occurred defining the Hub Business Key in the model for " + hubTableName + ". The Business Key was not found when querying the underlying metadata. This can be either that the attribute is missing in the metadata or in the table (depending if versioning is used). If the 'ignore versioning' option is checked, then the metadata will be retrieved directly from the data dictionary. Otherwise the metadata needs to be available in the repository (manage model metadata).");
             }
 
             return hubKeyList;
@@ -2679,7 +2851,7 @@ namespace Virtual_EDW
             }
             catch (Exception exception)
             {
-                SetTextDebug("An error has occurred defining the Hub Business Key in the model due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
+                SetTextMain("An error has occurred defining the Hub Business Key in the model due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
             }
 
             var sqlStatementForLinkBusinessKeys = new StringBuilder();
@@ -2712,7 +2884,7 @@ namespace Virtual_EDW
 
             if (linkKeyListDataTable == null)
             {
-                SetTextDebug("An error has occurred defining the Business Keys in the model for " + linkTableName +
+                SetTextMain("An error has occurred defining the Business Keys in the model for " + linkTableName +
                              ". The Business Keys were not found when querying the underlying metadata. This can be either that the attribute is missing in the metadata or in the table (depending if versioning is used). If the 'ignore versioning' option is checked, then the metadata will be retrieved directly from the data dictionary. Otherwise the metadata needs to be available in the repository (manage model metadata).");
             }
             else
@@ -3112,8 +3284,8 @@ namespace Virtual_EDW
                             errorCounter = errorCounter + insertError;
                         }
 
-                        SetTextDebug(insertIntoStatement.ToString());
-                        SetTextDebug("\n");
+                        SetTextMain(insertIntoStatement.ToString());
+                        SetTextMain("\n");
 
                         SetTextLsat($"Processing Link Satellite Insert Into statement for {targetTableName}\r\n");
                     }
@@ -3847,8 +4019,8 @@ namespace Virtual_EDW
                                 errorCounter = errorCounter + insertError;
                             }
 
-                            SetTextDebug(linkSatView.ToString());
-                            SetTextDebug("\n");
+                            SetTextMain(linkSatView.ToString());
+                            SetTextMain("\n");
                            
 
                         }
@@ -4354,8 +4526,8 @@ namespace Virtual_EDW
                             }
 
 
-                            SetTextDebug(linkSatView.ToString());
-                            SetTextDebug("\n");
+                            SetTextMain(linkSatView.ToString());
+                            SetTextMain("\n");
 
                             
 
@@ -4581,8 +4753,8 @@ namespace Virtual_EDW
                         errorCounter = errorCounter + insertError;
                     }
 
-                    SetTextDebug(psaInsertIntoStatement.ToString());
-                    SetTextDebug("\n");
+                    SetTextMain(psaInsertIntoStatement.ToString());
+                    SetTextMain("\n");
 
                     connStg.Close();
                     connHstg.Close();
@@ -4655,8 +4827,8 @@ namespace Virtual_EDW
 
                     if (partitionAttributes.Rows.Count==0)
                     {
-                        SetTextDebug("There is an issue generating the PSA logic for "+targetTableName+". This is because no natural key can be derived from the available indices on the PSA table. Please check if either a Primary Key (with naming convention PK_<table name>) is available, or a Unique Index (with naming conventions IX_<table name>) is available. The VEDW tool will use the PK or IX depending on the PSA Key Location configuration in the 'settings' tab. With the current setting it would expect to derive the key from the "+ targetTableIndexName + " index.");
-                        SetTextDebug("\n\n");
+                        SetTextMain("There is an issue generating the PSA logic for "+targetTableName+". This is because no natural key can be derived from the available indices on the PSA table. Please check if either a Primary Key (with naming convention PK_<table name>) is available, or a Unique Index (with naming conventions IX_<table name>) is available. The VEDW tool will use the PK or IX depending on the PSA Key Location configuration in the 'settings' tab. With the current setting it would expect to derive the key from the "+ targetTableIndexName + " index.");
+                        SetTextMain("\n\n");
                     }
                     else
                     {
@@ -4908,8 +5080,8 @@ namespace Virtual_EDW
                             errorCounter = errorCounter + localError;
                         }
 
-                        SetTextDebug(psaView.ToString());
-                        SetTextDebug("\n");
+                        SetTextMain(psaView.ToString());
+                        SetTextMain("\n");
                     }
                 }
             }
@@ -5041,8 +5213,8 @@ namespace Virtual_EDW
                         errorCounter = errorCounter + insertError;
                     }
 
-                    SetTextDebug(stgInsertIntoStatement.ToString());
-                    SetTextDebug("\n");
+                    SetTextMain(stgInsertIntoStatement.ToString());
+                    SetTextMain("\n");
                 }
             }
             else
@@ -5569,7 +5741,7 @@ namespace Virtual_EDW
                             }
                             catch
                             {
-                                SetTextDebug("Issues occurred while interpreting the table key for table " + targetTableName +
+                                SetTextMain("Issues occurred while interpreting the table key for table " + targetTableName +
                                              ".\r\n");
                             }
                         }
@@ -5595,8 +5767,8 @@ namespace Virtual_EDW
                         errorCounter = errorCounter + localError;
                     }
 
-                    SetTextDebug(stgView.ToString());
-                    SetTextDebug("\n");
+                    SetTextMain(stgView.ToString());
+                    SetTextMain("\n");
                 }
             }
             else
@@ -5812,11 +5984,11 @@ namespace Virtual_EDW
   
         // Multithreading for updating the user (debugging form)
         delegate void SetTextCallBackDebug(string text);
-        private void SetTextDebug(string text)
+        private void SetTextMain(string text)
         {
             if (richTextBoxInformationMain.InvokeRequired)
             {
-                var d = new SetTextCallBackDebug(SetTextDebug);
+                var d = new SetTextCallBackDebug(SetTextMain);
                 Invoke(d, text);
             }
             else
@@ -5827,11 +5999,11 @@ namespace Virtual_EDW
 
         // Multithreading for updating the user (debugging form)
         delegate void SetTextCallBackDebugHub(string text);
-        private void SetTextDebugHub(string text)
+        private void SetTextHubOutput(string text)
         {
             if (richTextBoxHubOutput.InvokeRequired)
             {
-                var d = new SetTextCallBackDebugHub(SetTextDebugHub);
+                var d = new SetTextCallBackDebugHub(SetTextHubOutput);
                 Invoke(d, text);
             }
             else
@@ -5884,6 +6056,8 @@ namespace Virtual_EDW
                 richTextBoxHub.AppendText(text);
             }
         }
+
+
 
         //// Multithreading for changing version stuff
         //delegate void SetVersionCallBack(int versionId);
@@ -6433,7 +6607,7 @@ namespace Virtual_EDW
                 }
                 catch (Exception ex)
                 {
-                    SetTextDebug("An issue occured creating the VEDW schema '" + VedwConfigurationSettings.VedwSchema + "'. The reported error is " + ex);
+                    SetTextMain("An issue occured creating the VEDW schema '" + VedwConfigurationSettings.VedwSchema + "'. The reported error is " + ex);
                 }
             }
         }
@@ -6665,9 +6839,57 @@ namespace Virtual_EDW
             buttonGenerateLsats.PerformClick();
         }
 
+        private void button10_Click(object sender, EventArgs e)
+        {
+            LoadHubPatternCombobox();
+        }
+
+        private void LoadHubPatternCombobox()
+        {
+            var patternCollection = new LoadPatternHandling();
+            try
+            {
+                var patternList = patternCollection.DeserializeLoadPatternCollection();
+
+                foreach (var patternDetail in patternList)
+                {
+                    comboBoxHubPattern.Items.Add(patternDetail.loadPatternName);
+                }
+            }
+            catch (Exception ex)
+            {
+                SetTextMain(ex.ToString());
+            }
+
+            comboBoxHubPattern.SelectedItem = comboBoxHubPattern.Items[0];
+        }
+
+        private void comboBoxHubPattern_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxHubPattern.Text);
+
+            labelLoadPatternPathHubDetail.Text = loadPattern.loadPatternFilePath;
+            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+
+            richTextBoxHubPattern.Text = loadPatternTemplate;
+        }
+
+        private void richTextBoxHubPattern_TextChanged(object sender, EventArgs e)
+        {
+            Point curPos = Cursor.Position;
+            // Place position in textbox
+            var cursorPosition = richTextBoxHubPattern.GetCharIndexFromPosition(curPos).ToString();
+            TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
+            richTextBoxHubPattern.SelectionStart = int.Parse(cursorPosition) - 1;
+            richTextBoxHubPattern.SelectionLength = 0;
+            // Scroll to position
+            richTextBoxHubPattern.ScrollToCaret();
+        }
+
         private void button8_Click(object sender, EventArgs e)
         {
-            TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
+            GenerateHubViewsFromPattern();
         }
+
     }
 }

@@ -16,8 +16,8 @@ namespace Virtual_EDW
             inputTextBox.Clear();
 
             // Split the text into lines, so we can parse each line for syntax highlighting
-            Regex r = new Regex("\\n");
-            String[] lines = r.Split(inputText);
+            Regex splitLineRegex = new Regex("\\n");
+            String[] lines = splitLineRegex.Split(inputText);
 
             // Outer loop - running through the lines
             foreach (string line in lines)
@@ -26,22 +26,24 @@ namespace Virtual_EDW
                 Regex wordRegex = new Regex("([ \\t{}():;])");
                 String[] tokens = wordRegex.Split(line);
 
+                int syntaxHighlightCounter = 0;
+
                 foreach (string token in tokens)
                 {
-                    // Set the default colour
+                    // Make sure the default colour is set
                     inputTextBox.SelectionColor = Color.Black;
                     inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Regular);
+
+                    if (token == "{")
+                    {
+                        syntaxHighlightCounter++;
+                    }
 
                     // Search pattern
                     // Regex handleBarsSyntaxPattern = new Regex("(?<={{).*?(?=}})");
                     // MatchCollection matches = handleBarsSyntaxPattern.Matches(token);
 
-                    // foreach (var match in matches)
-                    // {
-                    //Set the tokens default color and font.
-                    //  inputTextBox.SelectionColor = Color.Purple;
-
-                    //Check whether the token is a keyword.   
+                    //Check whether the token is a keyword, or between {{ }}  
                     String[] keywords = { "#each", "/each" };
                     for (int i = 0; i < keywords.Length; i++)
                     {
@@ -51,13 +53,20 @@ namespace Virtual_EDW
                             inputTextBox.SelectionColor = Color.DarkGreen;
                             inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                             break;
+                        } else if (syntaxHighlightCounter>1 && token !="{" && token!="}")
+                        {
+                            inputTextBox.SelectionColor = Color.Purple;
+                            inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                         }
                     }
-                    inputTextBox.SelectedText = token;
-                    // }
 
-                    //Original text
-                    // inputTextBox.SelectedText = token;
+                    inputTextBox.SelectedText = token;
+
+                    if (token == "}")
+                    {
+                        syntaxHighlightCounter = 0; //Reset the counter
+                    }
+
                 }
                 inputTextBox.SelectedText = "\n";
             }

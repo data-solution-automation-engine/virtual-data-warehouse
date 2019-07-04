@@ -1,0 +1,33 @@
+{{#each metadataMapping }}
+--
+-- Working on mapping to {{hubTable}} from source table {{sourceTable}}
+--
+
+INSERT INTO [200_Integration_Layer].dbo.{{hubTable}}
+(
+  {{hubTableHashKey}},
+  {{businessKeyTarget}},
+  LOAD_DATETIME,
+  ETL_INSERT_RUN_ID,
+  RECORD_SOURCE
+)
+SELECT
+  HASHBYTES('MD5',
+    ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{businessKeySource}})), 'N/A') + '|'
+  ) AS {{hubTableHashKey}},
+  MIN(stg.LOAD_DATETIME) AS LOAD_DATETIME,
+ -1 AS ETL_INSERT_RUN_ID,
+ stg.RECORD_SOURCE
+FROM {{sourceTable}} stg
+LEFT OUTER JOIN [200_Integration_Layer].dbo.{{hubTable}} hub ON stg.{{businessKeySource}} = hub.{{businessKeyTarget}}
+ WHERE stg.{{businessKeySource}} IS NOT NULL
+ AND hub.{{businessKeyTarget}} IS NOT NULL
+GROUP BY
+  HASHBYTES('MD5',
+    ISNULL(RTRIM(CONVERT(NVARCHAR(100), stg.{{businessKeySource}})),'N/A') + '|'
+  ),
+  stg.{{businessKeySource}},
+  stg.RECORD_SOURCE
+
+{{/each}}
+

@@ -56,12 +56,12 @@
             this.tabPageHubOutput = new System.Windows.Forms.TabPage();
             this.richTextBoxHubOutput = new System.Windows.Forms.RichTextBox();
             this.tabPageHubPattern = new System.Windows.Forms.TabPage();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
+            this.labelLoadPatternPathHubDetail = new System.Windows.Forms.Label();
+            this.labelLoadPatternPathHub = new System.Windows.Forms.Label();
             this.button7 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxHubPattern = new System.Windows.Forms.ComboBox();
             this.richTextBoxHubPattern = new System.Windows.Forms.RichTextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBoxFilterCriterionHub = new System.Windows.Forms.TextBox();
@@ -491,12 +491,12 @@
             // 
             // tabPageHubPattern
             // 
-            this.tabPageHubPattern.Controls.Add(this.button9);
-            this.tabPageHubPattern.Controls.Add(this.button8);
+            this.tabPageHubPattern.Controls.Add(this.labelLoadPatternPathHubDetail);
+            this.tabPageHubPattern.Controls.Add(this.labelLoadPatternPathHub);
             this.tabPageHubPattern.Controls.Add(this.button7);
             this.tabPageHubPattern.Controls.Add(this.button3);
             this.tabPageHubPattern.Controls.Add(this.label4);
-            this.tabPageHubPattern.Controls.Add(this.comboBox1);
+            this.tabPageHubPattern.Controls.Add(this.comboBoxHubPattern);
             this.tabPageHubPattern.Controls.Add(this.richTextBoxHubPattern);
             this.tabPageHubPattern.Location = new System.Drawing.Point(4, 22);
             this.tabPageHubPattern.Name = "tabPageHubPattern";
@@ -506,24 +506,23 @@
             this.tabPageHubPattern.Text = "Hub Pattern";
             this.tabPageHubPattern.UseVisualStyleBackColor = true;
             // 
-            // button9
+            // labelLoadPatternPathHubDetail
             // 
-            this.button9.Location = new System.Drawing.Point(159, 479);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(75, 23);
-            this.button9.TabIndex = 7;
-            this.button9.Text = "testButton2";
-            this.button9.UseVisualStyleBackColor = true;
+            this.labelLoadPatternPathHubDetail.AutoSize = true;
+            this.labelLoadPatternPathHubDetail.Location = new System.Drawing.Point(58, 50);
+            this.labelLoadPatternPathHubDetail.Name = "labelLoadPatternPathHubDetail";
+            this.labelLoadPatternPathHubDetail.Size = new System.Drawing.Size(40, 13);
+            this.labelLoadPatternPathHubDetail.TabIndex = 17;
+            this.labelLoadPatternPathHubDetail.Text = "<path>";
             // 
-            // button8
+            // labelLoadPatternPathHub
             // 
-            this.button8.Location = new System.Drawing.Point(48, 479);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(75, 23);
-            this.button8.TabIndex = 6;
-            this.button8.Text = "testButton1";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.labelLoadPatternPathHub.AutoSize = true;
+            this.labelLoadPatternPathHub.Location = new System.Drawing.Point(3, 50);
+            this.labelLoadPatternPathHub.Name = "labelLoadPatternPathHub";
+            this.labelLoadPatternPathHub.Size = new System.Drawing.Size(50, 13);
+            this.labelLoadPatternPathHub.TabIndex = 8;
+            this.labelLoadPatternPathHub.Text = "File path:";
             // 
             // button7
             // 
@@ -552,22 +551,24 @@
             this.label4.TabIndex = 3;
             this.label4.Text = "Active Hub Pattern";
             // 
-            // comboBox1
+            // comboBoxHubPattern
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(2, 26);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(602, 21);
-            this.comboBox1.TabIndex = 2;
+            this.comboBoxHubPattern.FormattingEnabled = true;
+            this.comboBoxHubPattern.Location = new System.Drawing.Point(2, 26);
+            this.comboBoxHubPattern.Name = "comboBoxHubPattern";
+            this.comboBoxHubPattern.Size = new System.Drawing.Size(602, 21);
+            this.comboBoxHubPattern.TabIndex = 2;
+            this.comboBoxHubPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxHubPattern_SelectedIndexChanged);
             // 
             // richTextBoxHubPattern
             // 
             this.richTextBoxHubPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBoxHubPattern.Location = new System.Drawing.Point(3, 53);
+            this.richTextBoxHubPattern.Location = new System.Drawing.Point(3, 84);
             this.richTextBoxHubPattern.Name = "richTextBoxHubPattern";
-            this.richTextBoxHubPattern.Size = new System.Drawing.Size(882, 396);
+            this.richTextBoxHubPattern.Size = new System.Drawing.Size(882, 365);
             this.richTextBoxHubPattern.TabIndex = 1;
-            this.richTextBoxHubPattern.Text = resources.GetString("richTextBoxHubPattern.Text");
+            this.richTextBoxHubPattern.Text = "";
+            this.richTextBoxHubPattern.TextChanged += new System.EventHandler(this.richTextBoxHubPattern_TextChanged);
             // 
             // groupBox4
             // 
@@ -1782,9 +1783,9 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.ComboBox comboBoxHubPattern;
+        private System.Windows.Forms.Label labelLoadPatternPathHub;
+        private System.Windows.Forms.Label labelLoadPatternPathHubDetail;
     }
 }
 

@@ -1,0 +1,12 @@
+[
+  {
+    "loadPatternName": "Default Hub Pattern",
+    "loadPatternType": "Hub",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubDefault.handlebars"
+  },
+  {
+    "loadPatternName": "Modified Hub Pattern",
+    "loadPatternType": "Hub",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubModified.handlebars"
+  }
+]
