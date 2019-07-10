@@ -153,20 +153,27 @@ namespace Virtual_EDW
                     // MatchCollection matches = handleBarsSyntaxPattern.Matches(token);
 
                     //Check whether the token is a keyword, or between {{ }}  
-                    String[] keywords = { "SELECT", "FROM", "INSERT", "INTO", "OVER", "PARTITION", "IN", "ORDER", "BY", "AS", "WHERE", "NVARCHAR"};
-                    for (int i = 0; i < keywords.Length; i++)
+                    String[] keyWordSql = { "SELECT", "FROM", "INSERT", "INTO", "OVER", "PARTITION", "IN", "ORDER", "BY", "GROUP", "AS", "WHERE", "NVARCHAR", "NOT EXISTS", "LEFT", "OUTER", "JOIN"};
+                    for (int i = 0; i < keyWordSql.Length; i++)
                     {
-                        if (keywords[i] == token)
+                        if (keyWordSql[i] == token)
                         {
                             // Apply alternative color and font to highlight keyword.  
                             inputTextBox.SelectionColor = Color.Blue;
                             //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                             break;
                         }
-                        else if (syntaxHighlightCounter > 1 && token != "{" && token != "}")
+                    }
+
+                    String[] keyWordFunction = { "HASHBYTES","ROW_NUMBER()", "PARTITION" };
+                    for (int i = 0; i < keyWordFunction.Length; i++)
+                    {
+                        if (keyWordFunction[i] == token)
                         {
+                            // Apply alternative color and font to highlight keyword.  
                             inputTextBox.SelectionColor = Color.Purple;
                             //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
+                            break;
                         }
                     }
 

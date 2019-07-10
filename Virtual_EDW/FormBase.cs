@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using System.Windows.Forms;
-using Virtual_Data_Warehouse.Classes;
 
 namespace Virtual_EDW
 {

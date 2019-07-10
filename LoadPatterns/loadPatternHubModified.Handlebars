@@ -1,33 +1,36 @@
-{{#each metadataMapping }}
+{{#each individualSourceToTargetMapping }}
 --
--- Working on mapping to {{hubTable}} from source table {{sourceTable}}
+-- Working on mapping to {{targetTable}} from source table {{sourceTable}}
 --
 
-INSERT INTO [200_Integration_Layer].dbo.{{hubTable}}
-(
-  {{hubTableHashKey}},
-  {{businessKeyTarget}},
-  LOAD_DATETIME,
-  ETL_INSERT_RUN_ID,
-  RECORD_SOURCE
-)
 SELECT
-  HASHBYTES('MD5',
-    ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{businessKeySource}})), 'N/A') + '|'
-  ) AS {{hubTableHashKey}},
-  MIN(stg.LOAD_DATETIME) AS LOAD_DATETIME,
- -1 AS ETL_INSERT_RUN_ID,
- stg.RECORD_SOURCE
+    HASHBYTES('MD5',
+    {{#each businessKey.businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
+    {{/each}}
+    ) AS {{targetTableHashKey}},
+    MIN(stg.LOAD_DATETIME) AS LOAD_DATETIME,
+    -1 AS ETL_INSERT_RUN_ID,
+    stg.RECORD_SOURCE
 FROM {{sourceTable}} stg
-LEFT OUTER JOIN [200_Integration_Layer].dbo.{{hubTable}} hub ON stg.{{businessKeySource}} = hub.{{businessKeyTarget}}
- WHERE stg.{{businessKeySource}} IS NOT NULL
- AND hub.{{businessKeyTarget}} IS NOT NULL
+LEFT OUTER JOIN [200_Integration_Layer].dbo.{{targetTable}} hub ON
+    {{#each businessKey.businessKeyComponentMapping}}
+    stg.{{sourceComponentName}} = hub.{{targetComponentName}} {{#unless @last}}AND{{/unless}}
+    {{/each}}
+ WHERE
+    {{#each businessKey.businessKeyComponentMapping}}
+    {{sourceComponentName}} IS NOT NULL AND hub.{{targetComponentName}} IS NOT NULL {{#unless @last}}AND{{/unless}}
+    {{/each}}
 GROUP BY
-  HASHBYTES('MD5',
-    ISNULL(RTRIM(CONVERT(NVARCHAR(100), stg.{{businessKeySource}})),'N/A') + '|'
-  ),
-  stg.{{businessKeySource}},
-  stg.RECORD_SOURCE
+    HASHBYTES('MD5',
+    {{#each businessKey.businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!'
+    {{/each}}
+    ),
+    {{#each businessKey.businessKeyComponentMapping}}
+    {{sourceComponentName}},
+    {{/each}}
+    stg.RECORD_SOURCE
 
 {{/each}}
 

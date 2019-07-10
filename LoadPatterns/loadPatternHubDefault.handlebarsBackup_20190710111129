@@ -6,7 +6,7 @@
 SELECT
     HASHBYTES('MD5',
     {{#each businessKey.businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!'
     {{/each}}
     ) AS {{targetTableHashKey}},
     {{#each businessKey.businessKeyComponentMapping}}
@@ -36,11 +36,10 @@ FROM
             FROM [200_Integration_Layer].dbo.{{targetTable}} hub
             WHERE
             {{#each businessKey.businessKeyComponentMapping}}
-              {{sourceComponentName}} = hub.{{targetComponentName}} {{#unless @last}}AND{{/unless}}
+              stg.{{sourceComponentName}} = hub.{{targetComponentName}},
             {{/each}}
         )
     ) sub
 ) supersub
 WHERE LDTS_ORDER=1
-
 {{/each}}

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Virtual_EDW;
 
-namespace Virtual_Data_Warehouse.Classes
+namespace Virtual_EDW
 {
     /// <summary>
     ///   This class contains the basic information for a load pattern, such as name, type and location.
@@ -83,21 +83,28 @@ namespace Virtual_Data_Warehouse.Classes
     }
 
     #region Object Models
-    class MappingList
+    class SourceToTargetMappingList
     {
-        public List<IndividualMetadataMapping> metadataMapping { get; set; }
+        public List<SourceToTargetMapping> individualSourceToTargetMapping { get; set; }
     }
 
-    class IndividualMetadataMapping
+    class SourceToTargetMapping
     {
-        public string businessKeySource { get; set; }
-        public string businessKeyTarget { get; set; }
-        public string hubTable { get; set; }
-        public string hubTableHashKey { get; set; }
         public string sourceTable { get; set; }
+        public string targetTable { get; set; }
+        public string targetTableHashKey { get; set; }
+        public BusinessKey businessKey { get; set; }
+    }
+
+    class BusinessKey
+    {
+        public List<BusinessKeyComponentMapping> businessKeyComponentMapping { get; set; }
+    }
+
+    class BusinessKeyComponentMapping
+    {
+        public string sourceComponentName { get; set; } 
+        public string targetComponentName { get; set; }
     }
     #endregion
-
-
-
 }

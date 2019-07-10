@@ -854,20 +854,37 @@ namespace Virtual_EDW
                     var hubTables = GetDataTable(ref connOmd, queryHubGen);
 
                     // Create an instance of the 'MappingList' class / object model 
-                    MappingList listing = new MappingList();
+                    SourceToTargetMappingList listing = new SourceToTargetMappingList();
 
                     // Move the data table to the class instance
-                    List<IndividualMetadataMapping> mappings = hubTables.AsEnumerable().Select(row =>
-                        new IndividualMetadataMapping
-                        {
-                            hubTable = (string)row["HUB_NAME"],
-                            hubTableHashKey = row["HUB_NAME"].ToString().Replace("HUB_", "") + "_HSH",
-                            sourceTable = (string)row["SOURCE_NAME"],
-                            businessKeySource = (string)row["SOURCE_BUSINESS_KEY_DEFINITION"],
-                            businessKeyTarget = (string)row["HUB_BUSINESS_KEY_DEFINITION"]
-                        }).ToList();
+                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    listing.metadataMapping = mappings;
+                    foreach (DataRow row in hubTables.Rows)
+                    {
+                        // Creating the Business Key Component Mapping list (from the input array)
+                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"],(string)row["HUB_BUSINESS_KEY_DEFINITION"]);
+
+                        // Creating the Business Key definition, using the available components (see above)
+                        BusinessKey businessKey =
+                            new BusinessKey
+                            {
+                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                            };
+
+                        // Add the created Business Key to the source-to-target mapping
+                        var sourceToTargetMapping = new SourceToTargetMapping();
+
+                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
+                        sourceToTargetMapping.targetTable = (string)row["HUB_NAME"];
+                        sourceToTargetMapping.targetTableHashKey = row["HUB_NAME"].ToString().Replace("HUB_", "") + "_HSH";
+                        sourceToTargetMapping.businessKey = businessKey;
+
+                        // Add the source-to-target mapping to the mapping list
+                        sourceToTargetMappingList.Add(sourceToTargetMapping);
+
+                    }
+
+                    listing.individualSourceToTargetMapping = sourceToTargetMappingList;
 
                     // Return the result to the user
                     var result = template(listing);

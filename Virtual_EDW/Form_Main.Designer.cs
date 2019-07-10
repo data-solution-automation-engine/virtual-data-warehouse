@@ -199,8 +199,9 @@
             // 
             // MainTabControl
             // 
-            this.MainTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.MainTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.MainTabControl.Controls.Add(this.tabPageStaging);
             this.MainTabControl.Controls.Add(this.tabPagePSA);
             this.MainTabControl.Controls.Add(this.tabPageHub);
@@ -460,6 +461,9 @@
             // 
             // tabControlHub
             // 
+            this.tabControlHub.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlHub.Controls.Add(this.tabPageHubOutput);
             this.tabControlHub.Controls.Add(this.tabPageHubPattern);
             this.tabControlHub.Location = new System.Drawing.Point(416, 9);
@@ -482,6 +486,9 @@
             // 
             // richTextBoxHubOutput
             // 
+            this.richTextBoxHubOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBoxHubOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxHubOutput.Location = new System.Drawing.Point(3, 6);
             this.richTextBoxHubOutput.Name = "richTextBoxHubOutput";
@@ -553,6 +560,9 @@
             // 
             // richTextBoxHubPattern
             // 
+            this.richTextBoxHubPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBoxHubPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxHubPattern.Location = new System.Drawing.Point(3, 84);
             this.richTextBoxHubPattern.Name = "richTextBoxHubPattern";
