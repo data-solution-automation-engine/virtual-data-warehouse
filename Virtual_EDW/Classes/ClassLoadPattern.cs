@@ -49,6 +49,29 @@ namespace Virtual_EDW
             return returnMessage;
         }
 
+        internal static string SaveLoadPattern(string loadPatternFilePath, string fileContent)
+        {
+            string returnMessage = "";
+
+            try
+            {
+                using (var outfile = new StreamWriter(loadPatternFilePath))
+                {
+                    outfile.Write(fileContent);
+                    outfile.Close();
+                }
+
+                returnMessage = "The file has been updated.";
+            }
+            catch (Exception ex) 
+            {
+                returnMessage = ("An error has occured while creating saving the file. The error message is " + ex);
+            }
+
+
+            return returnMessage;
+        }
+
         /// <summary>
         ///   Make sure the load pattern is centrally available
         /// </summary>
@@ -85,7 +108,10 @@ namespace Virtual_EDW
     #region Object Models
     class SourceToTargetMappingList
     {
+        public string mainTable { get; set; }
         public List<SourceToTargetMapping> individualSourceToTargetMapping { get; set; }
+        public DateTime generationDateTime { get; } = DateTime.Now;
+        public MetadataConfiguration metadataConfiguration { get; set; }
     }
 
     class SourceToTargetMapping
@@ -94,6 +120,7 @@ namespace Virtual_EDW
         public string targetTable { get; set; }
         public string targetTableHashKey { get; set; }
         public BusinessKey businessKey { get; set; }
+        public string filterCriterion { get; set; }
     }
 
     class BusinessKey
@@ -105,6 +132,16 @@ namespace Virtual_EDW
     {
         public string sourceComponentName { get; set; } 
         public string targetComponentName { get; set; }
+    }
+
+    class MetadataConfiguration
+    {
+        public string psadatabaseName { get; } = FormBase.TeamConfigurationSettings.PsaDatabaseName;
+        public string psaSchemaName { get;} = FormBase.TeamConfigurationSettings.SchemaName;
+        public string vedwSchemaName { get; } = FormBase.VedwConfigurationSettings.VedwSchema;
+        public string recordSourceAttribute { get; } = FormBase.TeamConfigurationSettings.RecordSourceAttribute;
+        public string loadDateTimeAttribute { get; } = FormBase.TeamConfigurationSettings.LoadDateTimeAttribute;
+        public string etlProcessAttribute { get; } = FormBase.TeamConfigurationSettings.EtlProcessAttribute;
     }
     #endregion
 }

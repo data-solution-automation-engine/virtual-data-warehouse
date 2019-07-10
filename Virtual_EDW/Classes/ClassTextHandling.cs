@@ -91,7 +91,7 @@ namespace Virtual_EDW
                     // MatchCollection matches = handleBarsSyntaxPattern.Matches(token);
 
                     //Check whether the token is a keyword, or between {{ }}  
-                    String[] keywords = { "#each", "/each" };
+                    String[] keywords = { "#each", "/each", "#if", "/if", "#unless", "/unless" };
                     for (int i = 0; i < keywords.Length; i++)
                     {
                         if (keywords[i] == token)
@@ -153,7 +153,7 @@ namespace Virtual_EDW
                     // MatchCollection matches = handleBarsSyntaxPattern.Matches(token);
 
                     //Check whether the token is a keyword, or between {{ }}  
-                    String[] keyWordSql = { "SELECT", "FROM", "INSERT", "INTO", "OVER", "PARTITION", "IN", "ORDER", "BY", "GROUP", "AS", "WHERE", "NVARCHAR", "NOT EXISTS", "LEFT", "OUTER", "JOIN"};
+                    String[] keyWordSql = { "UNION", "SELECT", "FROM", "INSERT", "INTO", "OVER", "PARTITION", "IN", "ORDER", "BY", "GROUP", "AS", "WHERE", "NVARCHAR", "NOT EXISTS", "LEFT", "OUTER", "JOIN"};
                     for (int i = 0; i < keyWordSql.Length; i++)
                     {
                         if (keyWordSql[i] == token)

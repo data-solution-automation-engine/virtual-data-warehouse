@@ -823,23 +823,17 @@ namespace Virtual_EDW
         /// </summary>
         private void GenerateHubViewsFromPattern()
         {
-            string loadPattern = VedwConfigurationSettings.activeLoadPatternHub;
-
             int errorCounter = 0;
 
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
-            var connInt = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringInt };
 
             if (checkedListBoxHubMetadata.CheckedItems.Count != 0)
             {
                 for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
                 {
-                    var hubView = new StringBuilder();
                     var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
-
-                    var template = Handlebars.Compile(loadPattern);
+                    SetTextHub($"Processing Hub entity view for {hubTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var queryHubGen = 
@@ -848,13 +842,11 @@ namespace Virtual_EDW
                                   ,[SOURCE_BUSINESS_KEY_DEFINITION]
                                   ,[HUB_NAME]
                                   ,[HUB_BUSINESS_KEY_DEFINITION]
+                                  ,[FILTER_CRITERIA]
                                 FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
                                 WHERE [HUB_NAME] = '"+hubTableName+"'";
 
                     var hubTables = GetDataTable(ref connOmd, queryHubGen);
-
-                    // Create an instance of the 'MappingList' class / object model 
-                    SourceToTargetMappingList listing = new SourceToTargetMappingList();
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
@@ -878,38 +870,44 @@ namespace Virtual_EDW
                         sourceToTargetMapping.targetTable = (string)row["HUB_NAME"];
                         sourceToTargetMapping.targetTableHashKey = row["HUB_NAME"].ToString().Replace("HUB_", "") + "_HSH";
                         sourceToTargetMapping.businessKey = businessKey;
+                        sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
 
                         // Add the source-to-target mapping to the mapping list
                         sourceToTargetMappingList.Add(sourceToTargetMapping);
-
                     }
 
+                    // Create an instance of the 'MappingList' class / object model 
+                    SourceToTargetMappingList listing = new SourceToTargetMappingList();
                     listing.individualSourceToTargetMapping = sourceToTargetMappingList;
+                    listing.metadataConfiguration = new MetadataConfiguration();
+                    listing.mainTable = hubTableName;
 
                     // Return the result to the user
-                    var result = template(listing);
-                    SetTextHubOutput(result);
-
-                    //Output to file
-                    using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + hubTableName + ".sql"))
+                    try
                     {
-                        outfile.Write(result);
-                        outfile.Close();
-                    }
+                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternHub);
+                        var result = template(listing);
+                        SetTextHubOutput(result);
 
-                    //Generate in database
-                    if (checkBoxGenerateInDatabase.Checked)
+                        //Output to file
+                        using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + hubTableName + ".sql"))
+                        {
+                            outfile.Write(result);
+                            outfile.Close();
+                        }
+
+                        //Generate in database
+                        if (checkBoxGenerateInDatabase.Checked)
+                        {
+                            connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                            int insertError = GenerateInDatabase(connPsa, result);
+                            errorCounter = errorCounter + insertError;
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                        int insertError = GenerateInDatabase(connPsa, hubView.ToString());
-                        errorCounter = errorCounter + insertError;
+                        SetTextHubOutput("The template could not be compiled, the error message is "+ex);
                     }
-
-                    //Present in front-end
-                    SetTextHubOutput(hubView.ToString());
-                    SetTextHubOutput("\n");
-
-                    SetTextHub($"Processing Hub entity view for {hubTableName}\r\n");
                 }
             }
             else
@@ -918,9 +916,7 @@ namespace Virtual_EDW
             }
 
             connOmd.Close();
-            connStg.Close();
-            connPsa.Close();
-            connInt.Close();
+            connOmd.Dispose();
 
             SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
             SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
@@ -6949,8 +6945,21 @@ namespace Virtual_EDW
 
         private void button7_Click(object sender, EventArgs e)
         {
+            richTextBoxInformationMain.Clear();
             string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternHubPath.Text);
-            SetTextMain(backupResponse);
+            string saveResponse = "";
+
+            if (backupResponse.StartsWith("A backup was created"))
+            {
+                SetTextMain(backupResponse);
+                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternHubPath.Text, richTextBoxHubPattern.Text);
+                SetTextMain("\r\n\r\n"+saveResponse);
+            }
+            else
+            {
+                SetTextMain(backupResponse);
+                SetTextMain(saveResponse);
+            }
         }
     }
 }

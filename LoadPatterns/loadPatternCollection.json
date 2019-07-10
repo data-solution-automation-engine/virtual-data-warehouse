@@ -1,12 +1,17 @@
 [
   {
-    "loadPatternName": "Default Hub Pattern",
+    "loadPatternName": "Default Hub View Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubDefault.handlebars"
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubViewDefault.handlebars"
   },
   {
-    "loadPatternName": "Modified Hub Pattern",
+    "loadPatternName": "Default Hub Select Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubModified.handlebars"
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubSelectDefault.handlebars"
+  },
+  {
+    "loadPatternName": "Modified Hub Select Pattern",
+    "loadPatternType": "Hub",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubSelectModified.handlebars"
   }
 ]

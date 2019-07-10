@@ -10,8 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoadPatterns", "LoadPatterns", "{E3AF448B-08FD-4B47-8D9A-7107CEBE0FD8}"
 	ProjectSection(SolutionItems) = preProject
 		LoadPatterns\loadPatternCollection.json = LoadPatterns\loadPatternCollection.json
-		LoadPatterns\loadPatternHubDefault.Handlebars = LoadPatterns\loadPatternHubDefault.Handlebars
-		LoadPatterns\loadPatternHubModified.Handlebars = LoadPatterns\loadPatternHubModified.Handlebars
+		LoadPatterns\loadPatternHubSelectDefault.Handlebars = LoadPatterns\loadPatternHubSelectDefault.Handlebars
+		LoadPatterns\loadPatternHubSelectModified.Handlebars = LoadPatterns\loadPatternHubSelectModified.Handlebars
+		LoadPatterns\loadPatternHubViewDefault.Handlebars = LoadPatterns\loadPatternHubViewDefault.Handlebars
 	EndProjectSection
 EndProject
 Global
