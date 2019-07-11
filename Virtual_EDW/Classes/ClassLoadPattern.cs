@@ -49,6 +49,12 @@ namespace Virtual_EDW
             return returnMessage;
         }
 
+        /// <summary>
+        /// The method that backs-up and saves a specific pattern (based on its path) with whatever is passed as contents.
+        /// </summary>
+        /// <param name="loadPatternFilePath"></param>
+        /// <param name="fileContent"></param>
+        /// <returns></returns>
         internal static string SaveLoadPattern(string loadPatternFilePath, string fileContent)
         {
             string returnMessage = "";
@@ -73,7 +79,7 @@ namespace Virtual_EDW
         }
 
         /// <summary>
-        ///   Make sure the load pattern is centrally available
+        ///   Make sure the load pattern is centrally available (update the value in memory)
         /// </summary>
         /// <param name="loadPattern"></param>
         /// <param name="loadPatternType></param>
@@ -88,12 +94,12 @@ namespace Virtual_EDW
 
     class LoadPatternHandling
     {
-
         internal List<LoadPattern> DeserializeLoadPatternCollection()
         {
-            // Retrieve metadata and store in a data table object
+            // Retrieve the file contents and store in a string
             var jsonInput = File.ReadAllText(@"D:\Git_Repositories\Virtual_Enterprise_Data_Warehouse\loadPatterns\loadPatternCollection.json");
 
+            //Move the (json) string into a List object (a list of the type LoadPattern)
             List<LoadPattern> loadPatternList = JsonConvert.DeserializeObject<List<LoadPattern>>(jsonInput);
 
             // Update the list in memory
@@ -102,10 +108,13 @@ namespace Virtual_EDW
             // Return the list to the instance
             return loadPatternList;
         }
-
     }
 
     #region Object Models
+    /// <summary>
+    /// The parent object containing the list of source-to-target mappings. This is the highest level and contains the list of mappings (as individual objects
+    /// but also the parameters inherited from TEAM and VEDW.
+    /// </summary>
     class SourceToTargetMappingList
     {
         public string mainTable { get; set; }
@@ -134,6 +143,9 @@ namespace Virtual_EDW
         public string targetComponentName { get; set; }
     }
 
+    /// <summary>
+    /// The parameters that have been inherited from TEAM or are set in VEDW, passed as properties of the metadata.
+    /// </summary>
     class MetadataConfiguration
     {
         public string psadatabaseName { get; } = FormBase.TeamConfigurationSettings.PsaDatabaseName;

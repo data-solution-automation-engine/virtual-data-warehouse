@@ -1,0 +1,46 @@
+{{#each individualSourceToTargetMapping }}
+--
+-- Working on mapping to {{targetTable}} from source table {{sourceTable}}
+--
+
+SELECT
+    HASHBYTES('MD5',
+    {{#each businessKey.businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
+    {{/each}}
+    ) AS {{targetTableHashKey}},
+    {{#each businessKey.businessKeyComponentMapping}}
+    {{targetComponentName}},
+    {{/each}}
+    LOAD_DATETIME,
+    ETL_INSERT_RUN_ID,
+    RECORD_SOURCE
+FROM
+(
+    SELECT
+        sub.*,
+        ROW_NUMBER() OVER (PARTITION BY {{#each businessKey.businessKeyComponentMapping}}{{targetComponentName}}{{#unless @last}},{{/unless}}{{/each}} ORDER BY LOAD_DATETIME ASC) AS LDTS_ORDER
+    FROM
+    (
+        SELECT
+            {{#each businessKey.businessKeyComponentMapping}}
+            {{sourceComponentName}} AS {{targetComponentName}},
+            {{/each}}
+            stg.LOAD_DATETIME,
+            -1 AS ETL_INSERT_RUN_ID,
+            stg.RECORD_SOURCE
+        FROM {{sourceTable}} stg
+        WHERE NOT EXISTS
+        (
+            SELECT 1
+            FROM [200_Integration_Layer].dbo.{{targetTable}} hub
+            WHERE
+            {{#each businessKey.businessKeyComponentMapping}}
+              {{sourceComponentName}} = hub.{{targetComponentName}} {{#unless @last}}AND{{/unless}}
+            {{/each}}
+        )
+    ) sub
+) supersub
+WHERE LDTS_ORDER=1
+
+{{/each}}

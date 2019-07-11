@@ -33,6 +33,16 @@
             this.buttonGenerateHubs = new System.Windows.Forms.Button();
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.tabPageStaging = new System.Windows.Forms.TabPage();
+            this.tabControlStg = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.richTextBoxStgOutput = new System.Windows.Forms.RichTextBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.labelLoadPatternStgPath = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.comboBoxStgPattern = new System.Windows.Forms.ComboBox();
+            this.richTextBoxStgPattern = new System.Windows.Forms.RichTextBox();
             this.checkBoxExcludeLanding = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textBoxFilterCriterionStg = new System.Windows.Forms.TextBox();
@@ -43,6 +53,16 @@
             this.richTextBoxStaging = new System.Windows.Forms.RichTextBox();
             this.buttonGenerateStaging = new System.Windows.Forms.Button();
             this.tabPagePSA = new System.Windows.Forms.TabPage();
+            this.tabControlPsa = new System.Windows.Forms.TabControl();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.richTextBox3 = new System.Windows.Forms.RichTextBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.labelLoadPatternPsaPath = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.button8 = new System.Windows.Forms.Button();
+            this.label13 = new System.Windows.Forms.Label();
+            this.comboBoxPsaPattern = new System.Windows.Forms.ComboBox();
+            this.richTextBoxPsaPattern = new System.Windows.Forms.RichTextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.textBoxFilterCriterionPsa = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
@@ -58,7 +78,7 @@
             this.tabPageHubPattern = new System.Windows.Forms.TabPage();
             this.labelLoadPatternHubPath = new System.Windows.Forms.Label();
             this.labelLoadPatternPathHub = new System.Windows.Forms.Label();
-            this.button7 = new System.Windows.Forms.Button();
+            this.buttonSaveHubPattern = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxHubPattern = new System.Windows.Forms.ComboBox();
             this.richTextBoxHubPattern = new System.Windows.Forms.RichTextBox();
@@ -70,6 +90,16 @@
             this.label1 = new System.Windows.Forms.Label();
             this.richTextBoxHub = new System.Windows.Forms.RichTextBox();
             this.tabPageSat = new System.Windows.Forms.TabPage();
+            this.tabControlSat = new System.Windows.Forms.TabControl();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.richTextBox9 = new System.Windows.Forms.RichTextBox();
+            this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.labelLoadPatternSatPath = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.button11 = new System.Windows.Forms.Button();
+            this.label23 = new System.Windows.Forms.Label();
+            this.comboBoxSatPattern = new System.Windows.Forms.ComboBox();
+            this.richTextBoxSatPattern = new System.Windows.Forms.RichTextBox();
             this.checkBoxEvaluateSatDelete = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.textBoxFilterCriterionSat = new System.Windows.Forms.TextBox();
@@ -81,6 +111,16 @@
             this.richTextBoxSat = new System.Windows.Forms.RichTextBox();
             this.buttonGenerateSats = new System.Windows.Forms.Button();
             this.tabPageLink = new System.Windows.Forms.TabPage();
+            this.tabControlLink = new System.Windows.Forms.TabControl();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.richTextBox5 = new System.Windows.Forms.RichTextBox();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.labelLoadPatternLinkPath = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.button9 = new System.Windows.Forms.Button();
+            this.label16 = new System.Windows.Forms.Label();
+            this.comboBoxLinkPattern = new System.Windows.Forms.ComboBox();
+            this.richTextBoxLinkPattern = new System.Windows.Forms.RichTextBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.textBoxFilterCriterionLnk = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
@@ -90,6 +130,16 @@
             this.richTextBoxLink = new System.Windows.Forms.RichTextBox();
             this.buttonGenerateLinks = new System.Windows.Forms.Button();
             this.tabPageLinkSat = new System.Windows.Forms.TabPage();
+            this.tabControlLsat = new System.Windows.Forms.TabControl();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.richTextBox7 = new System.Windows.Forms.RichTextBox();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.labelLoadPatternLsatPath = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.button10 = new System.Windows.Forms.Button();
+            this.label19 = new System.Windows.Forms.Label();
+            this.comboBoxLsatPattern = new System.Windows.Forms.ComboBox();
+            this.richTextBoxLsatPattern = new System.Windows.Forms.RichTextBox();
             this.checkBoxEvaluateLsatDeletes = new System.Windows.Forms.CheckBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.textBoxFilterCriterionLsat = new System.Windows.Forms.TextBox();
@@ -144,14 +194,6 @@
             this.checkBoxGenerateInDatabase = new System.Windows.Forms.CheckBox();
             this.checkBoxSchemaBound = new System.Windows.Forms.CheckBox();
             this.checkBoxIfExistsStatement = new System.Windows.Forms.CheckBox();
-            this.TargetPlatformGroupBox = new System.Windows.Forms.GroupBox();
-            this.SQL2014Radiobutton = new System.Windows.Forms.RadioButton();
-            this.OracleRadiobutton = new System.Windows.Forms.RadioButton();
-            this.radiobuttonANSISQL = new System.Windows.Forms.RadioButton();
-            this.OutputGroupBox = new System.Windows.Forms.GroupBox();
-            this.radioButtonIntoStatement = new System.Windows.Forms.RadioButton();
-            this.radiobuttonStoredProc = new System.Windows.Forms.RadioButton();
-            this.radiobuttonViews = new System.Windows.Forms.RadioButton();
             this.SQLGenerationGroupBox = new System.Windows.Forms.GroupBox();
             this.checkBoxIgnoreVersion = new System.Windows.Forms.CheckBox();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
@@ -160,8 +202,14 @@
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
+            this.tabControlStg.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabPagePSA.SuspendLayout();
+            this.tabControlPsa.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPageHub.SuspendLayout();
             this.tabControlHub.SuspendLayout();
@@ -169,18 +217,25 @@
             this.tabPageHubPattern.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabPageSat.SuspendLayout();
+            this.tabControlSat.SuspendLayout();
+            this.tabPage9.SuspendLayout();
+            this.tabPage10.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.tabPageLink.SuspendLayout();
+            this.tabControlLink.SuspendLayout();
+            this.tabPage5.SuspendLayout();
+            this.tabPage6.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.tabPageLinkSat.SuspendLayout();
+            this.tabControlLsat.SuspendLayout();
+            this.tabPage7.SuspendLayout();
+            this.tabPage8.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBoxhashKeyoutput.SuspendLayout();
             this.menuStripMainMenu.SuspendLayout();
-            this.TargetPlatformGroupBox.SuspendLayout();
-            this.OutputGroupBox.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox9.SuspendLayout();
@@ -217,6 +272,7 @@
             // 
             // tabPageStaging
             // 
+            this.tabPageStaging.Controls.Add(this.tabControlStg);
             this.tabPageStaging.Controls.Add(this.checkBoxExcludeLanding);
             this.tabPageStaging.Controls.Add(this.groupBox2);
             this.tabPageStaging.Controls.Add(this.button1);
@@ -231,6 +287,116 @@
             this.tabPageStaging.TabIndex = 11;
             this.tabPageStaging.Text = "Staging Area";
             this.tabPageStaging.UseVisualStyleBackColor = true;
+            // 
+            // tabControlStg
+            // 
+            this.tabControlStg.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlStg.Controls.Add(this.tabPage1);
+            this.tabControlStg.Controls.Add(this.tabPage2);
+            this.tabControlStg.Location = new System.Drawing.Point(416, 9);
+            this.tabControlStg.Name = "tabControlStg";
+            this.tabControlStg.SelectedIndex = 0;
+            this.tabControlStg.Size = new System.Drawing.Size(896, 573);
+            this.tabControlStg.TabIndex = 28;
+            this.tabControlStg.SelectedIndexChanged += new System.EventHandler(this.tabControlStg_SelectedIndexChanged);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.richTextBoxStgOutput);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(888, 547);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Staging Area Generation Output";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // richTextBoxStgOutput
+            // 
+            this.richTextBoxStgOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxStgOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxStgOutput.Location = new System.Drawing.Point(3, 6);
+            this.richTextBoxStgOutput.Name = "richTextBoxStgOutput";
+            this.richTextBoxStgOutput.Size = new System.Drawing.Size(882, 535);
+            this.richTextBoxStgOutput.TabIndex = 0;
+            this.richTextBoxStgOutput.Text = "No Staging Area logic has been generated at the moment.";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.labelLoadPatternStgPath);
+            this.tabPage2.Controls.Add(this.label8);
+            this.tabPage2.Controls.Add(this.button3);
+            this.tabPage2.Controls.Add(this.label9);
+            this.tabPage2.Controls.Add(this.comboBoxStgPattern);
+            this.tabPage2.Controls.Add(this.richTextBoxStgPattern);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(888, 547);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Staging Area Pattern";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // labelLoadPatternStgPath
+            // 
+            this.labelLoadPatternStgPath.AutoSize = true;
+            this.labelLoadPatternStgPath.Location = new System.Drawing.Point(105, 34);
+            this.labelLoadPatternStgPath.Name = "labelLoadPatternStgPath";
+            this.labelLoadPatternStgPath.Size = new System.Drawing.Size(40, 13);
+            this.labelLoadPatternStgPath.TabIndex = 17;
+            this.labelLoadPatternStgPath.Text = "<path>";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(2, 34);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(50, 13);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "File path:";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(610, 7);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(101, 23);
+            this.button3.TabIndex = 5;
+            this.button3.Text = "Save updates";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(2, 11);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(77, 13);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "Active Pattern:";
+            // 
+            // comboBoxStgPattern
+            // 
+            this.comboBoxStgPattern.FormattingEnabled = true;
+            this.comboBoxStgPattern.Location = new System.Drawing.Point(108, 8);
+            this.comboBoxStgPattern.Name = "comboBoxStgPattern";
+            this.comboBoxStgPattern.Size = new System.Drawing.Size(496, 21);
+            this.comboBoxStgPattern.TabIndex = 2;
+            this.comboBoxStgPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxStgPattern_SelectedIndexChanged);
+            // 
+            // richTextBoxStgPattern
+            // 
+            this.richTextBoxStgPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxStgPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxStgPattern.Location = new System.Drawing.Point(3, 59);
+            this.richTextBoxStgPattern.Name = "richTextBoxStgPattern";
+            this.richTextBoxStgPattern.Size = new System.Drawing.Size(882, 485);
+            this.richTextBoxStgPattern.TabIndex = 1;
+            this.richTextBoxStgPattern.Text = "";
             // 
             // checkBoxExcludeLanding
             // 
@@ -300,7 +466,7 @@
             this.checkedListBoxStgMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxStgMetadata.MultiColumn = true;
             this.checkedListBoxStgMetadata.Name = "checkedListBoxStgMetadata";
-            this.checkedListBoxStgMetadata.Size = new System.Drawing.Size(523, 377);
+            this.checkedListBoxStgMetadata.Size = new System.Drawing.Size(393, 377);
             this.checkedListBoxStgMetadata.TabIndex = 10;
             // 
             // label26
@@ -315,11 +481,11 @@
             // richTextBoxStaging
             // 
             this.richTextBoxStaging.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBoxStaging.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBoxStaging.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxStaging.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxStaging.Location = new System.Drawing.Point(17, 418);
             this.richTextBoxStaging.Name = "richTextBoxStaging";
-            this.richTextBoxStaging.Size = new System.Drawing.Size(523, 115);
+            this.richTextBoxStaging.Size = new System.Drawing.Size(393, 115);
             this.richTextBoxStaging.TabIndex = 4;
             this.richTextBoxStaging.Text = "";
             this.richTextBoxStaging.TextChanged += new System.EventHandler(this.richTextBoxStaging_TextChanged);
@@ -337,6 +503,7 @@
             // 
             // tabPagePSA
             // 
+            this.tabPagePSA.Controls.Add(this.tabControlPsa);
             this.tabPagePSA.Controls.Add(this.groupBox3);
             this.tabPagePSA.Controls.Add(this.button2);
             this.tabPagePSA.Controls.Add(this.checkBoxSelectAllPsa);
@@ -349,14 +516,124 @@
             this.tabPagePSA.Padding = new System.Windows.Forms.Padding(3);
             this.tabPagePSA.Size = new System.Drawing.Size(1330, 601);
             this.tabPagePSA.TabIndex = 9;
-            this.tabPagePSA.Text = "PSA";
+            this.tabPagePSA.Text = "Persistent Staging Area";
             this.tabPagePSA.UseVisualStyleBackColor = true;
+            // 
+            // tabControlPsa
+            // 
+            this.tabControlPsa.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlPsa.Controls.Add(this.tabPage3);
+            this.tabControlPsa.Controls.Add(this.tabPage4);
+            this.tabControlPsa.Location = new System.Drawing.Point(416, 9);
+            this.tabControlPsa.Name = "tabControlPsa";
+            this.tabControlPsa.SelectedIndex = 0;
+            this.tabControlPsa.Size = new System.Drawing.Size(896, 573);
+            this.tabControlPsa.TabIndex = 29;
+            this.tabControlPsa.SelectedIndexChanged += new System.EventHandler(this.tabControlPsa_SelectedIndexChanged);
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.richTextBox3);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(888, 547);
+            this.tabPage3.TabIndex = 0;
+            this.tabPage3.Text = "Persistent Staging Area Generation Output";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox3
+            // 
+            this.richTextBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox3.Location = new System.Drawing.Point(3, 6);
+            this.richTextBox3.Name = "richTextBox3";
+            this.richTextBox3.Size = new System.Drawing.Size(882, 535);
+            this.richTextBox3.TabIndex = 0;
+            this.richTextBox3.Text = "No Persistent Staging Area logic has been generated at the moment.";
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.labelLoadPatternPsaPath);
+            this.tabPage4.Controls.Add(this.label11);
+            this.tabPage4.Controls.Add(this.button8);
+            this.tabPage4.Controls.Add(this.label13);
+            this.tabPage4.Controls.Add(this.comboBoxPsaPattern);
+            this.tabPage4.Controls.Add(this.richTextBoxPsaPattern);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(888, 547);
+            this.tabPage4.TabIndex = 1;
+            this.tabPage4.Text = "Persistent Staging Area Pattern";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // labelLoadPatternPsaPath
+            // 
+            this.labelLoadPatternPsaPath.AutoSize = true;
+            this.labelLoadPatternPsaPath.Location = new System.Drawing.Point(105, 34);
+            this.labelLoadPatternPsaPath.Name = "labelLoadPatternPsaPath";
+            this.labelLoadPatternPsaPath.Size = new System.Drawing.Size(40, 13);
+            this.labelLoadPatternPsaPath.TabIndex = 17;
+            this.labelLoadPatternPsaPath.Text = "<path>";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(2, 34);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(50, 13);
+            this.label11.TabIndex = 8;
+            this.label11.Text = "File path:";
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(610, 7);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(101, 23);
+            this.button8.TabIndex = 5;
+            this.button8.Text = "Save updates";
+            this.button8.UseVisualStyleBackColor = true;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(2, 11);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(77, 13);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "Active Pattern:";
+            // 
+            // comboBoxPsaPattern
+            // 
+            this.comboBoxPsaPattern.FormattingEnabled = true;
+            this.comboBoxPsaPattern.Location = new System.Drawing.Point(108, 8);
+            this.comboBoxPsaPattern.Name = "comboBoxPsaPattern";
+            this.comboBoxPsaPattern.Size = new System.Drawing.Size(496, 21);
+            this.comboBoxPsaPattern.TabIndex = 2;
+            this.comboBoxPsaPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxPsaPattern_SelectedIndexChanged);
+            // 
+            // richTextBoxPsaPattern
+            // 
+            this.richTextBoxPsaPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxPsaPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxPsaPattern.Location = new System.Drawing.Point(3, 59);
+            this.richTextBoxPsaPattern.Name = "richTextBoxPsaPattern";
+            this.richTextBoxPsaPattern.Size = new System.Drawing.Size(882, 485);
+            this.richTextBoxPsaPattern.TabIndex = 1;
+            this.richTextBoxPsaPattern.Text = "";
             // 
             // groupBox3
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox3.Controls.Add(this.textBoxFilterCriterionPsa);
-            this.groupBox3.Location = new System.Drawing.Point(247, 429);
+            this.groupBox3.Location = new System.Drawing.Point(247, 539);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(163, 43);
             this.groupBox3.TabIndex = 25;
@@ -374,7 +651,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button2.Location = new System.Drawing.Point(132, 432);
+            this.button2.Location = new System.Drawing.Point(132, 542);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(109, 40);
             this.button2.TabIndex = 22;
@@ -406,7 +683,7 @@
             this.checkedListBoxPsaMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxPsaMetadata.MultiColumn = true;
             this.checkedListBoxPsaMetadata.Name = "checkedListBoxPsaMetadata";
-            this.checkedListBoxPsaMetadata.Size = new System.Drawing.Size(523, 272);
+            this.checkedListBoxPsaMetadata.Size = new System.Drawing.Size(393, 377);
             this.checkedListBoxPsaMetadata.TabIndex = 10;
             // 
             // label20
@@ -421,11 +698,11 @@
             // richTextBoxPSA
             // 
             this.richTextBoxPSA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBoxPSA.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBoxPSA.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxPSA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxPSA.Location = new System.Drawing.Point(17, 308);
+            this.richTextBoxPSA.Location = new System.Drawing.Point(17, 418);
             this.richTextBoxPSA.Name = "richTextBoxPSA";
-            this.richTextBoxPSA.Size = new System.Drawing.Size(523, 115);
+            this.richTextBoxPSA.Size = new System.Drawing.Size(393, 115);
             this.richTextBoxPSA.TabIndex = 2;
             this.richTextBoxPSA.Text = "";
             this.richTextBoxPSA.TextChanged += new System.EventHandler(this.richTextBoxPSA_TextChanged);
@@ -433,7 +710,7 @@
             // buttonGeneratePSA
             // 
             this.buttonGeneratePSA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonGeneratePSA.Location = new System.Drawing.Point(17, 432);
+            this.buttonGeneratePSA.Location = new System.Drawing.Point(17, 542);
             this.buttonGeneratePSA.Name = "buttonGeneratePSA";
             this.buttonGeneratePSA.Size = new System.Drawing.Size(109, 40);
             this.buttonGeneratePSA.TabIndex = 3;
@@ -494,13 +771,13 @@
             this.richTextBoxHubOutput.Name = "richTextBoxHubOutput";
             this.richTextBoxHubOutput.Size = new System.Drawing.Size(882, 535);
             this.richTextBoxHubOutput.TabIndex = 0;
-            this.richTextBoxHubOutput.Text = "No Hubs have been generated at the moment.";
+            this.richTextBoxHubOutput.Text = "No Hub logic has been generated at the moment.";
             // 
             // tabPageHubPattern
             // 
             this.tabPageHubPattern.Controls.Add(this.labelLoadPatternHubPath);
             this.tabPageHubPattern.Controls.Add(this.labelLoadPatternPathHub);
-            this.tabPageHubPattern.Controls.Add(this.button7);
+            this.tabPageHubPattern.Controls.Add(this.buttonSaveHubPattern);
             this.tabPageHubPattern.Controls.Add(this.label4);
             this.tabPageHubPattern.Controls.Add(this.comboBoxHubPattern);
             this.tabPageHubPattern.Controls.Add(this.richTextBoxHubPattern);
@@ -530,24 +807,24 @@
             this.labelLoadPatternPathHub.TabIndex = 8;
             this.labelLoadPatternPathHub.Text = "File path:";
             // 
-            // button7
+            // buttonSaveHubPattern
             // 
-            this.button7.Location = new System.Drawing.Point(610, 7);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(101, 23);
-            this.button7.TabIndex = 5;
-            this.button7.Text = "Save updates";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.buttonSaveHubPattern.Location = new System.Drawing.Point(610, 7);
+            this.buttonSaveHubPattern.Name = "buttonSaveHubPattern";
+            this.buttonSaveHubPattern.Size = new System.Drawing.Size(101, 23);
+            this.buttonSaveHubPattern.TabIndex = 5;
+            this.buttonSaveHubPattern.Text = "Save updates";
+            this.buttonSaveHubPattern.UseVisualStyleBackColor = true;
+            this.buttonSaveHubPattern.Click += new System.EventHandler(this.button7_Click);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(2, 11);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(100, 13);
+            this.label4.Size = new System.Drawing.Size(77, 13);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Active Hub Pattern:";
+            this.label4.Text = "Active Pattern:";
             // 
             // comboBoxHubPattern
             // 
@@ -564,9 +841,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBoxHubPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBoxHubPattern.Location = new System.Drawing.Point(3, 84);
+            this.richTextBoxHubPattern.Location = new System.Drawing.Point(3, 59);
             this.richTextBoxHubPattern.Name = "richTextBoxHubPattern";
-            this.richTextBoxHubPattern.Size = new System.Drawing.Size(882, 460);
+            this.richTextBoxHubPattern.Size = new System.Drawing.Size(882, 485);
             this.richTextBoxHubPattern.TabIndex = 1;
             this.richTextBoxHubPattern.Text = "";
             this.richTextBoxHubPattern.TextChanged += new System.EventHandler(this.richTextBoxHubPattern_TextChanged);
@@ -625,7 +902,7 @@
             this.checkedListBoxHubMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxHubMetadata.MultiColumn = true;
             this.checkedListBoxHubMetadata.Name = "checkedListBoxHubMetadata";
-            this.checkedListBoxHubMetadata.Size = new System.Drawing.Size(393, 362);
+            this.checkedListBoxHubMetadata.Size = new System.Drawing.Size(393, 377);
             this.checkedListBoxHubMetadata.TabIndex = 8;
             // 
             // label1
@@ -651,6 +928,7 @@
             // 
             // tabPageSat
             // 
+            this.tabPageSat.Controls.Add(this.tabControlSat);
             this.tabPageSat.Controls.Add(this.checkBoxEvaluateSatDelete);
             this.tabPageSat.Controls.Add(this.groupBox5);
             this.tabPageSat.Controls.Add(this.button4);
@@ -667,6 +945,116 @@
             this.tabPageSat.TabIndex = 1;
             this.tabPageSat.Text = "Satellites";
             this.tabPageSat.UseVisualStyleBackColor = true;
+            // 
+            // tabControlSat
+            // 
+            this.tabControlSat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlSat.Controls.Add(this.tabPage9);
+            this.tabControlSat.Controls.Add(this.tabPage10);
+            this.tabControlSat.Location = new System.Drawing.Point(416, 9);
+            this.tabControlSat.Name = "tabControlSat";
+            this.tabControlSat.SelectedIndex = 0;
+            this.tabControlSat.Size = new System.Drawing.Size(896, 573);
+            this.tabControlSat.TabIndex = 30;
+            this.tabControlSat.SelectedIndexChanged += new System.EventHandler(this.tabControlSat_SelectedIndexChanged);
+            // 
+            // tabPage9
+            // 
+            this.tabPage9.Controls.Add(this.richTextBox9);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(888, 547);
+            this.tabPage9.TabIndex = 0;
+            this.tabPage9.Text = "Satellite Generation Output";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox9
+            // 
+            this.richTextBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox9.Location = new System.Drawing.Point(3, 6);
+            this.richTextBox9.Name = "richTextBox9";
+            this.richTextBox9.Size = new System.Drawing.Size(882, 535);
+            this.richTextBox9.TabIndex = 0;
+            this.richTextBox9.Text = "No Satellite logic has been generated at the moment.";
+            // 
+            // tabPage10
+            // 
+            this.tabPage10.Controls.Add(this.labelLoadPatternSatPath);
+            this.tabPage10.Controls.Add(this.label22);
+            this.tabPage10.Controls.Add(this.button11);
+            this.tabPage10.Controls.Add(this.label23);
+            this.tabPage10.Controls.Add(this.comboBoxSatPattern);
+            this.tabPage10.Controls.Add(this.richTextBoxSatPattern);
+            this.tabPage10.Location = new System.Drawing.Point(4, 22);
+            this.tabPage10.Name = "tabPage10";
+            this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage10.Size = new System.Drawing.Size(888, 547);
+            this.tabPage10.TabIndex = 1;
+            this.tabPage10.Text = "Satellite Pattern";
+            this.tabPage10.UseVisualStyleBackColor = true;
+            // 
+            // labelLoadPatternSatPath
+            // 
+            this.labelLoadPatternSatPath.AutoSize = true;
+            this.labelLoadPatternSatPath.Location = new System.Drawing.Point(105, 34);
+            this.labelLoadPatternSatPath.Name = "labelLoadPatternSatPath";
+            this.labelLoadPatternSatPath.Size = new System.Drawing.Size(40, 13);
+            this.labelLoadPatternSatPath.TabIndex = 17;
+            this.labelLoadPatternSatPath.Text = "<path>";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(2, 34);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(50, 13);
+            this.label22.TabIndex = 8;
+            this.label22.Text = "File path:";
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(610, 7);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(101, 23);
+            this.button11.TabIndex = 5;
+            this.button11.Text = "Save updates";
+            this.button11.UseVisualStyleBackColor = true;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(2, 11);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(77, 13);
+            this.label23.TabIndex = 3;
+            this.label23.Text = "Active Pattern:";
+            // 
+            // comboBoxSatPattern
+            // 
+            this.comboBoxSatPattern.FormattingEnabled = true;
+            this.comboBoxSatPattern.Location = new System.Drawing.Point(108, 8);
+            this.comboBoxSatPattern.Name = "comboBoxSatPattern";
+            this.comboBoxSatPattern.Size = new System.Drawing.Size(496, 21);
+            this.comboBoxSatPattern.TabIndex = 2;
+            this.comboBoxSatPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxSatPattern_SelectedIndexChanged);
+            // 
+            // richTextBoxSatPattern
+            // 
+            this.richTextBoxSatPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxSatPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxSatPattern.Location = new System.Drawing.Point(3, 59);
+            this.richTextBoxSatPattern.Name = "richTextBoxSatPattern";
+            this.richTextBoxSatPattern.Size = new System.Drawing.Size(882, 485);
+            this.richTextBoxSatPattern.TabIndex = 1;
+            this.richTextBoxSatPattern.Text = "";
             // 
             // checkBoxEvaluateSatDelete
             // 
@@ -685,7 +1073,7 @@
             // 
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox5.Controls.Add(this.textBoxFilterCriterionSat);
-            this.groupBox5.Location = new System.Drawing.Point(247, 429);
+            this.groupBox5.Location = new System.Drawing.Point(247, 539);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(163, 43);
             this.groupBox5.TabIndex = 25;
@@ -703,7 +1091,7 @@
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button4.Location = new System.Drawing.Point(132, 432);
+            this.button4.Location = new System.Drawing.Point(132, 542);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(109, 40);
             this.button4.TabIndex = 22;
@@ -735,7 +1123,7 @@
             this.checkedListBoxSatMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxSatMetadata.MultiColumn = true;
             this.checkedListBoxSatMetadata.Name = "checkedListBoxSatMetadata";
-            this.checkedListBoxSatMetadata.Size = new System.Drawing.Size(523, 272);
+            this.checkedListBoxSatMetadata.Size = new System.Drawing.Size(393, 377);
             this.checkedListBoxSatMetadata.TabIndex = 9;
             // 
             // checkBoxDisableSatZeroRecords
@@ -761,11 +1149,11 @@
             // richTextBoxSat
             // 
             this.richTextBoxSat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBoxSat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBoxSat.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxSat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxSat.Location = new System.Drawing.Point(17, 308);
+            this.richTextBoxSat.Location = new System.Drawing.Point(17, 418);
             this.richTextBoxSat.Name = "richTextBoxSat";
-            this.richTextBoxSat.Size = new System.Drawing.Size(523, 115);
+            this.richTextBoxSat.Size = new System.Drawing.Size(393, 115);
             this.richTextBoxSat.TabIndex = 2;
             this.richTextBoxSat.Text = "";
             this.richTextBoxSat.TextChanged += new System.EventHandler(this.richTextBoxSat_TextChanged);
@@ -773,7 +1161,7 @@
             // buttonGenerateSats
             // 
             this.buttonGenerateSats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonGenerateSats.Location = new System.Drawing.Point(17, 432);
+            this.buttonGenerateSats.Location = new System.Drawing.Point(17, 542);
             this.buttonGenerateSats.Name = "buttonGenerateSats";
             this.buttonGenerateSats.Size = new System.Drawing.Size(109, 40);
             this.buttonGenerateSats.TabIndex = 3;
@@ -783,6 +1171,7 @@
             // 
             // tabPageLink
             // 
+            this.tabPageLink.Controls.Add(this.tabControlLink);
             this.tabPageLink.Controls.Add(this.groupBox6);
             this.tabPageLink.Controls.Add(this.button5);
             this.tabPageLink.Controls.Add(this.checkBoxSelectAllLinks);
@@ -798,11 +1187,121 @@
             this.tabPageLink.Text = "Links";
             this.tabPageLink.UseVisualStyleBackColor = true;
             // 
+            // tabControlLink
+            // 
+            this.tabControlLink.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlLink.Controls.Add(this.tabPage5);
+            this.tabControlLink.Controls.Add(this.tabPage6);
+            this.tabControlLink.Location = new System.Drawing.Point(416, 9);
+            this.tabControlLink.Name = "tabControlLink";
+            this.tabControlLink.SelectedIndex = 0;
+            this.tabControlLink.Size = new System.Drawing.Size(896, 573);
+            this.tabControlLink.TabIndex = 29;
+            this.tabControlLink.SelectedIndexChanged += new System.EventHandler(this.tabControlLink_SelectedIndexChanged);
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.richTextBox5);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(888, 547);
+            this.tabPage5.TabIndex = 0;
+            this.tabPage5.Text = "Link Generation Output";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox5
+            // 
+            this.richTextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox5.Location = new System.Drawing.Point(3, 6);
+            this.richTextBox5.Name = "richTextBox5";
+            this.richTextBox5.Size = new System.Drawing.Size(882, 535);
+            this.richTextBox5.TabIndex = 0;
+            this.richTextBox5.Text = "No Link logic has been generated at the moment.";
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Controls.Add(this.labelLoadPatternLinkPath);
+            this.tabPage6.Controls.Add(this.label15);
+            this.tabPage6.Controls.Add(this.button9);
+            this.tabPage6.Controls.Add(this.label16);
+            this.tabPage6.Controls.Add(this.comboBoxLinkPattern);
+            this.tabPage6.Controls.Add(this.richTextBoxLinkPattern);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage6.Size = new System.Drawing.Size(888, 547);
+            this.tabPage6.TabIndex = 1;
+            this.tabPage6.Text = "Link Pattern";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // labelLoadPatternLinkPath
+            // 
+            this.labelLoadPatternLinkPath.AutoSize = true;
+            this.labelLoadPatternLinkPath.Location = new System.Drawing.Point(105, 34);
+            this.labelLoadPatternLinkPath.Name = "labelLoadPatternLinkPath";
+            this.labelLoadPatternLinkPath.Size = new System.Drawing.Size(40, 13);
+            this.labelLoadPatternLinkPath.TabIndex = 17;
+            this.labelLoadPatternLinkPath.Text = "<path>";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(2, 34);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(50, 13);
+            this.label15.TabIndex = 8;
+            this.label15.Text = "File path:";
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(610, 7);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(101, 23);
+            this.button9.TabIndex = 5;
+            this.button9.Text = "Save updates";
+            this.button9.UseVisualStyleBackColor = true;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(2, 11);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(77, 13);
+            this.label16.TabIndex = 3;
+            this.label16.Text = "Active Pattern:";
+            // 
+            // comboBoxLinkPattern
+            // 
+            this.comboBoxLinkPattern.FormattingEnabled = true;
+            this.comboBoxLinkPattern.Location = new System.Drawing.Point(108, 8);
+            this.comboBoxLinkPattern.Name = "comboBoxLinkPattern";
+            this.comboBoxLinkPattern.Size = new System.Drawing.Size(496, 21);
+            this.comboBoxLinkPattern.TabIndex = 2;
+            this.comboBoxLinkPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxLinkPattern_SelectedIndexChanged);
+            // 
+            // richTextBoxLinkPattern
+            // 
+            this.richTextBoxLinkPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxLinkPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxLinkPattern.Location = new System.Drawing.Point(3, 59);
+            this.richTextBoxLinkPattern.Name = "richTextBoxLinkPattern";
+            this.richTextBoxLinkPattern.Size = new System.Drawing.Size(882, 485);
+            this.richTextBoxLinkPattern.TabIndex = 1;
+            this.richTextBoxLinkPattern.Text = "";
+            // 
             // groupBox6
             // 
             this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox6.Controls.Add(this.textBoxFilterCriterionLnk);
-            this.groupBox6.Location = new System.Drawing.Point(247, 429);
+            this.groupBox6.Location = new System.Drawing.Point(247, 539);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(163, 43);
             this.groupBox6.TabIndex = 26;
@@ -820,7 +1319,7 @@
             // button5
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button5.Location = new System.Drawing.Point(132, 432);
+            this.button5.Location = new System.Drawing.Point(132, 542);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(109, 40);
             this.button5.TabIndex = 22;
@@ -852,7 +1351,7 @@
             this.checkedListBoxLinkMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxLinkMetadata.MultiColumn = true;
             this.checkedListBoxLinkMetadata.Name = "checkedListBoxLinkMetadata";
-            this.checkedListBoxLinkMetadata.Size = new System.Drawing.Size(523, 272);
+            this.checkedListBoxLinkMetadata.Size = new System.Drawing.Size(393, 377);
             this.checkedListBoxLinkMetadata.TabIndex = 10;
             // 
             // label3
@@ -867,11 +1366,11 @@
             // richTextBoxLink
             // 
             this.richTextBoxLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBoxLink.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBoxLink.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxLink.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxLink.Location = new System.Drawing.Point(17, 308);
+            this.richTextBoxLink.Location = new System.Drawing.Point(17, 418);
             this.richTextBoxLink.Name = "richTextBoxLink";
-            this.richTextBoxLink.Size = new System.Drawing.Size(523, 115);
+            this.richTextBoxLink.Size = new System.Drawing.Size(393, 115);
             this.richTextBoxLink.TabIndex = 5;
             this.richTextBoxLink.Text = "";
             this.richTextBoxLink.TextChanged += new System.EventHandler(this.richTextBoxLink_TextChanged);
@@ -879,7 +1378,7 @@
             // buttonGenerateLinks
             // 
             this.buttonGenerateLinks.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonGenerateLinks.Location = new System.Drawing.Point(17, 432);
+            this.buttonGenerateLinks.Location = new System.Drawing.Point(17, 542);
             this.buttonGenerateLinks.Name = "buttonGenerateLinks";
             this.buttonGenerateLinks.Size = new System.Drawing.Size(109, 40);
             this.buttonGenerateLinks.TabIndex = 6;
@@ -889,6 +1388,7 @@
             // 
             // tabPageLinkSat
             // 
+            this.tabPageLinkSat.Controls.Add(this.tabControlLsat);
             this.tabPageLinkSat.Controls.Add(this.checkBoxEvaluateLsatDeletes);
             this.tabPageLinkSat.Controls.Add(this.groupBox7);
             this.tabPageLinkSat.Controls.Add(this.checkBoxDisableLsatZeroRecords);
@@ -905,6 +1405,116 @@
             this.tabPageLinkSat.TabIndex = 4;
             this.tabPageLinkSat.Text = "Link-Satellites";
             this.tabPageLinkSat.UseVisualStyleBackColor = true;
+            // 
+            // tabControlLsat
+            // 
+            this.tabControlLsat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlLsat.Controls.Add(this.tabPage7);
+            this.tabControlLsat.Controls.Add(this.tabPage8);
+            this.tabControlLsat.Location = new System.Drawing.Point(416, 9);
+            this.tabControlLsat.Name = "tabControlLsat";
+            this.tabControlLsat.SelectedIndex = 0;
+            this.tabControlLsat.Size = new System.Drawing.Size(896, 573);
+            this.tabControlLsat.TabIndex = 29;
+            this.tabControlLsat.SelectedIndexChanged += new System.EventHandler(this.tabControlLsat_SelectedIndexChanged);
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.richTextBox7);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(888, 547);
+            this.tabPage7.TabIndex = 0;
+            this.tabPage7.Text = "Link-Satellite Generation Output";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox7
+            // 
+            this.richTextBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox7.Location = new System.Drawing.Point(3, 6);
+            this.richTextBox7.Name = "richTextBox7";
+            this.richTextBox7.Size = new System.Drawing.Size(882, 535);
+            this.richTextBox7.TabIndex = 0;
+            this.richTextBox7.Text = "No Link-Satellite logic has been generated at the moment.";
+            // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.labelLoadPatternLsatPath);
+            this.tabPage8.Controls.Add(this.label18);
+            this.tabPage8.Controls.Add(this.button10);
+            this.tabPage8.Controls.Add(this.label19);
+            this.tabPage8.Controls.Add(this.comboBoxLsatPattern);
+            this.tabPage8.Controls.Add(this.richTextBoxLsatPattern);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(888, 547);
+            this.tabPage8.TabIndex = 1;
+            this.tabPage8.Text = "Link-Satellite Pattern";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // labelLoadPatternLsatPath
+            // 
+            this.labelLoadPatternLsatPath.AutoSize = true;
+            this.labelLoadPatternLsatPath.Location = new System.Drawing.Point(105, 34);
+            this.labelLoadPatternLsatPath.Name = "labelLoadPatternLsatPath";
+            this.labelLoadPatternLsatPath.Size = new System.Drawing.Size(40, 13);
+            this.labelLoadPatternLsatPath.TabIndex = 17;
+            this.labelLoadPatternLsatPath.Text = "<path>";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(2, 34);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(50, 13);
+            this.label18.TabIndex = 8;
+            this.label18.Text = "File path:";
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(610, 7);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(101, 23);
+            this.button10.TabIndex = 5;
+            this.button10.Text = "Save updates";
+            this.button10.UseVisualStyleBackColor = true;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(2, 11);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(77, 13);
+            this.label19.TabIndex = 3;
+            this.label19.Text = "Active Pattern:";
+            // 
+            // comboBoxLsatPattern
+            // 
+            this.comboBoxLsatPattern.FormattingEnabled = true;
+            this.comboBoxLsatPattern.Location = new System.Drawing.Point(108, 8);
+            this.comboBoxLsatPattern.Name = "comboBoxLsatPattern";
+            this.comboBoxLsatPattern.Size = new System.Drawing.Size(496, 21);
+            this.comboBoxLsatPattern.TabIndex = 2;
+            this.comboBoxLsatPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxLsatPattern_SelectedIndexChanged);
+            // 
+            // richTextBoxLsatPattern
+            // 
+            this.richTextBoxLsatPattern.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxLsatPattern.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxLsatPattern.Location = new System.Drawing.Point(3, 59);
+            this.richTextBoxLsatPattern.Name = "richTextBoxLsatPattern";
+            this.richTextBoxLsatPattern.Size = new System.Drawing.Size(882, 485);
+            this.richTextBoxLsatPattern.TabIndex = 1;
+            this.richTextBoxLsatPattern.Text = "";
             // 
             // checkBoxEvaluateLsatDeletes
             // 
@@ -923,7 +1533,7 @@
             // 
             this.groupBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox7.Controls.Add(this.textBoxFilterCriterionLsat);
-            this.groupBox7.Location = new System.Drawing.Point(247, 429);
+            this.groupBox7.Location = new System.Drawing.Point(247, 539);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(163, 43);
             this.groupBox7.TabIndex = 26;
@@ -952,7 +1562,7 @@
             // button6
             // 
             this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button6.Location = new System.Drawing.Point(132, 432);
+            this.button6.Location = new System.Drawing.Point(132, 542);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(109, 40);
             this.button6.TabIndex = 22;
@@ -984,7 +1594,7 @@
             this.checkedListBoxLsatMetadata.Location = new System.Drawing.Point(17, 31);
             this.checkedListBoxLsatMetadata.MultiColumn = true;
             this.checkedListBoxLsatMetadata.Name = "checkedListBoxLsatMetadata";
-            this.checkedListBoxLsatMetadata.Size = new System.Drawing.Size(523, 272);
+            this.checkedListBoxLsatMetadata.Size = new System.Drawing.Size(393, 377);
             this.checkedListBoxLsatMetadata.TabIndex = 11;
             // 
             // label5
@@ -999,11 +1609,11 @@
             // richTextBoxLsat
             // 
             this.richTextBoxLsat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBoxLsat.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBoxLsat.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxLsat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxLsat.Location = new System.Drawing.Point(17, 308);
+            this.richTextBoxLsat.Location = new System.Drawing.Point(17, 418);
             this.richTextBoxLsat.Name = "richTextBoxLsat";
-            this.richTextBoxLsat.Size = new System.Drawing.Size(523, 115);
+            this.richTextBoxLsat.Size = new System.Drawing.Size(393, 115);
             this.richTextBoxLsat.TabIndex = 8;
             this.richTextBoxLsat.Text = "";
             this.richTextBoxLsat.TextChanged += new System.EventHandler(this.richTextBoxLsat_TextChanged);
@@ -1011,7 +1621,7 @@
             // buttonGenerateLsats
             // 
             this.buttonGenerateLsats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonGenerateLsats.Location = new System.Drawing.Point(17, 432);
+            this.buttonGenerateLsats.Location = new System.Drawing.Point(17, 542);
             this.buttonGenerateLsats.Name = "buttonGenerateLsats";
             this.buttonGenerateLsats.Size = new System.Drawing.Size(109, 40);
             this.buttonGenerateLsats.TabIndex = 9;
@@ -1431,95 +2041,6 @@
             this.checkBoxIfExistsStatement.Text = "Add If Exists / Drop / Truncate";
             this.checkBoxIfExistsStatement.UseVisualStyleBackColor = true;
             // 
-            // TargetPlatformGroupBox
-            // 
-            this.TargetPlatformGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TargetPlatformGroupBox.Controls.Add(this.SQL2014Radiobutton);
-            this.TargetPlatformGroupBox.Controls.Add(this.OracleRadiobutton);
-            this.TargetPlatformGroupBox.Controls.Add(this.radiobuttonANSISQL);
-            this.TargetPlatformGroupBox.Location = new System.Drawing.Point(445, 677);
-            this.TargetPlatformGroupBox.Name = "TargetPlatformGroupBox";
-            this.TargetPlatformGroupBox.Size = new System.Drawing.Size(225, 108);
-            this.TargetPlatformGroupBox.TabIndex = 11;
-            this.TargetPlatformGroupBox.TabStop = false;
-            this.TargetPlatformGroupBox.Text = "Target Platform";
-            // 
-            // SQL2014Radiobutton
-            // 
-            this.SQL2014Radiobutton.AutoSize = true;
-            this.SQL2014Radiobutton.Location = new System.Drawing.Point(7, 42);
-            this.SQL2014Radiobutton.Name = "SQL2014Radiobutton";
-            this.SQL2014Radiobutton.Size = new System.Drawing.Size(107, 17);
-            this.SQL2014Radiobutton.TabIndex = 3;
-            this.SQL2014Radiobutton.Text = "SQL Server 2014";
-            this.SQL2014Radiobutton.UseVisualStyleBackColor = true;
-            // 
-            // OracleRadiobutton
-            // 
-            this.OracleRadiobutton.AutoSize = true;
-            this.OracleRadiobutton.Enabled = false;
-            this.OracleRadiobutton.Location = new System.Drawing.Point(7, 64);
-            this.OracleRadiobutton.Name = "OracleRadiobutton";
-            this.OracleRadiobutton.Size = new System.Drawing.Size(77, 17);
-            this.OracleRadiobutton.TabIndex = 2;
-            this.OracleRadiobutton.Text = "Oracle 12c";
-            this.OracleRadiobutton.UseVisualStyleBackColor = true;
-            // 
-            // radiobuttonANSISQL
-            // 
-            this.radiobuttonANSISQL.AutoSize = true;
-            this.radiobuttonANSISQL.Enabled = false;
-            this.radiobuttonANSISQL.Location = new System.Drawing.Point(7, 21);
-            this.radiobuttonANSISQL.Name = "radiobuttonANSISQL";
-            this.radiobuttonANSISQL.Size = new System.Drawing.Size(74, 17);
-            this.radiobuttonANSISQL.TabIndex = 0;
-            this.radiobuttonANSISQL.Text = "ANSI SQL";
-            this.radiobuttonANSISQL.UseVisualStyleBackColor = true;
-            // 
-            // OutputGroupBox
-            // 
-            this.OutputGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.OutputGroupBox.Controls.Add(this.radioButtonIntoStatement);
-            this.OutputGroupBox.Controls.Add(this.radiobuttonStoredProc);
-            this.OutputGroupBox.Controls.Add(this.radiobuttonViews);
-            this.OutputGroupBox.Location = new System.Drawing.Point(13, 677);
-            this.OutputGroupBox.Name = "OutputGroupBox";
-            this.OutputGroupBox.Size = new System.Drawing.Size(196, 108);
-            this.OutputGroupBox.TabIndex = 13;
-            this.OutputGroupBox.TabStop = false;
-            this.OutputGroupBox.Text = "Output Type";
-            // 
-            // radioButtonIntoStatement
-            // 
-            this.radioButtonIntoStatement.AutoSize = true;
-            this.radioButtonIntoStatement.Location = new System.Drawing.Point(7, 61);
-            this.radioButtonIntoStatement.Name = "radioButtonIntoStatement";
-            this.radioButtonIntoStatement.Size = new System.Drawing.Size(156, 17);
-            this.radioButtonIntoStatement.TabIndex = 2;
-            this.radioButtonIntoStatement.Text = "Into statements (Views only)";
-            this.radioButtonIntoStatement.UseVisualStyleBackColor = true;
-            // 
-            // radiobuttonStoredProc
-            // 
-            this.radiobuttonStoredProc.AutoSize = true;
-            this.radiobuttonStoredProc.Enabled = false;
-            this.radiobuttonStoredProc.Location = new System.Drawing.Point(7, 40);
-            this.radiobuttonStoredProc.Name = "radiobuttonStoredProc";
-            this.radiobuttonStoredProc.Size = new System.Drawing.Size(113, 17);
-            this.radiobuttonStoredProc.TabIndex = 1;
-            this.radiobuttonStoredProc.Text = "Stored Procedures";
-            this.radiobuttonStoredProc.UseVisualStyleBackColor = true;
-            // 
-            // radiobuttonViews
-            // 
-            this.radiobuttonViews.AutoSize = true;
-            this.radiobuttonViews.Location = new System.Drawing.Point(7, 19);
-            this.radiobuttonViews.Name = "radiobuttonViews";
-            this.radiobuttonViews.Size = new System.Drawing.Size(53, 17);
-            this.radiobuttonViews.TabIndex = 0;
-            this.radiobuttonViews.Text = "Views";
-            this.radiobuttonViews.UseVisualStyleBackColor = true;
-            // 
             // SQLGenerationGroupBox
             // 
             this.SQLGenerationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1527,7 +2048,7 @@
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateInDatabase);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxSchemaBound);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxIfExistsStatement);
-            this.SQLGenerationGroupBox.Location = new System.Drawing.Point(215, 677);
+            this.SQLGenerationGroupBox.Location = new System.Drawing.Point(16, 677);
             this.SQLGenerationGroupBox.Name = "SQLGenerationGroupBox";
             this.SQLGenerationGroupBox.Size = new System.Drawing.Size(224, 108);
             this.SQLGenerationGroupBox.TabIndex = 14;
@@ -1556,7 +2077,7 @@
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
-            this.pictureBox1.Location = new System.Drawing.Point(1237, 685);
+            this.pictureBox1.Location = new System.Drawing.Point(1237, 683);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(109, 100);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -1567,9 +2088,9 @@
             // 
             this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox9.Controls.Add(this.richTextBoxInformationMain);
-            this.groupBox9.Location = new System.Drawing.Point(676, 677);
+            this.groupBox9.Location = new System.Drawing.Point(246, 677);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(555, 108);
+            this.groupBox9.Size = new System.Drawing.Size(985, 108);
             this.groupBox9.TabIndex = 12;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Information";
@@ -1581,7 +2102,7 @@
             this.richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 19);
             this.richTextBoxInformationMain.Name = "richTextBoxInformationMain";
-            this.richTextBoxInformationMain.Size = new System.Drawing.Size(543, 82);
+            this.richTextBoxInformationMain.Size = new System.Drawing.Size(973, 82);
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
             // 
@@ -1594,8 +2115,6 @@
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.SQLGenerationGroupBox);
-            this.Controls.Add(this.OutputGroupBox);
-            this.Controls.Add(this.TargetPlatformGroupBox);
             this.Controls.Add(this.MainTabControl);
             this.Controls.Add(this.menuStripMainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1607,10 +2126,18 @@
             this.MainTabControl.ResumeLayout(false);
             this.tabPageStaging.ResumeLayout(false);
             this.tabPageStaging.PerformLayout();
+            this.tabControlStg.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.tabPagePSA.ResumeLayout(false);
             this.tabPagePSA.PerformLayout();
+            this.tabControlPsa.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPageHub.ResumeLayout(false);
@@ -1623,14 +2150,26 @@
             this.groupBox4.PerformLayout();
             this.tabPageSat.ResumeLayout(false);
             this.tabPageSat.PerformLayout();
+            this.tabControlSat.ResumeLayout(false);
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage10.ResumeLayout(false);
+            this.tabPage10.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.tabPageLink.ResumeLayout(false);
             this.tabPageLink.PerformLayout();
+            this.tabControlLink.ResumeLayout(false);
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.tabPageLinkSat.ResumeLayout(false);
             this.tabPageLinkSat.PerformLayout();
+            this.tabControlLsat.ResumeLayout(false);
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage8.ResumeLayout(false);
+            this.tabPage8.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.tabPageSettings.ResumeLayout(false);
@@ -1643,10 +2182,6 @@
             this.groupBoxhashKeyoutput.PerformLayout();
             this.menuStripMainMenu.ResumeLayout(false);
             this.menuStripMainMenu.PerformLayout();
-            this.TargetPlatformGroupBox.ResumeLayout(false);
-            this.TargetPlatformGroupBox.PerformLayout();
-            this.OutputGroupBox.ResumeLayout(false);
-            this.OutputGroupBox.PerformLayout();
             this.SQLGenerationGroupBox.ResumeLayout(false);
             this.SQLGenerationGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -1683,13 +2218,6 @@
         private System.Windows.Forms.CheckBox checkBoxSchemaBound;
         private System.Windows.Forms.CheckBox checkBoxIfExistsStatement;
         private System.Windows.Forms.TabPage tabPageSettings;
-        private System.Windows.Forms.GroupBox TargetPlatformGroupBox;
-        private System.Windows.Forms.RadioButton SQL2014Radiobutton;
-        private System.Windows.Forms.RadioButton OracleRadiobutton;
-        private System.Windows.Forms.RadioButton radiobuttonANSISQL;
-        private System.Windows.Forms.GroupBox OutputGroupBox;
-        private System.Windows.Forms.RadioButton radiobuttonStoredProc;
-        private System.Windows.Forms.RadioButton radiobuttonViews;
         private System.Windows.Forms.GroupBox SQLGenerationGroupBox;
         private System.Windows.Forms.ToolStripMenuItem dimensionalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rawDataMartToolStripMenuItem;
@@ -1704,7 +2232,6 @@
         private System.Windows.Forms.RichTextBox richTextBoxPSA;
         private System.Windows.Forms.Button buttonGeneratePSA;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.RadioButton radioButtonIntoStatement;
         private System.Windows.Forms.TabPage tabPageStaging;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.RichTextBox richTextBoxStaging;
@@ -1781,11 +2308,61 @@
         private System.Windows.Forms.RichTextBox richTextBoxInformationMain;
         private System.Windows.Forms.RichTextBox richTextBoxHubOutput;
         private System.Windows.Forms.RichTextBox richTextBoxHubPattern;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button buttonSaveHubPattern;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBoxHubPattern;
         private System.Windows.Forms.Label labelLoadPatternPathHub;
         private System.Windows.Forms.Label labelLoadPatternHubPath;
+        private System.Windows.Forms.TabControl tabControlStg;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.RichTextBox richTextBoxStgOutput;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Label labelLoadPatternStgPath;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox comboBoxStgPattern;
+        private System.Windows.Forms.RichTextBox richTextBoxStgPattern;
+        private System.Windows.Forms.TabControl tabControlPsa;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.RichTextBox richTextBox3;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Label labelLoadPatternPsaPath;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox comboBoxPsaPattern;
+        private System.Windows.Forms.RichTextBox richTextBoxPsaPattern;
+        private System.Windows.Forms.TabControl tabControlSat;
+        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.RichTextBox richTextBox9;
+        private System.Windows.Forms.TabPage tabPage10;
+        private System.Windows.Forms.Label labelLoadPatternSatPath;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.ComboBox comboBoxSatPattern;
+        private System.Windows.Forms.RichTextBox richTextBoxSatPattern;
+        private System.Windows.Forms.TabControl tabControlLink;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.RichTextBox richTextBox5;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.Label labelLoadPatternLinkPath;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.ComboBox comboBoxLinkPattern;
+        private System.Windows.Forms.RichTextBox richTextBoxLinkPattern;
+        private System.Windows.Forms.TabControl tabControlLsat;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.RichTextBox richTextBox7;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.Label labelLoadPatternLsatPath;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.ComboBox comboBoxLsatPattern;
+        private System.Windows.Forms.RichTextBox richTextBoxLsatPattern;
     }
 }
 

@@ -61,8 +61,7 @@ namespace Virtual_EDW
 
             checkBoxGenerateInDatabase.Checked = false;
             checkBoxIfExistsStatement.Checked = true;
-            radiobuttonViews.Checked = true;
-            SQL2014Radiobutton.Checked = true;
+            //radiobuttonViews.Checked = true;
             checkBoxDisableSatZeroRecords.Checked = false;
             checkBoxDisableLsatZeroRecords.Checked = false;
 
@@ -79,7 +78,12 @@ namespace Virtual_EDW
             CheckAllLsatValues();
 
             // Load the patterns into the tool based on the available list
+            LoadStgPatternCombobox();
+            LoadPsaPatternCombobox();
             LoadHubPatternCombobox();
+            LoadSatPatternCombobox();
+            LoadLinkPatternCombobox();
+            LoadLsatPatternCombobox();
             startUpIndicator = false;
         }
 
@@ -511,19 +515,15 @@ namespace Virtual_EDW
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
-            if (radiobuttonViews.Checked) // Views
-            {
+            //if (radiobuttonViews.Checked) // Views
+            //{
                 //GenerateHubViews();
                 GenerateHubViewsFromPattern();
-            }
-            else if (radiobuttonStoredProc.Checked)
-            {
-
-            }
-            else if (radioButtonIntoStatement.Checked) // Insert into
-            {
-                GenerateHubInsertInto();
-            }
+            //}
+            //else if (radioButtonIntoStatement.Checked) // Insert into
+            //{
+            //    GenerateHubInsertInto();
+            //}
         }
 
         private void GenerateHubInsertInto()
@@ -1330,18 +1330,14 @@ namespace Virtual_EDW
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
-            if (radiobuttonViews.Checked)
-            {
+            //if (radiobuttonViews.Checked)
+            //{
                 GenerateSatViews();
-            }
-            else if (radiobuttonStoredProc.Checked)
-            {
-                MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-            else if (radioButtonIntoStatement.Checked)
-            {
-                GenerateSatInsertInto();
-            }
+            //}
+            //else if (radioButtonIntoStatement.Checked)
+            //{
+            //    GenerateSatInsertInto();
+            //}
         }
 
         // Generate the Insert Into statement for the Satellites
@@ -2166,18 +2162,14 @@ namespace Virtual_EDW
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
-            if (radiobuttonViews.Checked)
-            {
+            //if (radiobuttonViews.Checked)
+            //{
                 GenerateLinkViews();
-            }
-            else if (radiobuttonStoredProc.Checked)
-            {
-                MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-            else if (radioButtonIntoStatement.Checked)
-            {
-                GenerateLinkInsertInto();
-            }
+            //}
+            //else if (radioButtonIntoStatement.Checked)
+            //{
+            //    GenerateLinkInsertInto();
+            //}
         }
 
         private void GenerateLinkInsertInto()
@@ -3152,19 +3144,15 @@ namespace Virtual_EDW
         private void BackgroundDoLsat(Object obj)
         {
           
-            if (radiobuttonViews.Checked)
-            {
+            //if (radiobuttonViews.Checked)
+            //{
                 GenerateLsatHistoryViews();
                 GenerateLsatDrivingKeyViews();
-            }
-            else if (radiobuttonStoredProc.Checked)
-            {
-                MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-            else if (radioButtonIntoStatement.Checked)
-            {
-                GenerateLsatInsertInto();
-            }
+            //}
+            //else if (radioButtonIntoStatement.Checked)
+            //{
+            //    GenerateLsatInsertInto();
+            //}
         }
 
         private void GenerateLsatInsertInto()
@@ -4679,19 +4667,14 @@ namespace Virtual_EDW
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringHstg);
 
-            if (radiobuttonViews.Checked)
-            {
+            //if (radiobuttonViews.Checked)
+            //{
                 PsaGenerateViews();
-            }
-            else if (radiobuttonStoredProc.Checked)
-            {
-                MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation);
-            }
-            else if (radioButtonIntoStatement.Checked)
-            {
-                PsaGenerateInsertInto();
-            }
+            //}
+            //else if (radioButtonIntoStatement.Checked)
+            //{
+            //    PsaGenerateInsertInto();
+            //}
         }
 
         // Create the Insert statement for the Persisten Staging Area (PSA)
@@ -5132,18 +5115,14 @@ namespace Virtual_EDW
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringStg);
 
-            if (radiobuttonViews.Checked)
-            {
+            //if (radiobuttonViews.Checked)
+            //{
                 StagingGenerateViews();
-            }
-            else if (radiobuttonStoredProc.Checked)
-            {
-                MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-            else if (radioButtonIntoStatement.Checked)
-            {
-                StagingGenerateInsertInto();
-            }
+            //}
+            //else if (radioButtonIntoStatement.Checked)
+            //{
+            //    StagingGenerateInsertInto();
+            //}
         }
 
         private void StagingGenerateInsertInto()
@@ -6599,7 +6578,7 @@ namespace Virtual_EDW
         private void richTextBoxInformation_TextChanged(object sender, EventArgs e)
         {
             CheckKeyword("Issues occurred", Color.Red, 0);
-            CheckKeyword("The statement was executed succesfully.", Color.GreenYellow, 0);
+            CheckKeyword("The statement was executed successfully.", Color.GreenYellow, 0);
             // this.CheckKeyword("if", Color.Green, 0);
         }
 
@@ -6872,9 +6851,50 @@ namespace Virtual_EDW
             buttonGenerateLsats.PerformClick();
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        private void LoadStgPatternCombobox()
         {
-            LoadHubPatternCombobox();
+            var patternCollection = new LoadPatternHandling();
+            try
+            {
+                var patternList = patternCollection.DeserializeLoadPatternCollection();
+
+                foreach (var patternDetail in patternList)
+                {
+                    if (patternDetail.loadPatternType == "StagingArea")
+                    {
+                        comboBoxStgPattern.Items.Add(patternDetail.loadPatternName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SetTextMain(ex.ToString());
+            }
+
+            comboBoxStgPattern.SelectedItem = comboBoxStgPattern.Items[0];
+        }
+
+        private void LoadPsaPatternCombobox()
+        {
+            var patternCollection = new LoadPatternHandling();
+            try
+            {
+                var patternList = patternCollection.DeserializeLoadPatternCollection();
+
+                foreach (var patternDetail in patternList)
+                {
+                    if (patternDetail.loadPatternType == "PersistentStagingArea")
+                    {
+                        comboBoxPsaPattern.Items.Add(patternDetail.loadPatternName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SetTextMain(ex.ToString());
+            }
+
+            comboBoxPsaPattern.SelectedItem = comboBoxPsaPattern.Items[0];
         }
 
         private void LoadHubPatternCombobox()
@@ -6886,7 +6906,10 @@ namespace Virtual_EDW
 
                 foreach (var patternDetail in patternList)
                 {
-                    comboBoxHubPattern.Items.Add(patternDetail.loadPatternName);
+                    if (patternDetail.loadPatternType == "Hub")
+                    {
+                        comboBoxHubPattern.Items.Add(patternDetail.loadPatternName);
+                    }
                 }
             }
             catch (Exception ex)
@@ -6895,6 +6918,75 @@ namespace Virtual_EDW
             }
 
             comboBoxHubPattern.SelectedItem = comboBoxHubPattern.Items[0];
+        }
+
+        private void LoadSatPatternCombobox()
+        {
+            var patternCollection = new LoadPatternHandling();
+            try
+            {
+                var patternList = patternCollection.DeserializeLoadPatternCollection();
+
+                foreach (var patternDetail in patternList)
+                {
+                    if (patternDetail.loadPatternType == "Satellite")
+                    {
+                        comboBoxSatPattern.Items.Add(patternDetail.loadPatternName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SetTextMain(ex.ToString());
+            }
+
+            comboBoxSatPattern.SelectedItem = comboBoxSatPattern.Items[0];
+        }
+
+        private void LoadLinkPatternCombobox()
+        {
+            var patternCollection = new LoadPatternHandling();
+            try
+            {
+                var patternList = patternCollection.DeserializeLoadPatternCollection();
+
+                foreach (var patternDetail in patternList)
+                {
+                    if (patternDetail.loadPatternType == "Link")
+                    {
+                        comboBoxLinkPattern.Items.Add(patternDetail.loadPatternName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SetTextMain(ex.ToString());
+            }
+
+            comboBoxLinkPattern.SelectedItem = comboBoxLinkPattern.Items[0];
+        }
+
+        private void LoadLsatPatternCombobox()
+        {
+            var patternCollection = new LoadPatternHandling();
+            try
+            {
+                var patternList = patternCollection.DeserializeLoadPatternCollection();
+
+                foreach (var patternDetail in patternList)
+                {
+                    if (patternDetail.loadPatternType == "LinkSatellite")
+                    {
+                        comboBoxLsatPattern.Items.Add(patternDetail.loadPatternName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SetTextMain(ex.ToString());
+            }
+
+            comboBoxLsatPattern.SelectedItem = comboBoxLsatPattern.Items[0];
         }
 
         private void comboBoxHubPattern_SelectedIndexChanged(object sender, EventArgs e)
@@ -6959,6 +7051,156 @@ namespace Virtual_EDW
             {
                 SetTextMain(backupResponse);
                 SetTextMain(saveResponse);
+            }
+        }
+
+        private void comboBoxSatPattern_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Retrieve all the info for the pattern name from memory (from the list of patterns)
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxSatPattern.Text);
+
+            // Set the label with the path so it's visible to the user where the file is located
+            labelLoadPatternSatPath.Text = loadPattern.loadPatternFilePath;
+
+            // Read the file from the path
+            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+
+            // Display the pattern in the text box on the screen
+            richTextBoxSatPattern.Text = loadPatternTemplate;
+
+            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+
+            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
+            if (startUpIndicator == false)
+            {
+                // Syntax highlight for Handlebars
+                TextHandling.SyntaxHighlightHandlebars(richTextBoxSatPattern, richTextBoxSatPattern.Text);
+            }
+        }
+
+        private void tabControlSat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextHandling.SyntaxHighlightHandlebars(richTextBoxSatPattern, richTextBoxSatPattern.Text);
+        }
+
+        private void tabControlLink_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextHandling.SyntaxHighlightHandlebars(richTextBoxLinkPattern, richTextBoxLinkPattern.Text);
+        }
+
+        private void tabControlLsat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextHandling.SyntaxHighlightHandlebars(richTextBoxLsatPattern, richTextBoxLsatPattern.Text);
+        }
+
+        private void tabControlPsa_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextHandling.SyntaxHighlightHandlebars(richTextBoxPsaPattern, richTextBoxPsaPattern.Text);
+        }
+
+        private void tabControlStg_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextHandling.SyntaxHighlightHandlebars(richTextBoxStgPattern, richTextBoxStgPattern.Text);
+        }
+
+        private void comboBoxLsatPattern_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Retrieve all the info for the pattern name from memory (from the list of patterns)
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxLsatPattern.Text);
+
+            // Set the label with the path so it's visible to the user where the file is located
+            labelLoadPatternLsatPath.Text = loadPattern.loadPatternFilePath;
+
+            // Read the file from the path
+            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+
+            // Display the pattern in the text box on the screen
+            richTextBoxLsatPattern.Text = loadPatternTemplate;
+
+            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+
+            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
+            if (startUpIndicator == false)
+            {
+                // Syntax highlight for Handlebars
+                TextHandling.SyntaxHighlightHandlebars(richTextBoxLsatPattern, richTextBoxLsatPattern.Text);
+            }
+        }
+
+        private void comboBoxLinkPattern_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Retrieve all the info for the pattern name from memory (from the list of patterns)
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxLinkPattern.Text);
+
+            // Set the label with the path so it's visible to the user where the file is located
+            labelLoadPatternLinkPath.Text = loadPattern.loadPatternFilePath;
+
+            // Read the file from the path
+            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+
+            // Display the pattern in the text box on the screen
+            richTextBoxLinkPattern.Text = loadPatternTemplate;
+
+            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+
+            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
+            if (startUpIndicator == false)
+            {
+                // Syntax highlight for Handlebars
+                TextHandling.SyntaxHighlightHandlebars(richTextBoxLinkPattern, richTextBoxLinkPattern.Text);
+            }
+        }
+
+        private void comboBoxPsaPattern_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Retrieve all the info for the pattern name from memory (from the list of patterns)
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxPsaPattern.Text);
+
+            // Set the label with the path so it's visible to the user where the file is located
+            labelLoadPatternPsaPath.Text = loadPattern.loadPatternFilePath;
+
+            // Read the file from the path
+            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+
+            // Display the pattern in the text box on the screen
+            richTextBoxPsaPattern.Text = loadPatternTemplate;
+
+            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+
+            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
+            if (startUpIndicator == false)
+            {
+                // Syntax highlight for Handlebars
+                TextHandling.SyntaxHighlightHandlebars(richTextBoxPsaPattern, richTextBoxPsaPattern.Text);
+            }
+        }
+
+        private void comboBoxStgPattern_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Retrieve all the info for the pattern name from memory (from the list of patterns)
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxStgPattern.Text);
+
+            // Set the label with the path so it's visible to the user where the file is located
+            labelLoadPatternStgPath.Text = loadPattern.loadPatternFilePath;
+
+            // Read the file from the path
+            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+
+            // Display the pattern in the text box on the screen
+            richTextBoxStgPattern.Text = loadPatternTemplate;
+
+            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+
+            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
+            if (startUpIndicator == false)
+            {
+                // Syntax highlight for Handlebars
+                TextHandling.SyntaxHighlightHandlebars(richTextBoxStgPattern, richTextBoxStgPattern.Text);
             }
         }
     }
