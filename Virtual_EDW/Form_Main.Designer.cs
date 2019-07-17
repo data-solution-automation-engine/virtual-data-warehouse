@@ -55,7 +55,7 @@
             this.tabPagePSA = new System.Windows.Forms.TabPage();
             this.tabControlPsa = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.richTextBox3 = new System.Windows.Forms.RichTextBox();
+            this.richTextBoxPsaOutput = new System.Windows.Forms.RichTextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.labelLoadPatternPsaPath = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -92,7 +92,7 @@
             this.tabPageSat = new System.Windows.Forms.TabPage();
             this.tabControlSat = new System.Windows.Forms.TabControl();
             this.tabPage9 = new System.Windows.Forms.TabPage();
-            this.richTextBox9 = new System.Windows.Forms.RichTextBox();
+            this.richTextBoxSatOutput = new System.Windows.Forms.RichTextBox();
             this.tabPage10 = new System.Windows.Forms.TabPage();
             this.labelLoadPatternSatPath = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
@@ -113,7 +113,7 @@
             this.tabPageLink = new System.Windows.Forms.TabPage();
             this.tabControlLink = new System.Windows.Forms.TabControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.richTextBox5 = new System.Windows.Forms.RichTextBox();
+            this.richTextBoxLinkOutput = new System.Windows.Forms.RichTextBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.labelLoadPatternLinkPath = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -132,7 +132,7 @@
             this.tabPageLinkSat = new System.Windows.Forms.TabPage();
             this.tabControlLsat = new System.Windows.Forms.TabControl();
             this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.richTextBox7 = new System.Windows.Forms.RichTextBox();
+            this.richTextBoxLsatOutput = new System.Windows.Forms.RichTextBox();
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.labelLoadPatternLsatPath = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
@@ -535,7 +535,7 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.richTextBox3);
+            this.tabPage3.Controls.Add(this.richTextBoxPsaOutput);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -544,17 +544,17 @@
             this.tabPage3.Text = "Persistent Staging Area Generation Output";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // richTextBox3
+            // richTextBoxPsaOutput
             // 
-            this.richTextBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.richTextBoxPsaOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox3.Location = new System.Drawing.Point(3, 6);
-            this.richTextBox3.Name = "richTextBox3";
-            this.richTextBox3.Size = new System.Drawing.Size(882, 535);
-            this.richTextBox3.TabIndex = 0;
-            this.richTextBox3.Text = "No Persistent Staging Area logic has been generated at the moment.";
+            this.richTextBoxPsaOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxPsaOutput.Location = new System.Drawing.Point(3, 6);
+            this.richTextBoxPsaOutput.Name = "richTextBoxPsaOutput";
+            this.richTextBoxPsaOutput.Size = new System.Drawing.Size(882, 535);
+            this.richTextBoxPsaOutput.TabIndex = 0;
+            this.richTextBoxPsaOutput.Text = "No Persistent Staging Area logic has been generated at the moment.";
             // 
             // tabPage4
             // 
@@ -962,7 +962,7 @@
             // 
             // tabPage9
             // 
-            this.tabPage9.Controls.Add(this.richTextBox9);
+            this.tabPage9.Controls.Add(this.richTextBoxSatOutput);
             this.tabPage9.Location = new System.Drawing.Point(4, 22);
             this.tabPage9.Name = "tabPage9";
             this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
@@ -971,17 +971,17 @@
             this.tabPage9.Text = "Satellite Generation Output";
             this.tabPage9.UseVisualStyleBackColor = true;
             // 
-            // richTextBox9
+            // richTextBoxSatOutput
             // 
-            this.richTextBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.richTextBoxSatOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox9.Location = new System.Drawing.Point(3, 6);
-            this.richTextBox9.Name = "richTextBox9";
-            this.richTextBox9.Size = new System.Drawing.Size(882, 535);
-            this.richTextBox9.TabIndex = 0;
-            this.richTextBox9.Text = "No Satellite logic has been generated at the moment.";
+            this.richTextBoxSatOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxSatOutput.Location = new System.Drawing.Point(3, 6);
+            this.richTextBoxSatOutput.Name = "richTextBoxSatOutput";
+            this.richTextBoxSatOutput.Size = new System.Drawing.Size(882, 535);
+            this.richTextBoxSatOutput.TabIndex = 0;
+            this.richTextBoxSatOutput.Text = "No Satellite logic has been generated at the moment.";
             // 
             // tabPage10
             // 
@@ -1203,7 +1203,7 @@
             // 
             // tabPage5
             // 
-            this.tabPage5.Controls.Add(this.richTextBox5);
+            this.tabPage5.Controls.Add(this.richTextBoxLinkOutput);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
@@ -1212,17 +1212,17 @@
             this.tabPage5.Text = "Link Generation Output";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // richTextBox5
+            // richTextBoxLinkOutput
             // 
-            this.richTextBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.richTextBoxLinkOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox5.Location = new System.Drawing.Point(3, 6);
-            this.richTextBox5.Name = "richTextBox5";
-            this.richTextBox5.Size = new System.Drawing.Size(882, 535);
-            this.richTextBox5.TabIndex = 0;
-            this.richTextBox5.Text = "No Link logic has been generated at the moment.";
+            this.richTextBoxLinkOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxLinkOutput.Location = new System.Drawing.Point(3, 6);
+            this.richTextBoxLinkOutput.Name = "richTextBoxLinkOutput";
+            this.richTextBoxLinkOutput.Size = new System.Drawing.Size(882, 535);
+            this.richTextBoxLinkOutput.TabIndex = 0;
+            this.richTextBoxLinkOutput.Text = "No Link logic has been generated at the moment.";
             // 
             // tabPage6
             // 
@@ -1422,7 +1422,7 @@
             // 
             // tabPage7
             // 
-            this.tabPage7.Controls.Add(this.richTextBox7);
+            this.tabPage7.Controls.Add(this.richTextBoxLsatOutput);
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
@@ -1431,17 +1431,17 @@
             this.tabPage7.Text = "Link-Satellite Generation Output";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
-            // richTextBox7
+            // richTextBoxLsatOutput
             // 
-            this.richTextBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.richTextBoxLsatOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox7.Location = new System.Drawing.Point(3, 6);
-            this.richTextBox7.Name = "richTextBox7";
-            this.richTextBox7.Size = new System.Drawing.Size(882, 535);
-            this.richTextBox7.TabIndex = 0;
-            this.richTextBox7.Text = "No Link-Satellite logic has been generated at the moment.";
+            this.richTextBoxLsatOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxLsatOutput.Location = new System.Drawing.Point(3, 6);
+            this.richTextBoxLsatOutput.Name = "richTextBoxLsatOutput";
+            this.richTextBoxLsatOutput.Size = new System.Drawing.Size(882, 535);
+            this.richTextBoxLsatOutput.TabIndex = 0;
+            this.richTextBoxLsatOutput.Text = "No Link-Satellite logic has been generated at the moment.";
             // 
             // tabPage8
             // 
@@ -2325,7 +2325,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxStgPattern;
         private System.Windows.Forms.TabControl tabControlPsa;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.RichTextBox richTextBox3;
+        private System.Windows.Forms.RichTextBox richTextBoxPsaOutput;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.Label labelLoadPatternPsaPath;
         private System.Windows.Forms.Label label11;
@@ -2335,7 +2335,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxPsaPattern;
         private System.Windows.Forms.TabControl tabControlSat;
         private System.Windows.Forms.TabPage tabPage9;
-        private System.Windows.Forms.RichTextBox richTextBox9;
+        private System.Windows.Forms.RichTextBox richTextBoxSatOutput;
         private System.Windows.Forms.TabPage tabPage10;
         private System.Windows.Forms.Label labelLoadPatternSatPath;
         private System.Windows.Forms.Label label22;
@@ -2345,7 +2345,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxSatPattern;
         private System.Windows.Forms.TabControl tabControlLink;
         private System.Windows.Forms.TabPage tabPage5;
-        private System.Windows.Forms.RichTextBox richTextBox5;
+        private System.Windows.Forms.RichTextBox richTextBoxLinkOutput;
         private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.Label labelLoadPatternLinkPath;
         private System.Windows.Forms.Label label15;
@@ -2355,7 +2355,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxLinkPattern;
         private System.Windows.Forms.TabControl tabControlLsat;
         private System.Windows.Forms.TabPage tabPage7;
-        private System.Windows.Forms.RichTextBox richTextBox7;
+        private System.Windows.Forms.RichTextBox richTextBoxLsatOutput;
         private System.Windows.Forms.TabPage tabPage8;
         private System.Windows.Forms.Label labelLoadPatternLsatPath;
         private System.Windows.Forms.Label label18;

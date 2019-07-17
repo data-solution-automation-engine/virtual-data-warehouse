@@ -88,6 +88,9 @@ namespace Virtual_EDW
             if (loadPatternType == "Hub")
             {
                 FormBase.VedwConfigurationSettings.activeLoadPatternHub = loadPattern;
+            } else if (loadPatternType == "Satellite")
+            {
+                FormBase.VedwConfigurationSettings.activeLoadPatternSat = loadPattern;
             }
         }
     }

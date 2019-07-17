@@ -63,6 +63,7 @@ namespace Virtual_EDW
 
             public static List<LoadPattern> patternList { get; set; }
             public static string activeLoadPatternHub { get; set; }
+            public static string activeLoadPatternSat { get; set; }
     }
 
         /// <summary>

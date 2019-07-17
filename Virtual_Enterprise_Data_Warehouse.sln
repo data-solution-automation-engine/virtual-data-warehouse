@@ -10,9 +10,20 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoadPatterns", "LoadPatterns", "{E3AF448B-08FD-4B47-8D9A-7107CEBE0FD8}"
 	ProjectSection(SolutionItems) = preProject
 		LoadPatterns\loadPatternCollection.json = LoadPatterns\loadPatternCollection.json
+		LoadPatterns\loadPatternHubInsertIntoDefault.Handlebars = LoadPatterns\loadPatternHubInsertIntoDefault.Handlebars
 		LoadPatterns\loadPatternHubSelectDefault.Handlebars = LoadPatterns\loadPatternHubSelectDefault.Handlebars
 		LoadPatterns\loadPatternHubSelectModified.Handlebars = LoadPatterns\loadPatternHubSelectModified.Handlebars
 		LoadPatterns\loadPatternHubViewDefault.Handlebars = LoadPatterns\loadPatternHubViewDefault.Handlebars
+		LoadPatterns\loadPatternLinkInsertIntoDefault.Handlebars = LoadPatterns\loadPatternLinkInsertIntoDefault.Handlebars
+		LoadPatterns\loadPatternLinkSatelliteInsertIntoDefault.Handlebars = LoadPatterns\loadPatternLinkSatelliteInsertIntoDefault.Handlebars
+		LoadPatterns\loadPatternLinkSatelliteViewDefault.Handlebars = LoadPatterns\loadPatternLinkSatelliteViewDefault.Handlebars
+		LoadPatterns\loadPatternLinkViewDefault.Handlebars = LoadPatterns\loadPatternLinkViewDefault.Handlebars
+		LoadPatterns\loadPatternPersistentStagingInsertIntoDefault.Handlebars = LoadPatterns\loadPatternPersistentStagingInsertIntoDefault.Handlebars
+		LoadPatterns\loadPatternPersistentStagingViewDefault.Handlebars = LoadPatterns\loadPatternPersistentStagingViewDefault.Handlebars
+		LoadPatterns\loadPatternSatelliteInsertIntoDefault.Handlebars = LoadPatterns\loadPatternSatelliteInsertIntoDefault.Handlebars
+		LoadPatterns\loadPatternSatelliteViewDefault.Handlebars = LoadPatterns\loadPatternSatelliteViewDefault.Handlebars
+		LoadPatterns\loadPatternStagingInsertIntoDefault.Handlebars = LoadPatterns\loadPatternStagingInsertIntoDefault.Handlebars
+		LoadPatterns\loadPatternStagingViewDefault.Handlebars = LoadPatterns\loadPatternStagingViewDefault.Handlebars
 	EndProjectSection
 EndProject
 Global

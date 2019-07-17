@@ -518,7 +518,7 @@ namespace Virtual_EDW
             //if (radiobuttonViews.Checked) // Views
             //{
                 //GenerateHubViews();
-                GenerateHubViewsFromPattern();
+                GenerateHubFromPattern();
             //}
             //else if (radioButtonIntoStatement.Checked) // Insert into
             //{
@@ -819,9 +819,9 @@ namespace Virtual_EDW
         }
 
         /// <summary>
-        ///   Create Hub Views using Handlebars as templating
+        ///   Create Hub SQL using Handlebars as templating engine
         /// </summary>
-        private void GenerateHubViewsFromPattern()
+        private void GenerateHubFromPattern()
         {
             int errorCounter = 0;
 
@@ -832,29 +832,29 @@ namespace Virtual_EDW
             {
                 for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
                 {
-                    var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
-                    SetTextHub($"Processing Hub entity view for {hubTableName}\r\n");
+                    var targetTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
+                    SetTextHub($"Processing Hub entity view for {targetTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
-                    var queryHubGen = 
+                    var metadataQuery = 
                                @"SELECT 
                                    [SOURCE_NAME]
                                   ,[SOURCE_BUSINESS_KEY_DEFINITION]
-                                  ,[HUB_NAME]
-                                  ,[HUB_BUSINESS_KEY_DEFINITION]
+                                  ,[TARGET_NAME]
+                                  ,[TARGET_BUSINESS_KEY_DEFINITION]
                                   ,[FILTER_CRITERIA]
                                 FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
-                                WHERE [HUB_NAME] = '"+hubTableName+"'";
+                                WHERE [TARGET_NAME] = '"+targetTableName+"'";
 
-                    var hubTables = GetDataTable(ref connOmd, queryHubGen);
+                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in hubTables.Rows)
+                    foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"],(string)row["HUB_BUSINESS_KEY_DEFINITION"]);
+                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"],(string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
@@ -867,8 +867,8 @@ namespace Virtual_EDW
                         var sourceToTargetMapping = new SourceToTargetMapping();
 
                         sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
-                        sourceToTargetMapping.targetTable = (string)row["HUB_NAME"];
-                        sourceToTargetMapping.targetTableHashKey = row["HUB_NAME"].ToString().Replace("HUB_", "") + "_HSH";
+                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
+                        sourceToTargetMapping.targetTableHashKey = row["TARGET_NAME"].ToString().Replace("HUB_", "") + "_HSH";
                         sourceToTargetMapping.businessKey = businessKey;
                         sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
 
@@ -880,7 +880,7 @@ namespace Virtual_EDW
                     SourceToTargetMappingList listing = new SourceToTargetMappingList();
                     listing.individualSourceToTargetMapping = sourceToTargetMappingList;
                     listing.metadataConfiguration = new MetadataConfiguration();
-                    listing.mainTable = hubTableName;
+                    listing.mainTable = targetTableName;
 
                     // Return the result to the user
                     try
@@ -890,7 +890,7 @@ namespace Virtual_EDW
                         SetTextHubOutput(result);
 
                         //Output to file
-                        using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + hubTableName + ".sql"))
+                        using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
                         {
                             outfile.Write(result);
                             outfile.Close();
@@ -923,6 +923,120 @@ namespace Virtual_EDW
 
             // Call a delegate to handle multi-threading for syntax highlighting
             SetTextHubOutputSyntax(richTextBoxHubOutput);
+        }
+
+        /// <summary>
+        ///   Create Satellite Views using Handlebars as templating
+        /// </summary>
+        private void GenerateSatViewsFromPattern()
+        {
+            int errorCounter = 0;
+
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+
+            if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
+            {
+                for (int x = 0; x <= checkedListBoxSatMetadata.CheckedItems.Count - 1; x++)
+                {
+                    var targetTableName = checkedListBoxSatMetadata.CheckedItems[x].ToString();
+                    SetTextSat(@"Processing Sat entity view for " + targetTableName + "\r\n");
+
+                    // Retrieve metadata and store in a data table object
+
+                    var metadataQuery = @"SELECT 
+                                             [SOURCE_ID]
+                                            ,[SOURCE_SCHEMA_NAME]
+                                            ,[SOURCE_NAME]
+                                            ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                                            ,[TARGET_ID]
+                                            ,[TARGET_SCHEMA_NAME]
+                                            ,[TARGET_NAME]
+                                            ,[TARGET_BUSINESS_KEY_DEFINITION]
+                                            ,[TARGET_TYPE]
+                                            ,[FILTER_CRITERIA]
+                                            ,[LOAD_VECTOR]
+                                          FROM interface.INTERFACE_SOURCE_SATELLITE_XREF 
+                                          WHERE TARGET_TYPE = 'Normal' 
+                                          AND TARGET_NAME = '" + targetTableName + "'";
+
+                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+
+                    // Move the data table to the class instance
+                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+
+                    foreach (DataRow row in metadataDataTable.Rows)
+                    {
+                        // Creating the Business Key Component Mapping list (from the input array)
+                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+
+                        // Creating the Business Key definition, using the available components (see above)
+                        BusinessKey businessKey =
+                            new BusinessKey
+                            {
+                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                            };
+
+                        // Add the created Business Key to the source-to-target mapping
+                        var sourceToTargetMapping = new SourceToTargetMapping();
+
+                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
+                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
+                        sourceToTargetMapping.targetTableHashKey = row["TARGET_NAME"].ToString().Replace("HUB_", "") + "_HSH";
+                        sourceToTargetMapping.businessKey = businessKey;
+                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+
+                        // Add the source-to-target mapping to the mapping list
+                        sourceToTargetMappingList.Add(sourceToTargetMapping);
+                    }
+
+                    // Create an instance of the 'MappingList' class / object model 
+                    SourceToTargetMappingList listing = new SourceToTargetMappingList();
+                    listing.individualSourceToTargetMapping = sourceToTargetMappingList;
+                    listing.metadataConfiguration = new MetadataConfiguration();
+                    listing.mainTable = targetTableName;
+
+                    // Return the result to the user
+                    try
+                    {
+                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternSat);
+                        var result = template(listing);
+                        SetTextSatOutput(result);
+
+                        //Output to file
+                        using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                        {
+                            outfile.Write(result);
+                            outfile.Close();
+                        }
+
+                        //Generate in database
+                        if (checkBoxGenerateInDatabase.Checked)
+                        {
+                            connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                            int insertError = GenerateInDatabase(connPsa, result);
+                            errorCounter = errorCounter + insertError;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        SetTextSat("The template could not be compiled, the error message is " + ex);
+                    }
+                }
+            }
+            else
+            {
+                SetTextSat("There was no metadata selected to create Hub views. Please check the metadata schema - are there any Hubs selected?");
+            }
+
+            connOmd.Close();
+            connOmd.Dispose();
+
+            SetTextSat($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextSat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+
+            // Call a delegate to handle multi-threading for syntax highlighting
+            SetTextSatOutputSyntax(richTextBoxSatOutput);
         }
 
         private void GenerateHubViews()
@@ -1332,12 +1446,13 @@ namespace Virtual_EDW
 
             //if (radiobuttonViews.Checked)
             //{
-                GenerateSatViews();
-            //}
-            //else if (radioButtonIntoStatement.Checked)
-            //{
-            //    GenerateSatInsertInto();
-            //}
+              //  GenerateSatViews();
+                GenerateSatViewsFromPattern();
+                //}
+                //else if (radioButtonIntoStatement.Checked)
+                //{
+                //    GenerateSatInsertInto();
+                //}
         }
 
         // Generate the Insert Into statement for the Satellites
@@ -1347,7 +1462,7 @@ namespace Virtual_EDW
 
             if (checkBoxIfExistsStatement.Checked)
             {
-                SetTextSat("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
+                SetTextSatOutput("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
             }
 
             if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
@@ -1472,7 +1587,7 @@ namespace Virtual_EDW
                         SetTextMain(insertIntoStatement.ToString());
                         SetTextMain("\n");
 
-                        SetTextSat(string.Format("Processing Satellite Insert Into statement for {0}\r\n",targetTableName));
+                        SetTextSatOutput(string.Format("Processing Satellite Insert Into statement for {0}\r\n",targetTableName));
                     }
 
                     connOmd.Close();
@@ -1482,11 +1597,11 @@ namespace Virtual_EDW
             }
             else
             {
-                SetTextSat("There was no metadata selected to create Satellite insert statements. Please check the metadata schema - are there any Satellites selected?");
+                SetTextSatOutput("There was no metadata selected to create Satellite insert statements. Please check the metadata schema - are there any Satellites selected?");
             }
 
-            SetTextSat($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextSat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            SetTextSatOutput($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextSatOutput($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void GenerateSatViews() //  Generate Satellite Views
@@ -1522,7 +1637,7 @@ namespace Virtual_EDW
 
                     if (tables.Rows.Count == 0)
                     {
-                        SetTextSat("There was no metadata available to create Satellites. Please check the metadata schema (are there any Link Satellites available?) or the database connection.");
+                        SetTextSatOutput("There was no metadata available to create Satellites. Please check the metadata schema (are there any Link Satellites available?) or the database connection.");
                     }
 
                     foreach (DataRow row in tables.Rows)
@@ -2133,17 +2248,17 @@ namespace Virtual_EDW
 
                         SetTextMain(satView.ToString());
                         SetTextMain("\n");
-                        SetTextSat(@"Processing Sat entity view for " + targetTableName + "\r\n");
+                        SetTextSatOutput(@"Processing Sat entity view for " + targetTableName + "\r\n");
                     }
                 }
             }
             else
             {
-                SetTextSat("There was no metadata selected to create Satellite views. Please check the metadata schema - are there any Satellites selected?");
+                SetTextSatOutput("There was no metadata selected to create Satellite views. Please check the metadata schema - are there any Satellites selected?");
             }
 
-            SetTextSat($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextSat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            SetTextSatOutput($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextSatOutput($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
 
@@ -5137,7 +5252,7 @@ namespace Virtual_EDW
                     var targetTableName = checkedListBoxStgMetadata.CheckedItems[x].ToString();
                     var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
 
-                    SetTextStaging($"Processing Staging Area insert statement for {targetTableName}\r\n");
+                    SetTextStg($"Processing Staging Area insert statement for {targetTableName}\r\n");
 
                     // Build the main attribute list of the STG table for selection
                     var sqlStatementForSourceQuery = new StringBuilder();
@@ -5217,11 +5332,11 @@ namespace Virtual_EDW
             }
             else
             {
-                SetTextStaging("There was no metadata selected to create Staging Area insert statements. Please check the metadata schema - are there any Staging Area tables selected?");
+                SetTextStg("There was no metadata selected to create Staging Area insert statements. Please check the metadata schema - are there any Staging Area tables selected?");
             }
 
-            SetTextStaging($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextStaging($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            SetTextStg($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextStg($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         private void StagingGenerateViews()
@@ -5263,7 +5378,7 @@ namespace Virtual_EDW
 
                     connStg.ConnectionString = TeamConfigurationSettings.ConnectionStringStg;
 
-                    SetTextStaging($"Processing Staging Area entity view for {targetTableName}\r\n");
+                    SetTextStg($"Processing Staging Area entity view for {targetTableName}\r\n");
 
 
                     // Creating the  selection query
@@ -5771,11 +5886,11 @@ namespace Virtual_EDW
             }
             else
             {
-                SetTextStaging("There was no metadata selected to create Staging Area views. Please check the metadata schema - are there any Staging Area tables selected?");
+                SetTextStg("There was no metadata selected to create Staging Area views. Please check the metadata schema - are there any Staging Area tables selected?");
             }
 
-            SetTextStaging($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextStaging($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            SetTextStg($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextStg($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
         // Threads starting for other (sub) forms
@@ -5979,8 +6094,13 @@ namespace Virtual_EDW
             t.Start();
         }
 
-  
-        // Multi-threading for updating the user (debugging form)
+
+        #region Multi-threading delegates for text boxes
+
+        /// <summary>
+        /// Delegate to update the main information textbox.
+        /// </summary>
+        /// <param name="text"></param>
         delegate void SetTextCallBackDebug(string text);
         private void SetTextMain(string text)
         {
@@ -5995,42 +6115,18 @@ namespace Virtual_EDW
             }
         }
 
-        // Multi-threading for updating the user (debugging form)
-        delegate void SetTextCallBackDebugHub(string text);
-        private void SetTextHubOutput(string text)
-        {
-            if (richTextBoxHubOutput.InvokeRequired)
-            {
-                var d = new SetTextCallBackDebugHub(SetTextHubOutput);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxHubOutput.AppendText(text);
-            }
-        }
 
-        delegate void SetSyntaxCallbackHub(RichTextBox textBox);
-        private void SetTextHubOutputSyntax(RichTextBox textBox)
-        {
-            if (richTextBoxHubOutput.InvokeRequired)
-            {
-                var d = new SetSyntaxCallbackHub(SetTextHubOutputSyntax);
-                Invoke(d, textBox);
-            }
-            else
-            {
-                TextHandling.SyntaxHighlightSql(richTextBoxHubOutput, richTextBoxHubOutput.Text);
-            }
-        }
 
-        // Multi-threading for updating the user (Staging Area form)
-        delegate void SetTextCallBackStaging(string text);
-        private void SetTextStaging(string text)
+        /// <summary>
+        /// Delegate to update Staging Area generation feedback to the main STG informational textbox.
+        /// </summary>
+        /// <param name="text"></param>
+        delegate void SetTextCallBackStg(string text);
+        private void SetTextStg(string text)
         {
             if (richTextBoxStaging.InvokeRequired)
             {
-                var d = new SetTextCallBackStaging(SetTextStaging);
+                var d = new SetTextCallBackStg(SetTextStg);
                 Invoke(d, text);
             }
             else
@@ -6039,7 +6135,48 @@ namespace Virtual_EDW
             }
         }
 
-        // Multithreading for updating the user (Persistent Staging Area form)
+        /// <summary>
+        /// Delegate to update the Staging Area SQL output textbox.
+        /// </summary>
+        /// <param name="text"></param>
+        delegate void SetTextCallBackStgOutput(string text);
+        private void SetTextStgOutput(string text)
+        {
+            if (richTextBoxStgOutput.InvokeRequired)
+            {
+                var d = new SetTextCallBackStgOutput(SetTextStgOutput);
+                Invoke(d, text);
+            }
+            else
+            {
+                richTextBoxStgOutput.AppendText(text);
+            }
+        }
+
+        /// <summary>
+        /// Delegate to apply syntax highlighting on the Staging Area SQL output textbox.
+        /// </summary>
+        /// <param name="textBox"></param>
+        delegate void SetSyntaxCallbackStgSyntax(RichTextBox textBox);
+        private void SetTextStgOutputSyntax(RichTextBox textBox)
+        {
+            if (richTextBoxStgOutput.InvokeRequired)
+            {
+                var d = new SetSyntaxCallbackStgSyntax(SetTextStgOutputSyntax);
+                Invoke(d, textBox);
+            }
+            else
+            {
+                TextHandling.SyntaxHighlightSql(richTextBoxStgOutput, richTextBoxStgOutput.Text);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Delegate to update Persistent Staging Area generation feedback to the main PSA informational textbox.
+        /// </summary>
+        /// <param name="text"></param>
         delegate void SetTextCallBackPsa(string text);
         private void SetTextPsa(string text)
         {
@@ -6054,7 +6191,49 @@ namespace Virtual_EDW
             }
         }
 
-        // Multithreading for updating the user (Hub form)
+        /// <summary>
+        /// Delegate to update the Persistent Staging Area SQL output textbox.
+        /// </summary>
+        /// <param name="text"></param>
+        delegate void SetTextCallBackPsaOutput(string text);
+        private void SetTextPsaOutput(string text)
+        {
+            if (richTextBoxPsaOutput.InvokeRequired)
+            {
+                var d = new SetTextCallBackPsaOutput(SetTextPsaOutput);
+                Invoke(d, text);
+            }
+            else
+            {
+                richTextBoxPsaOutput.AppendText(text);
+            }
+        }
+
+        /// <summary>
+        /// Delegate to apply syntax highlighting on the Persistent Staging Area SQL output textbox.
+        /// </summary>
+        /// <param name="textBox"></param>
+        delegate void SetSyntaxCallbackPsaSyntax(RichTextBox textBox);
+        private void SetTextPsaOutputSyntax(RichTextBox textBox)
+        {
+            if (richTextBoxPsaOutput.InvokeRequired)
+            {
+                var d = new SetSyntaxCallbackPsaSyntax(SetTextPsaOutputSyntax);
+                Invoke(d, textBox);
+            }
+            else
+            {
+                TextHandling.SyntaxHighlightSql(richTextBoxPsaOutput, richTextBoxPsaOutput.Text);
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Delegate to update Hub generation feedback to the main Hub informational textbox.
+        /// </summary>
+        /// <param name="text"></param>
         delegate void SetTextCallBackHub(string text);
         private void SetTextHub(string text)
         {
@@ -6069,25 +6248,48 @@ namespace Virtual_EDW
             }
         }
 
+        /// <summary>
+        /// Delegate to update the Hub SQL output textbox.
+        /// </summary>
+        /// <param name="text"></param>
+        delegate void SetTextCallBackHubOutput(string text);
+        private void SetTextHubOutput(string text)
+        {
+            if (richTextBoxHubOutput.InvokeRequired)
+            {
+                var d = new SetTextCallBackHubOutput(SetTextHubOutput);
+                Invoke(d, text);
+            }
+            else
+            {
+                richTextBoxHubOutput.AppendText(text);
+            }
+        }
+
+        /// <summary>
+        /// Delegate to apply syntax highlighting on the Hub SQL output textbox.
+        /// </summary>
+        /// <param name="textBox"></param>
+        delegate void SetSyntaxCallbackHubSyntax(RichTextBox textBox);
+        private void SetTextHubOutputSyntax(RichTextBox textBox)
+        {
+            if (richTextBoxHubOutput.InvokeRequired)
+            {
+                var d = new SetSyntaxCallbackHubSyntax(SetTextHubOutputSyntax);
+                Invoke(d, textBox);
+            }
+            else
+            {
+                TextHandling.SyntaxHighlightSql(richTextBoxHubOutput, richTextBoxHubOutput.Text);
+            }
+        }
 
 
-        //// Multithreading for changing version stuff
-        //delegate void SetVersionCallBack(int versionId);
-        //internal void SetVersion(int versionId)
-        //{
-        //    if (trackBarVersioning.InvokeRequired)
-        //    {
-        //        var d = new SetVersionCallBack(SetVersion);
-        //        Invoke(d, versionId);
-        //    }
-        //    else
-        //    {
-        //        InitialiseVersion();
-        //        trackBarVersioning.Value = versionId;
-        //    }
-        //}
 
-        // Multithreading for updating the user (Sat form)
+        /// <summary>
+        /// Delegate to update Satellite generation feedback to the main Satellite informational textbox.
+        /// </summary>
+        /// <param name="text"></param>
         delegate void SetTextCallBackSat(string text);
         private void SetTextSat(string text)
         {
@@ -6102,7 +6304,48 @@ namespace Virtual_EDW
             }
         }
 
-        // Multithreading for updating the user (Link form)
+        /// <summary>
+        /// Delegate to update the Satellite SQL output textbox.
+        /// </summary>
+        /// <param name="text"></param>
+        delegate void SetTextCallBackSatOutput(string text);
+        private void SetTextSatOutput(string text)
+        {
+            if (richTextBoxSatOutput.InvokeRequired)
+            {
+                var d = new SetTextCallBackSatOutput(SetTextSatOutput);
+                Invoke(d, text);
+            }
+            else
+            {
+                richTextBoxSatOutput.AppendText(text);
+            }
+        }
+
+        /// <summary>
+        /// Delegate to apply syntax highlighting on the Satellite SQL output textbox.
+        /// </summary>
+        /// <param name="textBox"></param>
+        delegate void SetSyntaxCallbackSatSyntax(RichTextBox textBox);
+        private void SetTextSatOutputSyntax(RichTextBox textBox)
+        {
+            if (richTextBoxSatOutput.InvokeRequired)
+            {
+                var d = new SetSyntaxCallbackSatSyntax(SetTextSatOutputSyntax);
+                Invoke(d, textBox);
+            }
+            else
+            {
+                TextHandling.SyntaxHighlightSql(richTextBoxSatOutput, richTextBoxSatOutput.Text);
+            }
+        }
+        
+
+
+        /// <summary>
+        /// Delegate to update Link generation feedback to the main LInk informational textbox.
+        /// </summary>
+        /// <param name="text"></param>
         delegate void SetTextCallBackLink(string text);
         private void SetTextLink(string text)
         {
@@ -6117,7 +6360,48 @@ namespace Virtual_EDW
             }
         }
 
-        // Multithreading for updating the user (Link Satellite form)
+        /// <summary>
+        /// Delegate to update the Link SQL output textbox.
+        /// </summary>
+        /// <param name="text"></param>
+        delegate void SetTextCallBackLinkOutput(string text);
+        private void SetTextLinkOutput(string text)
+        {
+            if (richTextBoxLinkOutput.InvokeRequired)
+            {
+                var d = new SetTextCallBackLinkOutput(SetTextLinkOutput);
+                Invoke(d, text);
+            }
+            else
+            {
+                richTextBoxLinkOutput.AppendText(text);
+            }
+        }
+
+        /// <summary>
+        /// Delegate to apply syntax highlighting on the Link SQL output textbox.
+        /// </summary>
+        /// <param name="textBox"></param>
+        delegate void SetSyntaxCallbackLinkSyntax(RichTextBox textBox);
+        private void SetTextLnkOutputSyntax(RichTextBox textBox)
+        {
+            if (richTextBoxLinkOutput.InvokeRequired)
+            {
+                var d = new SetSyntaxCallbackLinkSyntax(SetTextLnkOutputSyntax);
+                Invoke(d, textBox);
+            }
+            else
+            {
+                TextHandling.SyntaxHighlightSql(richTextBoxLinkOutput, richTextBoxLinkOutput.Text);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Delegate to update Link Satellite generation feedback to the main LSAT informational textbox.
+        /// </summary>
+        /// <param name="text"></param>
         delegate void SetTextCallBackLsat(string text);
         private void SetTextLsat(string text)
         {
@@ -6132,7 +6416,50 @@ namespace Virtual_EDW
             }
         }
 
-        # region Background worker
+        /// <summary>
+        /// Delegate to update the Link-Satellite SQL output textbox.
+        /// </summary>
+        /// <param name="text"></param>
+        delegate void SetTextCallBackLsatOutput(string text);
+        private void SetTextLsatOutput(string text)
+        {
+            if (richTextBoxLsatOutput.InvokeRequired)
+            {
+                var d = new SetTextCallBackLsatOutput(SetTextLsatOutput);
+                Invoke(d, text);
+            }
+            else
+            {
+                richTextBoxLsatOutput.AppendText(text);
+            }
+        }
+
+        /// <summary>
+        /// Delegate to apply syntax highlighting on the Link-Satellite SQL output textbox.
+        /// </summary>
+        /// <param name="textBox"></param>
+        delegate void SetSyntaxCallbackLsatSyntax(RichTextBox textBox);
+        private void SetTextLsatOutputSyntax(RichTextBox textBox)
+        {
+            if (richTextBoxLsatOutput.InvokeRequired)
+            {
+                var d = new SetSyntaxCallbackLsatSyntax(SetTextLsatOutputSyntax);
+                Invoke(d, textBox);
+            }
+            else
+            {
+                TextHandling.SyntaxHighlightSql(richTextBoxLsatOutput, richTextBoxLsatOutput.Text);
+            }
+        }
+
+        #endregion 
+
+
+
+
+
+
+        #region Background worker
 
         // This event handler deals with the results of the background operation.
         private void backgroundWorkerActivateMetadata_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -6268,7 +6595,7 @@ namespace Virtual_EDW
 
                 if (tables.Rows.Count == 0)
                 {
-                    SetTextStaging("There was no metadata available to display Staging Area content. Please check the metadata schema (are there any Staging Area tables available?) or the database connection.");
+                    SetTextStg("There was no metadata available to display Staging Area content. Please check the metadata schema (are there any Staging Area tables available?) or the database connection.");
                 }
 
                 foreach (DataRow row in tables.Rows)
@@ -6381,7 +6708,7 @@ namespace Virtual_EDW
 
                 if (tables.Rows.Count == 0)
                 {
-                    SetTextSat(
+                    SetTextSatOutput(
                         "There was no metadata available to display Satellite content. Please check the metadata schema (are there any Hubs available?) or the database connection.");
                 }
 
