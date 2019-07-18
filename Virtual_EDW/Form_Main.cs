@@ -833,7 +833,7 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
-                    SetTextHub($"Processing Hub entity view for {targetTableName}\r\n");
+                    SetTextHub($"Processing Hub generation for {targetTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = 
@@ -940,10 +940,9 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxSatMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxSatMetadata.CheckedItems[x].ToString();
-                    SetTextSat(@"Processing Sat entity view for " + targetTableName + "\r\n");
+                    SetTextSat(@"Processing Satellite generation for " + targetTableName + "\r\n");
 
                     // Retrieve metadata and store in a data table object
-
                     var metadataQuery = @"SELECT 
                                              [SOURCE_ID]
                                             ,[SOURCE_SCHEMA_NAME]
@@ -968,14 +967,35 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+                        List<BusinessKeyComponentMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
                             new BusinessKey
                             {
-                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                                businessKeyComponentMapping = businessKeyComponentList
                             };
+
+                        // Create the column-to-column mapping
+                        var columnMetadataQuery = @"SELECT 
+                                                      [SOURCE_ATTRIBUTE_NAME]
+                                                     ,[SATELLITE_ATTRIBUTE_NAME]
+                                                     ,[MULTI_ACTIVE_KEY_INDICATOR]
+                                                   FROM [interface].[INTERFACE_SOURCE_SATELLITE_ATTRIBUTE_XREF]
+                                                   WHERE SATELLITE_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='"+(string)row["SOURCE_NAME"]+"'";
+
+                        var columnMetadataDataTable = GetDataTable(ref connOmd, columnMetadataQuery);
+
+                        List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
+                        foreach (DataRow column in columnMetadataDataTable.Rows)
+                        {
+                            ColumnMapping columnMapping = new ColumnMapping();
+                            columnMapping.sourceColumn = (string) column["SOURCE_ATTRIBUTE_NAME"];
+                            columnMapping.targetColumn = (string) column["SATELLITE_ATTRIBUTE_NAME"];
+                            columnMappingList.Add(columnMapping);
+                        }
+
+
 
                         // Add the created Business Key to the source-to-target mapping
                         var sourceToTargetMapping = new SourceToTargetMapping();
@@ -985,6 +1005,7 @@ namespace Virtual_EDW
                         sourceToTargetMapping.targetTableHashKey = row["TARGET_NAME"].ToString().Replace("HUB_", "") + "_HSH";
                         sourceToTargetMapping.businessKey = businessKey;
                         sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+                        sourceToTargetMapping.columnMapping = columnMappingList;
 
                         // Add the source-to-target mapping to the mapping list
                         sourceToTargetMappingList.Add(sourceToTargetMapping);
@@ -1432,11 +1453,14 @@ namespace Virtual_EDW
 
         private void SatelliteButtonClick (object sender, EventArgs e)
         {
+            richTextBoxSatOutput.Clear();
             richTextBoxSat.Clear();
             richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoSat);
             newThread.Start();
+
+            tabControlSat.SelectedIndex = 0;
         }
 
         private void BackgroundDoSat(Object obj)

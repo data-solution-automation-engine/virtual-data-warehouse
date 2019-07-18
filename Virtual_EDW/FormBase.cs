@@ -37,7 +37,6 @@ namespace Virtual_EDW
             // TEAM core file names, not meant to be updated
             public static string TeamConfigurationfileName { get; } = "TEAM_configuration";
             public static string TeamPathfileName { get; } = "TEAM_Path_configuration";
-
         }
 
 

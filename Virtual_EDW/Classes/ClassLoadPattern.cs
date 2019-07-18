@@ -126,6 +126,9 @@ namespace Virtual_EDW
         public MetadataConfiguration metadataConfiguration { get; set; }
     }
 
+    /// <summary>
+    /// The mapping between a source and target data set / table / file.
+    /// </summary>
     class SourceToTargetMapping
     {
         public string sourceTable { get; set; }
@@ -133,13 +136,29 @@ namespace Virtual_EDW
         public string targetTableHashKey { get; set; }
         public BusinessKey businessKey { get; set; }
         public string filterCriterion { get; set; }
+        public List<ColumnMapping> columnMapping { get; set; }
     }
 
+    /// <summary>
+    /// The individual column-to-column mapping
+    /// </summary>
+    class ColumnMapping
+    {
+        public string sourceColumn { get; set; }
+        public string targetColumn { get; set; }
+    }
+
+    /// <summary>
+    /// A Business Key, which consists of one or more components.
+    /// </summary>
     class BusinessKey
     {
         public List<BusinessKeyComponentMapping> businessKeyComponentMapping { get; set; }
     }
 
+    /// <summary>
+    /// The mapping between a source and target component
+    /// </summary>
     class BusinessKeyComponentMapping
     {
         public string sourceComponentName { get; set; } 
@@ -157,6 +176,7 @@ namespace Virtual_EDW
         public string recordSourceAttribute { get; } = FormBase.TeamConfigurationSettings.RecordSourceAttribute;
         public string loadDateTimeAttribute { get; } = FormBase.TeamConfigurationSettings.LoadDateTimeAttribute;
         public string etlProcessAttribute { get; } = FormBase.TeamConfigurationSettings.EtlProcessAttribute;
+        public string sourceRowId { get; } = FormBase.TeamConfigurationSettings.RowIdAttribute;
     }
     #endregion
 }

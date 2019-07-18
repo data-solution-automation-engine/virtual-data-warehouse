@@ -1,70 +1,28 @@
 --
--- Hub View definition for {{mainTable}}
+-- Satellite View definition for {{mainTable}}
 -- Generated at {{generationDateTime}}
 --
 
 USE [{{metadataConfiguration.psaDatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]
+{{#each individualSourceToTargetMapping}}
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
 GO
 
-CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}] AS
-SELECT hub.*
-FROM (
-{{#each individualSourceToTargetMapping}}{{#if @first}}
-SELECT
+CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
+SELECT 
     HASHBYTES('MD5',
     {{#each businessKey.businessKeyComponentMapping}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
     {{/each}}
     ) AS {{targetTableHashKey}},
-    -1 AS {{../metadataConfiguration.etlProcessAttribute}},
-    {{../metadataConfiguration.loadDateTimeAttribute}},
-    {{../metadataConfiguration.recordSourceAttribute}},
-    {{#each businessKey.businessKeyComponentMapping}}
-    {{targetComponentName}},
+    DATEADD(mcs,[{{../metadataConfiguration.sourceRowId}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
+    {{#each columnMapping}}
+    {{sourceColumn}} AS {{targetColumn}}{{#unless @last}},{{/unless}}
     {{/each}}
-    ROW_NUMBER() OVER (PARTITION BY {{#each businessKey.businessKeyComponentMapping}}{{targetComponentName}}{{#unless @last}},{{/unless}}{{/each}} ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}) AS ROW_NR
-FROM {{/if}}{{/each}}
-(
-    {{#each individualSourceToTargetMapping }}
-    SELECT
-    {{#each businessKey.businessKeyComponentMapping}}
-        CONVERT(NVARCHAR(100),[{{sourceComponentName}}]) AS [{{targetComponentName}}],
-    {{/each}}
-        {{../metadataConfiguration.recordSourceAttribute}},
-        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM {{sourceTable}}
-    WHERE
-    {{#each businessKey.businessKeyComponentMapping}}
-        [{{sourceComponentName}}] IS NOT NULL {{/each}}{{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
-    GROUP BY
-    {{#each businessKey.businessKeyComponentMapping}}
-        [{{sourceComponentName}}],
-    {{/each}}
-        {{../metadataConfiguration.recordSourceAttribute}}
-    {{#unless @last}}UNION{{/unless}}
-    {{/each}}
-) HUB_selection
-) hub
-WHERE ROW_NR = 1
-UNION
-SELECT 0x00000000000000000000000000000000,
-- 1,
-'1900-01-01',
-'Data Warehouse',
-'Unknown',
-1 AS ROW_NR
+FROM {{sourceTable}}
 
-
-
-
-
-
-
-
-
-
-
+{{/each}}
