@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using Virtual_EDW;
 
@@ -99,8 +100,11 @@ namespace Virtual_EDW
     {
         internal List<LoadPattern> DeserializeLoadPatternCollection()
         {
+            var path = Application.StartupPath + @"\loadPatterns\loadPatternCollection.json";
+            path = path.Remove(path.IndexOf("Virtual_EDW"),22);
+
             // Retrieve the file contents and store in a string
-            var jsonInput = File.ReadAllText(@"D:\Git_Repositories\Virtual_Enterprise_Data_Warehouse\loadPatterns\loadPatternCollection.json");
+             var jsonInput = File.ReadAllText(path);
 
             //Move the (json) string into a List object (a list of the type LoadPattern)
             List<LoadPattern> loadPatternList = JsonConvert.DeserializeObject<List<LoadPattern>>(jsonInput);
