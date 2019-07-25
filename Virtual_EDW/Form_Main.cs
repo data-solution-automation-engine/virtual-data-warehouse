@@ -603,17 +603,24 @@ namespace Virtual_EDW
                     insertIntoStatement.AppendLine(" ON hub_view." + hubSk + " = hub_table." + hubSk);
                     insertIntoStatement.AppendLine("WHERE hub_table." + hubSk + " IS NULL");
 
-                    using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\INSERT_STATEMENT_" + hubTableName +".sql"))
+                    try
                     {
-                        outfile.Write(insertIntoStatement.ToString());
-                        outfile.Close();
+                        using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\INSERT_STATEMENT_" + hubTableName + ".sql"))
+                        {
+                            outfile.Write(insertIntoStatement.ToString());
+                            outfile.Close();
+                        }
+                        SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                    }
+                    catch
+                    {
+                        errorCounter++;
                     }
 
                     if (checkBoxGenerateInDatabase.Checked)
                     {
                         int insertError = GenerateInDatabase(connHstg, insertIntoStatement.ToString());
                         errorCounter = errorCounter + insertError;
-
                     }
 
                     SetTextMain(insertIntoStatement.ToString());
@@ -631,7 +638,8 @@ namespace Virtual_EDW
             }
 
             SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+
+            
         }
 
         internal List<String> GetHubClauses(string stagingAreaTableName, string hubTableName, string businessKeyDefinition, string groupCounter)
@@ -843,6 +851,7 @@ namespace Virtual_EDW
                                   ,[TARGET_NAME]
                                   ,[TARGET_BUSINESS_KEY_DEFINITION]
                                   ,[FILTER_CRITERIA]
+                                  ,[SURROGATE_KEY]
                                 FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
                                 WHERE [TARGET_NAME] = '"+targetTableName+"'";
 
@@ -868,7 +877,7 @@ namespace Virtual_EDW
 
                         sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
                         sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.targetTableHashKey = row["TARGET_NAME"].ToString().Replace("HUB_", "") + "_HSH";
+                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
                         sourceToTargetMapping.businessKey = businessKey;
                         sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
 
@@ -889,25 +898,42 @@ namespace Virtual_EDW
                         var result = template(listing);
                         SetTextHubOutput(result);
 
-                        //Output to file
-                        using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                        try
+                        {   //Output to file
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            {
+                                outfile.Write(result);
+                                outfile.Close();
+                                SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                            }
+                        }
+                        catch (Exception ex)
                         {
-                            outfile.Write(result);
-                            outfile.Close();
+                            errorCounter++;
+                            SetTextHubOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
                         }
 
-                        //Generate in database
-                        if (checkBoxGenerateInDatabase.Checked)
+                        try
                         {
-                            connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                            int insertError = GenerateInDatabase(connPsa, result);
-                            errorCounter = errorCounter + insertError;
+                            //Generate in database
+                            if (checkBoxGenerateInDatabase.Checked)
+                            {
+                                connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                                int insertError = GenerateInDatabase(connPsa, result);
+                                errorCounter = errorCounter + insertError;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextHubOutput("There was an issue executing the code against the database. The message is: " + ex);
                         }
                     }
                     catch (Exception ex)
                     {
-                        SetTextHubOutput("The template could not be compiled, the error message is "+ex);
-                    }
+                        errorCounter++;
+                        SetTextHubOutput("The template could not be compiled, the error message is " + ex);
+                    } 
                 }
             }
             else
@@ -919,7 +945,6 @@ namespace Virtual_EDW
             connOmd.Dispose();
 
             SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
             SetTextHubOutputSyntax(richTextBoxHubOutput);
@@ -928,7 +953,7 @@ namespace Virtual_EDW
         /// <summary>
         ///   Create Satellite Views using Handlebars as templating
         /// </summary>
-        private void GenerateSatViewsFromPattern()
+        private void GenerateSatFromPattern()
         {
             int errorCounter = 0;
 
@@ -953,6 +978,7 @@ namespace Virtual_EDW
                                             ,[TARGET_NAME]
                                             ,[TARGET_BUSINESS_KEY_DEFINITION]
                                             ,[TARGET_TYPE]
+                                            ,[SURROGATE_KEY]
                                             ,[FILTER_CRITERIA]
                                             ,[LOAD_VECTOR]
                                           FROM interface.INTERFACE_SOURCE_SATELLITE_XREF 
@@ -967,7 +993,7 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+                        List<BusinessKeyComponentMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
@@ -995,14 +1021,12 @@ namespace Virtual_EDW
                             columnMappingList.Add(columnMapping);
                         }
 
-
-
                         // Add the created Business Key to the source-to-target mapping
                         var sourceToTargetMapping = new SourceToTargetMapping();
 
                         sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
                         sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.targetTableHashKey = row["TARGET_NAME"].ToString().Replace("HUB_", "") + "_HSH";
+                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
                         sourceToTargetMapping.businessKey = businessKey;
                         sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
                         sourceToTargetMapping.columnMapping = columnMappingList;
@@ -1024,24 +1048,41 @@ namespace Virtual_EDW
                         var result = template(listing);
                         SetTextSatOutput(result);
 
-                        //Output to file
-                        using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                        try
+                        {   //Output to file
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            {
+                                outfile.Write(result);
+                                outfile.Close();
+                                SetTextSatOutput($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                            }
+                        }
+                        catch (Exception ex)
                         {
-                            outfile.Write(result);
-                            outfile.Close();
+                            errorCounter++;
+                            SetTextSatOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
                         }
 
-                        //Generate in database
-                        if (checkBoxGenerateInDatabase.Checked)
+                        try
                         {
-                            connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                            int insertError = GenerateInDatabase(connPsa, result);
-                            errorCounter = errorCounter + insertError;
+                            //Generate in database
+                            if (checkBoxGenerateInDatabase.Checked)
+                            {
+                                connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                                int insertError = GenerateInDatabase(connPsa, result);
+                                errorCounter = errorCounter + insertError;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextSatOutput("There was an issue executing the code against the database. The message is: " + ex);
                         }
                     }
                     catch (Exception ex)
                     {
-                        SetTextSat("The template could not be compiled, the error message is " + ex);
+                        errorCounter++;
+                        SetTextSatOutput("The template could not be compiled, the error message is " + ex);
                     }
                 }
             }
@@ -1471,7 +1512,7 @@ namespace Virtual_EDW
             //if (radiobuttonViews.Checked)
             //{
               //  GenerateSatViews();
-                GenerateSatViewsFromPattern();
+                GenerateSatFromPattern();
                 //}
                 //else if (radioButtonIntoStatement.Checked)
                 //{
@@ -7553,6 +7594,11 @@ namespace Virtual_EDW
                 // Syntax highlight for Handlebars
                 TextHandling.SyntaxHighlightHandlebars(richTextBoxStgPattern, richTextBoxStgPattern.Text);
             }
+        }
+
+        private void richTextBoxSatPattern_TextChanged(object sender, EventArgs e)
+        {
+            LoadPattern.ActivateLoadPattern(richTextBoxSatPattern.Text, "Satellite");
         }
     }
 }

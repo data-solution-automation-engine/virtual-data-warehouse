@@ -16,7 +16,7 @@ CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
 SELECT 
     HASHBYTES('MD5',
     {{#each businessKey.businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{sourceComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
     {{/each}}
     ) AS {{targetTableHashKey}},
     DATEADD(mcs,[{{../metadataConfiguration.sourceRowId}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
