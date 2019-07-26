@@ -61,9 +61,13 @@ namespace Virtual_EDW
             public static string hashingZeroKey { get; set; }
 
             public static List<LoadPattern> patternList { get; set; }
+            public static string activeLoadPatternStg { get; set; }
+            public static string activeLoadPatternPsa { get; set; }
             public static string activeLoadPatternHub { get; set; }
             public static string activeLoadPatternSat { get; set; }
-    }
+            public static string activeLoadPatternLnk { get; set; }
+            public static string activeLoadPatternLsat { get; set; }
+        }
 
         /// <summary>
         /// These settings are driven by the TEAM application, so can't be saved from VEDW.

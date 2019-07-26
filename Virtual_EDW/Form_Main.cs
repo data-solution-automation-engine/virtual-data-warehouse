@@ -503,6 +503,7 @@ namespace Virtual_EDW
         {
             richTextBoxHub.Clear();
             richTextBoxHubOutput.Clear();
+            richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoHub);
             newThread.Start();
@@ -938,9 +939,9 @@ namespace Virtual_EDW
             }
             else
             {
-                SetTextHub("There was no metadata selected to create Hub views. Please check the metadata schema - are there any Hubs selected?");
+                SetTextHub("There was no metadata selected to create Hub code. Please check the metadata schema - are there any Hubs selected?");
             }
-
+ 
             connOmd.Close();
             connOmd.Dispose();
 
@@ -1088,9 +1089,9 @@ namespace Virtual_EDW
             }
             else
             {
-                SetTextSat("There was no metadata selected to create Hub views. Please check the metadata schema - are there any Hubs selected?");
+                SetTextSat("There was no metadata selected to create Satellite code. Please check the metadata schema - are there any Satellites selected?");
             }
-
+ 
             connOmd.Close();
             connOmd.Dispose();
 
@@ -1494,8 +1495,8 @@ namespace Virtual_EDW
 
         private void SatelliteButtonClick (object sender, EventArgs e)
         {
-            richTextBoxSatOutput.Clear();
             richTextBoxSat.Clear();
+            richTextBoxSatOutput.Clear();
             richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoSat);
@@ -2331,25 +2332,151 @@ namespace Virtual_EDW
         private void LinkButtonClick (object sender, EventArgs e)
         {
             richTextBoxLink.Clear();
+            richTextBoxLinkOutput.Clear();
             richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoLink);
             newThread.Start();
+            tabControlLink.SelectedIndex = 0;
         }
 
         private void BackgroundDoLink(Object obj)
         {
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
-
+            GenerateLinkFromPattern();
             //if (radiobuttonViews.Checked)
             //{
-                GenerateLinkViews();
+             //   GenerateLinkViews();
             //}
             //else if (radioButtonIntoStatement.Checked)
             //{
             //    GenerateLinkInsertInto();
             //}
+        }
+
+        /// <summary>
+        ///   Create Link SQL using Handlebars as templating engine
+        /// </summary>
+        private void GenerateLinkFromPattern()
+        {
+            int errorCounter = 0;
+
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+
+            if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
+            {
+                for (int x = 0; x <= checkedListBoxLinkMetadata.CheckedItems.Count - 1; x++)
+                {
+                    var targetTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
+                    SetTextLink($"Processing Link generation for {targetTableName}\r\n");
+
+                    // Retrieve metadata and store in a data table object
+                    var metadataQuery =
+                               @"SELECT 
+                                   [SOURCE_NAME]
+                                  ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                                  ,[TARGET_NAME]
+                                  ,[TARGET_BUSINESS_KEY_DEFINITION]
+                                  ,[FILTER_CRITERIA]
+                                  ,[SURROGATE_KEY]
+                                FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
+                                WHERE [TARGET_NAME] = '" + targetTableName + "'";
+
+                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+
+                    // Move the data table to the class instance
+                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+
+                    foreach (DataRow row in metadataDataTable.Rows)
+                    {
+                        // Creating the Business Key Component Mapping list (from the input array)
+                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+
+                        // Creating the Business Key definition, using the available components (see above)
+                        BusinessKey businessKey =
+                            new BusinessKey
+                            {
+                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                            };
+
+                        // Add the created Business Key to the source-to-target mapping
+                        var sourceToTargetMapping = new SourceToTargetMapping();
+
+                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
+                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
+                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+                        sourceToTargetMapping.businessKey = businessKey;
+                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+
+                        // Add the source-to-target mapping to the mapping list
+                        sourceToTargetMappingList.Add(sourceToTargetMapping);
+                    }
+
+                    // Create an instance of the 'MappingList' class / object model 
+                    SourceToTargetMappingList listing = new SourceToTargetMappingList();
+                    listing.individualSourceToTargetMapping = sourceToTargetMappingList;
+                    listing.metadataConfiguration = new MetadataConfiguration();
+                    listing.mainTable = targetTableName;
+
+                    // Return the result to the user
+                    try
+                    {
+                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLnk);
+                        var result = template(listing);
+                        SetTextLinkOutput(result);
+
+                        try
+                        {   //Output to file
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            {
+                                outfile.Write(result);
+                                outfile.Close();
+                                SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextLinkOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
+                        }
+
+                        try
+                        {
+                            //Generate in database
+                            if (checkBoxGenerateInDatabase.Checked)
+                            {
+                                connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                                int insertError = GenerateInDatabase(connPsa, result);
+                                errorCounter = errorCounter + insertError;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextLinkOutput("There was an issue executing the code against the database. The message is: " + ex);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCounter++;
+                        SetTextLinkOutput("The template could not be compiled, the error message is " + ex);
+                    }
+                }
+            }
+            else
+            {
+                SetTextLink("There was no metadata selected to create Link views. Please check the metadata schema - are there any Links selected?");
+            }
+
+            connOmd.Close();
+            connOmd.Dispose();
+
+            SetTextLink($"\r\n{errorCounter} errors have been found.\r\n");
+
+            // Call a delegate to handle multi-threading for syntax highlighting
+            SetTextLnkOutputSyntax(richTextBoxLinkOutput);
         }
 
         private void GenerateLinkInsertInto()
@@ -3315,24 +3442,151 @@ namespace Virtual_EDW
             CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
             richTextBoxLsat.Clear();
+            richTextBoxLsatOutput.Clear();
             richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoLsat);
             newThread.Start();
+            tabControlLsat.SelectedIndex = 0;
         }
 
         private void BackgroundDoLsat(Object obj)
         {
-          
+            CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
+            GenerateLinkSatelliteFromPattern();
             //if (radiobuttonViews.Checked)
             //{
-                GenerateLsatHistoryViews();
-                GenerateLsatDrivingKeyViews();
+           //     GenerateLsatHistoryViews();
+            //    GenerateLsatDrivingKeyViews();
             //}
             //else if (radioButtonIntoStatement.Checked)
             //{
             //    GenerateLsatInsertInto();
             //}
+        }
+
+        /// <summary>
+        ///   Create Link-Satellite SQL using Handlebars as templating engine
+        /// </summary>
+        private void GenerateLinkSatelliteFromPattern()
+        {
+            int errorCounter = 0;
+
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+
+            if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
+            {
+                for (int x = 0; x <= checkedListBoxLsatMetadata.CheckedItems.Count - 1; x++)
+                {
+                    var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
+                    SetTextLsat($"Processing Link Satellite generation for {targetTableName}\r\n");
+
+                    // Retrieve metadata and store in a data table object
+                    var metadataQuery =
+                               @"SELECT 
+                                   [SOURCE_NAME]
+                                  ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                                  ,[TARGET_NAME]
+                                  ,[TARGET_BUSINESS_KEY_DEFINITION]
+                                  ,[FILTER_CRITERIA]
+                                  ,[SURROGATE_KEY]
+                                FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
+                                WHERE [TARGET_NAME] = '" + targetTableName + "'";
+
+                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+
+                    // Move the data table to the class instance
+                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+
+                    foreach (DataRow row in metadataDataTable.Rows)
+                    {
+                        // Creating the Business Key Component Mapping list (from the input array)
+                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+
+                        // Creating the Business Key definition, using the available components (see above)
+                        BusinessKey businessKey =
+                            new BusinessKey
+                            {
+                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                            };
+
+                        // Add the created Business Key to the source-to-target mapping
+                        var sourceToTargetMapping = new SourceToTargetMapping();
+
+                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
+                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
+                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+                        sourceToTargetMapping.businessKey = businessKey;
+                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+
+                        // Add the source-to-target mapping to the mapping list
+                        sourceToTargetMappingList.Add(sourceToTargetMapping);
+                    }
+
+                    // Create an instance of the 'MappingList' class / object model 
+                    SourceToTargetMappingList listing = new SourceToTargetMappingList();
+                    listing.individualSourceToTargetMapping = sourceToTargetMappingList;
+                    listing.metadataConfiguration = new MetadataConfiguration();
+                    listing.mainTable = targetTableName;
+
+                    // Return the result to the user
+                    try
+                    {
+                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLsat);
+                        var result = template(listing);
+                        SetTextLsatOutput(result);
+
+                        try
+                        {   //Output to file
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            {
+                                outfile.Write(result);
+                                outfile.Close();
+                                SetTextLsat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextLsatOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
+                        }
+
+                        try
+                        {
+                            //Generate in database
+                            if (checkBoxGenerateInDatabase.Checked)
+                            {
+                                connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                                int insertError = GenerateInDatabase(connPsa, result);
+                                errorCounter = errorCounter + insertError;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextLsatOutput("There was an issue executing the code against the database. The message is: " + ex);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCounter++;
+                        SetTextLsatOutput("The template could not be compiled, the error message is " + ex);
+                    }
+                }
+            }
+            else
+            {
+                SetTextLsat("There was no metadata selected to create LInk Satellite code. Please check the metadata schema - are there any Link Satellites selected?");
+            }
+
+            connOmd.Close();
+            connOmd.Dispose();
+
+            SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
+
+            // Call a delegate to handle multi-threading for syntax highlighting
+            SetTextLsatOutputSyntax(richTextBoxLsatOutput);
         }
 
         private void GenerateLsatInsertInto()
@@ -4836,25 +5090,151 @@ namespace Virtual_EDW
         private void buttonGeneratePSA_Click(object sender, EventArgs e)
         {
             richTextBoxPSA.Clear();
+            richTextBoxPsaOutput.Clear();
             richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoPsa);
             newThread.Start();
+            tabControlPsa.SelectedIndex = 0;
         }
 
         private void BackgroundDoPsa(Object obj)
         {
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringHstg);
-
+            GeneratePersistentStagingAreaFromPattern();
             //if (radiobuttonViews.Checked)
             //{
-                PsaGenerateViews();
+            // PsaGenerateViews();
             //}
             //else if (radioButtonIntoStatement.Checked)
             //{
             //    PsaGenerateInsertInto();
             //}
+        }
+
+        /// <summary>
+        ///   Create Persistent Staging Area SQL using Handlebars as templating engine
+        /// </summary>
+        private void GeneratePersistentStagingAreaFromPattern()
+        {
+            int errorCounter = 0;
+
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+
+            if (checkedListBoxPsaMetadata.CheckedItems.Count != 0)
+            {
+                for (int x = 0; x <= checkedListBoxPsaMetadata.CheckedItems.Count - 1; x++)
+                {
+                    var targetTableName = checkedListBoxPsaMetadata.CheckedItems[x].ToString();
+                    SetTextPsa($"Processing Persistent Staging Area generation for {targetTableName}\r\n");
+
+                    // Retrieve metadata and store in a data table object
+                    var metadataQuery =
+                               @"SELECT 
+                                   [SOURCE_NAME]
+                                  ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                                  ,[TARGET_NAME]
+                                  ,[TARGET_BUSINESS_KEY_DEFINITION]
+                                  ,[FILTER_CRITERIA]
+                                  ,[SURROGATE_KEY]
+                                FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
+                                WHERE [TARGET_NAME] = '" + targetTableName + "'";
+
+                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+
+                    // Move the data table to the class instance
+                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+
+                    foreach (DataRow row in metadataDataTable.Rows)
+                    {
+                        // Creating the Business Key Component Mapping list (from the input array)
+                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+
+                        // Creating the Business Key definition, using the available components (see above)
+                        BusinessKey businessKey =
+                            new BusinessKey
+                            {
+                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                            };
+
+                        // Add the created Business Key to the source-to-target mapping
+                        var sourceToTargetMapping = new SourceToTargetMapping();
+
+                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
+                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
+                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+                        sourceToTargetMapping.businessKey = businessKey;
+                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+
+                        // Add the source-to-target mapping to the mapping list
+                        sourceToTargetMappingList.Add(sourceToTargetMapping);
+                    }
+
+                    // Create an instance of the 'MappingList' class / object model 
+                    SourceToTargetMappingList listing = new SourceToTargetMappingList();
+                    listing.individualSourceToTargetMapping = sourceToTargetMappingList;
+                    listing.metadataConfiguration = new MetadataConfiguration();
+                    listing.mainTable = targetTableName;
+
+                    // Return the result to the user
+                    try
+                    {
+                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternPsa);
+                        var result = template(listing);
+                        SetTextPsaOutput(result);
+
+                        try
+                        {   //Output to file
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            {
+                                outfile.Write(result);
+                                outfile.Close();
+                                SetTextPsa($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextPsaOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
+                        }
+
+                        try
+                        {
+                            //Generate in database
+                            if (checkBoxGenerateInDatabase.Checked)
+                            {
+                                connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                                int insertError = GenerateInDatabase(connPsa, result);
+                                errorCounter = errorCounter + insertError;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextPsaOutput("There was an issue executing the code against the database. The message is: " + ex);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCounter++;
+                        SetTextPsaOutput("The template could not be compiled, the error message is " + ex);
+                    }
+                }
+            }
+            else
+            {
+                SetTextPsa("There was no metadata selected to create Persistent Staging Area code. Please check the metadata schema - are there any Persistent Staging Area tables selected?");
+            }
+
+            connOmd.Close();
+            connOmd.Dispose();
+
+            SetTextPsa($"\r\n{errorCounter} errors have been found.\r\n");
+
+            // Call a delegate to handle multi-threading for syntax highlighting
+            SetTextPsaOutputSyntax(richTextBoxPsaOutput);
         }
 
         // Create the Insert statement for the Persisten Staging Area (PSA)
@@ -5284,10 +5664,12 @@ namespace Virtual_EDW
         private void buttonGenerateStaging_Click(object sender, EventArgs e)
         {
             richTextBoxStaging.Clear();
+            richTextBoxStgOutput.Clear();
             richTextBoxInformationMain.Clear();
 
             var newThread = new Thread(BackgroundDoStaging);
             newThread.Start();
+            tabControlStg.SelectedIndex = 0;
         }
 
         private void BackgroundDoStaging(Object obj)
@@ -5295,14 +5677,141 @@ namespace Virtual_EDW
             // Check if the schema needs to be created
             CreateSchema(TeamConfigurationSettings.ConnectionStringStg);
 
+            GenerateStagingAreaFromPattern();
             //if (radiobuttonViews.Checked)
             //{
-                StagingGenerateViews();
+            // StagingGenerateViews();
+
+
             //}
             //else if (radioButtonIntoStatement.Checked)
             //{
             //    StagingGenerateInsertInto();
             //}
+        }
+
+        /// <summary>
+        ///   Create Staging Area SQL using Handlebars as templating engine
+        /// </summary>
+        private void GenerateStagingAreaFromPattern()
+        {
+            int errorCounter = 0;
+
+            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+
+            if (checkedListBoxStgMetadata.CheckedItems.Count != 0)
+            {
+                for (int x = 0; x <= checkedListBoxStgMetadata.CheckedItems.Count - 1; x++)
+                {
+                    var targetTableName = checkedListBoxStgMetadata.CheckedItems[x].ToString();
+                    SetTextStg($"Processing Staging Area generation for {targetTableName}\r\n");
+
+                    // Retrieve metadata and store in a data table object
+                    var metadataQuery =
+                               @"SELECT 
+                                   [SOURCE_NAME]
+                                  ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                                  ,[TARGET_NAME]
+                                  ,[TARGET_BUSINESS_KEY_DEFINITION]
+                                  ,[FILTER_CRITERIA]
+                                  ,[SURROGATE_KEY]
+                                FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
+                                WHERE [TARGET_NAME] = '" + targetTableName + "'";
+
+                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+
+                    // Move the data table to the class instance
+                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+
+                    foreach (DataRow row in metadataDataTable.Rows)
+                    {
+                        // Creating the Business Key Component Mapping list (from the input array)
+                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+
+                        // Creating the Business Key definition, using the available components (see above)
+                        BusinessKey businessKey =
+                            new BusinessKey
+                            {
+                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                            };
+
+                        // Add the created Business Key to the source-to-target mapping
+                        var sourceToTargetMapping = new SourceToTargetMapping();
+
+                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
+                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
+                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+                        sourceToTargetMapping.businessKey = businessKey;
+                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+
+                        // Add the source-to-target mapping to the mapping list
+                        sourceToTargetMappingList.Add(sourceToTargetMapping);
+                    }
+
+                    // Create an instance of the 'MappingList' class / object model 
+                    SourceToTargetMappingList listing = new SourceToTargetMappingList();
+                    listing.individualSourceToTargetMapping = sourceToTargetMappingList;
+                    listing.metadataConfiguration = new MetadataConfiguration();
+                    listing.mainTable = targetTableName;
+
+                    // Return the result to the user
+                    try
+                    {
+                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
+                        var result = template(listing);
+                        SetTextStgOutput(result);
+
+                        try
+                        {   //Output to file
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            {
+                                outfile.Write(result);
+                                outfile.Close();
+                                SetTextStg($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextStgOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
+                        }
+
+                        try
+                        {
+                            //Generate in database
+                            if (checkBoxGenerateInDatabase.Checked)
+                            {
+                                connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                                int insertError = GenerateInDatabase(connPsa, result);
+                                errorCounter = errorCounter + insertError;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            errorCounter++;
+                            SetTextStgOutput("There was an issue executing the code against the database. The message is: " + ex);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCounter++;
+                        SetTextStgOutput("The template could not be compiled, the error message is " + ex);
+                    }
+                }
+            }
+            else
+            {
+                SetTextStg("There was no metadata selected to generate Staging Area code. Please check the metadata schema - are there any Staging Area tables selected?");
+            }
+
+            connOmd.Close();
+            connOmd.Dispose();
+
+            SetTextStg($"\r\n{errorCounter} errors have been found.\r\n");
+
+            // Call a delegate to handle multi-threading for syntax highlighting
+            SetTextStgOutputSyntax(richTextBoxStgOutput);
         }
 
         private void StagingGenerateInsertInto()
@@ -7408,18 +7917,8 @@ namespace Virtual_EDW
 
         private void richTextBoxHubPattern_TextChanged(object sender, EventArgs e)
         {
-            //Point curPos = Cursor.Position;
-            //// Place position in textbox
-            //var cursorPosition = richTextBoxHubPattern.GetCharIndexFromPosition(curPos).ToString();
-            //TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
-            //richTextBoxHubPattern.SelectionStart = int.Parse(cursorPosition) - 1;
-            //richTextBoxHubPattern.SelectionLength = 0;
-            //// Scroll to position
-            //richTextBoxHubPattern.ScrollToCaret();
-
-            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
+            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
             LoadPattern.ActivateLoadPattern(richTextBoxHubPattern.Text, "Hub");
-
         }
 
         private void tabControlHub_SelectedIndexChanged(object sender, EventArgs e)
@@ -7427,7 +7926,7 @@ namespace Virtual_EDW
             TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void buttonHubSavePattern_Click(object sender, EventArgs e)
         {
             richTextBoxInformationMain.Clear();
             string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternHubPath.Text);
@@ -7599,6 +8098,127 @@ namespace Virtual_EDW
         private void richTextBoxSatPattern_TextChanged(object sender, EventArgs e)
         {
             LoadPattern.ActivateLoadPattern(richTextBoxSatPattern.Text, "Satellite");
+        }
+
+        private void buttonSatSavePattern_Click(object sender, EventArgs e)
+        {
+            richTextBoxInformationMain.Clear();
+            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternSatPath.Text);
+            string saveResponse = "";
+
+            if (backupResponse.StartsWith("A backup was created"))
+            {
+                SetTextMain(backupResponse);
+                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternSatPath.Text, richTextBoxSatPattern.Text);
+                SetTextMain("\r\n\r\n" + saveResponse);
+            }
+            else
+            {
+                SetTextMain(backupResponse);
+                SetTextMain(saveResponse);
+            }
+        }
+
+        private void ButtonStgSavePattern_Click(object sender, EventArgs e)
+        {
+            richTextBoxInformationMain.Clear();
+            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternStgPath.Text);
+            string saveResponse = "";
+
+            if (backupResponse.StartsWith("A backup was created"))
+            {
+                SetTextMain(backupResponse);
+                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternStgPath.Text, richTextBoxStgPattern.Text);
+                SetTextMain("\r\n\r\n" + saveResponse);
+            }
+            else
+            {
+                SetTextMain(backupResponse);
+                SetTextMain(saveResponse);
+            }
+        }
+
+        private void buttonPsaSavePattern_Click(object sender, EventArgs e)
+        {
+            richTextBoxInformationMain.Clear();
+            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternPsaPath.Text);
+            string saveResponse = "";
+
+            if (backupResponse.StartsWith("A backup was created"))
+            {
+                SetTextMain(backupResponse);
+                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternPsaPath.Text, richTextBoxPsaPattern.Text);
+                SetTextMain("\r\n\r\n" + saveResponse);
+            }
+            else
+            {
+                SetTextMain(backupResponse);
+                SetTextMain(saveResponse);
+            }
+        }
+
+        private void buttonLnkSavePattern_Click(object sender, EventArgs e)
+        {
+            richTextBoxInformationMain.Clear();
+            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternLinkPath.Text);
+            string saveResponse = "";
+
+            if (backupResponse.StartsWith("A backup was created"))
+            {
+                SetTextMain(backupResponse);
+                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternLinkPath.Text, richTextBoxLinkPattern.Text);
+                SetTextMain("\r\n\r\n" + saveResponse);
+            }
+            else
+            {
+                SetTextMain(backupResponse);
+                SetTextMain(saveResponse);
+            }
+        }
+
+ 
+
+        private void buttonLsatSavePattern_Click(object sender, EventArgs e)
+        {
+            richTextBoxInformationMain.Clear();
+            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternLsatPath.Text);
+            string saveResponse = "";
+
+            if (backupResponse.StartsWith("A backup was created"))
+            {
+                SetTextMain(backupResponse);
+                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternLsatPath.Text, richTextBoxLsatPattern.Text);
+                SetTextMain("\r\n\r\n" + saveResponse);
+            }
+            else
+            {
+                SetTextMain(backupResponse);
+                SetTextMain(saveResponse);
+            }
+        }
+
+        private void richTextBoxStgPattern_TextChanged(object sender, EventArgs e)
+        {
+            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
+            LoadPattern.ActivateLoadPattern(richTextBoxStgPattern.Text, "StagingArea");
+        }
+
+        private void richTextBoxPsaPattern_TextChanged(object sender, EventArgs e)
+        {
+            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
+            LoadPattern.ActivateLoadPattern(richTextBoxPsaPattern.Text, "PersistentStagingArea");
+        }
+
+        private void richTextBoxLinkPattern_TextChanged(object sender, EventArgs e)
+        {
+            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
+            LoadPattern.ActivateLoadPattern(richTextBoxLinkPattern.Text, "Link");
+        }
+
+        private void richTextBoxLsatPattern_TextChanged(object sender, EventArgs e)
+        {
+            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
+            LoadPattern.ActivateLoadPattern(richTextBoxLsatPattern.Text, "LinkSatellite");
         }
     }
 }

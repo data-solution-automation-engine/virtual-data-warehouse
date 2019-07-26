@@ -86,12 +86,29 @@ namespace Virtual_EDW
         /// <param name="loadPatternType></param>
         internal static void ActivateLoadPattern(string loadPattern, string loadPatternType)
         {
-            if (loadPatternType == "Hub")
+            if (loadPatternType == "StagingArea")
+            {
+                FormBase.VedwConfigurationSettings.activeLoadPatternStg = loadPattern;
+            }
+            else if (loadPatternType == "PersistentStagingArea")
+            {
+                FormBase.VedwConfigurationSettings.activeLoadPatternPsa = loadPattern;
+            }
+            else if (loadPatternType == "Hub")
             {
                 FormBase.VedwConfigurationSettings.activeLoadPatternHub = loadPattern;
-            } else if (loadPatternType == "Satellite")
+            }
+            else if (loadPatternType == "Satellite")
             {
                 FormBase.VedwConfigurationSettings.activeLoadPatternSat = loadPattern;
+            }
+            else if (loadPatternType == "Link")
+            {
+                FormBase.VedwConfigurationSettings.activeLoadPatternLnk = loadPattern;
+            }
+            else if (loadPatternType == "LinkSatellite")
+            {
+                FormBase.VedwConfigurationSettings.activeLoadPatternLsat = loadPattern;
             }
         }
     }

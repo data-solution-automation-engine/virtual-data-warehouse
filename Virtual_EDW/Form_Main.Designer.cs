@@ -192,10 +192,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxGenerateInDatabase = new System.Windows.Forms.CheckBox();
-            this.checkBoxSchemaBound = new System.Windows.Forms.CheckBox();
-            this.checkBoxIfExistsStatement = new System.Windows.Forms.CheckBox();
             this.SQLGenerationGroupBox = new System.Windows.Forms.GroupBox();
-            this.checkBoxIgnoreVersion = new System.Windows.Forms.CheckBox();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
@@ -367,6 +364,7 @@
             this.button3.TabIndex = 5;
             this.button3.Text = "Save updates";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.ButtonStgSavePattern_Click);
             // 
             // label9
             // 
@@ -397,6 +395,7 @@
             this.richTextBoxStgPattern.Size = new System.Drawing.Size(882, 485);
             this.richTextBoxStgPattern.TabIndex = 1;
             this.richTextBoxStgPattern.Text = "";
+            this.richTextBoxStgPattern.TextChanged += new System.EventHandler(this.richTextBoxStgPattern_TextChanged);
             // 
             // checkBoxExcludeLanding
             // 
@@ -598,6 +597,7 @@
             this.button8.TabIndex = 5;
             this.button8.Text = "Save updates";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.buttonPsaSavePattern_Click);
             // 
             // label13
             // 
@@ -628,6 +628,7 @@
             this.richTextBoxPsaPattern.Size = new System.Drawing.Size(882, 485);
             this.richTextBoxPsaPattern.TabIndex = 1;
             this.richTextBoxPsaPattern.Text = "";
+            this.richTextBoxPsaPattern.TextChanged += new System.EventHandler(this.richTextBoxPsaPattern_TextChanged);
             // 
             // groupBox3
             // 
@@ -815,7 +816,7 @@
             this.buttonSaveHubPattern.TabIndex = 5;
             this.buttonSaveHubPattern.Text = "Save updates";
             this.buttonSaveHubPattern.UseVisualStyleBackColor = true;
-            this.buttonSaveHubPattern.Click += new System.EventHandler(this.button7_Click);
+            this.buttonSaveHubPattern.Click += new System.EventHandler(this.buttonHubSavePattern_Click);
             // 
             // label4
             // 
@@ -1025,6 +1026,7 @@
             this.button11.TabIndex = 5;
             this.button11.Text = "Save updates";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.buttonSatSavePattern_Click);
             // 
             // label23
             // 
@@ -1267,6 +1269,7 @@
             this.button9.TabIndex = 5;
             this.button9.Text = "Save updates";
             this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.buttonLnkSavePattern_Click);
             // 
             // label16
             // 
@@ -1297,6 +1300,7 @@
             this.richTextBoxLinkPattern.Size = new System.Drawing.Size(882, 485);
             this.richTextBoxLinkPattern.TabIndex = 1;
             this.richTextBoxLinkPattern.Text = "";
+            this.richTextBoxLinkPattern.TextChanged += new System.EventHandler(this.richTextBoxLinkPattern_TextChanged);
             // 
             // groupBox6
             // 
@@ -1486,6 +1490,7 @@
             this.button10.TabIndex = 5;
             this.button10.Text = "Save updates";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.buttonLnkSavePattern_Click);
             // 
             // label19
             // 
@@ -1516,6 +1521,7 @@
             this.richTextBoxLsatPattern.Size = new System.Drawing.Size(882, 485);
             this.richTextBoxLsatPattern.TabIndex = 1;
             this.richTextBoxLsatPattern.Text = "";
+            this.richTextBoxLsatPattern.TextChanged += new System.EventHandler(this.richTextBoxLsatPattern_TextChanged);
             // 
             // checkBoxEvaluateLsatDeletes
             // 
@@ -1942,14 +1948,14 @@
             this.generateTestDataToolStripMenuItem,
             this.generateRIValidationToolStripMenuItem});
             this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.testingToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.testingToolStripMenuItem.Text = "Testing";
             // 
             // generateTestDataToolStripMenuItem
             // 
             this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
             this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
             this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
             // 
@@ -1957,7 +1963,7 @@
             // 
             this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
             this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
             this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
             // 
@@ -2020,51 +2026,16 @@
             this.checkBoxGenerateInDatabase.Text = "Generate in database";
             this.checkBoxGenerateInDatabase.UseVisualStyleBackColor = true;
             // 
-            // checkBoxSchemaBound
-            // 
-            this.checkBoxSchemaBound.AutoSize = true;
-            this.checkBoxSchemaBound.Enabled = false;
-            this.checkBoxSchemaBound.Location = new System.Drawing.Point(6, 41);
-            this.checkBoxSchemaBound.Name = "checkBoxSchemaBound";
-            this.checkBoxSchemaBound.Size = new System.Drawing.Size(186, 17);
-            this.checkBoxSchemaBound.TabIndex = 9;
-            this.checkBoxSchemaBound.Text = "Schemabound option (Views only)";
-            this.checkBoxSchemaBound.UseVisualStyleBackColor = true;
-            this.checkBoxSchemaBound.CheckedChanged += new System.EventHandler(this.SchemaboundCheckbox_CheckedChanged);
-            // 
-            // checkBoxIfExistsStatement
-            // 
-            this.checkBoxIfExistsStatement.AutoSize = true;
-            this.checkBoxIfExistsStatement.Location = new System.Drawing.Point(6, 63);
-            this.checkBoxIfExistsStatement.Name = "checkBoxIfExistsStatement";
-            this.checkBoxIfExistsStatement.Size = new System.Drawing.Size(172, 17);
-            this.checkBoxIfExistsStatement.TabIndex = 10;
-            this.checkBoxIfExistsStatement.Text = "Add If Exists / Drop / Truncate";
-            this.checkBoxIfExistsStatement.UseVisualStyleBackColor = true;
-            // 
             // SQLGenerationGroupBox
             // 
             this.SQLGenerationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.SQLGenerationGroupBox.Controls.Add(this.checkBoxIgnoreVersion);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateInDatabase);
-            this.SQLGenerationGroupBox.Controls.Add(this.checkBoxSchemaBound);
-            this.SQLGenerationGroupBox.Controls.Add(this.checkBoxIfExistsStatement);
             this.SQLGenerationGroupBox.Location = new System.Drawing.Point(16, 677);
             this.SQLGenerationGroupBox.Name = "SQLGenerationGroupBox";
-            this.SQLGenerationGroupBox.Size = new System.Drawing.Size(224, 108);
+            this.SQLGenerationGroupBox.Size = new System.Drawing.Size(191, 106);
             this.SQLGenerationGroupBox.TabIndex = 14;
             this.SQLGenerationGroupBox.TabStop = false;
             this.SQLGenerationGroupBox.Text = "SQL Generation Options";
-            // 
-            // checkBoxIgnoreVersion
-            // 
-            this.checkBoxIgnoreVersion.AutoSize = true;
-            this.checkBoxIgnoreVersion.Location = new System.Drawing.Point(6, 86);
-            this.checkBoxIgnoreVersion.Name = "checkBoxIgnoreVersion";
-            this.checkBoxIgnoreVersion.Size = new System.Drawing.Size(182, 17);
-            this.checkBoxIgnoreVersion.TabIndex = 11;
-            this.checkBoxIgnoreVersion.Text = "Use live database / ignore virtual";
-            this.checkBoxIgnoreVersion.UseVisualStyleBackColor = true;
             // 
             // backgroundWorkerActivateMetadata
             // 
@@ -2089,9 +2060,9 @@
             // 
             this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox9.Controls.Add(this.richTextBoxInformationMain);
-            this.groupBox9.Location = new System.Drawing.Point(246, 677);
+            this.groupBox9.Location = new System.Drawing.Point(213, 677);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(985, 108);
+            this.groupBox9.Size = new System.Drawing.Size(1018, 106);
             this.groupBox9.TabIndex = 12;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Information";
@@ -2101,9 +2072,9 @@
             this.richTextBoxInformationMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBoxInformationMain.BackColor = System.Drawing.SystemColors.Control;
             this.richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 19);
+            this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 17);
             this.richTextBoxInformationMain.Name = "richTextBoxInformationMain";
-            this.richTextBoxInformationMain.Size = new System.Drawing.Size(973, 82);
+            this.richTextBoxInformationMain.Size = new System.Drawing.Size(1006, 82);
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
             // 
@@ -2216,8 +2187,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox richTextBoxLsat;
         private System.Windows.Forms.Button buttonGenerateLsats;
-        private System.Windows.Forms.CheckBox checkBoxSchemaBound;
-        private System.Windows.Forms.CheckBox checkBoxIfExistsStatement;
         private System.Windows.Forms.TabPage tabPageSettings;
         private System.Windows.Forms.GroupBox SQLGenerationGroupBox;
         private System.Windows.Forms.ToolStripMenuItem dimensionalToolStripMenuItem;
@@ -2241,7 +2210,6 @@
         private System.Windows.Forms.ToolStripMenuItem testingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateTestDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateRIValidationToolStripMenuItem;
-        private System.Windows.Forms.CheckBox checkBoxIgnoreVersion;
         private System.Windows.Forms.CheckBox checkBoxDisableSatZeroRecords;
         private System.Windows.Forms.Button buttonRepopulateHubs;
         private System.Windows.Forms.CheckedListBox checkedListBoxHubMetadata;
