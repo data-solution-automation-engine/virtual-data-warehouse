@@ -60,7 +60,7 @@ namespace Virtual_EDW
             richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
-            checkBoxIfExistsStatement.Checked = true;
+            //checkBoxIfExistsStatement.Checked = true;
             //radiobuttonViews.Checked = true;
             checkBoxDisableSatZeroRecords.Checked = false;
             checkBoxDisableLsatZeroRecords.Checked = false;
@@ -531,10 +531,10 @@ namespace Virtual_EDW
         {
             int errorCounter = 0;
 
-            if (checkBoxIfExistsStatement.Checked)
-            {
-                SetTextHub("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
-            }
+            //if (checkBoxIfExistsStatement.Checked)
+            //{
+            //    SetTextHub("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
+            //}
 
             // Determine metadata retrieval connection (dependent on option selected)
             if (checkedListBoxHubMetadata.CheckedItems.Count != 0)
@@ -542,10 +542,15 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
                 {
                     var connHstg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+                    //var conn = new SqlConnection
+                    //{
+                    //    ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+                    //};
                     var conn = new SqlConnection
                     {
-                        ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+                        ConnectionString = TeamConfigurationSettings.ConnectionStringOmd
                     };
+
 
                     var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
                     var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
@@ -611,7 +616,7 @@ namespace Virtual_EDW
                             outfile.Write(insertIntoStatement.ToString());
                             outfile.Close();
                         }
-                        SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                        SetTextHub($"...Associated SQL scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
                     }
                     catch
                     {
@@ -660,7 +665,9 @@ namespace Virtual_EDW
             var sqlStatementForSourceQuery = new StringBuilder();
 
             // Depending on the ignore version the connection is set.
-            var conn = checkBoxIgnoreVersion.Checked ? new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg } : new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            //var conn = checkBoxIgnoreVersion.Checked ? new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg } : new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+
 
             var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
@@ -695,26 +702,26 @@ namespace Virtual_EDW
                             {
                                 fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "',");
 
-                                if (checkBoxIgnoreVersion.Checked)
-                                {
+                                //if (checkBoxIgnoreVersion.Checked)
+                                //{
                                     // Make sure the live database is hit when the checkbox is ticked
                                     sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
                                     sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                                     sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
                                     sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
                                     sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
-                                }
-                                else
-                                {
-                                    //Ignore version is not checked, so versioning is used based on the activated metadata
-                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                    sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
-                                    sqlStatementForSourceQuery.AppendLine("WHERE [TABLE_NAME] = '" + stagingAreaTableName + "'");
-                                    sqlStatementForSourceQuery.AppendLine("AND [SCHEMA_NAME] = '" + TeamConfigurationSettings.SchemaName + "'");
-                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
-                                }
+                              //  }
+                                //else
+                                //{
+                                //    //Ignore version is not checked, so versioning is used based on the activated metadata
+                                //    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                //    sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+                                //    sqlStatementForSourceQuery.AppendLine("WHERE [TABLE_NAME] = '" + stagingAreaTableName + "'");
+                                //    sqlStatementForSourceQuery.AppendLine("AND [SCHEMA_NAME] = '" + TeamConfigurationSettings.SchemaName + "'");
+                                //    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
+                                //}
 
-                                var elementDataTypes = GetDataTable(ref conn, sqlStatementForSourceQuery.ToString()) ;
+                                var elementDataTypes = GetDataTable(ref conn, sqlStatementForSourceQuery.ToString());
 
                                 foreach (DataRow attribute in elementDataTypes.Rows)
                                 {
@@ -772,23 +779,23 @@ namespace Virtual_EDW
                             {
                                 // We need the data type again
 
-                                if (checkBoxIgnoreVersion.Checked)
-                                {
+                                //if (checkBoxIgnoreVersion.Checked)
+                                //{
                                     sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
                                     sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                                     sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
                                     sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
                                     sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
-                                }
-                                else
-                                {
-                                    //Ignore version is not checked, so versioning is used based on the activated metadata
-                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                    sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
-                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                    sqlStatementForSourceQuery.AppendLine("AND SCHEMA_NAME = '" + TeamConfigurationSettings.SchemaName + "'");
-                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
-                              }
+                                //}
+                                //else
+                                //{
+                                //    //Ignore version is not checked, so versioning is used based on the activated metadata
+                                //    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+                                //    sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+                                //    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
+                                //    sqlStatementForSourceQuery.AppendLine("AND SCHEMA_NAME = '" + TeamConfigurationSettings.SchemaName + "'");
+                                //    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
+                                //}
 
 
 
@@ -905,7 +912,7 @@ namespace Virtual_EDW
                             {
                                 outfile.Write(result);
                                 outfile.Close();
-                                SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+                                SetTextHub($"... Associated SQL scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
                             }
                         }
                         catch (Exception ex)
@@ -1102,293 +1109,294 @@ namespace Virtual_EDW
             SetTextSatOutputSyntax(richTextBoxSatOutput);
         }
 
-        private void GenerateHubViews()
-        {
-            int errorCounter = 0;
+        //private void GenerateHubViews()
+        //{
+        //    int errorCounter = 0;
 
-            // Create the Hub views - representing the Hub entity
-            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-            var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-            var connInt = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringInt};
+        //    // Create the Hub views - representing the Hub entity
+        //    var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+        //    var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
+        //    var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+        //    var connInt = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringInt};
 
-            if (checkedListBoxHubMetadata.CheckedItems.Count != 0)
-            {
-                for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var hubView = new StringBuilder();
-                    var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
-                    var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
+        //    if (checkedListBoxHubMetadata.CheckedItems.Count != 0)
+        //    {
+        //        for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
+        //        {
+        //            var hubView = new StringBuilder();
+        //            var hubTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
+        //            var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
-                    var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
+        //            var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
-                    // Retrieving the business key attributes for the Hub                 
-                    var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
+        //            // Retrieving the business key attributes for the Hub                 
+        //            var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
 
-                    // Initial SQL
-                    hubView.AppendLine("--");
-                    hubView.AppendLine("-- Hub View definition for " + hubTableName);
-                    hubView.AppendLine("-- Generated at " + DateTime.Now);
-                    hubView.AppendLine("--");
-                    hubView.AppendLine();
-                    hubView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
-                    hubView.AppendLine("GO");
-                    hubView.AppendLine();
-                    hubView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" + hubTableName +"]') AND type in (N'V'))");
-                    hubView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + hubTableName + "]");
-                    hubView.AppendLine("GO");
-                    hubView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + hubTableName + "] AS  ");
+        //            // Initial SQL
+        //            hubView.AppendLine("--");
+        //            hubView.AppendLine("-- Hub View definition for " + hubTableName);
+        //            hubView.AppendLine("-- Generated at " + DateTime.Now);
+        //            hubView.AppendLine("--");
+        //            hubView.AppendLine();
+        //            hubView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
+        //            hubView.AppendLine("GO");
+        //            hubView.AppendLine();
+        //            hubView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" + hubTableName +"]') AND type in (N'V'))");
+        //            hubView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + hubTableName + "]");
+        //            hubView.AppendLine("GO");
+        //            hubView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + hubTableName + "] AS  ");
 
-                    // START OF MAIN QUERY
-                    hubView.AppendLine("SELECT hub.*");
-                    hubView.AppendLine("FROM(");
-                    hubView.AppendLine("SELECT");
+        //            // START OF MAIN QUERY
+        //            hubView.AppendLine("SELECT hub.*");
+        //            hubView.AppendLine("FROM(");
+        //            hubView.AppendLine("SELECT");
 
-                    //Replace hash value with concatenated business key value (experimental)
-                    if (!checkBoxDisableHash.Checked)
-                    {
-                        //Regular Hash
-                        hubView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
+        //            //Replace hash value with concatenated business key value (experimental)
+        //            if (!checkBoxDisableHash.Checked)
+        //            {
+        //                //Regular Hash
+        //                hubView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
 
-                        foreach (DataRow hubKey in hubKeyList.Rows)
-                        {
-                            hubView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + (string)hubKey["COLUMN_NAME"] + "])),'NA')+'|'+");
-                        }
-                        hubView.Remove(hubView.Length - 3, 3);
-                        hubView.AppendLine();
+        //                foreach (DataRow hubKey in hubKeyList.Rows)
+        //                {
+        //                    hubView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + (string)hubKey["COLUMN_NAME"] + "])),'NA')+'|'+");
+        //                }
+        //                hubView.Remove(hubView.Length - 3, 3);
+        //                hubView.AppendLine();
 
-                        hubView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubSk + ",");
+        //                hubView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubSk + ",");
 
-                    }
-                    else
-                    {
-                        //BK as DWH key
-                        foreach (DataRow hubKey in hubKeyList.Rows)
-                        {
-                            hubView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + (string)hubKey["COLUMN_NAME"] + "])),'NA')+'|'+");
-                        }
-                        hubView.Remove(hubView.Length - 5, 5);
-                        hubView.Append("  AS " + hubSk + ",");
-                        hubView.AppendLine();
-                    }
+        //            }
+        //            else
+        //            {
+        //                //BK as DWH key
+        //                foreach (DataRow hubKey in hubKeyList.Rows)
+        //                {
+        //                    hubView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + (string)hubKey["COLUMN_NAME"] + "])),'NA')+'|'+");
+        //                }
+        //                hubView.Remove(hubView.Length - 5, 5);
+        //                hubView.Append("  AS " + hubSk + ",");
+        //                hubView.AppendLine();
+        //            }
 
-                    hubView.AppendLine("  -1 AS " + TeamConfigurationSettings.EtlProcessAttribute + ",");
+        //            hubView.AppendLine("  -1 AS " + TeamConfigurationSettings.EtlProcessAttribute + ",");
 
-                    if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
-                    {
-                        hubView.AppendLine("  MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + ",");
-                    }
-                    else
-                    {
-                        hubView.AppendLine("  MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
-                    }
-
-
-                    if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
-                    {
-                        hubView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute + " AS " + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ",");
-                    }
-                    else
-                    {
-                        hubView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute + ",");
-                    }
-
-                    foreach (DataRow hubKey in hubKeyList.Rows)
-                    {
-                        hubView.AppendLine("    CONVERT(" + stringDataType + "(100),[" + (string) hubKey["COLUMN_NAME"] + "]) AS "+ (string)hubKey["COLUMN_NAME"] + ",");
-                    }
-
-                    // Row number for record condensing
-                    hubView.AppendLine("  ROW_NUMBER() OVER (PARTITION  BY");
-                    foreach (DataRow hubKey in hubKeyList.Rows)
-                    {
-                        hubView.AppendLine("      [" + (string)hubKey["COLUMN_NAME"] + "],");
-                    }
-                    hubView.Remove(hubView.Length - 3, 3);
-                    hubView.AppendLine();
-                    hubView.AppendLine("  ORDER BY ");
-
-                    if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
-                    {
-                        hubView.AppendLine("      MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
-                    }
-                    else
-                    {
-                        hubView.AppendLine("      MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
-                    }
-                    hubView.AppendLine("  ) AS ROW_NR");
-
-                    hubView.AppendLine("FROM");
-                    hubView.AppendLine("(");
-
-                    // Determine if there are many Staging / Hubs relationships to map to this setup
-                    // These will be treated as individual 'ETLs' which are to be unioned in the query
-                    var queryHubGen = "SELECT * FROM [interface].[INTERFACE_SOURCE_HUB_XREF] WHERE HUB_NAME = '" + hubTableName + "'";
-                    var hubTables = GetDataTable(ref connOmd, queryHubGen);
+        //            if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+        //            {
+        //                hubView.AppendLine("  MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + ",");
+        //            }
+        //            else
+        //            {
+        //                hubView.AppendLine("  MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
+        //            }
 
 
-                    // This loop runs through the various STG / Hub relationships to create the union statements
-                    if (hubTables != null)
-                    {
-                        var rowcounter = 1;
+        //            if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+        //            {
+        //                hubView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute + " AS " + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ",");
+        //            }
+        //            else
+        //            {
+        //                hubView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute + ",");
+        //            }
 
-                        foreach (DataRow hubDetailRow in hubTables.Rows)
-                        {
-                            var sqlSourceStatement = new StringBuilder();
+        //            foreach (DataRow hubKey in hubKeyList.Rows)
+        //            {
+        //                hubView.AppendLine("    CONVERT(" + stringDataType + "(100),[" + (string) hubKey["COLUMN_NAME"] + "]) AS "+ (string)hubKey["COLUMN_NAME"] + ",");
+        //            }
+
+        //            // Row number for record condensing
+        //            hubView.AppendLine("  ROW_NUMBER() OVER (PARTITION  BY");
+        //            foreach (DataRow hubKey in hubKeyList.Rows)
+        //            {
+        //                hubView.AppendLine("      [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //            }
+        //            hubView.Remove(hubView.Length - 3, 3);
+        //            hubView.AppendLine();
+        //            hubView.AppendLine("  ORDER BY ");
+
+        //            if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+        //            {
+        //                hubView.AppendLine("      MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
+        //            }
+        //            else
+        //            {
+        //                hubView.AppendLine("      MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
+        //            }
+        //            hubView.AppendLine("  ) AS ROW_NR");
+
+        //            hubView.AppendLine("FROM");
+        //            hubView.AppendLine("(");
+
+        //            // Determine if there are many Staging / Hubs relationships to map to this setup
+        //            // These will be treated as individual 'ETLs' which are to be unioned in the query
+        //            var queryHubGen = "SELECT * FROM [interface].[INTERFACE_SOURCE_HUB_XREF] WHERE HUB_NAME = '" + hubTableName + "'";
+        //            var hubTables = GetDataTable(ref connOmd, queryHubGen);
+
+
+        //            // This loop runs through the various STG / Hub relationships to create the union statements
+        //            if (hubTables != null)
+        //            {
+        //                var rowcounter = 1;
+
+        //                foreach (DataRow hubDetailRow in hubTables.Rows)
+        //                {
+        //                    var sqlSourceStatement = new StringBuilder();
                            
-                            var stagingAreaTableName = (string)hubDetailRow["SOURCE_NAME"];
-                            var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
-                            var businessKeyDefinition = (string) hubDetailRow["SOURCE_BUSINESS_KEY_DEFINITION"];
-                            var filterCriteria = (string)hubDetailRow["FILTER_CRITERIA"];
+        //                    var stagingAreaTableName = (string)hubDetailRow["SOURCE_NAME"];
+        //                    var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
+        //                    var businessKeyDefinition = (string) hubDetailRow["SOURCE_BUSINESS_KEY_DEFINITION"];
+        //                    var filterCriteria = (string)hubDetailRow["FILTER_CRITERIA"];
 
 
-                            // Construct the join clauses, where clauses etc. for the Hubs
-                            var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, "");
+        //                    // Construct the join clauses, where clauses etc. for the Hubs
+        //                    var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, "");
 
-                            var hubQuerySelect = queryClauses[0];
-                            var hubQueryWhere = queryClauses[1];
-                            var hubQueryGroupBy = queryClauses[2];
+        //                    var hubQuerySelect = queryClauses[0];
+        //                    var hubQueryWhere = queryClauses[1];
+        //                    var hubQueryGroupBy = queryClauses[2];
 
-                            //hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
-                            hubQueryWhere.Remove(hubQueryWhere.Length - 6, 6);
-                            //hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
+        //                    //hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
+        //                    hubQueryWhere.Remove(hubQueryWhere.Length - 6, 6);
+        //                    //hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
 
-                            //Troubleshooting
-                            if (hubQuerySelect == "")
-                            {
-                                SetTextLink("Keys missing, please check the metadata for table " + hubTableName + "\r\n");
-                            }
+        //                    //Troubleshooting
+        //                    if (hubQuerySelect == "")
+        //                    {
+        //                        SetTextLink("Keys missing, please check the metadata for table " + hubTableName + "\r\n");
+        //                    }
 
-                            sqlSourceStatement.AppendLine("  SELECT ");
-                            sqlSourceStatement.AppendLine("    " + hubQuerySelect);
-                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
-                            sqlSourceStatement.AppendLine("       " + TeamConfigurationSettings.RecordSourceAttribute + ",");
-                            sqlSourceStatement.AppendLine("       MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute +"");
-                            sqlSourceStatement.AppendLine("  FROM "+TeamConfigurationSettings.SchemaName+"." + psaTableName);
-                            sqlSourceStatement.AppendLine("  WHERE");
-                            sqlSourceStatement.AppendLine("    " + hubQueryWhere);
-                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 7, 7);
-                            sqlSourceStatement.AppendLine();
+        //                    sqlSourceStatement.AppendLine("  SELECT ");
+        //                    sqlSourceStatement.AppendLine("    " + hubQuerySelect);
+        //                    sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
+        //                    sqlSourceStatement.AppendLine("       " + TeamConfigurationSettings.RecordSourceAttribute + ",");
+        //                    sqlSourceStatement.AppendLine("       MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute +"");
+        //                    sqlSourceStatement.AppendLine("  FROM "+TeamConfigurationSettings.SchemaName+"." + psaTableName);
+        //                    sqlSourceStatement.AppendLine("  WHERE");
+        //                    sqlSourceStatement.AppendLine("    " + hubQueryWhere);
+        //                    sqlSourceStatement.Remove(sqlSourceStatement.Length - 7, 7);
+        //                    sqlSourceStatement.AppendLine();
 
-                            if (string.IsNullOrEmpty(filterCriteria))
-                            {}
-                            else
-                            {
-                                sqlSourceStatement.AppendLine("    AND " + filterCriteria);
-                            }
+        //                    if (string.IsNullOrEmpty(filterCriteria))
+        //                    {}
+        //                    else
+        //                    {
+        //                        sqlSourceStatement.AppendLine("    AND " + filterCriteria);
+        //                    }
 
-                            sqlSourceStatement.AppendLine("  GROUP BY ");
-                            sqlSourceStatement.AppendLine("    " + hubQueryGroupBy);
-                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
+        //                    sqlSourceStatement.AppendLine("  GROUP BY ");
+        //                    sqlSourceStatement.AppendLine("    " + hubQueryGroupBy);
+        //                    sqlSourceStatement.Remove(sqlSourceStatement.Length - 3, 3);
 
-                            sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute + "");
+        //                    sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute + "");
 
-                            hubView.Append(sqlSourceStatement);
+        //                    hubView.Append(sqlSourceStatement);
 
-                            if (rowcounter < hubTables.Rows.Count)
-                            {
-                                hubView.AppendLine("UNION");
-                            }
+        //                    if (rowcounter < hubTables.Rows.Count)
+        //                    {
+        //                        hubView.AppendLine("UNION");
+        //                    }
 
-                            rowcounter++;
-                        }
+        //                    rowcounter++;
+        //                }
 
-                    } // end of if datatable not empty
+        //            } // end of if datatable not empty
 
-                    hubView.AppendLine(") HUB_selection");
-                    hubView.AppendLine("GROUP BY");
+        //            hubView.AppendLine(") HUB_selection");
+        //            hubView.AppendLine("GROUP BY");
 
-                    foreach (DataRow hubKey in hubKeyList.Rows)
-                    {
-                        hubView.AppendLine("  [" + (string) hubKey["COLUMN_NAME"] + "],");
-                    }
+        //            foreach (DataRow hubKey in hubKeyList.Rows)
+        //            {
+        //                hubView.AppendLine("  [" + (string) hubKey["COLUMN_NAME"] + "],");
+        //            }
 
-                    hubView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute);
+        //            hubView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute);
 
-                    hubView.AppendLine(") hub");
-                    hubView.AppendLine("WHERE ROW_NR = 1");
+        //            hubView.AppendLine(") hub");
+        //            hubView.AppendLine("WHERE ROW_NR = 1");
 
-                    // Zero record insert
-                    hubView.AppendLine("UNION");
+        //            // Zero record insert
+        //            hubView.AppendLine("UNION");
 
-                    //Regular Hash
-                    if (VedwConfigurationSettings.HashKeyOutputType == "Character")
-                    {
-                        hubView.AppendLine("SELECT "+VedwConfigurationSettings.hashingZeroKey+",");
-                    }
-                    else if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
-                    {
-                        hubView.AppendLine("SELECT "+VedwConfigurationSettings.hashingZeroKey+",");
-                    }
-                    else // Throw error
-                    {
-                        MessageBox.Show("Error defining key output type " + VedwConfigurationSettings.HashKeyOutputType);
-                    }
+        //            //Regular Hash
+        //            if (VedwConfigurationSettings.HashKeyOutputType == "Character")
+        //            {
+        //                hubView.AppendLine("SELECT "+VedwConfigurationSettings.hashingZeroKey+",");
+        //            }
+        //            else if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
+        //            {
+        //                hubView.AppendLine("SELECT "+VedwConfigurationSettings.hashingZeroKey+",");
+        //            }
+        //            else // Throw error
+        //            {
+        //                MessageBox.Show("Error defining key output type " + VedwConfigurationSettings.HashKeyOutputType);
+        //            }
 
-                    hubView.AppendLine("- 1,");
-                    hubView.AppendLine("'1900-01-01',");
-                    hubView.AppendLine("'Data Warehouse',");
-                    foreach (DataRow hubKey in hubKeyList.Rows) // Supporting composite and concatenate
-                    {
-                        hubView.AppendLine("'Unknown',");
-                    }
-                    hubView.AppendLine("1 AS ROW_NR");
+        //            hubView.AppendLine("- 1,");
+        //            hubView.AppendLine("'1900-01-01',");
+        //            hubView.AppendLine("'Data Warehouse',");
+        //            foreach (DataRow hubKey in hubKeyList.Rows) // Supporting composite and concatenate
+        //            {
+        //                hubView.AppendLine("'Unknown',");
+        //            }
+        //            hubView.AppendLine("1 AS ROW_NR");
 
-                    hubView.AppendLine();
-                    hubView.AppendLine("GO");
-                    // END OF MAIN QUERY
+        //            hubView.AppendLine();
+        //            hubView.AppendLine("GO");
+        //            // END OF MAIN QUERY
 
-                    //Output to file
-                    using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + hubTableName + ".sql"))
-                    {
-                        outfile.Write(hubView.ToString());
-                        outfile.Close();
-                    }
+        //            //Output to file
+        //            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + hubTableName + ".sql"))
+        //            {
+        //                outfile.Write(hubView.ToString());
+        //                outfile.Close();
+        //            }
 
-                    //Generate in database
-                    if (checkBoxGenerateInDatabase.Checked)
-                    {
-                        connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                        int insertError = GenerateInDatabase(connPsa, hubView.ToString());
-                        errorCounter = errorCounter + insertError;
-                    }
+        //            //Generate in database
+        //            if (checkBoxGenerateInDatabase.Checked)
+        //            {
+        //                connPsa.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+        //                int insertError = GenerateInDatabase(connPsa, hubView.ToString());
+        //                errorCounter = errorCounter + insertError;
+        //            }
 
-                    //Present in front-end
-                    SetTextHubOutput(hubView.ToString());
-                    SetTextHubOutput("\n");
+        //            //Present in front-end
+        //            SetTextHubOutput(hubView.ToString());
+        //            SetTextHubOutput("\n");
 
-                    SetTextHub($"Processing Hub entity view for {hubTableName}\r\n");
-                }
-            }
-            else
-            {
-                SetTextHub("There was no metadata selected to create Hub views. Please check the metadata schema - are there any Hubs selected?");
-            }
+        //            SetTextHub($"Processing Hub entity view for {hubTableName}\r\n");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        SetTextHub("There was no metadata selected to create Hub views. Please check the metadata schema - are there any Hubs selected?");
+        //    }
 
-            connOmd.Close();
-            connStg.Close();
-            connPsa.Close();
-            connInt.Close();
+        //    connOmd.Close();
+        //    connStg.Close();
+        //    connPsa.Close();
+        //    connInt.Close();
 
-            SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+        //    SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
+        //    SetTextHub($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
-        }
+        //}
 
         //Retrieve the table structure for a given table, in a given version
         private DataTable GetTableStructure(string targetTableName, ref SqlConnection sqlConnection, string tableType)
         {
             var sqlStatementForSourceQuery = new StringBuilder();
 
-            if (!checkBoxIgnoreVersion.Checked && tableType != "PSA")
-            {
+            //if (!checkBoxIgnoreVersion.Checked && tableType != "PSA")
+            //{
                 sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
                 sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
                 sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + targetTableName + "'");
-            }
+            //}
 
-            if (checkBoxIgnoreVersion.Checked || tableType == "PSA")
-            {
+           // if (checkBoxIgnoreVersion.Checked || tableType == "PSA")
+            if (tableType == "PSA")
+                {
                 sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
                 sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
                 sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + targetTableName + "'");
@@ -1526,10 +1534,10 @@ namespace Virtual_EDW
         {
             int errorCounter = 0;
 
-            if (checkBoxIfExistsStatement.Checked)
-            {
-                SetTextSatOutput("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
-            }
+            //if (checkBoxIfExistsStatement.Checked)
+            //{
+            //    SetTextSatOutput("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
+            //}
 
             if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
             {
@@ -1537,9 +1545,15 @@ namespace Virtual_EDW
                 {
                     var connHstg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
                     var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+
+
+                    //var conn = new SqlConnection
+                    //{
+                    //    ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+                    //};
                     var conn = new SqlConnection
                     {
-                        ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+                        ConnectionString = TeamConfigurationSettings.ConnectionStringOmd
                     };
 
                     var targetTableName = checkedListBoxSatMetadata.CheckedItems[x].ToString();
@@ -1670,662 +1684,662 @@ namespace Virtual_EDW
             SetTextSatOutput($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
         }
 
-        private void GenerateSatViews() //  Generate Satellite Views
-        {
-            int errorCounter = 0;
+        //private void GenerateSatViews() //  Generate Satellite Views
+        //{
+        //    int errorCounter = 0;
 
-            if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
-            {
-                for (int x = 0; x <= checkedListBoxSatMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var targetTableName = checkedListBoxSatMetadata.CheckedItems[x].ToString();
+        //    if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
+        //    {
+        //        for (int x = 0; x <= checkedListBoxSatMetadata.CheckedItems.Count - 1; x++)
+        //        {
+        //            var targetTableName = checkedListBoxSatMetadata.CheckedItems[x].ToString();
 
-                    var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
+        //            var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
-                    var sqlStatementForTablesToImport = "SELECT * FROM interface.INTERFACE_SOURCE_SATELLITE_XREF " +
-                                                        "WHERE SATELLITE_TYPE = 'Normal' " +
-                                                        " AND SATELLITE_NAME = '" + targetTableName + "'";
+        //            var sqlStatementForTablesToImport = "SELECT * FROM interface.INTERFACE_SOURCE_SATELLITE_XREF " +
+        //                                                "WHERE SATELLITE_TYPE = 'Normal' " +
+        //                                                " AND SATELLITE_NAME = '" + targetTableName + "'";
                   
-                    var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-                    var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-                    var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
+        //            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+        //            var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+        //            var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
 
-                    var conn = new SqlConnection
-                    {
-                        ConnectionString =
-                            checkBoxIgnoreVersion.Checked
-                                ? TeamConfigurationSettings.ConnectionStringStg
-                                : TeamConfigurationSettings.ConnectionStringOmd
-                    };
+        //            var conn = new SqlConnection
+        //            {
+        //                ConnectionString =
+        //                    checkBoxIgnoreVersion.Checked
+        //                        ? TeamConfigurationSettings.ConnectionStringStg
+        //                        : TeamConfigurationSettings.ConnectionStringOmd
+        //            };
 
-                    // Start logic handling
-                    var tables = GetDataTable(ref connOmd, sqlStatementForTablesToImport);
+        //            // Start logic handling
+        //            var tables = GetDataTable(ref connOmd, sqlStatementForTablesToImport);
 
-                    if (tables.Rows.Count == 0)
-                    {
-                        SetTextSatOutput("There was no metadata available to create Satellites. Please check the metadata schema (are there any Link Satellites available?) or the database connection.");
-                    }
+        //            if (tables.Rows.Count == 0)
+        //            {
+        //                SetTextSatOutput("There was no metadata available to create Satellites. Please check the metadata schema (are there any Link Satellites available?) or the database connection.");
+        //            }
 
-                    foreach (DataRow row in tables.Rows)
-                    {
-                        // Declare variabels and arrays
-                        var targetTableId = (int) row["SATELLITE_ID"];
-                        var stagingAreaTableId = (int) row["SOURCE_ID"];
-                        var stagingAreaTableName = (string) row["SOURCE_NAME"];
-                        var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
-                        var hubTableName = (string) row["HUB_NAME"];
-                        var filterCriteria = (string)row["FILTER_CRITERIA"];
-                        var businessKeyDefinition = (string)row["SOURCE_BUSINESS_KEY_DEFINITION"];
+        //            foreach (DataRow row in tables.Rows)
+        //            {
+        //                // Declare variabels and arrays
+        //                var targetTableId = (int) row["SATELLITE_ID"];
+        //                var stagingAreaTableId = (int) row["SOURCE_ID"];
+        //                var stagingAreaTableName = (string) row["SOURCE_NAME"];
+        //                var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
+        //                var hubTableName = (string) row["HUB_NAME"];
+        //                var filterCriteria = (string)row["FILTER_CRITERIA"];
+        //                var businessKeyDefinition = (string)row["SOURCE_BUSINESS_KEY_DEFINITION"];
 
-                        var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
+        //                var hubSk = hubTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
-                        // The name of the Hub hash key as it may be available in the Staging Area (if added here)
-                        var stgHubSk = TeamConfigurationSettings.DwhKeyIdentifier + "_" + hubTableName;
+        //                // The name of the Hub hash key as it may be available in the Staging Area (if added here)
+        //                var stgHubSk = TeamConfigurationSettings.DwhKeyIdentifier + "_" + hubTableName;
 
-                        string hubQuerySelect = "";
-                        string hubQueryWhere = "";
-                        string hubQueryGroupBy = "";
+        //                string hubQuerySelect = "";
+        //                string hubQueryWhere = "";
+        //                string hubQueryGroupBy = "";
 
-                        string multiActiveAttributeFromName;
+        //                string multiActiveAttributeFromName;
 
-                        var satView = new StringBuilder();
+        //                var satView = new StringBuilder();
 
-                        // Initial SQL
-                        satView.AppendLine("-- ");
-                        satView.AppendLine("-- Satellite View definition for " + targetTableName);
-                        satView.AppendLine("-- Generated at " + DateTime.Now);
-                        satView.AppendLine("-- ");
-                        satView.AppendLine();
-                        satView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
-                        satView.AppendLine("GO");
-                        satView.AppendLine();
-                        satView.AppendLine("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "]') AND type in (N'V'))");
-                        satView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "]");
-                        satView.AppendLine("go");
-                        satView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "] AS  ");
+        //                // Initial SQL
+        //                satView.AppendLine("-- ");
+        //                satView.AppendLine("-- Satellite View definition for " + targetTableName);
+        //                satView.AppendLine("-- Generated at " + DateTime.Now);
+        //                satView.AppendLine("-- ");
+        //                satView.AppendLine();
+        //                satView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
+        //                satView.AppendLine("GO");
+        //                satView.AppendLine();
+        //                satView.AppendLine("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "]') AND type in (N'V'))");
+        //                satView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "]");
+        //                satView.AppendLine("go");
+        //                satView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "] AS  ");
 
-                        // Query the Staging Area to retrieve the attributes and datatypes, precisions and length
-                        var sqlStatementForSourceAttribute = new StringBuilder();
+        //                // Query the Staging Area to retrieve the attributes and datatypes, precisions and length
+        //                var sqlStatementForSourceAttribute = new StringBuilder();
 
-                        var localKey = TeamConfigurationSettings.DwhKeyIdentifier;
-                        var localkeyLength = localKey.Length;
-                        var localkeySubstring = localkeyLength + 1;
+        //                var localKey = TeamConfigurationSettings.DwhKeyIdentifier;
+        //                var localkeyLength = localKey.Length;
+        //                var localkeySubstring = localkeyLength + 1;
 
-                        if (checkBoxIgnoreVersion.Checked)
-                        {
-                            sqlStatementForSourceAttribute.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                            sqlStatementForSourceAttribute.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                            sqlStatementForSourceAttribute.AppendLine("WHERE TABLE_NAME= '" + psaTableName + "'");
-                            sqlStatementForSourceAttribute.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                            sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +TeamConfigurationSettings.DwhKeyIdentifier + "'");
-                            sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                            sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
-                        }
-                        else
-                        {
-                            sqlStatementForSourceAttribute.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION, ORDINAL_POSITION");
-                            sqlStatementForSourceAttribute.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
-                            //sqlStatementForSourceAttribute.AppendLine("WHERE VERSION_ID = " + versionId);
-                            sqlStatementForSourceAttribute.AppendLine("  WHERE TABLE_NAME= '" + psaTableName + "'");
-                            sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +TeamConfigurationSettings.DwhKeyIdentifier + "'");
-                            sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.EtlProcessAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                            sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
-                        }
+        //                if (checkBoxIgnoreVersion.Checked)
+        //                {
+        //                    sqlStatementForSourceAttribute.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+        //                    sqlStatementForSourceAttribute.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+        //                    sqlStatementForSourceAttribute.AppendLine("WHERE TABLE_NAME= '" + psaTableName + "'");
+        //                    sqlStatementForSourceAttribute.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+        //                    sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +TeamConfigurationSettings.DwhKeyIdentifier + "'");
+        //                    sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //                    sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
+        //                }
+        //                else
+        //                {
+        //                    sqlStatementForSourceAttribute.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION, ORDINAL_POSITION");
+        //                    sqlStatementForSourceAttribute.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+        //                    //sqlStatementForSourceAttribute.AppendLine("WHERE VERSION_ID = " + versionId);
+        //                    sqlStatementForSourceAttribute.AppendLine("  WHERE TABLE_NAME= '" + psaTableName + "'");
+        //                    sqlStatementForSourceAttribute.AppendLine("  AND SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" +localkeyLength + "," + localkeySubstring + ")!='_" +TeamConfigurationSettings.DwhKeyIdentifier + "'");
+        //                    sqlStatementForSourceAttribute.AppendLine("  AND COLUMN_NAME NOT IN ('" +TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.EtlProcessAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute +"','" +TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //                    sqlStatementForSourceAttribute.AppendLine("ORDER BY ORDINAL_POSITION");
+        //                }
 
-                        var stgStructure = GetDataTable(ref conn, sqlStatementForSourceAttribute.ToString());
-                        stgStructure.PrimaryKey = new[] {stgStructure.Columns["COLUMN_NAME"]};
-
-
-                        // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
-                        var componentElementList = GetBusinessKeyElementsBase(stagingAreaTableName, hubTableName, businessKeyDefinition);
-                        componentElementList.PrimaryKey = new[]{componentElementList.Columns["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"]};
-
-                        // Query to detect multi-active attributes
-                        var multiActiveAttributes = GetMultiActiveAttributes(targetTableId);
-
-                        // Retrieve the Source-To-Target mapping for Satellites
-                        var sourceStructure = GetStagingToSatelliteAttributeMapping(targetTableId, stagingAreaTableId);
-
-                        // Checking if a hash value already exists in the source (the Staging Area, so it doesn't need to be calculated again)
-                        var foundRow = stgStructure.Rows.Find(stgHubSk);
-
-                        // Retrieving the business key attributes for the Hub                 
-                        var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
-
-                        // Construct the join clauses, where clauses etc. for the Hubs
-                        var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, "");
-                        hubQuerySelect = queryClauses[0];
-
-                        //Troubleshooting
-                        if (hubQuerySelect == "")
-                        {
-                            SetTextLink("Keys missing, please check the metadata for table " + hubTableName + "\r\n");
-                        }
+        //                var stgStructure = GetDataTable(ref conn, sqlStatementForSourceAttribute.ToString());
+        //                stgStructure.PrimaryKey = new[] {stgStructure.Columns["COLUMN_NAME"]};
 
 
-                        // Creating the query
-                        satView.AppendLine("SELECT");
+        //                // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
+        //                var componentElementList = GetBusinessKeyElementsBase(stagingAreaTableName, hubTableName, businessKeyDefinition);
+        //                componentElementList.PrimaryKey = new[]{componentElementList.Columns["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"]};
 
-                        if (!checkBoxDisableHash.Checked)
-                        {
-                            // Regular hash calculation
-                            // Satellite / Hub key
-                            if (foundRow != null)
-                            {
-                                // Hash can be selected from STG
-                                satView.AppendLine("   " + stgHubSk + " AS " + hubSk + ",");
-                            }
-                            else
-                            {
-                                // Hash needs to be calculated
-                                satView.AppendLine("   " + VedwConfigurationSettings.hashingStartSnippet);
+        //                // Query to detect multi-active attributes
+        //                var multiActiveAttributes = GetMultiActiveAttributes(targetTableId);
 
-                                foreach (DataRow attribute in hubKeyList.Rows)
-                                {
-                                    satView.AppendLine("     ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + attribute["COLUMN_NAME"] + ")),'NA')+'|'+");
-                                }
+        //                // Retrieve the Source-To-Target mapping for Satellites
+        //                var sourceStructure = GetStagingToSatelliteAttributeMapping(targetTableId, stagingAreaTableId);
 
-                                satView.Remove(satView.Length - 3, 3);
-                                satView.AppendLine();
-                                satView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubSk + ",");
-                            }
-                        }
-                        else
-                        {
-                            //BK as DWH key
-                            foreach (DataRow attribute in hubKeyList.Rows)
-                            {
-                                satView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + attribute["COLUMN_NAME"] + ")),'NA')+'|'+");
-                            }
-                            satView.Remove(satView.Length - 5, 5);
-                            //hubView.AppendLine();
-                            satView.Append("  AS " + hubSk + ",");
-                            satView.AppendLine();
-                        }
+        //                // Checking if a hash value already exists in the source (the Staging Area, so it doesn't need to be calculated again)
+        //                var foundRow = stgStructure.Rows.Find(stgHubSk);
+
+        //                // Retrieving the business key attributes for the Hub                 
+        //                var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
+
+        //                // Construct the join clauses, where clauses etc. for the Hubs
+        //                //var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, "");
+        //                //hubQuerySelect = queryClauses[0];
+
+        //                //Troubleshooting
+        //                if (hubQuerySelect == "")
+        //                {
+        //                    SetTextLink("Keys missing, please check the metadata for table " + hubTableName + "\r\n");
+        //                }
 
 
-                        // Effective Date / LDTS
-                        if (TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
-                        {
-                            satView.AppendLine("   DATEADD(mcs,[" + TeamConfigurationSettings.RowIdAttribute + "]," + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
-                        }
-                        else
-                        {
-                            satView.AppendLine("   DATEADD(mcs,["+TeamConfigurationSettings.RowIdAttribute+"]," + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
-                        }
+        //                // Creating the query
+        //                satView.AppendLine("SELECT");
+
+        //                if (!checkBoxDisableHash.Checked)
+        //                {
+        //                    // Regular hash calculation
+        //                    // Satellite / Hub key
+        //                    if (foundRow != null)
+        //                    {
+        //                        // Hash can be selected from STG
+        //                        satView.AppendLine("   " + stgHubSk + " AS " + hubSk + ",");
+        //                    }
+        //                    else
+        //                    {
+        //                        // Hash needs to be calculated
+        //                        satView.AppendLine("   " + VedwConfigurationSettings.hashingStartSnippet);
+
+        //                        foreach (DataRow attribute in hubKeyList.Rows)
+        //                        {
+        //                            satView.AppendLine("     ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + attribute["COLUMN_NAME"] + ")),'NA')+'|'+");
+        //                        }
+
+        //                        satView.Remove(satView.Length - 3, 3);
+        //                        satView.AppendLine();
+        //                        satView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubSk + ",");
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    //BK as DWH key
+        //                    foreach (DataRow attribute in hubKeyList.Rows)
+        //                    {
+        //                        satView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + attribute["COLUMN_NAME"] + ")),'NA')+'|'+");
+        //                    }
+        //                    satView.Remove(satView.Length - 5, 5);
+        //                    //hubView.AppendLine();
+        //                    satView.Append("  AS " + hubSk + ",");
+        //                    satView.AppendLine();
+        //                }
 
 
-                        // Expiry datetime
-                        satView.AppendLine("   COALESCE ( LEAD ( DATEADD(mcs,[" + TeamConfigurationSettings.RowIdAttribute + "]," + TeamConfigurationSettings.LoadDateTimeAttribute + ") ) OVER");
-                        satView.AppendLine("   		     (PARTITION BY ");
+        //                // Effective Date / LDTS
+        //                if (TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+        //                {
+        //                    satView.AppendLine("   DATEADD(mcs,[" + TeamConfigurationSettings.RowIdAttribute + "]," + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
+        //                }
+        //                else
+        //                {
+        //                    satView.AppendLine("   DATEADD(mcs,["+TeamConfigurationSettings.RowIdAttribute+"]," + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
+        //                }
 
 
-                        foreach (DataRow hubKey in hubKeyList.Rows)
-                        {
-                            satView.AppendLine("   		          [" + (string)hubKey["COLUMN_NAME"] + "],");
-                        }
+        //                // Expiry datetime
+        //                satView.AppendLine("   COALESCE ( LEAD ( DATEADD(mcs,[" + TeamConfigurationSettings.RowIdAttribute + "]," + TeamConfigurationSettings.LoadDateTimeAttribute + ") ) OVER");
+        //                satView.AppendLine("   		     (PARTITION BY ");
 
-                        satView.Remove(satView.Length - 2, 2);
-                        satView.AppendLine();
-                        foreach (DataRow attribute in multiActiveAttributes.Rows)
-                        {
-                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                            satView.AppendLine("              " + multiActiveAttributeFromName + ",");
-                        }
+
+        //                foreach (DataRow hubKey in hubKeyList.Rows)
+        //                {
+        //                    satView.AppendLine("   		          [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //                }
+
+        //                satView.Remove(satView.Length - 2, 2);
+        //                satView.AppendLine();
+        //                foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                {
+        //                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                    satView.AppendLine("              " + multiActiveAttributeFromName + ",");
+        //                }
 
 
               
 
-                        satView.Remove(satView.Length - 3, 3);
-                        satView.AppendLine();
-                        satView.AppendLine("   		      ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute + "),");
-                        satView.AppendLine("   CAST( '9999-12-31' AS DATETIME)) AS " + TeamConfigurationSettings.ExpiryDateTimeAttribute +
-                                           ",");
-                        satView.AppendLine("   CASE");
-                        satView.AppendLine("      WHEN ( RANK() OVER (PARTITION BY ");
+        //                satView.Remove(satView.Length - 3, 3);
+        //                satView.AppendLine();
+        //                satView.AppendLine("   		      ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute + "),");
+        //                satView.AppendLine("   CAST( '9999-12-31' AS DATETIME)) AS " + TeamConfigurationSettings.ExpiryDateTimeAttribute +
+        //                                   ",");
+        //                satView.AppendLine("   CASE");
+        //                satView.AppendLine("      WHEN ( RANK() OVER (PARTITION BY ");
 
 
-                        foreach (DataRow hubKey in hubKeyList.Rows)
-                        {
-                            satView.AppendLine("           [" + (string)hubKey["COLUMN_NAME"] + "],");
-                        }
+        //                foreach (DataRow hubKey in hubKeyList.Rows)
+        //                {
+        //                    satView.AppendLine("           [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //                }
 
-                        satView.Remove(satView.Length - 2, 2);
-                        satView.AppendLine();
-                        foreach (DataRow attribute in multiActiveAttributes.Rows)
-                        {
-                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                            satView.AppendLine("         " + multiActiveAttributeFromName + ",");
-                        }
+        //                satView.Remove(satView.Length - 2, 2);
+        //                satView.AppendLine();
+        //                foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                {
+        //                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                    satView.AppendLine("         " + multiActiveAttributeFromName + ",");
+        //                }
 
-                        satView.Remove(satView.Length - 3, 3);
-                        satView.AppendLine();
-                        satView.AppendLine("          ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute + " desc )) = 1");
-                        satView.AppendLine("      THEN 'Y'");
-                        satView.AppendLine("      ELSE 'N'");
-                        satView.AppendLine("   END AS " + TeamConfigurationSettings.CurrentRowAttribute + ",");
+        //                satView.Remove(satView.Length - 3, 3);
+        //                satView.AppendLine();
+        //                satView.AppendLine("          ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute + " desc )) = 1");
+        //                satView.AppendLine("      THEN 'Y'");
+        //                satView.AppendLine("      ELSE 'N'");
+        //                satView.AppendLine("   END AS " + TeamConfigurationSettings.CurrentRowAttribute + ",");
 
-                        satView.AppendLine("   -1 AS " + TeamConfigurationSettings.EtlProcessAttribute + ",");
-                        satView.AppendLine("   -1 AS " + TeamConfigurationSettings.EtlProcessUpdateAttribute + ",");
-                        satView.AppendLine("   " + TeamConfigurationSettings.ChangeDataCaptureAttribute + ",");
-                        satView.AppendLine("   " + TeamConfigurationSettings.RowIdAttribute + ",");
+        //                satView.AppendLine("   -1 AS " + TeamConfigurationSettings.EtlProcessAttribute + ",");
+        //                satView.AppendLine("   -1 AS " + TeamConfigurationSettings.EtlProcessUpdateAttribute + ",");
+        //                satView.AppendLine("   " + TeamConfigurationSettings.ChangeDataCaptureAttribute + ",");
+        //                satView.AppendLine("   " + TeamConfigurationSettings.RowIdAttribute + ",");
 
-                        if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
-                        {
-                            satView.AppendLine("   " + TeamConfigurationSettings.RecordSourceAttribute + " AS " + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ",");
-                        }
-                        else
-                        {
-                            satView.AppendLine("   " + TeamConfigurationSettings.RecordSourceAttribute + ",");
-                        }
+        //                if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+        //                {
+        //                    satView.AppendLine("   " + TeamConfigurationSettings.RecordSourceAttribute + " AS " + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ",");
+        //                }
+        //                else
+        //                {
+        //                    satView.AppendLine("   " + TeamConfigurationSettings.RecordSourceAttribute + ",");
+        //                }
 
-                        //Logical deletes
-                        if (checkBoxEvaluateSatDelete.Checked)
-                        {
-                            satView.AppendLine("    CASE");
-                            satView.AppendLine("      WHEN [" + TeamConfigurationSettings.ChangeDataCaptureAttribute +"] = 'Delete' THEN 'Y'");
-                            satView.AppendLine("      ELSE 'N'");
-                            satView.AppendLine("    END AS [" + TeamConfigurationSettings.LogicalDeleteAttribute+"],");
-                        }
+        //                //Logical deletes
+        //                if (checkBoxEvaluateSatDelete.Checked)
+        //                {
+        //                    satView.AppendLine("    CASE");
+        //                    satView.AppendLine("      WHEN [" + TeamConfigurationSettings.ChangeDataCaptureAttribute +"] = 'Delete' THEN 'Y'");
+        //                    satView.AppendLine("      ELSE 'N'");
+        //                    satView.AppendLine("    END AS [" + TeamConfigurationSettings.LogicalDeleteAttribute+"],");
+        //                }
 
          
 
-                        //Hash key generation
-                        satView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
-                        satView.AppendLine("      ISNULL(RTRIM(CONVERT("+ stringDataType + "(100)," + TeamConfigurationSettings.ChangeDataCaptureAttribute + ")),'NA')+'|'+");
+        //                //Hash key generation
+        //                satView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
+        //                satView.AppendLine("      ISNULL(RTRIM(CONVERT("+ stringDataType + "(100)," + TeamConfigurationSettings.ChangeDataCaptureAttribute + ")),'NA')+'|'+");
 
-                        foreach (DataRow attribute in sourceStructure.Rows)
-                        {
-                            var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
-                            var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
+        //                foreach (DataRow attribute in sourceStructure.Rows)
+        //                {
+        //                    var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                    var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
 
-                            if (foundBusinessKeyAttribute == null)
-                            {
-                                satView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + localAttribute +")),'NA')+'|'+");
-                            }
-                        }
-                        satView.Remove(satView.Length - 3, 3);
-                        satView.AppendLine();
-                        satView.AppendLine("   " +VedwConfigurationSettings.hashingEndSnippet+ " AS " + TeamConfigurationSettings.RecordChecksumAttribute + ",");
+        //                    if (foundBusinessKeyAttribute == null)
+        //                    {
+        //                        satView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + localAttribute +")),'NA')+'|'+");
+        //                    }
+        //                }
+        //                satView.Remove(satView.Length - 3, 3);
+        //                satView.AppendLine();
+        //                satView.AppendLine("   " +VedwConfigurationSettings.hashingEndSnippet+ " AS " + TeamConfigurationSettings.RecordChecksumAttribute + ",");
 
-                        // Regular attributes
-                        foreach (DataRow attribute in sourceStructure.Rows)
-                        {
-                            var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
-                            var localAttributeTarget = attribute["SATELLITE_ATTRIBUTE_NAME"];
-                            var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
+        //                // Regular attributes
+        //                foreach (DataRow attribute in sourceStructure.Rows)
+        //                {
+        //                    var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                    var localAttributeTarget = attribute["SATELLITE_ATTRIBUTE_NAME"];
+        //                    var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
 
-                            if (foundBusinessKeyAttribute == null)
-                            {
-                                satView.AppendLine("   " + localAttribute + " AS " + localAttributeTarget + ",");
-                            }
-                        }
+        //                    if (foundBusinessKeyAttribute == null)
+        //                    {
+        //                        satView.AppendLine("   " + localAttribute + " AS " + localAttributeTarget + ",");
+        //                    }
+        //                }
 
-                        // Optional Row Number (just for fun)
-                        satView.AppendLine("   CAST(");
-                        satView.AppendLine("      ROW_NUMBER() OVER (PARTITION  BY ");
-
-
-                        // Hash needs to be calculated
-
-                        foreach (DataRow hubKey in hubKeyList.Rows)
-                        {
-                            satView.AppendLine("         [" + (string)hubKey["COLUMN_NAME"] + "],");
-                        }
-                        satView.Remove(satView.Length - 2, 2);
-                        satView.AppendLine();
-
-                        foreach (DataRow attribute in multiActiveAttributes.Rows)
-                        {
-                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                            satView.AppendLine("         " + multiActiveAttributeFromName + ",");
-                        }
-
-                        satView.Remove(satView.Length - 3, 3);
-                        satView.AppendLine("      ORDER BY ");
+        //                // Optional Row Number (just for fun)
+        //                satView.AppendLine("   CAST(");
+        //                satView.AppendLine("      ROW_NUMBER() OVER (PARTITION  BY ");
 
 
-                        foreach (DataRow hubKey in hubKeyList.Rows)
-                        {
-                            satView.AppendLine("         [" + (string)hubKey["COLUMN_NAME"] + "],");
-                        }
+        //                // Hash needs to be calculated
 
-                        satView.Remove(satView.Length - 2, 2);
-                        satView.AppendLine();
+        //                foreach (DataRow hubKey in hubKeyList.Rows)
+        //                {
+        //                    satView.AppendLine("         [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //                }
+        //                satView.Remove(satView.Length - 2, 2);
+        //                satView.AppendLine();
+
+        //                foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                {
+        //                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                    satView.AppendLine("         " + multiActiveAttributeFromName + ",");
+        //                }
+
+        //                satView.Remove(satView.Length - 3, 3);
+        //                satView.AppendLine("      ORDER BY ");
+
+
+        //                foreach (DataRow hubKey in hubKeyList.Rows)
+        //                {
+        //                    satView.AppendLine("         [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //                }
+
+        //                satView.Remove(satView.Length - 2, 2);
+        //                satView.AppendLine();
 
      
 
-                        foreach (DataRow attribute in multiActiveAttributes.Rows)
-                        {
-                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                            satView.AppendLine("         " + multiActiveAttributeFromName + ",");
-                        }
-                        satView.AppendLine("         [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
+        //                foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                {
+        //                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                    satView.AppendLine("         " + multiActiveAttributeFromName + ",");
+        //                }
+        //                satView.AppendLine("         [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
 
-                        satView.AppendLine("   AS ROW_NUMBER");
-                        // End of initial selection
+        //                satView.AppendLine("   AS ROW_NUMBER");
+        //                // End of initial selection
 
-                        // Inner selection
-                        satView.AppendLine("FROM ");
-                        satView.AppendLine("   (");
-                        satView.AppendLine("      SELECT ");
-                        satView.AppendLine("         [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
-                        satView.AppendLine("         [" + TeamConfigurationSettings.EventDateTimeAttribute + "],");
-                        satView.AppendLine("         [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                        satView.AppendLine("         [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                        satView.AppendLine("         [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+        //                // Inner selection
+        //                satView.AppendLine("FROM ");
+        //                satView.AppendLine("   (");
+        //                satView.AppendLine("      SELECT ");
+        //                satView.AppendLine("         [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
+        //                satView.AppendLine("         [" + TeamConfigurationSettings.EventDateTimeAttribute + "],");
+        //                satView.AppendLine("         [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                satView.AppendLine("         [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                satView.AppendLine("         [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
-                        // Satellite / Hub key
-                        if (foundRow != null)
-                        {
-                            // Hash can be selected from STG
-                            satView.AppendLine("            " + stgHubSk + " AS " + hubSk + ",");
-                        }
-                        else
-                        {
-                            foreach (DataRow hubKey in hubKeyList.Rows)
-                            {
-                                satView.AppendLine("         [" + (string)hubKey["COLUMN_NAME"] + "],");
-                            }
-                        }
+        //                // Satellite / Hub key
+        //                if (foundRow != null)
+        //                {
+        //                    // Hash can be selected from STG
+        //                    satView.AppendLine("            " + stgHubSk + " AS " + hubSk + ",");
+        //                }
+        //                else
+        //                {
+        //                    foreach (DataRow hubKey in hubKeyList.Rows)
+        //                    {
+        //                        satView.AppendLine("         [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //                    }
+        //                }
 
-                        // Regular attributes
-                        foreach (DataRow attribute in sourceStructure.Rows)
-                        {
-                            var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
-                            var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
+        //                // Regular attributes
+        //                foreach (DataRow attribute in sourceStructure.Rows)
+        //                {
+        //                    var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                    var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
 
-                            if (foundBusinessKeyAttribute == null)
-                            {
-                                satView.AppendLine("         [" + localAttribute + "],");
-                            }
-                        }
+        //                    if (foundBusinessKeyAttribute == null)
+        //                    {
+        //                        satView.AppendLine("         [" + localAttribute + "],");
+        //                    }
+        //                }
 
-                        // Record condensing
-                        satView.AppendLine("         COMBINED_VALUE,");
-                        satView.AppendLine("         CASE ");
-                        satView.AppendLine("           WHEN LAG(COMBINED_VALUE,1,"+ VedwConfigurationSettings.hashingZeroKey + ") OVER (PARTITION BY ");
+        //                // Record condensing
+        //                satView.AppendLine("         COMBINED_VALUE,");
+        //                satView.AppendLine("         CASE ");
+        //                satView.AppendLine("           WHEN LAG(COMBINED_VALUE,1,"+ VedwConfigurationSettings.hashingZeroKey + ") OVER (PARTITION BY ");
 
 
-                        // Satellite / Hub key
-                        if (foundRow != null)
-                        {
-                            // Hash can be selected from STG
-                            satView.AppendLine("             " + stgHubSk + " AS " + hubSk + ",");
-                        }
-                        else
-                        {
-                            foreach (DataRow hubKey in hubKeyList.Rows)
-                            {
-                                satView.AppendLine("             [" + (string)hubKey["COLUMN_NAME"] + "],");
-                            }
-                        }
-                        // Handle Multi-Active
-                        foreach (DataRow attribute in multiActiveAttributes.Rows)
-                        {
-                            satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
-                        }
-                        satView.Remove(satView.Length - 3, 3);
-                        satView.AppendLine();
+        //                // Satellite / Hub key
+        //                if (foundRow != null)
+        //                {
+        //                    // Hash can be selected from STG
+        //                    satView.AppendLine("             " + stgHubSk + " AS " + hubSk + ",");
+        //                }
+        //                else
+        //                {
+        //                    foreach (DataRow hubKey in hubKeyList.Rows)
+        //                    {
+        //                        satView.AppendLine("             [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //                    }
+        //                }
+        //                // Handle Multi-Active
+        //                foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                {
+        //                    satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
+        //                }
+        //                satView.Remove(satView.Length - 3, 3);
+        //                satView.AppendLine();
 
-                        satView.AppendLine("             ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] DESC) = COMBINED_VALUE");
-                        satView.AppendLine("           THEN 'Same'");
-                        satView.AppendLine("           ELSE 'Different'");
-                        satView.AppendLine("         END AS VALUE_CHANGE_INDICATOR,");
-                        satView.AppendLine("         CASE ");
+        //                satView.AppendLine("             ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] DESC) = COMBINED_VALUE");
+        //                satView.AppendLine("           THEN 'Same'");
+        //                satView.AppendLine("           ELSE 'Different'");
+        //                satView.AppendLine("         END AS VALUE_CHANGE_INDICATOR,");
+        //                satView.AppendLine("         CASE ");
 
-                        // CDC Change Indicator
-                        satView.AppendLine("           WHEN LAG([" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],1,'') OVER (PARTITION BY ");
-                        if (foundRow != null)
-                        {
-                            // Hash can be selected from STG
-                            satView.AppendLine("             " + stgHubSk + " AS " + hubSk + ",");
-                        }
-                        else
-                        {
-                            foreach (DataRow hubKey in hubKeyList.Rows)
-                            {
-                                satView.AppendLine("             [" + (string)hubKey["COLUMN_NAME"] + "],");
-                            }
-                        }
-                        // Handle Multi-Active
-                        foreach (DataRow attribute in multiActiveAttributes.Rows)
-                        {
-                            satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
-                        }
-                        satView.Remove(satView.Length - 3, 3);
-                        satView.AppendLine();
+        //                // CDC Change Indicator
+        //                satView.AppendLine("           WHEN LAG([" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],1,'') OVER (PARTITION BY ");
+        //                if (foundRow != null)
+        //                {
+        //                    // Hash can be selected from STG
+        //                    satView.AppendLine("             " + stgHubSk + " AS " + hubSk + ",");
+        //                }
+        //                else
+        //                {
+        //                    foreach (DataRow hubKey in hubKeyList.Rows)
+        //                    {
+        //                        satView.AppendLine("             [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //                    }
+        //                }
+        //                // Handle Multi-Active
+        //                foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                {
+        //                    satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
+        //                }
+        //                satView.Remove(satView.Length - 3, 3);
+        //                satView.AppendLine();
 
-                        satView.AppendLine("             ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] ASC) = [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "]");
-                        satView.AppendLine("           THEN 'Same'");
-                        satView.AppendLine("           ELSE 'Different'");
-                        satView.AppendLine("         END AS CDC_CHANGE_INDICATOR,");
+        //                satView.AppendLine("             ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] ASC) = [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "]");
+        //                satView.AppendLine("           THEN 'Same'");
+        //                satView.AppendLine("           ELSE 'Different'");
+        //                satView.AppendLine("         END AS CDC_CHANGE_INDICATOR,");
 
-                        // Time Change Indicator
-                        satView.AppendLine("         CASE ");
-                        satView.AppendLine("           WHEN LEAD([" + TeamConfigurationSettings.LoadDateTimeAttribute + "],1,'9999-12-31') OVER (PARTITION BY ");
+        //                // Time Change Indicator
+        //                satView.AppendLine("         CASE ");
+        //                satView.AppendLine("           WHEN LEAD([" + TeamConfigurationSettings.LoadDateTimeAttribute + "],1,'9999-12-31') OVER (PARTITION BY ");
                         
-                        // Satellite / Hub key
-                        if (foundRow != null)
-                        {
-                            // Hash can be selected from STG
-                            satView.AppendLine("             " + stgHubSk + " AS " + hubSk + ",");
-                        }
-                        else
-                        {
-                            foreach (DataRow hubKey in hubKeyList.Rows)
-                            {
-                                satView.AppendLine("             [" + (string)hubKey["COLUMN_NAME"] + "],");
-                            }
-                        }
-                        // Handle Multi-Active
-                        foreach (DataRow attribute in multiActiveAttributes.Rows)
-                        {
-                            satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
-                        }
-                        satView.Remove(satView.Length - 3, 3);
-                        satView.AppendLine();
+        //                // Satellite / Hub key
+        //                if (foundRow != null)
+        //                {
+        //                    // Hash can be selected from STG
+        //                    satView.AppendLine("             " + stgHubSk + " AS " + hubSk + ",");
+        //                }
+        //                else
+        //                {
+        //                    foreach (DataRow hubKey in hubKeyList.Rows)
+        //                    {
+        //                        satView.AppendLine("             [" + (string)hubKey["COLUMN_NAME"] + "],");
+        //                    }
+        //                }
+        //                // Handle Multi-Active
+        //                foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                {
+        //                    satView.AppendLine("             [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
+        //                }
+        //                satView.Remove(satView.Length - 3, 3);
+        //                satView.AppendLine();
 
 
-                        satView.AppendLine("             ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] ASC) = [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]");
-                        satView.AppendLine("           THEN 'Same'");
-                        satView.AppendLine("           ELSE 'Different'");
-                        satView.AppendLine("         END AS TIME_CHANGE_INDICATOR");
+        //                satView.AppendLine("             ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.EventDateTimeAttribute + "] ASC, [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] ASC) = [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]");
+        //                satView.AppendLine("           THEN 'Same'");
+        //                satView.AppendLine("           ELSE 'Different'");
+        //                satView.AppendLine("         END AS TIME_CHANGE_INDICATOR");
 
-                        satView.AppendLine("      FROM");
-
-
-                        // Combined Value selection (inner most query)
-                        satView.AppendLine("      (");
-                        satView.AppendLine("        SELECT");
-                        satView.AppendLine("          [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
-                        satView.AppendLine("          [" + TeamConfigurationSettings.EventDateTimeAttribute + "],");
-                        satView.AppendLine("          [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                        satView.AppendLine("          [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                        satView.AppendLine("          [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                        // Business keys 
-                        if (foundRow != null)
-                        {
-                            // Hash can be selected from STG
-                            satView.AppendLine("          [" + stgHubSk + "],");
-                        }
-                        else
-                        {
-                            satView.AppendLine("          " + hubQuerySelect);
-                            satView.Remove(satView.Length - 3, 3);
-                        }
-
-                        // Regular attributes
-                        foreach (DataRow attribute in sourceStructure.Rows)
-                        {
-                            var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
-                            var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
-
-                            if (foundBusinessKeyAttribute == null)
-                            {
-                                satView.AppendLine("          [" + localAttribute + "],");
-                            }
-                        }
-
-                        // Hash needs to be calculated for Combined Value
-                        satView.AppendLine("         "+VedwConfigurationSettings.hashingStartSnippet);
-
-                        foreach (DataRow attribute in sourceStructure.Rows)
-                        {
-                            satView.AppendLine("             ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + attribute["SOURCE_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
-                        }
-
-                        satView.Remove(satView.Length - 3, 3);
-                        satView.AppendLine();
-                        satView.AppendLine("         "+VedwConfigurationSettings.hashingEndSnippet+" AS COMBINED_VALUE");
-                        satView.AppendLine("        FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
-
-                        // Filter criteria
-                        if (string.IsNullOrEmpty(filterCriteria))
-                        {
-                        }
-                        else
-                        {
-                            satView.AppendLine("      WHERE " + filterCriteria);
-                        }
-
-                        if (checkBoxDisableSatZeroRecords.Checked==false)
-                        {
-                            // Start of zero record
-                            satView.AppendLine("        UNION");
-                            satView.AppendLine("        SELECT DISTINCT");
-                            satView.AppendLine("          '1900-01-01' AS [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
-                            satView.AppendLine("          '1900-01-01' AS [" + TeamConfigurationSettings.EventDateTimeAttribute + "],");
-                            satView.AppendLine("          'Data Warehouse' AS [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                            satView.AppendLine("          0 AS [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                            satView.AppendLine("          'N/A' AS [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                            // Business keys 
-                            if (foundRow != null)
-                            {
-                                // Hash can be selected from STG
-                                satView.AppendLine("          [" + stgHubSk + "],");
-                            }
-                            else
-                            {
-                                satView.AppendLine("          " + hubQuerySelect);
-                                satView.Remove(satView.Length - 3, 3);
-                            }
-
-                            // Multi-active attributes
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                satView.AppendLine("          "+ attribute["SOURCE_ATTRIBUTE_NAME"] + ",");
-                            }
+        //                satView.AppendLine("      FROM");
 
 
-                            // Adding regular attributes as NULLs, skipping the key and any multi-active attributes
-                            foreach (DataRow attribute in sourceStructure.Rows)
-                            {
-                                var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"]; // Get the key
-                                var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute); // Get the multi-active attribute
-                                var foundMultiActiveAttribute = multiActiveAttributes.Rows.Find(localAttribute);
+        //                // Combined Value selection (inner most query)
+        //                satView.AppendLine("      (");
+        //                satView.AppendLine("        SELECT");
+        //                satView.AppendLine("          [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
+        //                satView.AppendLine("          [" + TeamConfigurationSettings.EventDateTimeAttribute + "],");
+        //                satView.AppendLine("          [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                satView.AppendLine("          [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                satView.AppendLine("          [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
-                                if (foundBusinessKeyAttribute == null && foundMultiActiveAttribute == null)
-                                {
-                                    satView.AppendLine("          NULL AS " + localAttribute + ",");
-                                }
-                            }
+        //                // Business keys 
+        //                if (foundRow != null)
+        //                {
+        //                    // Hash can be selected from STG
+        //                    satView.AppendLine("          [" + stgHubSk + "],");
+        //                }
+        //                else
+        //                {
+        //                    satView.AppendLine("          " + hubQuerySelect);
+        //                    satView.Remove(satView.Length - 3, 3);
+        //                }
 
-                            satView.AppendLine("          "+ VedwConfigurationSettings.hashingZeroKey + " AS COMBINED_VALUE");
-                            satView.AppendLine("        FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
-                            // End of zero record
-                        }
+        //                // Regular attributes
+        //                foreach (DataRow attribute in sourceStructure.Rows)
+        //                {
+        //                    var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                    var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
 
-                        satView.AppendLine("   ) sub");
-                        satView.AppendLine(") combined_value");
+        //                    if (foundBusinessKeyAttribute == null)
+        //                    {
+        //                        satView.AppendLine("          [" + localAttribute + "],");
+        //                    }
+        //                }
 
-                        satView.AppendLine("WHERE ");
-                        satView.AppendLine("  (VALUE_CHANGE_INDICATOR ='Different' and [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] in ('Insert', 'Change')) ");
-                        satView.AppendLine("  OR");
-                        satView.AppendLine("  (CDC_CHANGE_INDICATOR = 'Different' and TIME_CHANGE_INDICATOR = 'Different')");
+        //                // Hash needs to be calculated for Combined Value
+        //                satView.AppendLine("         "+VedwConfigurationSettings.hashingStartSnippet);
 
-                        // Zero record insert
-                        if (checkBoxDisableSatZeroRecords.Checked == false)
-                        {
-                            satView.AppendLine("UNION");
-                            satView.AppendLine("SELECT " + VedwConfigurationSettings.hashingZeroKey + ",");
-                            satView.AppendLine("'1900-01-01',");
-                            satView.AppendLine("'9999-12-31',");
-                            satView.AppendLine("'Y',"); // Current Row Indicator
-                            satView.AppendLine("- 1,"); // ETL insert ID
-                            satView.AppendLine("- 1,"); // ETL update ID
-                            satView.AppendLine("'N/A',"); // CDC operation
-                            satView.AppendLine("1,"); // Row Nr
-                            satView.AppendLine("'Data Warehouse',");
-                            if (checkBoxEvaluateSatDelete.Checked)
-                            {
-                                satView.AppendLine("'N',"); // Logical Delete evaluation, if checked
-                            }
+        //                foreach (DataRow attribute in sourceStructure.Rows)
+        //                {
+        //                    satView.AppendLine("             ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + attribute["SOURCE_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
+        //                }
 
-                            satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ","); //Full Row Hash
+        //                satView.Remove(satView.Length - 3, 3);
+        //                satView.AppendLine();
+        //                satView.AppendLine("         "+VedwConfigurationSettings.hashingEndSnippet+" AS COMBINED_VALUE");
+        //                satView.AppendLine("        FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
 
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                // Requires handling of data types
-                                if (attribute["SATELLITE_ATTRIBUTE_NAME"].ToString().Contains("DATE"))
-                                {
-                                    satView.AppendLine("CAST('1900-01-01' AS DATE),");
-                                }
-                                else
-                                {
-                                    satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ",");
-                                }
-                            }
+        //                // Filter criteria
+        //                if (string.IsNullOrEmpty(filterCriteria))
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    satView.AppendLine("      WHERE " + filterCriteria);
+        //                }
 
-                            foreach (DataRow attribute in sourceStructure.Rows)
-                            {
-                                var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
-                                var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
-                                var foundMultiActiveAttribute = multiActiveAttributes.Rows.Find(localAttribute);
+        //                if (checkBoxDisableSatZeroRecords.Checked==false)
+        //                {
+        //                    // Start of zero record
+        //                    satView.AppendLine("        UNION");
+        //                    satView.AppendLine("        SELECT DISTINCT");
+        //                    satView.AppendLine("          '1900-01-01' AS [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
+        //                    satView.AppendLine("          '1900-01-01' AS [" + TeamConfigurationSettings.EventDateTimeAttribute + "],");
+        //                    satView.AppendLine("          'Data Warehouse' AS [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                    satView.AppendLine("          0 AS [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                    satView.AppendLine("          'N/A' AS [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
 
-                                if (foundBusinessKeyAttribute == null && foundMultiActiveAttribute == null)
-                                {
-                                    satView.AppendLine("NULL,");
-                                }
-                            }
+        //                    // Business keys 
+        //                    if (foundRow != null)
+        //                    {
+        //                        // Hash can be selected from STG
+        //                        satView.AppendLine("          [" + stgHubSk + "],");
+        //                    }
+        //                    else
+        //                    {
+        //                        satView.AppendLine("          " + hubQuerySelect);
+        //                        satView.Remove(satView.Length - 3, 3);
+        //                    }
 
-                            satView.AppendLine("1"); // Row Nr
-                        }
-                        // END OF ZERO RECORD CREATION
+        //                    // Multi-active attributes
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        satView.AppendLine("          "+ attribute["SOURCE_ATTRIBUTE_NAME"] + ",");
+        //                    }
 
 
-                        satView.AppendLine();
-                        satView.AppendLine("GO");
+        //                    // Adding regular attributes as NULLs, skipping the key and any multi-active attributes
+        //                    foreach (DataRow attribute in sourceStructure.Rows)
+        //                    {
+        //                        var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"]; // Get the key
+        //                        var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute); // Get the multi-active attribute
+        //                        var foundMultiActiveAttribute = multiActiveAttributes.Rows.Find(localAttribute);
 
-                        using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql", false))
-                        {
-                            outfile.Write(satView.ToString());
-                            outfile.Close();
-                        }
+        //                        if (foundBusinessKeyAttribute == null && foundMultiActiveAttribute == null)
+        //                        {
+        //                            satView.AppendLine("          NULL AS " + localAttribute + ",");
+        //                        }
+        //                    }
 
-                        if (checkBoxGenerateInDatabase.Checked)
-                        {
-                            connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                            int insertError = GenerateInDatabase(connHstg, satView.ToString());
-                            errorCounter = errorCounter + insertError;
-                        }
+        //                    satView.AppendLine("          "+ VedwConfigurationSettings.hashingZeroKey + " AS COMBINED_VALUE");
+        //                    satView.AppendLine("        FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
+        //                    // End of zero record
+        //                }
 
-                        SetTextMain(satView.ToString());
-                        SetTextMain("\n");
-                        SetTextSatOutput(@"Processing Sat entity view for " + targetTableName + "\r\n");
-                    }
-                }
-            }
-            else
-            {
-                SetTextSatOutput("There was no metadata selected to create Satellite views. Please check the metadata schema - are there any Satellites selected?");
-            }
+        //                satView.AppendLine("   ) sub");
+        //                satView.AppendLine(") combined_value");
 
-            SetTextSatOutput($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextSatOutput($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
-        }
+        //                satView.AppendLine("WHERE ");
+        //                satView.AppendLine("  (VALUE_CHANGE_INDICATOR ='Different' and [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] in ('Insert', 'Change')) ");
+        //                satView.AppendLine("  OR");
+        //                satView.AppendLine("  (CDC_CHANGE_INDICATOR = 'Different' and TIME_CHANGE_INDICATOR = 'Different')");
+
+        //                // Zero record insert
+        //                if (checkBoxDisableSatZeroRecords.Checked == false)
+        //                {
+        //                    satView.AppendLine("UNION");
+        //                    satView.AppendLine("SELECT " + VedwConfigurationSettings.hashingZeroKey + ",");
+        //                    satView.AppendLine("'1900-01-01',");
+        //                    satView.AppendLine("'9999-12-31',");
+        //                    satView.AppendLine("'Y',"); // Current Row Indicator
+        //                    satView.AppendLine("- 1,"); // ETL insert ID
+        //                    satView.AppendLine("- 1,"); // ETL update ID
+        //                    satView.AppendLine("'N/A',"); // CDC operation
+        //                    satView.AppendLine("1,"); // Row Nr
+        //                    satView.AppendLine("'Data Warehouse',");
+        //                    if (checkBoxEvaluateSatDelete.Checked)
+        //                    {
+        //                        satView.AppendLine("'N',"); // Logical Delete evaluation, if checked
+        //                    }
+
+        //                    satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ","); //Full Row Hash
+
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        // Requires handling of data types
+        //                        if (attribute["SATELLITE_ATTRIBUTE_NAME"].ToString().Contains("DATE"))
+        //                        {
+        //                            satView.AppendLine("CAST('1900-01-01' AS DATE),");
+        //                        }
+        //                        else
+        //                        {
+        //                            satView.AppendLine(VedwConfigurationSettings.hashingZeroKey + ",");
+        //                        }
+        //                    }
+
+        //                    foreach (DataRow attribute in sourceStructure.Rows)
+        //                    {
+        //                        var localAttribute = attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                        var foundBusinessKeyAttribute = componentElementList.Rows.Find(localAttribute);
+        //                        var foundMultiActiveAttribute = multiActiveAttributes.Rows.Find(localAttribute);
+
+        //                        if (foundBusinessKeyAttribute == null && foundMultiActiveAttribute == null)
+        //                        {
+        //                            satView.AppendLine("NULL,");
+        //                        }
+        //                    }
+
+        //                    satView.AppendLine("1"); // Row Nr
+        //                }
+        //                // END OF ZERO RECORD CREATION
+
+
+        //                satView.AppendLine();
+        //                satView.AppendLine("GO");
+
+        //                using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql", false))
+        //                {
+        //                    outfile.Write(satView.ToString());
+        //                    outfile.Close();
+        //                }
+
+        //                if (checkBoxGenerateInDatabase.Checked)
+        //                {
+        //                    connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+        //                    int insertError = GenerateInDatabase(connHstg, satView.ToString());
+        //                    errorCounter = errorCounter + insertError;
+        //                }
+
+        //                SetTextMain(satView.ToString());
+        //                SetTextMain("\n");
+        //                SetTextSatOutput(@"Processing Sat entity view for " + targetTableName + "\r\n");
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        SetTextSatOutput("There was no metadata selected to create Satellite views. Please check the metadata schema - are there any Satellites selected?");
+        //    }
+
+        //    SetTextSatOutput($"\r\n{errorCounter} errors have been found.\r\n");
+        //    SetTextSatOutput($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+        //}
 
 
 
@@ -2479,545 +2493,545 @@ namespace Virtual_EDW
             SetTextLnkOutputSyntax(richTextBoxLinkOutput);
         }
 
-        private void GenerateLinkInsertInto()
-        {
-            int errorCounter = 0;
+        //private void GenerateLinkInsertInto()
+        //{
+        //    int errorCounter = 0;
 
-            if (checkBoxIfExistsStatement.Checked)
-            {
-                SetTextLink("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
-            }
+        //    if (checkBoxIfExistsStatement.Checked)
+        //    {
+        //        SetTextLink("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
+        //    }
 
-            if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
-            {
-                for (int x = 0; x <= checkedListBoxLinkMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-                    var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-                    var conn = new SqlConnection
-                    {
-                        ConnectionString =
-                            checkBoxIgnoreVersion.Checked
-                                ? TeamConfigurationSettings.ConnectionStringInt
-                                : TeamConfigurationSettings.ConnectionStringOmd
-                    };
+        //    if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
+        //    {
+        //        for (int x = 0; x <= checkedListBoxLinkMetadata.CheckedItems.Count - 1; x++)
+        //        {
+        //            var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
+        //            var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+        //            var conn = new SqlConnection
+        //            {
+        //                ConnectionString =
+        //                    checkBoxIgnoreVersion.Checked
+        //                        ? TeamConfigurationSettings.ConnectionStringInt
+        //                        : TeamConfigurationSettings.ConnectionStringOmd
+        //            };
 
-                    var targetTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
-                    var linkSk = targetTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
+        //            var targetTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
+        //            var linkSk = targetTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
-                    // Initial SQL for Link tables
-                    var insertIntoStatement = new StringBuilder();
+        //            // Initial SQL for Link tables
+        //            var insertIntoStatement = new StringBuilder();
 
-                    insertIntoStatement.AppendLine("--");
-                    insertIntoStatement.AppendLine("-- Link Insert Into statement for " + targetTableName);
-                    insertIntoStatement.AppendLine("-- Generated at " + DateTime.Now);
-                    insertIntoStatement.AppendLine("--");
-                    insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
-                    insertIntoStatement.AppendLine("GO");
-                    insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("INSERT INTO [" + TeamConfigurationSettings.IntegrationDatabaseName + "]." +TeamConfigurationSettings.SchemaName + "." + targetTableName);
-                    insertIntoStatement.AppendLine("   (");
+        //            insertIntoStatement.AppendLine("--");
+        //            insertIntoStatement.AppendLine("-- Link Insert Into statement for " + targetTableName);
+        //            insertIntoStatement.AppendLine("-- Generated at " + DateTime.Now);
+        //            insertIntoStatement.AppendLine("--");
+        //            insertIntoStatement.AppendLine();
+        //            insertIntoStatement.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
+        //            insertIntoStatement.AppendLine("GO");
+        //            insertIntoStatement.AppendLine();
+        //            insertIntoStatement.AppendLine("INSERT INTO [" + TeamConfigurationSettings.IntegrationDatabaseName + "]." +TeamConfigurationSettings.SchemaName + "." + targetTableName);
+        //            insertIntoStatement.AppendLine("   (");
 
-                    // Build the main attribute list of the Hub table for selection
-                    var sourceTableStructure = GetTableStructure(targetTableName, ref conn, "LNK");
+        //            // Build the main attribute list of the Hub table for selection
+        //            var sourceTableStructure = GetTableStructure(targetTableName, ref conn, "LNK");
 
-                    foreach (DataRow attribute in sourceTableStructure.Rows)
-                    {
-                        insertIntoStatement.AppendLine("   [" + attribute["COLUMN_NAME"] + "],");
-                    }
+        //            foreach (DataRow attribute in sourceTableStructure.Rows)
+        //            {
+        //                insertIntoStatement.AppendLine("   [" + attribute["COLUMN_NAME"] + "],");
+        //            }
 
-                    insertIntoStatement.Remove(insertIntoStatement.Length - 3, 3);
-                    insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("   )");
-                    insertIntoStatement.AppendLine("SELECT ");
+        //            insertIntoStatement.Remove(insertIntoStatement.Length - 3, 3);
+        //            insertIntoStatement.AppendLine();
+        //            insertIntoStatement.AppendLine("   )");
+        //            insertIntoStatement.AppendLine("SELECT ");
 
-                    foreach (DataRow attribute in sourceTableStructure.Rows)
-                    {
-                        var sourceAttribute = attribute["COLUMN_NAME"];
+        //            foreach (DataRow attribute in sourceTableStructure.Rows)
+        //            {
+        //                var sourceAttribute = attribute["COLUMN_NAME"];
 
-                        if ((string) sourceAttribute == TeamConfigurationSettings.EtlProcessAttribute)
-                        {
-                            insertIntoStatement.Append("   -1 AS " + sourceAttribute + ",");
-                            insertIntoStatement.AppendLine();
-                        }
-                        else if ((string)attribute["COLUMN_NAME"] == TeamConfigurationSettings.AlternativeRecordSourceAttribute)
-                        {
-                            insertIntoStatement.AppendLine("   CHECKSUM(link_view." + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ") AS " + attribute["COLUMN_NAME"] + ",");
-                        }
-                        else
-                        {
-                            insertIntoStatement.Append("   link_view.[" + sourceAttribute + "],");
-                            insertIntoStatement.AppendLine();
-                        }
-                    }
+        //                if ((string) sourceAttribute == TeamConfigurationSettings.EtlProcessAttribute)
+        //                {
+        //                    insertIntoStatement.Append("   -1 AS " + sourceAttribute + ",");
+        //                    insertIntoStatement.AppendLine();
+        //                }
+        //                else if ((string)attribute["COLUMN_NAME"] == TeamConfigurationSettings.AlternativeRecordSourceAttribute)
+        //                {
+        //                    insertIntoStatement.AppendLine("   CHECKSUM(link_view." + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ") AS " + attribute["COLUMN_NAME"] + ",");
+        //                }
+        //                else
+        //                {
+        //                    insertIntoStatement.Append("   link_view.[" + sourceAttribute + "],");
+        //                    insertIntoStatement.AppendLine();
+        //                }
+        //            }
 
-                    insertIntoStatement.Remove(insertIntoStatement.Length - 3, 3);
-                    insertIntoStatement.AppendLine();
-                    insertIntoStatement.AppendLine("FROM [" + VedwConfigurationSettings.VedwSchema + "]." + targetTableName + " link_view");
-                    insertIntoStatement.AppendLine("LEFT OUTER JOIN ");
-                    insertIntoStatement.AppendLine(" [" + TeamConfigurationSettings.IntegrationDatabaseName + "]." + TeamConfigurationSettings.SchemaName +
-                                                   "." + targetTableName + " link_table");
-                    insertIntoStatement.AppendLine(" ON link_view." + linkSk + " = link_table." + linkSk);
-                    insertIntoStatement.AppendLine("WHERE link_table." + linkSk + " IS NULL");
+        //            insertIntoStatement.Remove(insertIntoStatement.Length - 3, 3);
+        //            insertIntoStatement.AppendLine();
+        //            insertIntoStatement.AppendLine("FROM [" + VedwConfigurationSettings.VedwSchema + "]." + targetTableName + " link_view");
+        //            insertIntoStatement.AppendLine("LEFT OUTER JOIN ");
+        //            insertIntoStatement.AppendLine(" [" + TeamConfigurationSettings.IntegrationDatabaseName + "]." + TeamConfigurationSettings.SchemaName +
+        //                                           "." + targetTableName + " link_table");
+        //            insertIntoStatement.AppendLine(" ON link_view." + linkSk + " = link_table." + linkSk);
+        //            insertIntoStatement.AppendLine("WHERE link_table." + linkSk + " IS NULL");
 
-                    using (
-                        var outfile =
-                            new StreamWriter(textBoxOutputPath.Text + @"\INSERT_STATEMENT_" + targetTableName + ".sql"))
-                    {
-                        outfile.Write(insertIntoStatement.ToString());
-                        outfile.Close();
-                    }
+        //            using (
+        //                var outfile =
+        //                    new StreamWriter(textBoxOutputPath.Text + @"\INSERT_STATEMENT_" + targetTableName + ".sql"))
+        //            {
+        //                outfile.Write(insertIntoStatement.ToString());
+        //                outfile.Close();
+        //            }
 
-                    if (checkBoxGenerateInDatabase.Checked)
-                    {
-                        int insertError = GenerateInDatabase(connHstg, insertIntoStatement.ToString());
-                        errorCounter = errorCounter + insertError;
-                    }
+        //            if (checkBoxGenerateInDatabase.Checked)
+        //            {
+        //                int insertError = GenerateInDatabase(connHstg, insertIntoStatement.ToString());
+        //                errorCounter = errorCounter + insertError;
+        //            }
 
-                    SetTextMain(insertIntoStatement.ToString());
-                    SetTextMain("\n");
-                    SetTextLink(string.Format("Processing Link Insert Into statement for {0}\r\n", targetTableName));
+        //            SetTextMain(insertIntoStatement.ToString());
+        //            SetTextMain("\n");
+        //            SetTextLink(string.Format("Processing Link Insert Into statement for {0}\r\n", targetTableName));
 
-                    connStg.Close();
-                    connHstg.Close();
-                    conn.Close();
-                }
-            }
-            else
-            {
-                SetTextLink("There was no metadata selected to create Link insert statements. Please check the metadata schema - are there any Links selected?");
-            }
+        //            connStg.Close();
+        //            connHstg.Close();
+        //            conn.Close();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        SetTextLink("There was no metadata selected to create Link insert statements. Please check the metadata schema - are there any Links selected?");
+        //    }
 
-            SetTextLink($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
-        }
+        //    SetTextLink($"\r\n{errorCounter} errors have been found.\r\n");
+        //    SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+        //}
 
-        private void GenerateLinkViews()
-        {
-            int errorCounter = 0;
+        //private void GenerateLinkViews()
+        //{
+        //    int errorCounter = 0;
 
-            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-            var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-            var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-            var connInt = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringInt};
+        //    var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+        //    var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
+        //    var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+        //    var connInt = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringInt};
 
-            if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
-            {
-                for (var x = 0; x <= checkedListBoxLinkMetadata.CheckedItems.Count - 1; x++)
-                {
-                    int hubKeycounter;
-                    var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
+        //    if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
+        //    {
+        //        for (var x = 0; x <= checkedListBoxLinkMetadata.CheckedItems.Count - 1; x++)
+        //        {
+        //            int hubKeycounter;
+        //            var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
 
-                    var linkTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
-                    var linkSk = linkTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
+        //            var linkTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
+        //            var linkSk = linkTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
 
-                    var linkView = new StringBuilder();
+        //            var linkView = new StringBuilder();
 
-                    // Get the associated Hub tables and its target business key attributes for the Link
-                    var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
-                    var hubFullBusinessKeyList = GetAllHubTablesForLink(linkTableName);
+        //            // Get the associated Hub tables and its target business key attributes for the Link
+        //            var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
+        //            var hubFullBusinessKeyList = GetAllHubTablesForLink(linkTableName);
                     
 
-                    // Get the target business key names as they are in the Link (may be aliased compared to the Hub)
-                    var linkBusinessKeyList = GetLinkTargetBusinessKeyList(linkTableName);
+        //            // Get the target business key names as they are in the Link (may be aliased compared to the Hub)
+        //            var linkBusinessKeyList = GetLinkTargetBusinessKeyList(linkTableName);
 
-                    var degenerateLinkAttributes = GetDegenerateLinkAttributes(linkTableName);
+        //            var degenerateLinkAttributes = GetDegenerateLinkAttributes(linkTableName);
 
-                    // Initial view SQL
-                    linkView.AppendLine("--");
-                    linkView.AppendLine("-- Link View definition for " + linkTableName);
-                    linkView.AppendLine("-- Generated at " + DateTime.Now);
-                    linkView.AppendLine("--");
-                    linkView.AppendLine();
-                    linkView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
-                    linkView.AppendLine("GO");
-                    linkView.AppendLine();
-                    linkView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +linkTableName + "]') AND type in (N'V'))");
-                    linkView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + linkTableName + "]");
-                    linkView.AppendLine("GO");
-                    linkView.AppendLine();
-                    linkView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + linkTableName +"] AS  ");
-                    linkView.AppendLine("SELECT link.*");
-                    linkView.AppendLine("FROM");
-                    linkView.AppendLine("(");
+        //            // Initial view SQL
+        //            linkView.AppendLine("--");
+        //            linkView.AppendLine("-- Link View definition for " + linkTableName);
+        //            linkView.AppendLine("-- Generated at " + DateTime.Now);
+        //            linkView.AppendLine("--");
+        //            linkView.AppendLine();
+        //            linkView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
+        //            linkView.AppendLine("GO");
+        //            linkView.AppendLine();
+        //            linkView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +linkTableName + "]') AND type in (N'V'))");
+        //            linkView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + linkTableName + "]");
+        //            linkView.AppendLine("GO");
+        //            linkView.AppendLine();
+        //            linkView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + linkTableName +"] AS  ");
+        //            linkView.AppendLine("SELECT link.*");
+        //            linkView.AppendLine("FROM");
+        //            linkView.AppendLine("(");
                                                        
-                    linkView.AppendLine("SELECT");
+        //            linkView.AppendLine("SELECT");
 
-                    if (!checkBoxDisableHash.Checked)
-                    {
-                        // Create Link Hash Key
-                        linkView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
+        //            if (!checkBoxDisableHash.Checked)
+        //            {
+        //                // Create Link Hash Key
+        //                linkView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
 
-                        // Key fields (Hubs)
-                        hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
-                        foreach (var hubTargetBusinessKey in linkBusinessKeyList)
-                        {
-                            foreach (var hubArray in hubFullBusinessKeyList)
-                            {
-                                var hubBusinessKeyName = hubArray[1];
-                                var hubGroupCounter = hubArray[3];
+        //                // Key fields (Hubs)
+        //                hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
+        //                foreach (var hubTargetBusinessKey in linkBusinessKeyList)
+        //                {
+        //                    foreach (var hubArray in hubFullBusinessKeyList)
+        //                    {
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        var hubGroupCounter = hubArray[3];
 
-                                if (hubGroupCounter == hubKeycounter.ToString())
-                                {
-                                    linkView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
-                                }
-                            }
-                            hubKeycounter++;
-                        }
+        //                        if (hubGroupCounter == hubKeycounter.ToString())
+        //                        {
+        //                            linkView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
+        //                        }
+        //                    }
+        //                    hubKeycounter++;
+        //                }
 
-                        // Degenerate fields (Sats)
-                        if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                        {
-                            foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                            {
-                                linkView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                    (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-                            }
-                        }
+        //                // Degenerate fields (Sats)
+        //                if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                {
+        //                    foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                    {
+        //                        linkView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
+        //                                            (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+        //                    }
+        //                }
 
-                        linkView.Remove(linkView.Length - 3, 3);
-                        linkView.AppendLine();
-                        linkView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
-                    }
-                    else
-                    {
-                        //Business Key as DWH key
-                        hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
-                        foreach (var hubTargetBusinessKey in linkBusinessKeyList)
-                        {
-                            foreach (var hubArray in hubFullBusinessKeyList)
-                            {
-                                var hubBusinessKeyName = hubArray[1];
-                                var hubGroupCounter = hubArray[3];
+        //                linkView.Remove(linkView.Length - 3, 3);
+        //                linkView.AppendLine();
+        //                linkView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
+        //            }
+        //            else
+        //            {
+        //                //Business Key as DWH key
+        //                hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
+        //                foreach (var hubTargetBusinessKey in linkBusinessKeyList)
+        //                {
+        //                    foreach (var hubArray in hubFullBusinessKeyList)
+        //                    {
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        var hubGroupCounter = hubArray[3];
 
-                                if (hubGroupCounter == hubKeycounter.ToString())
-                                {
-                                    linkView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
-                                }
-                            }
-                            hubKeycounter++;
-                        }
+        //                        if (hubGroupCounter == hubKeycounter.ToString())
+        //                        {
+        //                            linkView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
+        //                        }
+        //                    }
+        //                    hubKeycounter++;
+        //                }
 
-                        if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                        {
-                            foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                            {
-                                linkView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-                            }
-                        }
+        //                if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                {
+        //                    foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                    {
+        //                        linkView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
+        //                                        (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+        //                    }
+        //                }
 
-                        linkView.Remove(linkView.Length - 5, 5);
-                        linkView.Append("  AS " + linkSk + ",");
-                        linkView.AppendLine();
-                    }
+        //                linkView.Remove(linkView.Length - 5, 5);
+        //                linkView.Append("  AS " + linkSk + ",");
+        //                linkView.AppendLine();
+        //            }
 
-                    linkView.AppendLine("  -1 AS " + TeamConfigurationSettings.EtlProcessAttribute + ",");
+        //            linkView.AppendLine("  -1 AS " + TeamConfigurationSettings.EtlProcessAttribute + ",");
 
-                    if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
-                    {
-                        linkView.AppendLine("  MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + ",");
-                    }
-                    else
-                    {
-                        linkView.AppendLine("  MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
-                    }
+        //            if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+        //            {
+        //                linkView.AppendLine("  MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + ",");
+        //            }
+        //            else
+        //            {
+        //                linkView.AppendLine("  MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
+        //            }
 
-                    if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
-                    {
-                        linkView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute + " AS " + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ",");
-                    }
-                    else
-                    {
-                        linkView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute + ",");
-                    }
+        //            if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+        //            {
+        //                linkView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute + " AS " + TeamConfigurationSettings.AlternativeRecordSourceAttribute + ",");
+        //            }
+        //            else
+        //            {
+        //                linkView.AppendLine("  " + TeamConfigurationSettings.RecordSourceAttribute + ",");
+        //            }
 
-                    hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
+        //            hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
                     
-                    // Add individual Hub Hash keys
-                    foreach (var hubTargetBusinessKey in linkBusinessKeyList)
-                    {
-                        var hubTargetBusinessKeyName = hubTargetBusinessKey[0]; // The Hub SK as known in the target link table
+        //            // Add individual Hub Hash keys
+        //            foreach (var hubTargetBusinessKey in linkBusinessKeyList)
+        //            {
+        //                var hubTargetBusinessKeyName = hubTargetBusinessKey[0]; // The Hub SK as known in the target link table
 
-                        if (!checkBoxDisableHash.Checked)
-                        {
-                            linkView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
-                        }
+        //                if (!checkBoxDisableHash.Checked)
+        //                {
+        //                    linkView.AppendLine("  "+VedwConfigurationSettings.hashingStartSnippet);
+        //                }
 
-                        foreach (var hubArray in hubFullBusinessKeyList)
-                        {
-                            //var hubNameSk = hubArray[0].Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
-                            var hubBusinessKeyName = hubArray[1];
-                            var hubGroupCounter = hubArray[3];
+        //                foreach (var hubArray in hubFullBusinessKeyList)
+        //                {
+        //                    //var hubNameSk = hubArray[0].Substring(4) + "_" + ConfigurationSettings.DwhKeyIdentifier;
+        //                    var hubBusinessKeyName = hubArray[1];
+        //                    var hubGroupCounter = hubArray[3];
 
-                            if (hubGroupCounter == hubKeycounter.ToString())
-                            {
-                                linkView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +hubBusinessKeyName + ")),'NA')+'|'+");
-                            }
-                        }
+        //                    if (hubGroupCounter == hubKeycounter.ToString())
+        //                    {
+        //                        linkView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +hubBusinessKeyName + ")),'NA')+'|'+");
+        //                    }
+        //                }
 
-                        if (!checkBoxDisableHash.Checked)
-                        {
-                            linkView.Remove(linkView.Length - 3, 3);
-                            linkView.AppendLine();
-                            linkView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubTargetBusinessKeyName + ",");
-                        }
-                        else
-                        {
-                            linkView.Remove(linkView.Length - 3, 3);
-                            linkView.Append("  AS " + hubTargetBusinessKeyName + ",");
-                            linkView.AppendLine();
-                        }
-                        hubKeycounter++;
-                    }
+        //                if (!checkBoxDisableHash.Checked)
+        //                {
+        //                    linkView.Remove(linkView.Length - 3, 3);
+        //                    linkView.AppendLine();
+        //                    linkView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + hubTargetBusinessKeyName + ",");
+        //                }
+        //                else
+        //                {
+        //                    linkView.Remove(linkView.Length - 3, 3);
+        //                    linkView.Append("  AS " + hubTargetBusinessKeyName + ",");
+        //                    linkView.AppendLine();
+        //                }
+        //                hubKeycounter++;
+        //            }
 
-                    // Add the degenerate attributes
-                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                    {
-                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                        {
-                            linkView.AppendLine("  " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
-                        }
-                    }
+        //            // Add the degenerate attributes
+        //            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //            {
+        //                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                {
+        //                    linkView.AppendLine("  " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
+        //                }
+        //            }
 
-                    // Row number for condensing
-                    linkView.AppendLine("  ROW_NUMBER() OVER (PARTITION  BY");
+        //            // Row number for condensing
+        //            linkView.AppendLine("  ROW_NUMBER() OVER (PARTITION  BY");
 
-                    hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
-                    foreach (var hubTargetBusinessKey in linkBusinessKeyList)
-                    {
-                        foreach (var hubArray in hubFullBusinessKeyList)
-                        {
-                            var hubBusinessKeyName = hubArray[1];
-                            var hubGroupCounter = hubArray[3];
+        //            hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
+        //            foreach (var hubTargetBusinessKey in linkBusinessKeyList)
+        //            {
+        //                foreach (var hubArray in hubFullBusinessKeyList)
+        //                {
+        //                    var hubBusinessKeyName = hubArray[1];
+        //                    var hubGroupCounter = hubArray[3];
 
-                            if (hubGroupCounter == hubKeycounter.ToString())
-                            {
-                                linkView.AppendLine("      [" + hubArray[1] + "],");
-                            }
-                        }
-                        hubKeycounter++;
-                    }
+        //                    if (hubGroupCounter == hubKeycounter.ToString())
+        //                    {
+        //                        linkView.AppendLine("      [" + hubArray[1] + "],");
+        //                    }
+        //                }
+        //                hubKeycounter++;
+        //            }
 
-                    // Add the degenerate attributes
-                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                    {
-                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                        {
-                            linkView.AppendLine("      [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
-                        }
-                    }
+        //            // Add the degenerate attributes
+        //            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //            {
+        //                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                {
+        //                    linkView.AppendLine("      [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
+        //                }
+        //            }
 
-                    linkView.Remove(linkView.Length - 3, 3);
-                    linkView.AppendLine();
-                    linkView.AppendLine("  ORDER BY ");
-                    if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
-                    {
-                        linkView.AppendLine("      MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
-                    }
-                    else
-                    {
-                        linkView.AppendLine("      MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
-                    }
-                    linkView.AppendLine("  ) AS ROW_NR");
+        //            linkView.Remove(linkView.Length - 3, 3);
+        //            linkView.AppendLine();
+        //            linkView.AppendLine("  ORDER BY ");
+        //            if (TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute == "True")
+        //            {
+        //                linkView.AppendLine("      MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
+        //            }
+        //            else
+        //            {
+        //                linkView.AppendLine("      MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
+        //            }
+        //            linkView.AppendLine("  ) AS ROW_NR");
 
-                    linkView.AppendLine("FROM");
-                    linkView.AppendLine("(");
+        //            linkView.AppendLine("FROM");
+        //            linkView.AppendLine("(");
 
-                    // Get all relationships between the Link table and the underlying Staging source(s)
-                    // This will drive the number of UNION statements (or separate ETL jobs)
-                    var queryLinkStagingTables = new StringBuilder();
-                    queryLinkStagingTables.AppendLine("SELECT");
-                    queryLinkStagingTables.AppendLine(" [SOURCE_ID]");
-                    queryLinkStagingTables.AppendLine(",[SOURCE_NAME]");
-                    queryLinkStagingTables.AppendLine(",[LINK_ID]");
-                    queryLinkStagingTables.AppendLine(",[LINK_NAME]");
-                    queryLinkStagingTables.AppendLine(",[FILTER_CRITERIA]");
-                    queryLinkStagingTables.AppendLine("FROM [interface].[INTERFACE_SOURCE_LINK_XREF]");
-                    queryLinkStagingTables.AppendLine("WHERE LINK_NAME = '" + linkTableName + "'");
+        //            // Get all relationships between the Link table and the underlying Staging source(s)
+        //            // This will drive the number of UNION statements (or separate ETL jobs)
+        //            var queryLinkStagingTables = new StringBuilder();
+        //            queryLinkStagingTables.AppendLine("SELECT");
+        //            queryLinkStagingTables.AppendLine(" [SOURCE_ID]");
+        //            queryLinkStagingTables.AppendLine(",[SOURCE_NAME]");
+        //            queryLinkStagingTables.AppendLine(",[LINK_ID]");
+        //            queryLinkStagingTables.AppendLine(",[LINK_NAME]");
+        //            queryLinkStagingTables.AppendLine(",[FILTER_CRITERIA]");
+        //            queryLinkStagingTables.AppendLine("FROM [interface].[INTERFACE_SOURCE_LINK_XREF]");
+        //            queryLinkStagingTables.AppendLine("WHERE LINK_NAME = '" + linkTableName + "'");
 
-                    var linkStagingTables = GetDataTable(ref connOmd, queryLinkStagingTables.ToString());
+        //            var linkStagingTables = GetDataTable(ref connOmd, queryLinkStagingTables.ToString());
 
-                    if (linkStagingTables != null)
-                    {
-                        var rowcounter = 1;
+        //            if (linkStagingTables != null)
+        //            {
+        //                var rowcounter = 1;
 
-                        // Loop through the mappings to add a union
-                        foreach (DataRow linkDetailRow in linkStagingTables.Rows)
-                        {
-                            var sqlStatementForComponent = new StringBuilder();
-                            var sqlSourceStatement = new StringBuilder();
+        //                // Loop through the mappings to add a union
+        //                foreach (DataRow linkDetailRow in linkStagingTables.Rows)
+        //                {
+        //                    var sqlStatementForComponent = new StringBuilder();
+        //                    var sqlSourceStatement = new StringBuilder();
 
-                            var stagingAreaTableName = (string) linkDetailRow["SOURCE_NAME"];
-                            var filterCriteria = (string) linkDetailRow["FILTER_CRITERIA"];
+        //                    var stagingAreaTableName = (string) linkDetailRow["SOURCE_NAME"];
+        //                    var filterCriteria = (string) linkDetailRow["FILTER_CRITERIA"];
 
-                            var currentTableName = TeamConfigurationSettings.PsaTablePrefixValue +stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
+        //                    var currentTableName = TeamConfigurationSettings.PsaTablePrefixValue +stagingAreaTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
 
-                            // Get the Hubs for each Link/STG combination - both need to be represented in the query
-                            var hubTables = GetHubLinkCombination(stagingAreaTableName, linkTableName);
+        //                    // Get the Hubs for each Link/STG combination - both need to be represented in the query
+        //                    var hubTables = GetHubLinkCombination(stagingAreaTableName, linkTableName);
 
-                            var hubQuerySelect = new StringBuilder();
-                            var hubQueryWhere = new StringBuilder();
-                            var hubQueryGroupBy = new StringBuilder();
+        //                    var hubQuerySelect = new StringBuilder();
+        //                    var hubQueryWhere = new StringBuilder();
+        //                    var hubQueryGroupBy = new StringBuilder();
 
-                            // Creating the business keys, multiple times because it's a Link
-                            // Assign groups (counter) to allow for SAL
-                            int groupCounter = 1;
+        //                    // Creating the business keys, multiple times because it's a Link
+        //                    // Assign groups (counter) to allow for SAL
+        //                    int groupCounter = 1;
 
-                            foreach (DataRow hubDetailRow in hubTables.Rows)
-                            {
-                                sqlStatementForComponent.Clear();
+        //                    foreach (DataRow hubDetailRow in hubTables.Rows)
+        //                    {
+        //                        sqlStatementForComponent.Clear();
 
-                                var hubTableName = (string)hubDetailRow["HUB_NAME"];
-                                var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
+        //                        var hubTableName = (string)hubDetailRow["HUB_NAME"];
+        //                        var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
 
-                                // Construct the join clauses, where clauses etc. for the Hubs
-                                var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, groupCounter.ToString());
+        //                        // Construct the join clauses, where clauses etc. for the Hubs
+        //                        var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, groupCounter.ToString());
 
-                                hubQuerySelect.AppendLine(queryClauses[0]);
-                                hubQueryWhere.AppendLine(queryClauses[1]);
-                                hubQueryGroupBy.AppendLine(queryClauses[2]);
+        //                        hubQuerySelect.AppendLine(queryClauses[0]);
+        //                        hubQueryWhere.AppendLine(queryClauses[1]);
+        //                        hubQueryGroupBy.AppendLine(queryClauses[2]);
 
-                                hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
-                                hubQueryWhere.Remove(hubQueryWhere.Length - 3, 3);
-                                hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
+        //                        hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
+        //                        hubQueryWhere.Remove(hubQueryWhere.Length - 3, 3);
+        //                        hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
                                 
-                                groupCounter++;
-                            } // End of business key creation
+        //                        groupCounter++;
+        //                    } // End of business key creation
 
-                            //Troubleshooting
-                            if (hubQuerySelect.ToString() == "")
-                            {
-                                SetTextLink("Keys missing, please check the metadata for table " + currentTableName + "\r\n");
-                            }
+        //                    //Troubleshooting
+        //                    if (hubQuerySelect.ToString() == "")
+        //                    {
+        //                        SetTextLink("Keys missing, please check the metadata for table " + currentTableName + "\r\n");
+        //                    }
 
-                            // Initiating select statement for subquery
-                            sqlSourceStatement.AppendLine("  SELECT ");
-                            sqlSourceStatement.AppendLine("   " + hubQuerySelect);
-                            sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute + ",");
+        //                    // Initiating select statement for subquery
+        //                    sqlSourceStatement.AppendLine("  SELECT ");
+        //                    sqlSourceStatement.AppendLine("   " + hubQuerySelect);
+        //                    sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute + ",");
 
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    sqlSourceStatement.AppendLine(
-                                        "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" +
-                                        (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
-                                }
-                            }
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            sqlSourceStatement.AppendLine(
+        //                                "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" +
+        //                                (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
+        //                        }
+        //                    }
 
-                            sqlSourceStatement.AppendLine("    MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute +"");
-                            sqlSourceStatement.AppendLine("  FROM [" + TeamConfigurationSettings.PsaDatabaseName + "].[" + TeamConfigurationSettings.SchemaName + "].[" + currentTableName + "]");
-                            sqlSourceStatement.AppendLine("  WHERE");
-                            sqlSourceStatement.AppendLine(" " + hubQueryWhere);
-                            sqlSourceStatement.Remove(sqlSourceStatement.Length - 6, 6);
-                            sqlSourceStatement.AppendLine();
+        //                    sqlSourceStatement.AppendLine("    MIN(" + TeamConfigurationSettings.LoadDateTimeAttribute + ") AS " + TeamConfigurationSettings.LoadDateTimeAttribute +"");
+        //                    sqlSourceStatement.AppendLine("  FROM [" + TeamConfigurationSettings.PsaDatabaseName + "].[" + TeamConfigurationSettings.SchemaName + "].[" + currentTableName + "]");
+        //                    sqlSourceStatement.AppendLine("  WHERE");
+        //                    sqlSourceStatement.AppendLine(" " + hubQueryWhere);
+        //                    sqlSourceStatement.Remove(sqlSourceStatement.Length - 6, 6);
+        //                    sqlSourceStatement.AppendLine();
 
-                            if (string.IsNullOrEmpty(filterCriteria))
-                            {
-                            }
-                            else
-                            {
-                                sqlSourceStatement.AppendLine("    AND " + filterCriteria);
-                            }
-                            sqlSourceStatement.AppendLine("  GROUP BY ");
-                            sqlSourceStatement.AppendLine("" + hubQueryGroupBy);
+        //                    if (string.IsNullOrEmpty(filterCriteria))
+        //                    {
+        //                    }
+        //                    else
+        //                    {
+        //                        sqlSourceStatement.AppendLine("    AND " + filterCriteria);
+        //                    }
+        //                    sqlSourceStatement.AppendLine("  GROUP BY ");
+        //                    sqlSourceStatement.AppendLine("" + hubQueryGroupBy);
 
-                            // Add degenerate attributes
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    sqlSourceStatement.AppendLine(
-                                        "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
-                                }
-                            }
+        //                    // Add degenerate attributes
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            sqlSourceStatement.AppendLine(
+        //                                "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
+        //                        }
+        //                    }
 
-                            sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute);
+        //                    sqlSourceStatement.AppendLine("    " + TeamConfigurationSettings.RecordSourceAttribute);
 
-                            linkView.AppendLine(sqlSourceStatement.ToString());
-                            linkView.Remove(linkView.Length -4, 4);
-                            linkView.AppendLine();
+        //                    linkView.AppendLine(sqlSourceStatement.ToString());
+        //                    linkView.Remove(linkView.Length -4, 4);
+        //                    linkView.AppendLine();
 
-                            // Add a union if there's more to add
-                            if (rowcounter < linkStagingTables.Rows.Count)
-                            {                            
-                                linkView.AppendLine("UNION");
-                            }
-                            rowcounter++;
-                        }
+        //                    // Add a union if there's more to add
+        //                    if (rowcounter < linkStagingTables.Rows.Count)
+        //                    {                            
+        //                        linkView.AppendLine("UNION");
+        //                    }
+        //                    rowcounter++;
+        //                }
 
-                        // End of subqueries / UNION statement
-                        linkView.AppendLine(") LINK_selection");
-                        linkView.AppendLine("GROUP BY");
+        //                // End of subqueries / UNION statement
+        //                linkView.AppendLine(") LINK_selection");
+        //                linkView.AppendLine("GROUP BY");
 
-                        hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
-                        foreach (var hubTargetBusinessKey in linkBusinessKeyList)
-                        {
-                            foreach (var hubArray in hubFullBusinessKeyList)
-                            {
-                                var hubBusinessKeyName = hubArray[1];
-                                var hubGroupCounter = hubArray[3];
+        //                hubKeycounter = 1; // This is to make sure the orders between source and target keys are in sync
+        //                foreach (var hubTargetBusinessKey in linkBusinessKeyList)
+        //                {
+        //                    foreach (var hubArray in hubFullBusinessKeyList)
+        //                    {
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        var hubGroupCounter = hubArray[3];
 
-                                if (hubGroupCounter == hubKeycounter.ToString())
-                                {
-                                    linkView.AppendLine("  [" + hubBusinessKeyName + "],");
-                                }
-                            }
-                            hubKeycounter++;
-                        }
+        //                        if (hubGroupCounter == hubKeycounter.ToString())
+        //                        {
+        //                            linkView.AppendLine("  [" + hubBusinessKeyName + "],");
+        //                        }
+        //                    }
+        //                    hubKeycounter++;
+        //                }
 
-                        if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                        {
-                            foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                            {
-                                linkView.AppendLine("  [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
-                            }
-                        }
+        //                if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                {
+        //                    foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                    {
+        //                        linkView.AppendLine("  [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
+        //                    }
+        //                }
 
-                        linkView.AppendLine("  [" + TeamConfigurationSettings.RecordSourceAttribute + "]");
-                        linkView.AppendLine(") link");
-                        linkView.AppendLine("WHERE ROW_NR=1");
+        //                linkView.AppendLine("  [" + TeamConfigurationSettings.RecordSourceAttribute + "]");
+        //                linkView.AppendLine(") link");
+        //                linkView.AppendLine("WHERE ROW_NR=1");
 
                         
-                        SetTextLink(@"Processing Link entity view for " + linkTableName + "\r\n");
+        //                SetTextLink(@"Processing Link entity view for " + linkTableName + "\r\n");
        
-                        // Create the file logging
-                        using (
-                            var outfile =
-                                new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + linkTableName + ".sql"))
-                        {
-                            outfile.Write(linkView.ToString());
-                            outfile.Close();
-                        }
+        //                // Create the file logging
+        //                using (
+        //                    var outfile =
+        //                        new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + linkTableName + ".sql"))
+        //                {
+        //                    outfile.Write(linkView.ToString());
+        //                    outfile.Close();
+        //                }
 
-                        // Generate into the database
-                        if (checkBoxGenerateInDatabase.Checked)
-                        {
-                            connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                            int insertError = GenerateInDatabase(connHstg, linkView.ToString());
-                            errorCounter = errorCounter + insertError;
-                        }
+        //                // Generate into the database
+        //                if (checkBoxGenerateInDatabase.Checked)
+        //                {
+        //                    connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+        //                    int insertError = GenerateInDatabase(connHstg, linkView.ToString());
+        //                    errorCounter = errorCounter + insertError;
+        //                }
 
-                        SetTextMain(linkView.ToString());
-                        SetTextMain("\n");
+        //                SetTextMain(linkView.ToString());
+        //                SetTextMain("\n");
 
-                    }
+        //            }
 
-                    connOmd.Close();
-                    connStg.Close();
-                    connInt.Close();
-                }
-            }
-            else
-            {
-                SetTextLink("There was no metadata selected to create Link views. Please check the metadata schema - are there any Links selected?");
-            }
+        //            connOmd.Close();
+        //            connStg.Close();
+        //            connInt.Close();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        SetTextLink("There was no metadata selected to create Link views. Please check the metadata schema - are there any Links selected?");
+        //    }
 
-            SetTextLink($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
-        }
+        //    SetTextLink($"\r\n{errorCounter} errors have been found.\r\n");
+        //    SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+        //}
 
         private DataTable GetBusinessKeyElementsBase (string stagingAreaTableName, string hubTableName, string businessKeyDefinition)
         {
@@ -3101,9 +3115,13 @@ namespace Virtual_EDW
         public DataTable GetHubTargetBusinessKeyList(string hubTableName)
         {
             // Obtain the business key as it is known in the target Hub table. Can be multiple due to composite keys
+            //var conn = new SqlConnection
+            //{
+            //    ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+            //};
             var conn = new SqlConnection
             {
-                ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+                ConnectionString = TeamConfigurationSettings.ConnectionStringOmd
             };
 
             try
@@ -3121,28 +3139,28 @@ namespace Virtual_EDW
             var localkeyLength = keyText.Length;
             var localkeySubstring = localkeyLength + 1;
 
-            if (checkBoxIgnoreVersion.Checked)
-            {
+            //if (checkBoxIgnoreVersion.Checked)
+            //{
                 // Make sure the live database is hit when the checkbox is ticked
                 sqlStatementForHubBusinessKeys.AppendLine("SELECT COLUMN_NAME");
                 sqlStatementForHubBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier +"'");
+                sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
                 sqlStatementForHubBusinessKeys.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
                 sqlStatementForHubBusinessKeys.AppendLine("  AND TABLE_NAME= '" + hubTableName + "'");
                 sqlStatementForHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
                                                           TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-            }
-            else
-            {
-                //Ignore version is not checked, so versioning is used - meaning the business key metadata is sourced from the version history metadata.
-                sqlStatementForHubBusinessKeys.AppendLine("SELECT COLUMN_NAME");
-                sqlStatementForHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
-                sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
-                sqlStatementForHubBusinessKeys.AppendLine("  AND TABLE_NAME= '" + hubTableName + "'");
-                sqlStatementForHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
-                                                          TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                //sqlStatementForHubBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
-            }
+            //}
+            //else
+            //{
+            //    //Ignore version is not checked, so versioning is used - meaning the business key metadata is sourced from the version history metadata.
+            //    sqlStatementForHubBusinessKeys.AppendLine("SELECT COLUMN_NAME");
+            //    sqlStatementForHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+            //    sqlStatementForHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
+            //    sqlStatementForHubBusinessKeys.AppendLine("  AND TABLE_NAME= '" + hubTableName + "'");
+            //    sqlStatementForHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+            //                                              TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+            //    //sqlStatementForHubBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
+            //}
 
 
             var hubKeyList = GetDataTable(ref conn, sqlStatementForHubBusinessKeys.ToString());
@@ -3155,286 +3173,293 @@ namespace Virtual_EDW
             return hubKeyList;
         }
 
-        public LinkedList<string[]> GetLinkTargetBusinessKeyList(string linkTableName)
-        {
-            // Obtain the business keys are they are known in the target Link table. Can be different due to same-as links etc.
-            var conn = new SqlConnection
-            {
-                ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
-            };
+        //public LinkedList<string[]> GetLinkTargetBusinessKeyList(string linkTableName)
+        //{
+        //    // Obtain the business keys are they are known in the target Link table. Can be different due to same-as links etc.
+        //    //var conn = new SqlConnection
+        //    //{
+        //    //    ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+        //    //};
+        //    var conn = new SqlConnection
+        //    {
+        //        ConnectionString = TeamConfigurationSettings.ConnectionStringOmd
+        //    };
 
-            try
-            {
-                conn.Open();
-            }
-            catch (Exception exception)
-            {
-                SetTextMain("An error has occurred defining the Hub Business Key in the model due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
-            }
+        //    try
+        //    {
+        //        conn.Open();
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        SetTextMain("An error has occurred defining the Hub Business Key in the model due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
+        //    }
 
-            var sqlStatementForLinkBusinessKeys = new StringBuilder();
+        //    var sqlStatementForLinkBusinessKeys = new StringBuilder();
 
-            if (checkBoxIgnoreVersion.Checked)
-            {
-                // Make sure the live database is hit when the checkbox is ticked
-                sqlStatementForLinkBusinessKeys.AppendLine("SELECT COLUMN_NAME");
-                sqlStatementForLinkBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                sqlStatementForLinkBusinessKeys.AppendLine("WHERE TABLE_NAME= '" + linkTableName + "'");
-                sqlStatementForLinkBusinessKeys.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
-                                                          TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                sqlStatementForLinkBusinessKeys.AppendLine("ORDER BY ORDINAL_POSITION");
-            }
-            else
-            {
-                //Ignore version is not checked, so versioning is used - meaning the business key metadata is sourced from the version history metadata.
-                sqlStatementForLinkBusinessKeys.AppendLine("SELECT COLUMN_NAME");
-                sqlStatementForLinkBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
-                sqlStatementForLinkBusinessKeys.AppendLine("WHERE TABLE_NAME= '" + linkTableName + "'");
-                sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
-                                                          TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                //sqlStatementForLinkBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
-                sqlStatementForLinkBusinessKeys.AppendLine("ORDER BY ORDINAL_POSITION");
-            }
-
-
-            var linkKeyListDataTable = GetDataTable(ref conn, sqlStatementForLinkBusinessKeys.ToString());
-
-            if (linkKeyListDataTable == null)
-            {
-                SetTextMain("An error has occurred defining the Business Keys in the model for " + linkTableName +
-                             ". The Business Keys were not found when querying the underlying metadata. This can be either that the attribute is missing in the metadata or in the table (depending if versioning is used). If the 'ignore versioning' option is checked, then the metadata will be retrieved directly from the data dictionary. Otherwise the metadata needs to be available in the repository (manage model metadata).");
-            }
-            else
-            {
-
-                var linkKeyList = new LinkedList<string[]>();
-                var shortlinkTableKeyName = linkTableName.Replace("LNK_", "")+ "_" +TeamConfigurationSettings.DwhKeyIdentifier;
-
-                foreach (DataRow linkKey in linkKeyListDataTable.Rows)
-                {
-                    if (!linkKey["COLUMN_NAME"].ToString().Contains(shortlinkTableKeyName) && linkKey["COLUMN_NAME"].ToString().Contains(TeamConfigurationSettings.DwhKeyIdentifier)) // Removing Link SK and degenerate fields
-                    {
-                        linkKeyList.AddLast
-                            (
-                                new[]
-                                {
-                                    linkKey["COLUMN_NAME"].ToString()
-                                }
-                            );
-                    }
-                }
-
-                return linkKeyList;
-            }
-
-            return null;
-        }
-
-        private LinkedList<string[]> GetHubTablesForLink(string targetTableName)
-        {
-            
-
-            // First, get the associated Hub tables for the Link
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var queryLinkHubTables = new StringBuilder();
-            int groupCounter = 1;
-
-            queryLinkHubTables.AppendLine("SELECT DISTINCT ");
-            queryLinkHubTables.AppendLine(" [LINK_ID]");
-            queryLinkHubTables.AppendLine(",[LINK_NAME]");
-            queryLinkHubTables.AppendLine(",[HUB_ID]");
-            queryLinkHubTables.AppendLine(",[HUB_NAME]");
-            queryLinkHubTables.AppendLine(",[HUB_ORDER]");
-            queryLinkHubTables.AppendLine("FROM [interface].[INTERFACE_HUB_LINK_XREF]");
-            queryLinkHubTables.AppendLine("WHERE LINK_NAME = '" + targetTableName + "'");
-            queryLinkHubTables.AppendLine("ORDER BY HUB_ORDER");
-
-            var linkHubTables = GetDataTable(ref connOmd, queryLinkHubTables.ToString());
-
-            // Now, retrieve the target business key attributes for the Hubs associated with the Link
-            // This is either from the catalog (ignore version) or metadata (use version)
-            var conn = new SqlConnection
-            {
-                ConnectionString =
-                    checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
-            };
-
-            var hubTargetBusinessKeyListForLink = new LinkedList<string[]>();
-
-            foreach (DataRow hubTable in linkHubTables.Rows)
-            {
-                var queryHubBusinessKeys = new StringBuilder();
-
-                var localKey = TeamConfigurationSettings.DwhKeyIdentifier;
-                var localHubPrefix = TeamConfigurationSettings.HubTablePrefixValue;
-                var localkeyLength = localKey.Length;
-                var localkeySubstring = localkeyLength + 1;
-                var localHubPrefixLength = localHubPrefix.Length + 1;
-
-                if (checkBoxIgnoreVersion.Checked)
-                {
-                    queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
-                    queryHubBusinessKeys.AppendLine("JOIN ");
-                    queryHubBusinessKeys.AppendLine(" (SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("  FROM   INFORMATION_SCHEMA.COLUMNS");
-                    queryHubBusinessKeys.AppendLine("  WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
-                    queryHubBusinessKeys.AppendLine("   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + TeamConfigurationSettings.HubTablePrefixValue + "_'");
-                    queryHubBusinessKeys.AppendLine("   AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                    queryHubBusinessKeys.AppendLine("   AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                    queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("	) b");
-                    queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
-                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                    queryHubBusinessKeys.AppendLine("  AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                }
-                else //Get the key details from the metadata
-                {
-                    queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL] a");
-                    queryHubBusinessKeys.AppendLine("JOIN ");
-                    queryHubBusinessKeys.AppendLine("	(SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("	 FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
-                    //queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("      WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" +TeamConfigurationSettings.HubTablePrefixValue + "_'");
-                    queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                    queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("	) b");
-                    queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
-                    //queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
-                    queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
-                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                }
-
-                var hubKeyList = GetDataTable(ref conn, queryHubBusinessKeys.ToString());
+        //    if (checkBoxIgnoreVersion.Checked)
+        //    {
+        //        // Make sure the live database is hit when the checkbox is ticked
+        //        sqlStatementForLinkBusinessKeys.AppendLine("SELECT COLUMN_NAME");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("WHERE TABLE_NAME= '" + linkTableName + "'");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
+        //                                                  TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("ORDER BY ORDINAL_POSITION");
+        //    }
+        //    else
+        //    {
+        //        //Ignore version is not checked, so versioning is used - meaning the business key metadata is sourced from the version history metadata.
+        //        sqlStatementForLinkBusinessKeys.AppendLine("SELECT COLUMN_NAME");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("WHERE TABLE_NAME= '" + linkTableName + "'");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+        //                                                  TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //        //sqlStatementForLinkBusinessKeys.AppendLine("  AND VERSION_ID = " + versionId + "");
+        //        sqlStatementForLinkBusinessKeys.AppendLine("ORDER BY ORDINAL_POSITION");
+        //    }
 
 
-                foreach (DataRow hubBusinessKeyAttribute in hubKeyList.Rows)
-                {
-                    hubTargetBusinessKeyListForLink.AddLast
-                        (
-                            new[]
-                            {
-                                hubBusinessKeyAttribute["TABLE_NAME"].ToString(),
-                                hubBusinessKeyAttribute["COLUMN_NAME"]+groupCounter.ToString(),
-                                hubBusinessKeyAttribute["TOTALROWS"].ToString(),
-                                groupCounter.ToString()
-                            }
-                        );
-                    
-                }
+        //    var linkKeyListDataTable = GetDataTable(ref conn, sqlStatementForLinkBusinessKeys.ToString());
 
-                groupCounter++;
-            }
-            return hubTargetBusinessKeyListForLink;
-        }
+        //    if (linkKeyListDataTable == null)
+        //    {
+        //        SetTextMain("An error has occurred defining the Business Keys in the model for " + linkTableName +
+        //                     ". The Business Keys were not found when querying the underlying metadata. This can be either that the attribute is missing in the metadata or in the table (depending if versioning is used). If the 'ignore versioning' option is checked, then the metadata will be retrieved directly from the data dictionary. Otherwise the metadata needs to be available in the repository (manage model metadata).");
+        //    }
+        //    else
+        //    {
 
-        private LinkedList<string[]> GetAllHubTablesForLink(string targetTableName)
-        {
-            
+        //        var linkKeyList = new LinkedList<string[]>();
+        //        var shortlinkTableKeyName = linkTableName.Replace("LNK_", "")+ "_" +TeamConfigurationSettings.DwhKeyIdentifier;
 
-            // First, get the associated Hub tables for the Link
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var queryLinkHubTables = new StringBuilder();
-            int groupCounter = 1;
+        //        foreach (DataRow linkKey in linkKeyListDataTable.Rows)
+        //        {
+        //            if (!linkKey["COLUMN_NAME"].ToString().Contains(shortlinkTableKeyName) && linkKey["COLUMN_NAME"].ToString().Contains(TeamConfigurationSettings.DwhKeyIdentifier)) // Removing Link SK and degenerate fields
+        //            {
+        //                linkKeyList.AddLast
+        //                    (
+        //                        new[]
+        //                        {
+        //                            linkKey["COLUMN_NAME"].ToString()
+        //                        }
+        //                    );
+        //            }
+        //        }
 
-            queryLinkHubTables.AppendLine("SELECT DISTINCT ");
-            queryLinkHubTables.AppendLine(" [LINK_ID]");
-            queryLinkHubTables.AppendLine(",[LINK_NAME]");
-            queryLinkHubTables.AppendLine(",[SOURCE_ID]");
-            queryLinkHubTables.AppendLine(",[SOURCE_NAME]");
-            queryLinkHubTables.AppendLine(",[SOURCE_SCHEMA_NAME]");
-            queryLinkHubTables.AppendLine(",[HUB_ID]");
-            queryLinkHubTables.AppendLine(",[HUB_NAME]");
-            queryLinkHubTables.AppendLine(",[HUB_ORDER]");
-            queryLinkHubTables.AppendLine("FROM [interface].[INTERFACE_HUB_LINK_XREF]");
-            queryLinkHubTables.AppendLine("WHERE LINK_NAME = '" + targetTableName + "'");
-            queryLinkHubTables.AppendLine("ORDER BY [HUB_ORDER]");
+        //        return linkKeyList;
+        //    }
 
-            var linkHubTables = GetDataTable(ref connOmd, queryLinkHubTables.ToString());
+        //    return null;
+        //}
 
-            // Now, retrieve the target business key attributes for the Hubs associated with the Link
-            // This is either from the catalog (ignore version) or metadata (use version)
-            var conn = new SqlConnection
-            {
-                ConnectionString =
-                    checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
-            };
-
-            var hubTargetBusinessKeyListForLink = new LinkedList<string[]>();
-
-            foreach (DataRow hubTable in linkHubTables.Rows)
-            {
-                var queryHubBusinessKeys = new StringBuilder();
-
-                var localKey = TeamConfigurationSettings.DwhKeyIdentifier;
-                var localHubPrefix = TeamConfigurationSettings.HubTablePrefixValue;
-                var localkeyLength = localKey.Length;
-                var localkeySubstring = localkeyLength + 1;
-                var localHubPrefixLength = localHubPrefix.Length + 1;
-
-                if (checkBoxIgnoreVersion.Checked)
-                {
-                    queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
-                    queryHubBusinessKeys.AppendLine("JOIN ");
-                    queryHubBusinessKeys.AppendLine(" (SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("  FROM   INFORMATION_SCHEMA.COLUMNS");
-                    queryHubBusinessKeys.AppendLine("  WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
-                    queryHubBusinessKeys.AppendLine("   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + TeamConfigurationSettings.HubTablePrefixValue + "_'");
-                    queryHubBusinessKeys.AppendLine("   AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                    queryHubBusinessKeys.AppendLine("   AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                    queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("	) b");
-                    queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
-                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                    queryHubBusinessKeys.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                }
-                else //Get the key details from the metadata
-                {
-                    queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL] a");
-                    queryHubBusinessKeys.AppendLine("JOIN ");
-                    queryHubBusinessKeys.AppendLine("	(SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
-                    queryHubBusinessKeys.AppendLine("	 FROM   [interface].[INTERFACE_PHYSICAL_MODEL]");
-                    //queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("      WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + TeamConfigurationSettings.HubTablePrefixValue + "_'");
-                    queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                    queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
-                    queryHubBusinessKeys.AppendLine("	) b");
-                    queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
-                    //queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
-                    queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
-                    queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
-                    queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
-                }
-
-                var hubKeyList = GetDataTable(ref conn, queryHubBusinessKeys.ToString());
+        //private LinkedList<string[]> GetHubTablesForLink(string targetTableName)
+        //{
 
 
-                foreach (DataRow hubBusinessKeyAttribute in hubKeyList.Rows)
-                {
-                    hubTargetBusinessKeyListForLink.AddLast
-                        (
-                            new[]
-                            {
-                                hubBusinessKeyAttribute["TABLE_NAME"].ToString(),
-                                hubBusinessKeyAttribute["COLUMN_NAME"]+groupCounter.ToString(),
-                                hubBusinessKeyAttribute["TOTALROWS"].ToString(),
-                                groupCounter.ToString()
-                            }
-                        );
+        //    // First, get the associated Hub tables for the Link
+        //    var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+        //    var queryLinkHubTables = new StringBuilder();
+        //    int groupCounter = 1;
 
-                }
+        //    queryLinkHubTables.AppendLine("SELECT DISTINCT ");
+        //    queryLinkHubTables.AppendLine(" [LINK_ID]");
+        //    queryLinkHubTables.AppendLine(",[LINK_NAME]");
+        //    queryLinkHubTables.AppendLine(",[HUB_ID]");
+        //    queryLinkHubTables.AppendLine(",[HUB_NAME]");
+        //    queryLinkHubTables.AppendLine(",[HUB_ORDER]");
+        //    queryLinkHubTables.AppendLine("FROM [interface].[INTERFACE_HUB_LINK_XREF]");
+        //    queryLinkHubTables.AppendLine("WHERE LINK_NAME = '" + targetTableName + "'");
+        //    queryLinkHubTables.AppendLine("ORDER BY HUB_ORDER");
 
-                groupCounter++;
-            }
-            return hubTargetBusinessKeyListForLink;
-        }
+        //    var linkHubTables = GetDataTable(ref connOmd, queryLinkHubTables.ToString());
+
+        //    // Now, retrieve the target business key attributes for the Hubs associated with the Link
+        //    // This is either from the catalog (ignore version) or metadata (use version)
+        //    //var conn = new SqlConnection
+        //    //{
+        //    //    ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+        //    //};
+        //    var conn = new SqlConnection
+        //    {
+        //        ConnectionString = TeamConfigurationSettings.ConnectionStringOmd
+        //    };
+
+        //    var hubTargetBusinessKeyListForLink = new LinkedList<string[]>();
+
+        //    foreach (DataRow hubTable in linkHubTables.Rows)
+        //    {
+        //        var queryHubBusinessKeys = new StringBuilder();
+
+        //        var localKey = TeamConfigurationSettings.DwhKeyIdentifier;
+        //        var localHubPrefix = TeamConfigurationSettings.HubTablePrefixValue;
+        //        var localkeyLength = localKey.Length;
+        //        var localkeySubstring = localkeyLength + 1;
+        //        var localHubPrefixLength = localHubPrefix.Length + 1;
+
+        //        if (checkBoxIgnoreVersion.Checked)
+        //        {
+        //            queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
+        //            queryHubBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
+        //            queryHubBusinessKeys.AppendLine("JOIN ");
+        //            queryHubBusinessKeys.AppendLine(" (SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
+        //            queryHubBusinessKeys.AppendLine("  FROM   INFORMATION_SCHEMA.COLUMNS");
+        //            queryHubBusinessKeys.AppendLine("  WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
+        //            queryHubBusinessKeys.AppendLine("   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + TeamConfigurationSettings.HubTablePrefixValue + "_'");
+        //            queryHubBusinessKeys.AppendLine("   AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //            queryHubBusinessKeys.AppendLine("   AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+        //            queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
+        //            queryHubBusinessKeys.AppendLine("	) b");
+        //            queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
+        //            queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
+        //            queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //            queryHubBusinessKeys.AppendLine("  AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+        //        }
+        //        else //Get the key details from the metadata
+        //        {
+        //            queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
+        //            queryHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL] a");
+        //            queryHubBusinessKeys.AppendLine("JOIN ");
+        //            queryHubBusinessKeys.AppendLine("	(SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
+        //            queryHubBusinessKeys.AppendLine("	 FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
+        //            //queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
+        //            queryHubBusinessKeys.AppendLine("      WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" +TeamConfigurationSettings.HubTablePrefixValue + "_'");
+        //            queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //            queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
+        //            queryHubBusinessKeys.AppendLine("	) b");
+        //            queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
+        //            //queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
+        //            queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength +"," +localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
+        //            queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
+        //            queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //        }
+
+        //        var hubKeyList = GetDataTable(ref conn, queryHubBusinessKeys.ToString());
+
+
+        //        foreach (DataRow hubBusinessKeyAttribute in hubKeyList.Rows)
+        //        {
+        //            hubTargetBusinessKeyListForLink.AddLast
+        //                (
+        //                    new[]
+        //                    {
+        //                        hubBusinessKeyAttribute["TABLE_NAME"].ToString(),
+        //                        hubBusinessKeyAttribute["COLUMN_NAME"]+groupCounter.ToString(),
+        //                        hubBusinessKeyAttribute["TOTALROWS"].ToString(),
+        //                        groupCounter.ToString()
+        //                    }
+        //                );
+
+        //        }
+
+        //        groupCounter++;
+        //    }
+        //    return hubTargetBusinessKeyListForLink;
+        //}
+
+        //private LinkedList<string[]> GetAllHubTablesForLink(string targetTableName)
+        //{
+
+
+        //    // First, get the associated Hub tables for the Link
+        //    var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+        //    var queryLinkHubTables = new StringBuilder();
+        //    int groupCounter = 1;
+
+        //    queryLinkHubTables.AppendLine("SELECT DISTINCT ");
+        //    queryLinkHubTables.AppendLine(" [LINK_ID]");
+        //    queryLinkHubTables.AppendLine(",[LINK_NAME]");
+        //    queryLinkHubTables.AppendLine(",[SOURCE_ID]");
+        //    queryLinkHubTables.AppendLine(",[SOURCE_NAME]");
+        //    queryLinkHubTables.AppendLine(",[SOURCE_SCHEMA_NAME]");
+        //    queryLinkHubTables.AppendLine(",[HUB_ID]");
+        //    queryLinkHubTables.AppendLine(",[HUB_NAME]");
+        //    queryLinkHubTables.AppendLine(",[HUB_ORDER]");
+        //    queryLinkHubTables.AppendLine("FROM [interface].[INTERFACE_HUB_LINK_XREF]");
+        //    queryLinkHubTables.AppendLine("WHERE LINK_NAME = '" + targetTableName + "'");
+        //    queryLinkHubTables.AppendLine("ORDER BY [HUB_ORDER]");
+
+        //    var linkHubTables = GetDataTable(ref connOmd, queryLinkHubTables.ToString());
+
+        //    // Now, retrieve the target business key attributes for the Hubs associated with the Link
+        //    // This is either from the catalog (ignore version) or metadata (use version)
+        //    var conn = new SqlConnection
+        //    {
+        //        ConnectionString =
+        //            checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+        //    };
+
+        //    var hubTargetBusinessKeyListForLink = new LinkedList<string[]>();
+
+        //    foreach (DataRow hubTable in linkHubTables.Rows)
+        //    {
+        //        var queryHubBusinessKeys = new StringBuilder();
+
+        //        var localKey = TeamConfigurationSettings.DwhKeyIdentifier;
+        //        var localHubPrefix = TeamConfigurationSettings.HubTablePrefixValue;
+        //        var localkeyLength = localKey.Length;
+        //        var localkeySubstring = localkeyLength + 1;
+        //        var localHubPrefixLength = localHubPrefix.Length + 1;
+
+        //        if (checkBoxIgnoreVersion.Checked)
+        //        {
+        //            queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
+        //            queryHubBusinessKeys.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS a");
+        //            queryHubBusinessKeys.AppendLine("JOIN ");
+        //            queryHubBusinessKeys.AppendLine(" (SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
+        //            queryHubBusinessKeys.AppendLine("  FROM   INFORMATION_SCHEMA.COLUMNS");
+        //            queryHubBusinessKeys.AppendLine("  WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
+        //            queryHubBusinessKeys.AppendLine("   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + TeamConfigurationSettings.HubTablePrefixValue + "_'");
+        //            queryHubBusinessKeys.AppendLine("   AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //            queryHubBusinessKeys.AppendLine("   AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+        //            queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
+        //            queryHubBusinessKeys.AppendLine("	) b");
+        //            queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
+        //            queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
+        //            queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //            queryHubBusinessKeys.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+        //        }
+        //        else //Get the key details from the metadata
+        //        {
+        //            queryHubBusinessKeys.AppendLine("SELECT a.TABLE_NAME, a.COLUMN_NAME, b.TOTALROWS");
+        //            queryHubBusinessKeys.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL] a");
+        //            queryHubBusinessKeys.AppendLine("JOIN ");
+        //            queryHubBusinessKeys.AppendLine("	(SELECT TABLE_NAME, COUNT(*) AS TOTALROWS");
+        //            queryHubBusinessKeys.AppendLine("	 FROM   [interface].[INTERFACE_PHYSICAL_MODEL]");
+        //            //queryHubBusinessKeys.AppendLine("	 WHERE VERSION_ID = " + versionId);
+        //            queryHubBusinessKeys.AppendLine("      WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'"); queryHubBusinessKeys.AppendLine("	   AND SUBSTRING(TABLE_NAME,1," + localHubPrefixLength + ")='" + TeamConfigurationSettings.HubTablePrefixValue + "_'");
+        //            queryHubBusinessKeys.AppendLine("      AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //            queryHubBusinessKeys.AppendLine("	 GROUP BY TABLE_NAME");
+        //            queryHubBusinessKeys.AppendLine("	) b");
+        //            queryHubBusinessKeys.AppendLine("ON a.TABLE_NAME=b.TABLE_NAME");
+        //            //queryHubBusinessKeys.AppendLine("WHERE VERSION_ID = " + versionId);
+        //            queryHubBusinessKeys.AppendLine("WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'");
+        //            queryHubBusinessKeys.AppendLine("  AND a.TABLE_NAME= '" + (string)hubTable["HUB_NAME"] + "'");
+        //            queryHubBusinessKeys.AppendLine("  AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" + TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" + TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" + TeamConfigurationSettings.EtlProcessAttribute + "','" + TeamConfigurationSettings.LoadDateTimeAttribute + "')");
+        //        }
+
+        //        var hubKeyList = GetDataTable(ref conn, queryHubBusinessKeys.ToString());
+
+
+        //        foreach (DataRow hubBusinessKeyAttribute in hubKeyList.Rows)
+        //        {
+        //            hubTargetBusinessKeyListForLink.AddLast
+        //                (
+        //                    new[]
+        //                    {
+        //                        hubBusinessKeyAttribute["TABLE_NAME"].ToString(),
+        //                        hubBusinessKeyAttribute["COLUMN_NAME"]+groupCounter.ToString(),
+        //                        hubBusinessKeyAttribute["TOTALROWS"].ToString(),
+        //                        groupCounter.ToString()
+        //                    }
+        //                );
+
+        //        }
+
+        //        groupCounter++;
+        //    }
+        //    return hubTargetBusinessKeyListForLink;
+        //}
 
         private void LinkSatelliteButtonClick (object sender, EventArgs e)
         {
@@ -3593,10 +3618,10 @@ namespace Virtual_EDW
         {
             int errorCounter = 0;
 
-            if (checkBoxIfExistsStatement.Checked)
-            {
-                SetTextLsat("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
-            }
+            //if (checkBoxIfExistsStatement.Checked)
+            //{
+            //    SetTextLsat("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
+            //}
 
             // Determine metadata retrieval connection (dependant on option selected)
             if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
@@ -3605,10 +3630,13 @@ namespace Virtual_EDW
                 {
                     var connHstg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
                     var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-
+                    //var conn = new SqlConnection
+                    //{
+                    //    ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+                    //};
                     var conn = new SqlConnection
                     {
-                        ConnectionString = checkBoxIgnoreVersion.Checked ? TeamConfigurationSettings.ConnectionStringInt : TeamConfigurationSettings.ConnectionStringOmd
+                        ConnectionString = TeamConfigurationSettings.ConnectionStringOmd
                     };
 
                     var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
@@ -3744,738 +3772,738 @@ namespace Virtual_EDW
         }
 
         // Link Satellite generation - driving key based
-        private void GenerateLsatDrivingKeyViews()
-        {
-            int errorCounter = 0;
+        //private void GenerateLsatDrivingKeyViews()
+        //{
+        //    int errorCounter = 0;
 
-            if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
-            {
-                for (int x = 0; x <= checkedListBoxLsatMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
-
-                    var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-                    var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-                    var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-
-                    var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
-
-                    // Check if it's actually a driving 
-                    var sqlStatementForTablesToImport = new StringBuilder();
-                    sqlStatementForTablesToImport.AppendLine("SELECT * FROM interface.INTERFACE_SOURCE_SATELLITE_XREF base");
-                    sqlStatementForTablesToImport.AppendLine("WHERE SATELLITE_TYPE = 'Link Satellite' ");
-                    sqlStatementForTablesToImport.AppendLine(" AND SATELLITE_NAME = '" + targetTableName + "'");
-                    sqlStatementForTablesToImport.AppendLine(" AND EXISTS (SELECT * FROM [interface].[INTERFACE_DRIVING_KEY] sub WHERE sub.SATELLITE_ID = base.SATELLITE_ID)");
-
-                    var tables = GetDataTable(ref connOmd, sqlStatementForTablesToImport.ToString());
-
-                    foreach (DataRow row in tables.Rows)
-                        {
-                            var linkSatView = new StringBuilder();
-
-                            string multiActiveAttributeFromName;
-
-                            var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + row["SOURCE_NAME"].ToString().Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
-
-
-                            var stagingAreaTableName = (string)row["SOURCE_NAME"];
-
-                            var filterCriteria = (string) row["FILTER_CRITERIA"];
-
-                            var targetTableId = (int) row["SATELLITE_ID"];
-
-                            var linkTableName = (string) row["LINK_NAME"];
-
-                            var linkSk = linkTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
-
-                            // Query to detect multi-active attributes
-                            var multiActiveAttributes = GetMultiActiveAttributes(targetTableId);
-
-                            // Get the associated Hub tables for the Link
-                            var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
-
-                            // Retrieving the business key attributes for the Hubs associated with the Link
-                            //var hubBusinessKeyList = GetHubBusinessKeysForLink(linkHubTables, versionId);
-
-                            var degenerateLinkAttributes = GetDegenerateLinkAttributes(linkTableName);
-
-                            // Create a list of Driving Key(s) for the Link table
-                            var queryDrivingKeys = new StringBuilder();
-
-                            queryDrivingKeys.AppendLine("SELECT ");
-                            queryDrivingKeys.AppendLine("  [SATELLITE_ID]");
-                            queryDrivingKeys.AppendLine(" ,[SATELLITE_NAME]");
-                            queryDrivingKeys.AppendLine(" ,[HUB_ID]");
-                            queryDrivingKeys.AppendLine(" ,[HUB_NAME]");
-                            queryDrivingKeys.AppendLine("FROM [interface].[INTERFACE_DRIVING_KEY]");
-                            queryDrivingKeys.AppendLine("WHERE SATELLITE_NAME = '"+ targetTableName+"'");
-
-                            var drivingKeysDataTable = GetDataTable(ref connOmd, queryDrivingKeys.ToString());
-                            drivingKeysDataTable.PrimaryKey = new[] { drivingKeysDataTable.Columns["HUB_NAME"]};
-
-                            // **************************************************************************************		
-                            // Creating the source query
-                            // **************************************************************************************
-
-                            // Create View
-                            linkSatView.AppendLine("--");
-                            linkSatView.AppendLine("-- Link Satellite View definition - Driving Key for " + targetTableName);
-                            linkSatView.AppendLine("-- Generated at " + DateTime.Now);
-                            linkSatView.AppendLine("--");
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
-                            linkSatView.AppendLine("GO");
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +targetTableName + "]') AND type in (N'V'))");
-                            linkSatView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "]");
-                            linkSatView.AppendLine("go");
-                            linkSatView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName +"] AS  ");
-                            linkSatView.AppendLine("SELECT");
-
-                            if (!checkBoxDisableHash.Checked)
-                            {
-                                linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
-
-                                foreach (var hubArray in hubBusinessKeyList)
-                                {
-                                    linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + hubArray[1] + "])),'NA')+'|'+");
-                                }
-
-                            // Add the degenerate attributes
-                                if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                                {
-                                    foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                    {
-                                        linkSatView.AppendLine(
-                                            "    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                            (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-                                    }
-                                }
-
-                                linkSatView.Remove(linkSatView.Length - 3, 3);
-                                linkSatView.AppendLine();
-                                linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
-                            }
-                            else
-                            {
-                                //BK as DWH key
-                                foreach (var hubArray in hubBusinessKeyList)
-                                {
-                                    linkSatView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
-                                }
-
-                                if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                                {
-                                    foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                    {
-                                        linkSatView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                           (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-                                    }
-                                }
-
-                                linkSatView.Remove(linkSatView.Length - 5, 5);
-                                linkSatView.Append("  AS " + linkSk + ",");
-                                linkSatView.AppendLine();
-                            }
-
-                        // Add commented-out original business keys for easy debugging
-                        foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                linkSatView.AppendLine("   --[" + hubArray[1] + "],");
-                            }
-
-                            // Effective Datetime
-                            if (TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
-                            {
-                                linkSatView.AppendLine("   " + TeamConfigurationSettings.LoadDateTimeAttribute + " AS " +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
-                            }
-                            else
-                            {
-                                linkSatView.AppendLine("   " + TeamConfigurationSettings.LoadDateTimeAttribute + " AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
-                            }
-
-                            //Multi-Active attributes
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("   [" + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
-                            }
-
-                            // Expiry Datetime
-                            linkSatView.AppendLine("   COALESCE ( LEAD ( " + TeamConfigurationSettings.LoadDateTimeAttribute + " ) OVER");
-                            linkSatView.AppendLine("      (PARTITION BY ");
-
-                            // Business Key attributes
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubTableName = hubArray[0];
-                                var hubBusinessKeyName = hubArray[1];
-                                var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                if (foundRow != null)
-                                {
-                                    linkSatView.AppendLine("       [" + hubBusinessKeyName + "],");
-                                }
-                            }
-
-                        // Driving Key attributes
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                           (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-                                }
-                            }
-
-                            // Multi-active attributes
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                                linkSatView.AppendLine("       [" + multiActiveAttributeFromName + "],");
-                            }
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("   	  ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute + "),");
-                            linkSatView.AppendLine("      CAST( '9999-12-31' AS DATETIME)");
-                            linkSatView.AppendLine("   ) AS " + TeamConfigurationSettings.ExpiryDateTimeAttribute + ",");
-
-                            // Current record indicator
-                            linkSatView.AppendLine("   CASE ");
-                            linkSatView.AppendLine("     WHEN ( LEAD ( " + TeamConfigurationSettings.LoadDateTimeAttribute + " ) OVER");
-                            linkSatView.AppendLine("      (PARTITION BY ");
-
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubTableName = hubArray[0];
-                                var hubBusinessKeyName = hubArray[1];
-                                var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                if (foundRow != null)
-                                {
-                                    linkSatView.AppendLine("       [" + hubBusinessKeyName + "],");
-                                }
-                            }
-
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("       [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
-                            }
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("   	  ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
-                            linkSatView.AppendLine("      ) IS NULL");
-                            linkSatView.AppendLine("     THEN 'Y' ELSE 'N'");
-                            linkSatView.AppendLine("   END AS " + TeamConfigurationSettings.CurrentRowAttribute + ",");
-
-                            // Other process metadata attributes
-                            if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
-                            {
-                                linkSatView.AppendLine("   [" + TeamConfigurationSettings.RecordSourceAttribute + "] AS ["+ TeamConfigurationSettings.AlternativeRecordSourceAttribute + "],");
-                            }
-                            else
-                            {
-                                linkSatView.AppendLine("   [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                            }
-
-                            //Logical deletes
-                            if (checkBoxEvaluateSatDelete.Checked)
-                            {
-                                linkSatView.AppendLine("    CASE");
-                                linkSatView.AppendLine("      WHEN [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] = 'Delete' THEN 'Y'");
-                                linkSatView.AppendLine("      ELSE 'N'");
-                                linkSatView.AppendLine("    END AS [" + TeamConfigurationSettings.LogicalDeleteAttribute + "],");
-                            }
-
-                            linkSatView.AppendLine("   [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                            linkSatView.AppendLine("   [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                            // Row number
-                            linkSatView.AppendLine("   CAST(");
-                            linkSatView.AppendLine("      ROW_NUMBER() OVER (PARTITION  BY ");
-
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubTableName = hubArray[0];
-                                var hubBusinessKeyName = hubArray[1];
-                                var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                if (foundRow != null)
-                                {
-                                    linkSatView.AppendLine("          [" + hubBusinessKeyName + "],");
-                                }
-                            }
-
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                                linkSatView.AppendLine("          [" + multiActiveAttributeFromName + "],");
-                            }
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("         ORDER BY ");
-
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubTableName = hubArray[0];
-                                var hubBusinessKeyName = hubArray[1];
-                                var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                if (foundRow != null)
-                                {
-                                    linkSatView.AppendLine("          [" + hubBusinessKeyName + "],");
-                                }
-                            }
-
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("          [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
-                            }
-
-                            linkSatView.AppendLine("          [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
-                            linkSatView.AppendLine("   AS ROW_NUMBER,");
-
-                            // Checksum
-                            linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
-                            linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +
-                                                   TeamConfigurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
-
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + hubArray[1] +"])),'NA')+'|'+");
-                            }
-
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
-                            }
-
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +
-                                                           (string) attribute["LINK_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
-                                }
-                            }
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + TeamConfigurationSettings.RecordChecksumAttribute + "");
-
-                            // From statement
-                            linkSatView.AppendLine("FROM ");
-                            linkSatView.AppendLine("(");
-                            linkSatView.AppendLine("  SELECT ");
-                            linkSatView.AppendLine("    [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
-                            linkSatView.AppendLine("    [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                            linkSatView.AppendLine("    [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                            linkSatView.AppendLine("    [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                            var sqlStatementForComponent = new StringBuilder();
-                            var sqlSourceStatement = new StringBuilder();
-                            var sqlStatementForHubBusinessKeys = new StringBuilder();
-                            var sqlStatementForSourceQuery = new StringBuilder();
-
-                            var querySourceTableName = psaTableName;
-
-                            // Get the Hubs for each Link/STG combination - both need to be represented in the query
-                            var hubTables = GetHubLinkCombination(stagingAreaTableName, linkTableName);
-
-                            var hubQuerySelect = new StringBuilder();
-
-                            // Creating the business keys
-                            var hubDrivingKeyPair = new LinkedList<string[]>();
-
-                            // Assign groups (counter) to allow for SAL
-                            int groupCounter = 1;
-                            foreach (DataRow hubDetailRow in hubTables.Rows)
-                            {
-                                sqlStatementForComponent.Clear();
-                                sqlStatementForHubBusinessKeys.Clear();
-
-                                var fieldList = new StringBuilder();
-                                var compositeKey = new StringBuilder();
-                                var fieldDict = new Dictionary<string, string>();
-                                var fieldOrderedList = new List<string>();
-                                var firstKey = string.Empty;
-
-                                var hubTableName = (string) hubDetailRow["HUB_NAME"];
-                                var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
-
-                                var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
-
-                                // Retrieving the top level component to evaluate composite, concat or pivot 
-                                var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
-
-                                // Retrieving the attributes for the source business key
-                                // Components are key parts, such as a composite key (2 or more components) or regular and concatenated keys (1 component)
-                                foreach (DataRow component in componentList.Rows)
-                                {
-                                    var componentId = (int) component["BUSINESS_KEY_COMPONENT_ID"] - 1;
-
-                                    // Retrieve the elements of each business key component
-                                    // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
-                                    var elementList = GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int) component["BUSINESS_KEY_COMPONENT_ID"]);
-
-                                    // Composite key
-                                    if (elementList.Rows.Count > 1) // Build a concatinated key if the count of elements is greater than 1 for a component (key part)
-                                    {
-                                        var keyType = "Normal";
-                                        fieldList.Clear();
-
-                                        foreach (DataRow element in elementList.Rows)
-                                        {
-                                            var elementType = element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString();
-
-                                            if (elementType == "Attribute")
-                                            {
-                                                fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"',");
-                                            }
-                                            else if (elementType == "User Defined Value")
-                                            {
-                                                fieldList.Append("''" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"'',");
-                                                keyType = "User Defined Value";
-                                            }
-
-                                            fieldOrderedList.Add(element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
-                                        }
-
-                                        sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                        sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                        sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" +querySourceTableName + "'");
-                                        sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                        sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" +fieldList.ToString().Substring(0,fieldList.ToString().Length - 1) +")");
-
-                                        var elementDataTypes = GetDataTable(ref connStg,sqlStatementForSourceQuery.ToString());
-
-                                        fieldDict.Clear();
-
-                                        foreach (DataRow attribute in elementDataTypes.Rows)
-                                        {
-                                            fieldDict.Add(attribute["COLUMN_NAME"].ToString(),attribute["DATA_TYPE"].ToString());
-                                        }
-
-                                        // Build the concatenated key
-                                        foreach (var busKey in fieldOrderedList)
-                                        {
-                                            if (fieldDict.ContainsKey(busKey))
-                                            {
-                                                var key = "ISNULL([" + busKey + "], '')";
-
-                                                if ((fieldDict[busKey] == "datetime2") ||(fieldDict[busKey] == "datetime"))
-                                                {
-                                                    key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CONVERT" +stringDataType + "(100), [" + busKey + "], 112) ELSE '' END";
-                                                }
-                                                else if ((fieldDict[busKey] == "numeric") ||(fieldDict[busKey] == "integer") ||(fieldDict[busKey] == "int") ||(fieldDict[busKey] == "tinyint") ||(fieldDict[busKey] == "decimal"))
-                                                {
-                                                    key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CAST([" +busKey + "] AS " + stringDataType + "(100)) ELSE '' END";
-                                                }
-
-                                                compositeKey.Append(key).Append(" + ");
-                                            }
-                                            else
-                                            {
-                                                var key = " " + busKey;
-                                                compositeKey.Append(key).Append(" + ");
-                                            }
-                                        }
-
-                                        hubDrivingKeyPair.AddLast
-                                            (
-                                                new[]
-                                                {
-                                                    hubTableName, // Hub table name
-                                                    compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2),
-                                                    // Source attribute name
-                                                    hubKeyList.Rows[componentId]["COLUMN_NAME"].ToString() +
-                                                    groupCounter, //  Target Attribute Name
-                                                    keyType
-                                                }
-                                            );
-
-                                        hubQuerySelect.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) +" AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                                    }
-                                    else // Handle a component of a single or composite key 
-                                    {
-                                        var keyType = "Normal";
-                                        if (elementList != null)
-                                            foreach (DataRow element in elementList.Rows)
-                                            {
-                                                if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() =="User Defined Value")
-                                                {
-                                                    firstKey =element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
-                                                    keyType = "User Defined Value";
-                                                }
-                                                else
-                                                {
-                                                    firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"]";
-                                                }
-                                            }
-
-                                        hubQuerySelect.AppendLine("    " + firstKey + " AS [" +hubKeyList.Rows[componentId]["COLUMN_NAME"] +groupCounter + "],");
-                                        hubDrivingKeyPair.AddLast
-                                            (
-                                                new[]
-                                                {
-                                                    hubTableName, // Hub table name
-                                                    firstKey, // Source attribute name
-                                                    hubKeyList.Rows[componentId]["COLUMN_NAME"].ToString() +
-                                                    groupCounter, //  Target Attribute Name
-                                                    keyType // Type (to detect user defined value)
-                                                }
-                                            );
-                                    }
-                                }
-
-                            groupCounter++;
-                            } // End of business key creation
-
-                            // Initiating select statement for subquery
-                            linkSatView.AppendLine("    " + hubQuerySelect);
-                            linkSatView.Remove(linkSatView.Length - 4, 4);
-
-                            linkSatView.AppendLine(sqlSourceStatement.ToString());
-                        // End of Business Key calculation
-
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("    [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
-                                }
-                            }
-
-                            // Look for driving keys
-                            var drivingKeys = "";
-                            var columnOrdinal = 0;
-                            var wherePredicate = "";
-
-                            // The Driving Key Hub is queried here and added for a local variable
-                            foreach (var hubArray in hubDrivingKeyPair)
-                            {
-                                var hubTableName = hubArray[0];
-                                var hubSourceBusinessKeyName = hubArray[1];
-                                var hubKeyType = hubArray[3];
-                                var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                //if (foundRow != null && hubKeyType != "User Defined Value")
-                                if (foundRow != null)
-                                {
-                                    drivingKeys += hubSourceBusinessKeyName + ", ";
-                                }
-                            }
-
-                            if (drivingKeys.Length > 0)
-                            {
-                                drivingKeys = drivingKeys.Remove(drivingKeys.Length - 2, 2);  // remove trailing comma
-
-                                // Add previous entry lookup for each alternate business key (= follower key)
-                                foreach (var hubArray in hubDrivingKeyPair)
-                                {
-                                    var hubTableName = hubArray[0];
-                                    var hubSourceBusinessKeyName = hubArray[1];
-                                    var hubTargetBusinessKeyName = hubArray[2];
-
-                                    // Check if the Hub drivingKeysDataTable in the array is a Driving Key (found in the DrivingKeys list). If so skip.
-                                    var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                    // Get any other business keys, if no hit in foundrow (no driving key)
-                                    if (foundRow == null)
-                                    {
-                                        // Add columns to the SELECT clause
-                                        columnOrdinal += 1;
-                                        if (columnOrdinal > 1)
-                                            linkSatView.AppendLine(",");
-                                        linkSatView.Append("    LAG(" + hubSourceBusinessKeyName + ", 1, '0')");
-                                        linkSatView.Append(" OVER (PARTITION BY " + drivingKeys + " ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute+")");
-                                        linkSatView.Append(" AS PREVIOUS_FOLLOWER_KEY" + columnOrdinal);
-
-                                        // Construct associated to the WHERE clause
-                                        if (columnOrdinal > 1)
-                                            wherePredicate += "\n    OR ";
-                                        wherePredicate += hubTargetBusinessKeyName + " != PREVIOUS_FOLLOWER_KEY" + columnOrdinal;
-                                    }
-                                }
-                            }
-
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("  FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
-
-                            // Filter criteria
-                            if (String.IsNullOrEmpty(filterCriteria))
-                            {
-                                // Remove 3NF deletion issue
-
-                                linkSatView.AppendLine("  WHERE NOT (" + TeamConfigurationSettings.RowIdAttribute + ">1 AND " + TeamConfigurationSettings.ChangeDataCaptureAttribute + " = 'Delete')");
-                            }
-                            else
-                            {
-                                linkSatView.AppendLine("  WHERE " + filterCriteria);
-                                // Remove 3NF deletion issue
-
-                                linkSatView.AppendLine("  AND NOT (" + TeamConfigurationSettings.RowIdAttribute + ">1 AND " + TeamConfigurationSettings.ChangeDataCaptureAttribute + " = 'Delete')");
-                            }
-
-                            if (checkBoxDisableLsatZeroRecords.Checked == false)
-                            {
-                                // Start of zero record
-                                linkSatView.AppendLine("  UNION");
-
-                                linkSatView.AppendLine("  SELECT ");
-                                linkSatView.AppendLine("    [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
-                                linkSatView.AppendLine("    [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                                linkSatView.AppendLine("    [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                                linkSatView.AppendLine("    [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                                foreach (var hubArray in hubBusinessKeyList)
-                                {
-                                    var hubBusinessKeyName = hubArray[1];
-                                    linkSatView.AppendLine("    [" + hubBusinessKeyName + "],");
-                                }
-
-                                foreach (DataRow attribute in multiActiveAttributes.Rows)
-                                {
-                                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                                    linkSatView.AppendLine("    " + multiActiveAttributeFromName + ",");
-                                }
-
-                                var counter = 0;
-                                foreach (var hubArray in hubDrivingKeyPair)
-                                {
-                                    var hubTableName = hubArray[0];
-                                    var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                    if (foundRow == null)
-                                    {
-                                        linkSatView.AppendLine("    '0' AS PREVIOUS_FOLLOWER_KEY" + counter + ",");
-                                        counter++;
-                                    }
-                                }
-
-                                linkSatView.Remove(linkSatView.Length - 3, 3);
-                                linkSatView.AppendLine();
-                                linkSatView.AppendLine("  FROM (");
-                                linkSatView.AppendLine("    SELECT");
-                                linkSatView.AppendLine("    '1900-01-01' AS [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
-                                linkSatView.AppendLine("    'Data Warehouse' AS [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                                linkSatView.AppendLine("    0 AS [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                                linkSatView.AppendLine("    'N/A' AS [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                                linkSatView.AppendLine("    " + hubQuerySelect);
-                                linkSatView.Remove(linkSatView.Length - 3, 3);
-
-                                foreach (DataRow attribute in multiActiveAttributes.Rows)
-                                {
-                                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                                    linkSatView.AppendLine("   " + multiActiveAttributeFromName + ",");
-                                }
-
-                                linkSatView.AppendLine("    DENSE_RANK() OVER (PARTITION  BY ");
-                                // Dense rank needs to be over the Driving Key
-                                foreach (var hubArray in hubDrivingKeyPair)
-                                {
-                                    var hubTableName = hubArray[0];
-                                    var hubSourceBusinessKeyName = hubArray[1];
-                                    var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                    if (foundRow != null)
-                                    {
-                                        linkSatView.AppendLine("        " + hubSourceBusinessKeyName + ",");
-                                    }
-                                }
-
-                                foreach (DataRow attribute in multiActiveAttributes.Rows)
-                                {
-                                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                                    linkSatView.AppendLine("        [" + multiActiveAttributeFromName + "],");
-                                }
-
-                                linkSatView.Remove(linkSatView.Length - 3, 3);
-                                linkSatView.AppendLine();
-                                linkSatView.Append("    ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "], ");
-
-                                foreach (var hubArray in hubDrivingKeyPair)
-                                {
-                                    var hubTableName = hubArray[0];
-                                    var hubSourceBusinessKeyName = hubArray[1];
-                                    var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                    if (foundRow != null)
-                                    {
-                                        linkSatView.Append(hubSourceBusinessKeyName).Append(",");
-                                    }
-                                }
-
-                                foreach (DataRow attribute in multiActiveAttributes.Rows)
-                                {
-                                    multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
-                                    linkSatView.Append("         " + multiActiveAttributeFromName + ",");
-                                }
-                                linkSatView.Remove(linkSatView.Length - 1, 1);
-                                linkSatView.AppendLine(" ASC) ROWVERSION");
-                                linkSatView.AppendLine("  FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
-                                linkSatView.Append("  ) dummysub");
-                                linkSatView.AppendLine();
-                                linkSatView.AppendLine("  WHERE ROWVERSION=1");
-                            // End of zero record
-                            }
-
-                            linkSatView.AppendLine(") sub");
-                            linkSatView.AppendLine("WHERE " + wherePredicate);
-
-                            // linkSatView.AppendLine();
-                            linkSatView.AppendLine("-- ORDER BY");
-
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubTableName = hubArray[0];
-                                var hubBusinessKeyName = hubArray[1];
-                                var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
-
-                                if (foundRow != null)
-                                {
-                                    linkSatView.AppendLine("--  " + hubBusinessKeyName + ",");
-                                }
-                            }
-
-                            linkSatView.AppendLine("--  [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]");
-                            // End of source subuery
-
-                            SetTextLsat("Processing driving key Link Satellite entity view for " + targetTableName + "\r\n");
-
-
-                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql", false))
-                            {
-                                outfile.Write(linkSatView.ToString());
-                                outfile.Close();
-                            }
-
-                            if (checkBoxGenerateInDatabase.Checked)
-                            {
-                                connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                                int insertError = GenerateInDatabase(connHstg, linkSatView.ToString());
-                                errorCounter = errorCounter + insertError;
-                            }
-
-                            SetTextMain(linkSatView.ToString());
-                            SetTextMain("\n");
+        //    if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
+        //    {
+        //        for (int x = 0; x <= checkedListBoxLsatMetadata.CheckedItems.Count - 1; x++)
+        //        {
+        //            var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
+
+        //            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+        //            var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
+        //            var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+
+        //            var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
+
+        //            // Check if it's actually a driving 
+        //            var sqlStatementForTablesToImport = new StringBuilder();
+        //            sqlStatementForTablesToImport.AppendLine("SELECT * FROM interface.INTERFACE_SOURCE_SATELLITE_XREF base");
+        //            sqlStatementForTablesToImport.AppendLine("WHERE SATELLITE_TYPE = 'Link Satellite' ");
+        //            sqlStatementForTablesToImport.AppendLine(" AND SATELLITE_NAME = '" + targetTableName + "'");
+        //            sqlStatementForTablesToImport.AppendLine(" AND EXISTS (SELECT * FROM [interface].[INTERFACE_DRIVING_KEY] sub WHERE sub.SATELLITE_ID = base.SATELLITE_ID)");
+
+        //            var tables = GetDataTable(ref connOmd, sqlStatementForTablesToImport.ToString());
+
+        //            foreach (DataRow row in tables.Rows)
+        //                {
+        //                    var linkSatView = new StringBuilder();
+
+        //                    string multiActiveAttributeFromName;
+
+        //                    var psaTableName = TeamConfigurationSettings.PsaTablePrefixValue + row["SOURCE_NAME"].ToString().Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
+
+
+        //                    var stagingAreaTableName = (string)row["SOURCE_NAME"];
+
+        //                    var filterCriteria = (string) row["FILTER_CRITERIA"];
+
+        //                    var targetTableId = (int) row["SATELLITE_ID"];
+
+        //                    var linkTableName = (string) row["LINK_NAME"];
+
+        //                    var linkSk = linkTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
+
+        //                    // Query to detect multi-active attributes
+        //                    var multiActiveAttributes = GetMultiActiveAttributes(targetTableId);
+
+        //                    // Get the associated Hub tables for the Link
+        //                    var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
+
+        //                    // Retrieving the business key attributes for the Hubs associated with the Link
+        //                    //var hubBusinessKeyList = GetHubBusinessKeysForLink(linkHubTables, versionId);
+
+        //                    var degenerateLinkAttributes = GetDegenerateLinkAttributes(linkTableName);
+
+        //                    // Create a list of Driving Key(s) for the Link table
+        //                    var queryDrivingKeys = new StringBuilder();
+
+        //                    queryDrivingKeys.AppendLine("SELECT ");
+        //                    queryDrivingKeys.AppendLine("  [SATELLITE_ID]");
+        //                    queryDrivingKeys.AppendLine(" ,[SATELLITE_NAME]");
+        //                    queryDrivingKeys.AppendLine(" ,[HUB_ID]");
+        //                    queryDrivingKeys.AppendLine(" ,[HUB_NAME]");
+        //                    queryDrivingKeys.AppendLine("FROM [interface].[INTERFACE_DRIVING_KEY]");
+        //                    queryDrivingKeys.AppendLine("WHERE SATELLITE_NAME = '"+ targetTableName+"'");
+
+        //                    var drivingKeysDataTable = GetDataTable(ref connOmd, queryDrivingKeys.ToString());
+        //                    drivingKeysDataTable.PrimaryKey = new[] { drivingKeysDataTable.Columns["HUB_NAME"]};
+
+        //                    // **************************************************************************************		
+        //                    // Creating the source query
+        //                    // **************************************************************************************
+
+        //                    // Create View
+        //                    linkSatView.AppendLine("--");
+        //                    linkSatView.AppendLine("-- Link Satellite View definition - Driving Key for " + targetTableName);
+        //                    linkSatView.AppendLine("-- Generated at " + DateTime.Now);
+        //                    linkSatView.AppendLine("--");
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
+        //                    linkSatView.AppendLine("GO");
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +targetTableName + "]') AND type in (N'V'))");
+        //                    linkSatView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "]");
+        //                    linkSatView.AppendLine("go");
+        //                    linkSatView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName +"] AS  ");
+        //                    linkSatView.AppendLine("SELECT");
+
+        //                    if (!checkBoxDisableHash.Checked)
+        //                    {
+        //                        linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
+
+        //                        foreach (var hubArray in hubBusinessKeyList)
+        //                        {
+        //                            linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + hubArray[1] + "])),'NA')+'|'+");
+        //                        }
+
+        //                    // Add the degenerate attributes
+        //                        if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                        {
+        //                            foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                            {
+        //                                linkSatView.AppendLine(
+        //                                    "    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
+        //                                    (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+        //                            }
+        //                        }
+
+        //                        linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                        linkSatView.AppendLine();
+        //                        linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
+        //                    }
+        //                    else
+        //                    {
+        //                        //BK as DWH key
+        //                        foreach (var hubArray in hubBusinessKeyList)
+        //                        {
+        //                            linkSatView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
+        //                        }
+
+        //                        if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                        {
+        //                            foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                            {
+        //                                linkSatView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
+        //                                                   (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+        //                            }
+        //                        }
+
+        //                        linkSatView.Remove(linkSatView.Length - 5, 5);
+        //                        linkSatView.Append("  AS " + linkSk + ",");
+        //                        linkSatView.AppendLine();
+        //                    }
+
+        //                // Add commented-out original business keys for easy debugging
+        //                foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        linkSatView.AppendLine("   --[" + hubArray[1] + "],");
+        //                    }
+
+        //                    // Effective Datetime
+        //                    if (TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+        //                    {
+        //                        linkSatView.AppendLine("   " + TeamConfigurationSettings.LoadDateTimeAttribute + " AS " +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
+        //                    }
+        //                    else
+        //                    {
+        //                        linkSatView.AppendLine("   " + TeamConfigurationSettings.LoadDateTimeAttribute + " AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
+        //                    }
+
+        //                    //Multi-Active attributes
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("   [" + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
+        //                    }
+
+        //                    // Expiry Datetime
+        //                    linkSatView.AppendLine("   COALESCE ( LEAD ( " + TeamConfigurationSettings.LoadDateTimeAttribute + " ) OVER");
+        //                    linkSatView.AppendLine("      (PARTITION BY ");
+
+        //                    // Business Key attributes
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubTableName = hubArray[0];
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                        if (foundRow != null)
+        //                        {
+        //                            linkSatView.AppendLine("       [" + hubBusinessKeyName + "],");
+        //                        }
+        //                    }
+
+        //                // Driving Key attributes
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
+        //                                                   (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+        //                        }
+        //                    }
+
+        //                    // Multi-active attributes
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                        linkSatView.AppendLine("       [" + multiActiveAttributeFromName + "],");
+        //                    }
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("   	  ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute + "),");
+        //                    linkSatView.AppendLine("      CAST( '9999-12-31' AS DATETIME)");
+        //                    linkSatView.AppendLine("   ) AS " + TeamConfigurationSettings.ExpiryDateTimeAttribute + ",");
+
+        //                    // Current record indicator
+        //                    linkSatView.AppendLine("   CASE ");
+        //                    linkSatView.AppendLine("     WHEN ( LEAD ( " + TeamConfigurationSettings.LoadDateTimeAttribute + " ) OVER");
+        //                    linkSatView.AppendLine("      (PARTITION BY ");
+
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubTableName = hubArray[0];
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                        if (foundRow != null)
+        //                        {
+        //                            linkSatView.AppendLine("       [" + hubBusinessKeyName + "],");
+        //                        }
+        //                    }
+
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("       [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
+        //                    }
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("   	  ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute + ")");
+        //                    linkSatView.AppendLine("      ) IS NULL");
+        //                    linkSatView.AppendLine("     THEN 'Y' ELSE 'N'");
+        //                    linkSatView.AppendLine("   END AS " + TeamConfigurationSettings.CurrentRowAttribute + ",");
+
+        //                    // Other process metadata attributes
+        //                    if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+        //                    {
+        //                        linkSatView.AppendLine("   [" + TeamConfigurationSettings.RecordSourceAttribute + "] AS ["+ TeamConfigurationSettings.AlternativeRecordSourceAttribute + "],");
+        //                    }
+        //                    else
+        //                    {
+        //                        linkSatView.AppendLine("   [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                    }
+
+        //                    //Logical deletes
+        //                    if (checkBoxEvaluateSatDelete.Checked)
+        //                    {
+        //                        linkSatView.AppendLine("    CASE");
+        //                        linkSatView.AppendLine("      WHEN [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] = 'Delete' THEN 'Y'");
+        //                        linkSatView.AppendLine("      ELSE 'N'");
+        //                        linkSatView.AppendLine("    END AS [" + TeamConfigurationSettings.LogicalDeleteAttribute + "],");
+        //                    }
+
+        //                    linkSatView.AppendLine("   [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                    linkSatView.AppendLine("   [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+
+        //                    // Row number
+        //                    linkSatView.AppendLine("   CAST(");
+        //                    linkSatView.AppendLine("      ROW_NUMBER() OVER (PARTITION  BY ");
+
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubTableName = hubArray[0];
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                        if (foundRow != null)
+        //                        {
+        //                            linkSatView.AppendLine("          [" + hubBusinessKeyName + "],");
+        //                        }
+        //                    }
+
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                        linkSatView.AppendLine("          [" + multiActiveAttributeFromName + "],");
+        //                    }
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("         ORDER BY ");
+
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubTableName = hubArray[0];
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                        if (foundRow != null)
+        //                        {
+        //                            linkSatView.AppendLine("          [" + hubBusinessKeyName + "],");
+        //                        }
+        //                    }
+
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("          [" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "],");
+        //                    }
+
+        //                    linkSatView.AppendLine("          [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
+        //                    linkSatView.AppendLine("   AS ROW_NUMBER,");
+
+        //                    // Checksum
+        //                    linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
+        //                    linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +
+        //                                           TeamConfigurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
+
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + hubArray[1] +"])),'NA')+'|'+");
+        //                    }
+
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
+        //                    }
+
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +
+        //                                                   (string) attribute["LINK_ATTRIBUTE_NAME"] + "])),'NA')+'|'+");
+        //                        }
+        //                    }
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + TeamConfigurationSettings.RecordChecksumAttribute + "");
+
+        //                    // From statement
+        //                    linkSatView.AppendLine("FROM ");
+        //                    linkSatView.AppendLine("(");
+        //                    linkSatView.AppendLine("  SELECT ");
+        //                    linkSatView.AppendLine("    [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
+        //                    linkSatView.AppendLine("    [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                    linkSatView.AppendLine("    [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                    linkSatView.AppendLine("    [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+
+        //                    var sqlStatementForComponent = new StringBuilder();
+        //                    var sqlSourceStatement = new StringBuilder();
+        //                    var sqlStatementForHubBusinessKeys = new StringBuilder();
+        //                    var sqlStatementForSourceQuery = new StringBuilder();
+
+        //                    var querySourceTableName = psaTableName;
+
+        //                    // Get the Hubs for each Link/STG combination - both need to be represented in the query
+        //                    var hubTables = GetHubLinkCombination(stagingAreaTableName, linkTableName);
+
+        //                    var hubQuerySelect = new StringBuilder();
+
+        //                    // Creating the business keys
+        //                    var hubDrivingKeyPair = new LinkedList<string[]>();
+
+        //                    // Assign groups (counter) to allow for SAL
+        //                    int groupCounter = 1;
+        //                    foreach (DataRow hubDetailRow in hubTables.Rows)
+        //                    {
+        //                        sqlStatementForComponent.Clear();
+        //                        sqlStatementForHubBusinessKeys.Clear();
+
+        //                        var fieldList = new StringBuilder();
+        //                        var compositeKey = new StringBuilder();
+        //                        var fieldDict = new Dictionary<string, string>();
+        //                        var fieldOrderedList = new List<string>();
+        //                        var firstKey = string.Empty;
+
+        //                        var hubTableName = (string) hubDetailRow["HUB_NAME"];
+        //                        var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
+
+        //                        var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
+
+        //                        // Retrieving the top level component to evaluate composite, concat or pivot 
+        //                        var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
+
+        //                        // Retrieving the attributes for the source business key
+        //                        // Components are key parts, such as a composite key (2 or more components) or regular and concatenated keys (1 component)
+        //                        foreach (DataRow component in componentList.Rows)
+        //                        {
+        //                            var componentId = (int) component["BUSINESS_KEY_COMPONENT_ID"] - 1;
+
+        //                            // Retrieve the elements of each business key component
+        //                            // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
+        //                            var elementList = GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int) component["BUSINESS_KEY_COMPONENT_ID"]);
+
+        //                            // Composite key
+        //                            if (elementList.Rows.Count > 1) // Build a concatinated key if the count of elements is greater than 1 for a component (key part)
+        //                            {
+        //                                var keyType = "Normal";
+        //                                fieldList.Clear();
+
+        //                                foreach (DataRow element in elementList.Rows)
+        //                                {
+        //                                    var elementType = element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString();
+
+        //                                    if (elementType == "Attribute")
+        //                                    {
+        //                                        fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"',");
+        //                                    }
+        //                                    else if (elementType == "User Defined Value")
+        //                                    {
+        //                                        fieldList.Append("''" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"'',");
+        //                                        keyType = "User Defined Value";
+        //                                    }
+
+        //                                    fieldOrderedList.Add(element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
+        //                                }
+
+        //                                sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
+        //                                sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
+        //                                sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" +querySourceTableName + "'");
+        //                                sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
+        //                                sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" +fieldList.ToString().Substring(0,fieldList.ToString().Length - 1) +")");
+
+        //                                var elementDataTypes = GetDataTable(ref connStg,sqlStatementForSourceQuery.ToString());
+
+        //                                fieldDict.Clear();
+
+        //                                foreach (DataRow attribute in elementDataTypes.Rows)
+        //                                {
+        //                                    fieldDict.Add(attribute["COLUMN_NAME"].ToString(),attribute["DATA_TYPE"].ToString());
+        //                                }
+
+        //                                // Build the concatenated key
+        //                                foreach (var busKey in fieldOrderedList)
+        //                                {
+        //                                    if (fieldDict.ContainsKey(busKey))
+        //                                    {
+        //                                        var key = "ISNULL([" + busKey + "], '')";
+
+        //                                        if ((fieldDict[busKey] == "datetime2") ||(fieldDict[busKey] == "datetime"))
+        //                                        {
+        //                                            key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CONVERT" +stringDataType + "(100), [" + busKey + "], 112) ELSE '' END";
+        //                                        }
+        //                                        else if ((fieldDict[busKey] == "numeric") ||(fieldDict[busKey] == "integer") ||(fieldDict[busKey] == "int") ||(fieldDict[busKey] == "tinyint") ||(fieldDict[busKey] == "decimal"))
+        //                                        {
+        //                                            key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CAST([" +busKey + "] AS " + stringDataType + "(100)) ELSE '' END";
+        //                                        }
+
+        //                                        compositeKey.Append(key).Append(" + ");
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        var key = " " + busKey;
+        //                                        compositeKey.Append(key).Append(" + ");
+        //                                    }
+        //                                }
+
+        //                                hubDrivingKeyPair.AddLast
+        //                                    (
+        //                                        new[]
+        //                                        {
+        //                                            hubTableName, // Hub table name
+        //                                            compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2),
+        //                                            // Source attribute name
+        //                                            hubKeyList.Rows[componentId]["COLUMN_NAME"].ToString() +
+        //                                            groupCounter, //  Target Attribute Name
+        //                                            keyType
+        //                                        }
+        //                                    );
+
+        //                                hubQuerySelect.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) +" AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
+        //                            }
+        //                            else // Handle a component of a single or composite key 
+        //                            {
+        //                                var keyType = "Normal";
+        //                                if (elementList != null)
+        //                                    foreach (DataRow element in elementList.Rows)
+        //                                    {
+        //                                        if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() =="User Defined Value")
+        //                                        {
+        //                                            firstKey =element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
+        //                                            keyType = "User Defined Value";
+        //                                        }
+        //                                        else
+        //                                        {
+        //                                            firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] +"]";
+        //                                        }
+        //                                    }
+
+        //                                hubQuerySelect.AppendLine("    " + firstKey + " AS [" +hubKeyList.Rows[componentId]["COLUMN_NAME"] +groupCounter + "],");
+        //                                hubDrivingKeyPair.AddLast
+        //                                    (
+        //                                        new[]
+        //                                        {
+        //                                            hubTableName, // Hub table name
+        //                                            firstKey, // Source attribute name
+        //                                            hubKeyList.Rows[componentId]["COLUMN_NAME"].ToString() +
+        //                                            groupCounter, //  Target Attribute Name
+        //                                            keyType // Type (to detect user defined value)
+        //                                        }
+        //                                    );
+        //                            }
+        //                        }
+
+        //                    groupCounter++;
+        //                    } // End of business key creation
+
+        //                    // Initiating select statement for subquery
+        //                    linkSatView.AppendLine("    " + hubQuerySelect);
+        //                    linkSatView.Remove(linkSatView.Length - 4, 4);
+
+        //                    linkSatView.AppendLine(sqlSourceStatement.ToString());
+        //                // End of Business Key calculation
+
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("    [" + (string) attribute["LINK_ATTRIBUTE_NAME"] + "],");
+        //                        }
+        //                    }
+
+        //                    // Look for driving keys
+        //                    var drivingKeys = "";
+        //                    var columnOrdinal = 0;
+        //                    var wherePredicate = "";
+
+        //                    // The Driving Key Hub is queried here and added for a local variable
+        //                    foreach (var hubArray in hubDrivingKeyPair)
+        //                    {
+        //                        var hubTableName = hubArray[0];
+        //                        var hubSourceBusinessKeyName = hubArray[1];
+        //                        var hubKeyType = hubArray[3];
+        //                        var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                        //if (foundRow != null && hubKeyType != "User Defined Value")
+        //                        if (foundRow != null)
+        //                        {
+        //                            drivingKeys += hubSourceBusinessKeyName + ", ";
+        //                        }
+        //                    }
+
+        //                    if (drivingKeys.Length > 0)
+        //                    {
+        //                        drivingKeys = drivingKeys.Remove(drivingKeys.Length - 2, 2);  // remove trailing comma
+
+        //                        // Add previous entry lookup for each alternate business key (= follower key)
+        //                        foreach (var hubArray in hubDrivingKeyPair)
+        //                        {
+        //                            var hubTableName = hubArray[0];
+        //                            var hubSourceBusinessKeyName = hubArray[1];
+        //                            var hubTargetBusinessKeyName = hubArray[2];
+
+        //                            // Check if the Hub drivingKeysDataTable in the array is a Driving Key (found in the DrivingKeys list). If so skip.
+        //                            var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                            // Get any other business keys, if no hit in foundrow (no driving key)
+        //                            if (foundRow == null)
+        //                            {
+        //                                // Add columns to the SELECT clause
+        //                                columnOrdinal += 1;
+        //                                if (columnOrdinal > 1)
+        //                                    linkSatView.AppendLine(",");
+        //                                linkSatView.Append("    LAG(" + hubSourceBusinessKeyName + ", 1, '0')");
+        //                                linkSatView.Append(" OVER (PARTITION BY " + drivingKeys + " ORDER BY " + TeamConfigurationSettings.LoadDateTimeAttribute+")");
+        //                                linkSatView.Append(" AS PREVIOUS_FOLLOWER_KEY" + columnOrdinal);
+
+        //                                // Construct associated to the WHERE clause
+        //                                if (columnOrdinal > 1)
+        //                                    wherePredicate += "\n    OR ";
+        //                                wherePredicate += hubTargetBusinessKeyName + " != PREVIOUS_FOLLOWER_KEY" + columnOrdinal;
+        //                            }
+        //                        }
+        //                    }
+
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("  FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
+
+        //                    // Filter criteria
+        //                    if (String.IsNullOrEmpty(filterCriteria))
+        //                    {
+        //                        // Remove 3NF deletion issue
+
+        //                        linkSatView.AppendLine("  WHERE NOT (" + TeamConfigurationSettings.RowIdAttribute + ">1 AND " + TeamConfigurationSettings.ChangeDataCaptureAttribute + " = 'Delete')");
+        //                    }
+        //                    else
+        //                    {
+        //                        linkSatView.AppendLine("  WHERE " + filterCriteria);
+        //                        // Remove 3NF deletion issue
+
+        //                        linkSatView.AppendLine("  AND NOT (" + TeamConfigurationSettings.RowIdAttribute + ">1 AND " + TeamConfigurationSettings.ChangeDataCaptureAttribute + " = 'Delete')");
+        //                    }
+
+        //                    if (checkBoxDisableLsatZeroRecords.Checked == false)
+        //                    {
+        //                        // Start of zero record
+        //                        linkSatView.AppendLine("  UNION");
+
+        //                        linkSatView.AppendLine("  SELECT ");
+        //                        linkSatView.AppendLine("    [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
+        //                        linkSatView.AppendLine("    [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                        linkSatView.AppendLine("    [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                        linkSatView.AppendLine("    [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+
+        //                        foreach (var hubArray in hubBusinessKeyList)
+        //                        {
+        //                            var hubBusinessKeyName = hubArray[1];
+        //                            linkSatView.AppendLine("    [" + hubBusinessKeyName + "],");
+        //                        }
+
+        //                        foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                        {
+        //                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                            linkSatView.AppendLine("    " + multiActiveAttributeFromName + ",");
+        //                        }
+
+        //                        var counter = 0;
+        //                        foreach (var hubArray in hubDrivingKeyPair)
+        //                        {
+        //                            var hubTableName = hubArray[0];
+        //                            var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                            if (foundRow == null)
+        //                            {
+        //                                linkSatView.AppendLine("    '0' AS PREVIOUS_FOLLOWER_KEY" + counter + ",");
+        //                                counter++;
+        //                            }
+        //                        }
+
+        //                        linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                        linkSatView.AppendLine();
+        //                        linkSatView.AppendLine("  FROM (");
+        //                        linkSatView.AppendLine("    SELECT");
+        //                        linkSatView.AppendLine("    '1900-01-01' AS [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
+        //                        linkSatView.AppendLine("    'Data Warehouse' AS [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                        linkSatView.AppendLine("    0 AS [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                        linkSatView.AppendLine("    'N/A' AS [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+
+        //                        linkSatView.AppendLine("    " + hubQuerySelect);
+        //                        linkSatView.Remove(linkSatView.Length - 3, 3);
+
+        //                        foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                        {
+        //                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                            linkSatView.AppendLine("   " + multiActiveAttributeFromName + ",");
+        //                        }
+
+        //                        linkSatView.AppendLine("    DENSE_RANK() OVER (PARTITION  BY ");
+        //                        // Dense rank needs to be over the Driving Key
+        //                        foreach (var hubArray in hubDrivingKeyPair)
+        //                        {
+        //                            var hubTableName = hubArray[0];
+        //                            var hubSourceBusinessKeyName = hubArray[1];
+        //                            var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                            if (foundRow != null)
+        //                            {
+        //                                linkSatView.AppendLine("        " + hubSourceBusinessKeyName + ",");
+        //                            }
+        //                        }
+
+        //                        foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                        {
+        //                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                            linkSatView.AppendLine("        [" + multiActiveAttributeFromName + "],");
+        //                        }
+
+        //                        linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                        linkSatView.AppendLine();
+        //                        linkSatView.Append("    ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "], ");
+
+        //                        foreach (var hubArray in hubDrivingKeyPair)
+        //                        {
+        //                            var hubTableName = hubArray[0];
+        //                            var hubSourceBusinessKeyName = hubArray[1];
+        //                            var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                            if (foundRow != null)
+        //                            {
+        //                                linkSatView.Append(hubSourceBusinessKeyName).Append(",");
+        //                            }
+        //                        }
+
+        //                        foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                        {
+        //                            multiActiveAttributeFromName = (string) attribute["SOURCE_ATTRIBUTE_NAME"];
+        //                            linkSatView.Append("         " + multiActiveAttributeFromName + ",");
+        //                        }
+        //                        linkSatView.Remove(linkSatView.Length - 1, 1);
+        //                        linkSatView.AppendLine(" ASC) ROWVERSION");
+        //                        linkSatView.AppendLine("  FROM " + TeamConfigurationSettings.SchemaName + "." + psaTableName);
+        //                        linkSatView.Append("  ) dummysub");
+        //                        linkSatView.AppendLine();
+        //                        linkSatView.AppendLine("  WHERE ROWVERSION=1");
+        //                    // End of zero record
+        //                    }
+
+        //                    linkSatView.AppendLine(") sub");
+        //                    linkSatView.AppendLine("WHERE " + wherePredicate);
+
+        //                    // linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("-- ORDER BY");
+
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubTableName = hubArray[0];
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        var foundRow = drivingKeysDataTable.Rows.Find(hubTableName);
+
+        //                        if (foundRow != null)
+        //                        {
+        //                            linkSatView.AppendLine("--  " + hubBusinessKeyName + ",");
+        //                        }
+        //                    }
+
+        //                    linkSatView.AppendLine("--  [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]");
+        //                    // End of source subuery
+
+        //                    SetTextLsat("Processing driving key Link Satellite entity view for " + targetTableName + "\r\n");
+
+
+        //                    using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql", false))
+        //                    {
+        //                        outfile.Write(linkSatView.ToString());
+        //                        outfile.Close();
+        //                    }
+
+        //                    if (checkBoxGenerateInDatabase.Checked)
+        //                    {
+        //                        connHstg.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+        //                        int insertError = GenerateInDatabase(connHstg, linkSatView.ToString());
+        //                        errorCounter = errorCounter + insertError;
+        //                    }
+
+        //                    SetTextMain(linkSatView.ToString());
+        //                    SetTextMain("\n");
                            
 
-                        }
-                    }
+        //                }
+        //            }
                  
-            }
-            else
-            {
-                SetTextLsat("There was no metadata selected to create Driving Key Link Satellite views. Please check the metadata schema - are there any Link Satellites selected?");
-            }
+        //    }
+        //    else
+        //    {
+        //        SetTextLsat("There was no metadata selected to create Driving Key Link Satellite views. Please check the metadata schema - are there any Link Satellites selected?");
+        //    }
 
-            SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextLsat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
-        }
+        //    SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
+        //    SetTextLsat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+        //}
 
         private DataTable GetMultiActiveAttributes(int targetTableId)
         {
@@ -4502,488 +4530,488 @@ namespace Virtual_EDW
         }
 
         // Link Satellite generation - historical
-        private void GenerateLsatHistoryViews()
-        {
-            int errorCounter = 0;
-
-            if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
-            {
-                for (int x = 0; x <= checkedListBoxLsatMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
-
-                    var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-                    var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-                    var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-
-                    var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
-
-                    var sqlStatementForTablesToImport = new StringBuilder();
-                    sqlStatementForTablesToImport.AppendLine("SELECT * FROM interface.INTERFACE_SOURCE_SATELLITE_XREF base");
-                    sqlStatementForTablesToImport.AppendLine("WHERE SATELLITE_TYPE = 'Link Satellite' ");
-                    sqlStatementForTablesToImport.AppendLine(" AND SATELLITE_NAME = '" + targetTableName + "'");
-                    sqlStatementForTablesToImport.AppendLine(" AND NOT EXISTS (SELECT * FROM [interface].[INTERFACE_DRIVING_KEY] sub WHERE sub.SATELLITE_ID = base.SATELLITE_ID)");
-
-                    var tables = GetDataTable(ref connOmd, sqlStatementForTablesToImport.ToString());
-
-                        foreach (DataRow row in tables.Rows)
-                        {
-                            var linkSatView = new StringBuilder();
-
-                            var stagingAreaTableId = (int) row["SOURCE_ID"];
-                            var stagingAreaTableName = (string) row["SOURCE_NAME"];
-                            var filterCriteria = (string) row["FILTER_CRITERIA"];
-                            var targetTableId = (int) row["SATELLITE_ID"];
-                            var linkTableName = (string) row["LINK_NAME"];
-
-                            var linkSk = linkTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
-                            var currentTableName = (string) row["SOURCE_NAME"];
-                            currentTableName = TeamConfigurationSettings.PsaTablePrefixValue +currentTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
-
-
-                            // Query to detect multi-active attributes
-                            var multiActiveAttributes = GetMultiActiveAttributes(targetTableId);
-
-                            // Retrieve the Source-To-Target mapping for Satellites
-                            var sourceStructure = GetStagingToSatelliteAttributeMapping(targetTableId, stagingAreaTableId);
-
-                            // Get the associated Hub tables and its target business key attributes for the Link
-                            var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
-
-                            // Understand the degenerate fields, so these can be added later
-                            var degenerateLinkAttributes = GetDegenerateLinkAttributes(linkTableName);
-
-                            // **************************************************************************************		
-                            // Creating the source query
-                            // **************************************************************************************
-
-                            // Create View
-                            linkSatView.AppendLine("--");
-                            linkSatView.AppendLine("-- Link Satellite View definition - regular history for " +targetTableName);
-                            linkSatView.AppendLine("-- Generated at " + DateTime.Now);
-                            linkSatView.AppendLine("--");
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
-                            linkSatView.AppendLine("GO");
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +targetTableName + "]') AND type in (N'V'))");
-                            linkSatView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName +"]");
-                            linkSatView.AppendLine("go");
-                            linkSatView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName +"] AS  ");
-                            linkSatView.AppendLine("SELECT");
-
-
-                            if (!checkBoxDisableHash.Checked)
-                            {
-                                // Link SK - combined hash key
-                                linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
-
-                                foreach (var hubArray in hubBusinessKeyList)
-                                {
-                                    linkSatView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
-                                }
-
-                                // Add the degenerate attributes to be part of the key
-                                if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                                {
-                                    foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                    {
-                                        linkSatView.AppendLine(
-                                            "    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                            (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-                                    }
-                                }
-
-                                linkSatView.Remove(linkSatView.Length - 3, 3);
-                                linkSatView.AppendLine();
-                                linkSatView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
-                            }
-                            else
-                            {
-                                //BK as DWH key
-                                foreach (var hubArray in hubBusinessKeyList)
-                                {
-                                    linkSatView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
-                                }
-
-                                if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                                {
-                                    foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                    {
-                                        linkSatView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
-                                                           (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-                                    }
-                                }
-
-                                linkSatView.Remove(linkSatView.Length - 5, 5);
-                                linkSatView.Append("  AS " + linkSk + ",");
-                                linkSatView.AppendLine();
-                            }
-
-                            // Effective Datetime
-                            if (TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
-                            {
-                                linkSatView.AppendLine("   " + TeamConfigurationSettings.LoadDateTimeAttribute + " AS " +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
-                            }
-                            else
-                            {
-                                linkSatView.AppendLine("   " + TeamConfigurationSettings.LoadDateTimeAttribute + " AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
-                            }
-
-                            //Multi-Active attributes
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                var multiActiveAttributeFromName = (string) attribute["SATELLITE_ATTRIBUTE_NAME"];
-                                linkSatView.AppendLine("          [" + multiActiveAttributeFromName + "],");
-                            }
-
-                            // Expiry Datetime
-                            linkSatView.AppendLine("   COALESCE ( LEAD ( [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] ) OVER");
-                            linkSatView.AppendLine("   		     (PARTITION BY ");
-
-                            // Add the Business Kyes
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubBusinessKeyName = hubArray[1];
-                                linkSatView.AppendLine("              " + hubBusinessKeyName + ",");
-                            }
-
-                        // Add the degenerate attributes
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("              " + (string) attribute["LINK_ATTRIBUTE_NAME"] +
-                                                           ",");
-                                }
-                            }
-
-                            // Add the multi-active attributes
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("              " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
-                            }
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("   		     ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]),");
-                            linkSatView.AppendLine("   CAST( '9999-12-31' AS DATETIME)) AS " + TeamConfigurationSettings.ExpiryDateTimeAttribute + ",");
-
-                            // Current record indicator
-                            linkSatView.AppendLine("   CASE");
-                            linkSatView.AppendLine("      WHEN ( RANK() OVER (PARTITION BY ");
-
-                            // Business Key
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubBusinessKeyName = hubArray[1];
-                                linkSatView.AppendLine("            " + hubBusinessKeyName + ",");
-                            }
-
-                        // Add the degenerate attributes
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("            " + (string) attribute["LINK_ATTRIBUTE_NAME"] +
-                                                           ",");
-                                }
-                            }
-
-                            // Multi-Active
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
-                            }
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-
-                            linkSatView.AppendLine("          ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] desc )) = 1");
-                            linkSatView.AppendLine("      THEN 'Y'");
-                            linkSatView.AppendLine("      ELSE 'N'");
-                            linkSatView.AppendLine("   END AS " + TeamConfigurationSettings.CurrentRowAttribute + ",");
-
-                            if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
-                            {
-                                linkSatView.AppendLine("   [" + TeamConfigurationSettings.RecordSourceAttribute + "] AS [" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "],");
-                            }
-                            else
-                            {
-                                linkSatView.AppendLine("   [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                            }
-
-                            //Logical deletes
-                            if (checkBoxEvaluateSatDelete.Checked)
-                            {
-                                linkSatView.AppendLine("    CASE");
-                                linkSatView.AppendLine("      WHEN [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] = 'Delete' THEN 'Y'");
-                                linkSatView.AppendLine("      ELSE 'N'");
-                                linkSatView.AppendLine("    END AS [" + TeamConfigurationSettings.LogicalDeleteAttribute + "],");
-                            }
-
-
-                            linkSatView.AppendLine("   -1 AS " + TeamConfigurationSettings.EtlProcessAttribute + ",");
-                            linkSatView.AppendLine("   -1 AS " + TeamConfigurationSettings.EtlProcessUpdateAttribute + ",");
-                            linkSatView.AppendLine("   [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                            linkSatView.AppendLine("   [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                            // All the attibutes (except the multi-active ones)
-                            foreach (DataRow attribute in sourceStructure.Rows)
-                            {
-                                if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
-                                {
-                                    linkSatView.Append("   " + attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
-                                    linkSatView.AppendLine();
-                                }
-                            }
-
-                            // Row number
-                            linkSatView.AppendLine("   CAST(");
-                            linkSatView.AppendLine("      ROW_NUMBER() OVER (PARTITION  BY ");
-
-                            // Business Key
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubBusinessKeyName = hubArray[1];
-                                linkSatView.AppendLine("         " + hubBusinessKeyName + ",");
-                            }
-
-                        // Add the degenerate attributes
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("         " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
-                                }
-                            }
-
-                            // Multi-active
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
-                            }
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("      ORDER BY ");
-
-                            // Business Key
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubBusinessKeyName = hubArray[1];
-                                linkSatView.AppendLine("         " + hubBusinessKeyName + ",");
-                            }
-
-                        // Add the degenerate attributes
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("         " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
-                                }
-                            }
-
-                            // Multi-active
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
-                            }
-
-                            linkSatView.AppendLine("         [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
-                            linkSatView.AppendLine("   AS ROW_NUMBER,");
-
-                            // Checksum
-                            linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
-                            linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +TeamConfigurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
-
-                            foreach (var hubArray in hubBusinessKeyList)
-                            {
-                                var hubBusinessKeyName = hubArray[1];
-                                linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubBusinessKeyName +")),'NA')+'|'+");
-                            }
-
-                            foreach (DataRow attribute in sourceStructure.Rows)
-                            {
-                                linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +attribute["SATELLITE_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
-                            }
-                            // End of checksum
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + TeamConfigurationSettings.RecordChecksumAttribute + "");
-
-                            // From statement
-                            linkSatView.AppendLine("FROM ");
-                            linkSatView.AppendLine("(");
-                            linkSatView.AppendLine("  SELECT DISTINCT");
-                            linkSatView.AppendLine("    [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
-                            linkSatView.AppendLine("    [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                            linkSatView.AppendLine("    [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                            linkSatView.AppendLine("    [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                            var sqlStatementForComponent = new StringBuilder();
-                            var sqlStatementForHubBusinessKeys = new StringBuilder();
-
-                            // Get the Hubs for each Link/STG combination - both need to be represented in the query
-                            var hubTables = GetHubLinkCombination(stagingAreaTableName, linkTableName);
-
-                            var hubQuerySelect = new StringBuilder();
-                            var hubQueryWhere = new StringBuilder();
-                            var hubQueryGroupBy = new StringBuilder();
-
-                            // Creating the business keys
-                            // Assign groups (counter) to allow for SAL
-                            int groupCounter = 1;
-                            foreach (DataRow hubDetailRow in hubTables.Rows)
-                            {
-                                sqlStatementForComponent.Clear();
-                                sqlStatementForHubBusinessKeys.Clear();
-
-                                var hubTableName = (string) hubDetailRow["HUB_NAME"];
-                                var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
-
-                                // Construct the join clauses, where clauses etc. for the Hubs
-                                var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, groupCounter.ToString());
-
-                                hubQuerySelect.AppendLine(queryClauses[0]);
-                                hubQueryWhere.AppendLine(queryClauses[1]);
-                                hubQueryGroupBy.AppendLine(queryClauses[2]);
-
-                                hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
-                                hubQueryWhere.Remove(hubQueryWhere.Length - 3, 3);
-                                hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
-
-                            groupCounter++;
-
-                            } // End of business key creation
-
-                            // Initiating select statement for subquery
-                            linkSatView.AppendLine("" + hubQuerySelect);
-                            linkSatView.Remove(linkSatView.Length - 4, 4);
-                            linkSatView.AppendLine();
-
-                        // Add the degenerate attributes
-                            if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                            {
-                                foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("    ,[" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] +
-                                                           "] AS [" + attribute["LINK_ATTRIBUTE_NAME"] + "],");
-                                }
-                            }
-
-                            // Add the multi-active attributes
-                            foreach (DataRow attribute in multiActiveAttributes.Rows)
-                            {
-                                linkSatView.AppendLine("    ,[" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
-                            }
-
-                            // Add all the attributes
-                            foreach (DataRow attribute in sourceStructure.Rows)
-                            {
-                                if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
-                                {
-                                    linkSatView.AppendLine("    " + attribute["SOURCE_ATTRIBUTE_NAME"] + " AS " + attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
-                                }
-                            }
-
-                            linkSatView.Remove(linkSatView.Length - 3, 3);
-                            linkSatView.AppendLine();
-                            linkSatView.AppendLine("  FROM " + TeamConfigurationSettings.SchemaName + "." + currentTableName);
-
-                            // Filter criteria
-                            if (string.IsNullOrEmpty(filterCriteria))
-                            {
-                            }
-                            else
-                            {
-                                linkSatView.AppendLine("  WHERE " + filterCriteria);
-                            }
-
-                            if (checkBoxDisableLsatZeroRecords.Checked == false)
-                            {
-                                // Start of zero record
-                                linkSatView.AppendLine("  UNION");
-
-                                linkSatView.AppendLine("  SELECT DISTINCT");
-                                linkSatView.AppendLine("    '1900-01-01' AS [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
-                                linkSatView.AppendLine("    'Data Warehouse' AS [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
-                                linkSatView.AppendLine("     0 AS [" + TeamConfigurationSettings.RowIdAttribute + "],");
-                                linkSatView.AppendLine("    'N/A' AS [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
-
-                                linkSatView.AppendLine("" + hubQuerySelect);
-                                linkSatView.Remove(linkSatView.Length - 2, 2);
-
-                            // Add the degenerate attributes
-                                if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
-                                {
-                                    foreach (DataRow attribute in degenerateLinkAttributes.Rows)
-                                    {
-                                        linkSatView.AppendLine(
-                                            "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" +
-                                            attribute["LINK_ATTRIBUTE_NAME"] + "],");
-                                    }
-                                }
-
-                                // Add the multi-active attribute
-                                foreach (DataRow attribute in multiActiveAttributes.Rows)
-                                {
-                                    linkSatView.AppendLine("    " + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + " AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
-                                }
-
-                                // Add the rest of the attributes as NULL values (nothing was known at this stage)
-                                foreach (DataRow attribute in sourceStructure.Rows)
-                                {
-                                    if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
-                                    {
-                                        linkSatView.AppendLine("    NULL AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] +"],");
-                                    }
-                                }
-
-                                linkSatView.Remove(linkSatView.Length - 3, 3);
-                                linkSatView.AppendLine();
-                                linkSatView.AppendLine("  FROM " + TeamConfigurationSettings.SchemaName + "." + currentTableName);
-                            // End of zero record
-                            }
-
-                            linkSatView.AppendLine(") sub");
-
-                            // End of source subuery
-
-
-                            SetTextLsat("Processing regular history Link Satellite entity view for " + targetTableName + "\r\n");
-
-                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql", false))
-                            {
-                                outfile.Write(linkSatView.ToString());
-                                outfile.Close();
-                            }
-
-                            if (checkBoxGenerateInDatabase.Checked)
-                            {
-                                int insertError = GenerateInDatabase(connHstg, linkSatView.ToString());
-                                errorCounter = errorCounter + insertError;
-                            }
-
-
-                            SetTextMain(linkSatView.ToString());
-                            SetTextMain("\n");
+        //private void GenerateLsatHistoryViews()
+        //{
+        //    int errorCounter = 0;
+
+        //    if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
+        //    {
+        //        for (int x = 0; x <= checkedListBoxLsatMetadata.CheckedItems.Count - 1; x++)
+        //        {
+        //            var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
+
+        //            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+        //            var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
+        //            var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+
+        //            var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
+
+        //            var sqlStatementForTablesToImport = new StringBuilder();
+        //            sqlStatementForTablesToImport.AppendLine("SELECT * FROM interface.INTERFACE_SOURCE_SATELLITE_XREF base");
+        //            sqlStatementForTablesToImport.AppendLine("WHERE SATELLITE_TYPE = 'Link Satellite' ");
+        //            sqlStatementForTablesToImport.AppendLine(" AND SATELLITE_NAME = '" + targetTableName + "'");
+        //            sqlStatementForTablesToImport.AppendLine(" AND NOT EXISTS (SELECT * FROM [interface].[INTERFACE_DRIVING_KEY] sub WHERE sub.SATELLITE_ID = base.SATELLITE_ID)");
+
+        //            var tables = GetDataTable(ref connOmd, sqlStatementForTablesToImport.ToString());
+
+        //                foreach (DataRow row in tables.Rows)
+        //                {
+        //                    var linkSatView = new StringBuilder();
+
+        //                    var stagingAreaTableId = (int) row["SOURCE_ID"];
+        //                    var stagingAreaTableName = (string) row["SOURCE_NAME"];
+        //                    var filterCriteria = (string) row["FILTER_CRITERIA"];
+        //                    var targetTableId = (int) row["SATELLITE_ID"];
+        //                    var linkTableName = (string) row["LINK_NAME"];
+
+        //                    var linkSk = linkTableName.Substring(4) + "_" + TeamConfigurationSettings.DwhKeyIdentifier;
+        //                    var currentTableName = (string) row["SOURCE_NAME"];
+        //                    currentTableName = TeamConfigurationSettings.PsaTablePrefixValue +currentTableName.Replace(TeamConfigurationSettings.StgTablePrefixValue, "");
+
+
+        //                    // Query to detect multi-active attributes
+        //                    var multiActiveAttributes = GetMultiActiveAttributes(targetTableId);
+
+        //                    // Retrieve the Source-To-Target mapping for Satellites
+        //                    var sourceStructure = GetStagingToSatelliteAttributeMapping(targetTableId, stagingAreaTableId);
+
+        //                    // Get the associated Hub tables and its target business key attributes for the Link
+        //                    var hubBusinessKeyList = GetHubTablesForLink(linkTableName);
+
+        //                    // Understand the degenerate fields, so these can be added later
+        //                    var degenerateLinkAttributes = GetDegenerateLinkAttributes(linkTableName);
+
+        //                    // **************************************************************************************		
+        //                    // Creating the source query
+        //                    // **************************************************************************************
+
+        //                    // Create View
+        //                    linkSatView.AppendLine("--");
+        //                    linkSatView.AppendLine("-- Link Satellite View definition - regular history for " +targetTableName);
+        //                    linkSatView.AppendLine("-- Generated at " + DateTime.Now);
+        //                    linkSatView.AppendLine("--");
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
+        //                    linkSatView.AppendLine("GO");
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +targetTableName + "]') AND type in (N'V'))");
+        //                    linkSatView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName +"]");
+        //                    linkSatView.AppendLine("go");
+        //                    linkSatView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName +"] AS  ");
+        //                    linkSatView.AppendLine("SELECT");
+
+
+        //                    if (!checkBoxDisableHash.Checked)
+        //                    {
+        //                        // Link SK - combined hash key
+        //                        linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
+
+        //                        foreach (var hubArray in hubBusinessKeyList)
+        //                        {
+        //                            linkSatView.AppendLine("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
+        //                        }
+
+        //                        // Add the degenerate attributes to be part of the key
+        //                        if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                        {
+        //                            foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                            {
+        //                                linkSatView.AppendLine(
+        //                                    "    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
+        //                                    (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+        //                            }
+        //                        }
+
+        //                        linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                        linkSatView.AppendLine();
+        //                        linkSatView.AppendLine("  "+VedwConfigurationSettings.hashingEndSnippet+" AS " + linkSk + ",");
+        //                    }
+        //                    else
+        //                    {
+        //                        //BK as DWH key
+        //                        foreach (var hubArray in hubBusinessKeyList)
+        //                        {
+        //                            linkSatView.Append("  ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubArray[1] + ")),'NA')+'|'+");
+        //                        }
+
+        //                        if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                        {
+        //                            foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                            {
+        //                                linkSatView.Append("    ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +
+        //                                                   (string) attribute["LINK_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+        //                            }
+        //                        }
+
+        //                        linkSatView.Remove(linkSatView.Length - 5, 5);
+        //                        linkSatView.Append("  AS " + linkSk + ",");
+        //                        linkSatView.AppendLine();
+        //                    }
+
+        //                    // Effective Datetime
+        //                    if (TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute == "True")
+        //                    {
+        //                        linkSatView.AppendLine("   " + TeamConfigurationSettings.LoadDateTimeAttribute + " AS " +TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + ",");
+        //                    }
+        //                    else
+        //                    {
+        //                        linkSatView.AppendLine("   " + TeamConfigurationSettings.LoadDateTimeAttribute + " AS " + TeamConfigurationSettings.LoadDateTimeAttribute + ",");
+        //                    }
+
+        //                    //Multi-Active attributes
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        var multiActiveAttributeFromName = (string) attribute["SATELLITE_ATTRIBUTE_NAME"];
+        //                        linkSatView.AppendLine("          [" + multiActiveAttributeFromName + "],");
+        //                    }
+
+        //                    // Expiry Datetime
+        //                    linkSatView.AppendLine("   COALESCE ( LEAD ( [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] ) OVER");
+        //                    linkSatView.AppendLine("   		     (PARTITION BY ");
+
+        //                    // Add the Business Kyes
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        linkSatView.AppendLine("              " + hubBusinessKeyName + ",");
+        //                    }
+
+        //                // Add the degenerate attributes
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("              " + (string) attribute["LINK_ATTRIBUTE_NAME"] +
+        //                                                   ",");
+        //                        }
+        //                    }
+
+        //                    // Add the multi-active attributes
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("              " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
+        //                    }
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("   		     ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]),");
+        //                    linkSatView.AppendLine("   CAST( '9999-12-31' AS DATETIME)) AS " + TeamConfigurationSettings.ExpiryDateTimeAttribute + ",");
+
+        //                    // Current record indicator
+        //                    linkSatView.AppendLine("   CASE");
+        //                    linkSatView.AppendLine("      WHEN ( RANK() OVER (PARTITION BY ");
+
+        //                    // Business Key
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        linkSatView.AppendLine("            " + hubBusinessKeyName + ",");
+        //                    }
+
+        //                // Add the degenerate attributes
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("            " + (string) attribute["LINK_ATTRIBUTE_NAME"] +
+        //                                                   ",");
+        //                        }
+        //                    }
+
+        //                    // Multi-Active
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
+        //                    }
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+
+        //                    linkSatView.AppendLine("          ORDER BY [" + TeamConfigurationSettings.LoadDateTimeAttribute + "] desc )) = 1");
+        //                    linkSatView.AppendLine("      THEN 'Y'");
+        //                    linkSatView.AppendLine("      ELSE 'N'");
+        //                    linkSatView.AppendLine("   END AS " + TeamConfigurationSettings.CurrentRowAttribute + ",");
+
+        //                    if (TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute == "True")
+        //                    {
+        //                        linkSatView.AppendLine("   [" + TeamConfigurationSettings.RecordSourceAttribute + "] AS [" + TeamConfigurationSettings.AlternativeRecordSourceAttribute + "],");
+        //                    }
+        //                    else
+        //                    {
+        //                        linkSatView.AppendLine("   [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                    }
+
+        //                    //Logical deletes
+        //                    if (checkBoxEvaluateSatDelete.Checked)
+        //                    {
+        //                        linkSatView.AppendLine("    CASE");
+        //                        linkSatView.AppendLine("      WHEN [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "] = 'Delete' THEN 'Y'");
+        //                        linkSatView.AppendLine("      ELSE 'N'");
+        //                        linkSatView.AppendLine("    END AS [" + TeamConfigurationSettings.LogicalDeleteAttribute + "],");
+        //                    }
+
+
+        //                    linkSatView.AppendLine("   -1 AS " + TeamConfigurationSettings.EtlProcessAttribute + ",");
+        //                    linkSatView.AppendLine("   -1 AS " + TeamConfigurationSettings.EtlProcessUpdateAttribute + ",");
+        //                    linkSatView.AppendLine("   [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                    linkSatView.AppendLine("   [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+
+        //                    // All the attibutes (except the multi-active ones)
+        //                    foreach (DataRow attribute in sourceStructure.Rows)
+        //                    {
+        //                        if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
+        //                        {
+        //                            linkSatView.Append("   " + attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
+        //                            linkSatView.AppendLine();
+        //                        }
+        //                    }
+
+        //                    // Row number
+        //                    linkSatView.AppendLine("   CAST(");
+        //                    linkSatView.AppendLine("      ROW_NUMBER() OVER (PARTITION  BY ");
+
+        //                    // Business Key
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        linkSatView.AppendLine("         " + hubBusinessKeyName + ",");
+        //                    }
+
+        //                // Add the degenerate attributes
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("         " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
+        //                        }
+        //                    }
+
+        //                    // Multi-active
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
+        //                    }
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("      ORDER BY ");
+
+        //                    // Business Key
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        linkSatView.AppendLine("         " + hubBusinessKeyName + ",");
+        //                    }
+
+        //                // Add the degenerate attributes
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("         " + (string) attribute["LINK_ATTRIBUTE_NAME"] + ",");
+        //                        }
+        //                    }
+
+        //                    // Multi-active
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("         " + (string)attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
+        //                    }
+
+        //                    linkSatView.AppendLine("         [" + TeamConfigurationSettings.LoadDateTimeAttribute + "]) AS INT)");
+        //                    linkSatView.AppendLine("   AS ROW_NUMBER,");
+
+        //                    // Checksum
+        //                    linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingStartSnippet);
+        //                    linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +TeamConfigurationSettings.ChangeDataCaptureAttribute + "])),'NA')+'|'+");
+
+        //                    foreach (var hubArray in hubBusinessKeyList)
+        //                    {
+        //                        var hubBusinessKeyName = hubArray[1];
+        //                        linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," + hubBusinessKeyName +")),'NA')+'|'+");
+        //                    }
+
+        //                    foreach (DataRow attribute in sourceStructure.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100)," +attribute["SATELLITE_ATTRIBUTE_NAME"] + ")),'NA')+'|'+");
+        //                    }
+        //                    // End of checksum
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("   "+VedwConfigurationSettings.hashingEndSnippet+" AS " + TeamConfigurationSettings.RecordChecksumAttribute + "");
+
+        //                    // From statement
+        //                    linkSatView.AppendLine("FROM ");
+        //                    linkSatView.AppendLine("(");
+        //                    linkSatView.AppendLine("  SELECT DISTINCT");
+        //                    linkSatView.AppendLine("    [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
+        //                    linkSatView.AppendLine("    [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                    linkSatView.AppendLine("    [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                    linkSatView.AppendLine("    [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+
+        //                    var sqlStatementForComponent = new StringBuilder();
+        //                    var sqlStatementForHubBusinessKeys = new StringBuilder();
+
+        //                    // Get the Hubs for each Link/STG combination - both need to be represented in the query
+        //                    var hubTables = GetHubLinkCombination(stagingAreaTableName, linkTableName);
+
+        //                    var hubQuerySelect = new StringBuilder();
+        //                    var hubQueryWhere = new StringBuilder();
+        //                    var hubQueryGroupBy = new StringBuilder();
+
+        //                    // Creating the business keys
+        //                    // Assign groups (counter) to allow for SAL
+        //                    int groupCounter = 1;
+        //                    foreach (DataRow hubDetailRow in hubTables.Rows)
+        //                    {
+        //                        sqlStatementForComponent.Clear();
+        //                        sqlStatementForHubBusinessKeys.Clear();
+
+        //                        var hubTableName = (string) hubDetailRow["HUB_NAME"];
+        //                        var businessKeyDefinition = (string) hubDetailRow["BUSINESS_KEY_DEFINITION"];
+
+        //                        // Construct the join clauses, where clauses etc. for the Hubs
+        //                        var queryClauses = GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, groupCounter.ToString());
+
+        //                        hubQuerySelect.AppendLine(queryClauses[0]);
+        //                        hubQueryWhere.AppendLine(queryClauses[1]);
+        //                        hubQueryGroupBy.AppendLine(queryClauses[2]);
+
+        //                        hubQuerySelect.Remove(hubQuerySelect.Length - 3, 3);
+        //                        hubQueryWhere.Remove(hubQueryWhere.Length - 3, 3);
+        //                        hubQueryGroupBy.Remove(hubQueryGroupBy.Length - 3, 3);
+
+        //                    groupCounter++;
+
+        //                    } // End of business key creation
+
+        //                    // Initiating select statement for subquery
+        //                    linkSatView.AppendLine("" + hubQuerySelect);
+        //                    linkSatView.Remove(linkSatView.Length - 4, 4);
+        //                    linkSatView.AppendLine();
+
+        //                // Add the degenerate attributes
+        //                    if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                    {
+        //                        foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("    ,[" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] +
+        //                                                   "] AS [" + attribute["LINK_ATTRIBUTE_NAME"] + "],");
+        //                        }
+        //                    }
+
+        //                    // Add the multi-active attributes
+        //                    foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                    {
+        //                        linkSatView.AppendLine("    ,[" + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
+        //                    }
+
+        //                    // Add all the attributes
+        //                    foreach (DataRow attribute in sourceStructure.Rows)
+        //                    {
+        //                        if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
+        //                        {
+        //                            linkSatView.AppendLine("    " + attribute["SOURCE_ATTRIBUTE_NAME"] + " AS " + attribute["SATELLITE_ATTRIBUTE_NAME"] + ",");
+        //                        }
+        //                    }
+
+        //                    linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                    linkSatView.AppendLine();
+        //                    linkSatView.AppendLine("  FROM " + TeamConfigurationSettings.SchemaName + "." + currentTableName);
+
+        //                    // Filter criteria
+        //                    if (string.IsNullOrEmpty(filterCriteria))
+        //                    {
+        //                    }
+        //                    else
+        //                    {
+        //                        linkSatView.AppendLine("  WHERE " + filterCriteria);
+        //                    }
+
+        //                    if (checkBoxDisableLsatZeroRecords.Checked == false)
+        //                    {
+        //                        // Start of zero record
+        //                        linkSatView.AppendLine("  UNION");
+
+        //                        linkSatView.AppendLine("  SELECT DISTINCT");
+        //                        linkSatView.AppendLine("    '1900-01-01' AS [" + TeamConfigurationSettings.LoadDateTimeAttribute + "],");
+        //                        linkSatView.AppendLine("    'Data Warehouse' AS [" + TeamConfigurationSettings.RecordSourceAttribute + "],");
+        //                        linkSatView.AppendLine("     0 AS [" + TeamConfigurationSettings.RowIdAttribute + "],");
+        //                        linkSatView.AppendLine("    'N/A' AS [" + TeamConfigurationSettings.ChangeDataCaptureAttribute + "],");
+
+        //                        linkSatView.AppendLine("" + hubQuerySelect);
+        //                        linkSatView.Remove(linkSatView.Length - 2, 2);
+
+        //                    // Add the degenerate attributes
+        //                        if (degenerateLinkAttributes != null && degenerateLinkAttributes.Rows.Count > 0)
+        //                        {
+        //                            foreach (DataRow attribute in degenerateLinkAttributes.Rows)
+        //                            {
+        //                                linkSatView.AppendLine(
+        //                                    "    [" + (string) attribute["SOURCE_ATTRIBUTE_NAME"] + "] AS [" +
+        //                                    attribute["LINK_ATTRIBUTE_NAME"] + "],");
+        //                            }
+        //                        }
+
+        //                        // Add the multi-active attribute
+        //                        foreach (DataRow attribute in multiActiveAttributes.Rows)
+        //                        {
+        //                            linkSatView.AppendLine("    " + (string)attribute["SOURCE_ATTRIBUTE_NAME"] + " AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] + "],");
+        //                        }
+
+        //                        // Add the rest of the attributes as NULL values (nothing was known at this stage)
+        //                        foreach (DataRow attribute in sourceStructure.Rows)
+        //                        {
+        //                            if (attribute["MULTI_ACTIVE_KEY_INDICATOR"].ToString() == "N")
+        //                            {
+        //                                linkSatView.AppendLine("    NULL AS [" + attribute["SATELLITE_ATTRIBUTE_NAME"] +"],");
+        //                            }
+        //                        }
+
+        //                        linkSatView.Remove(linkSatView.Length - 3, 3);
+        //                        linkSatView.AppendLine();
+        //                        linkSatView.AppendLine("  FROM " + TeamConfigurationSettings.SchemaName + "." + currentTableName);
+        //                    // End of zero record
+        //                    }
+
+        //                    linkSatView.AppendLine(") sub");
+
+        //                    // End of source subuery
+
+
+        //                    SetTextLsat("Processing regular history Link Satellite entity view for " + targetTableName + "\r\n");
+
+        //                    using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql", false))
+        //                    {
+        //                        outfile.Write(linkSatView.ToString());
+        //                        outfile.Close();
+        //                    }
+
+        //                    if (checkBoxGenerateInDatabase.Checked)
+        //                    {
+        //                        int insertError = GenerateInDatabase(connHstg, linkSatView.ToString());
+        //                        errorCounter = errorCounter + insertError;
+        //                    }
+
+
+        //                    SetTextMain(linkSatView.ToString());
+        //                    SetTextMain("\n");
 
                             
 
                         
-                        }
-                }
-            }
-            else
-            {
-                SetTextLsat("There was no metadata selected to create regular Link Satellite views. Please check the metadata schema - are there any Link Satellites selected?");
-            }
+        //                }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        SetTextLsat("There was no metadata selected to create regular Link Satellite views. Please check the metadata schema - are there any Link Satellites selected?");
+        //    }
 
-            SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextLsat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
-        }
+        //    SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
+        //    SetTextLsat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+        //}
 
         private DataTable GetStagingToSatelliteAttributeMapping(int targetTableId, int stagingAreaTableId)
         {
@@ -5242,10 +5270,10 @@ namespace Virtual_EDW
         {
             int errorCounter = 0;
 
-            if (checkBoxIfExistsStatement.Checked)
-            {
-                SetTextPsa("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
-            }
+            //if (checkBoxIfExistsStatement.Checked)
+            //{
+            //    SetTextPsa("The Drop If Exists checkbox has been checked, but this feature is not relevant for this specific operation and will be ignored. \n\r");
+            //}
 
             if (checkedListBoxPsaMetadata.CheckedItems.Count != 0)
             {
@@ -5433,15 +5461,12 @@ namespace Virtual_EDW
                         psaView.AppendLine("USE [" + TeamConfigurationSettings.StagingDatabaseName + "]");
                         psaView.AppendLine("GO");
 
-                        if (checkBoxIfExistsStatement.Checked)
-                        {
-                            psaView.AppendLine(
-                                "IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +
-                                targetTableName + "]') AND type in (N'V'))");
-                            psaView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" +
-                                               targetTableName + "];");
+                        //if (checkBoxIfExistsStatement.Checked)
+                        //{
+                            psaView.AppendLine("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +targetTableName + "]') AND type in (N'V'))");
+                            psaView.AppendLine("DROP VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" +targetTableName + "];");
                             psaView.AppendLine("GO");
-                        }
+                        //}
 
                         psaView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" +
                                            targetTableName + "] AS ");
@@ -5851,12 +5876,12 @@ namespace Virtual_EDW
                     stgInsertIntoStatement.AppendLine("GO");
                     stgInsertIntoStatement.AppendLine();
 
-                    if (checkBoxIfExistsStatement.Checked)
-                    {
-                        stgInsertIntoStatement.AppendLine("TRUNCATE TABLE [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + TeamConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
-                        stgInsertIntoStatement.AppendLine("GO");
-                        stgInsertIntoStatement.AppendLine();
-                    }
+                    //if (checkBoxIfExistsStatement.Checked)
+                    //{
+                    //    stgInsertIntoStatement.AppendLine("TRUNCATE TABLE [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + TeamConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
+                    //    stgInsertIntoStatement.AppendLine("GO");
+                    //    stgInsertIntoStatement.AppendLine();
+                    //}
 
                     stgInsertIntoStatement.AppendLine("INSERT INTO [" + TeamConfigurationSettings.StagingDatabaseName + "].[" +TeamConfigurationSettings.SchemaName + "].[" + targetTableName + "]");
                     stgInsertIntoStatement.AppendLine("   (");
@@ -5966,12 +5991,12 @@ namespace Virtual_EDW
                     stgView.AppendLine("USE [" + TeamConfigurationSettings.StagingDatabaseName + "]");
                     stgView.AppendLine("GO");
 
-                    if (checkBoxIfExistsStatement.Checked)
-                    {
-                        stgView.AppendLine("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +targetTableName + "]') AND type in (N'V'))");
-                        stgView.AppendLine("DROP VIEW ["+ VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "]");
-                        stgView.AppendLine("GO");
-                    }
+                    //if (checkBoxIfExistsStatement.Checked)
+                    //{
+                    //    stgView.AppendLine("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[" + VedwConfigurationSettings.VedwSchema + "].[" +targetTableName + "]') AND type in (N'V'))");
+                    //    stgView.AppendLine("DROP VIEW ["+ VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "]");
+                    //    stgView.AppendLine("GO");
+                    //}
 
                     stgView.AppendLine("CREATE VIEW [" + VedwConfigurationSettings.VedwSchema + "].[" + targetTableName + "] AS ");
 
