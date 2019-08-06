@@ -849,7 +849,7 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
-                    SetTextHub($"Processing Hub generation for {targetTableName}\r\n");
+                    SetTextHub($"Processing generation for {targetTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = 
@@ -908,11 +908,10 @@ namespace Virtual_EDW
 
                         try
                         {   //Output to file
-                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql"))
                             {
                                 outfile.Write(result);
                                 outfile.Close();
-                                SetTextHub($"... Associated SQL scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
                             }
                         }
                         catch (Exception ex)
@@ -952,14 +951,15 @@ namespace Virtual_EDW
             connOmd.Close();
             connOmd.Dispose();
 
-            SetTextHub($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
             SetTextHubOutputSyntax(richTextBoxHubOutput);
         }
 
         /// <summary>
-        ///   Create Satellite Views using Handlebars as templating
+        ///   Create Satellite code using Handlebars as templating
         /// </summary>
         private void GenerateSatFromPattern()
         {
@@ -973,15 +973,13 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxSatMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxSatMetadata.CheckedItems[x].ToString();
-                    SetTextSat(@"Processing Satellite generation for " + targetTableName + "\r\n");
+                    SetTextSat(@"Processing generation for " + targetTableName + "\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = @"SELECT 
-                                             [SOURCE_ID]
-                                            ,[SOURCE_SCHEMA_NAME]
+                                             [SOURCE_SCHEMA_NAME]
                                             ,[SOURCE_NAME]
                                             ,[SOURCE_BUSINESS_KEY_DEFINITION]
-                                            ,[TARGET_ID]
                                             ,[TARGET_SCHEMA_NAME]
                                             ,[TARGET_NAME]
                                             ,[TARGET_BUSINESS_KEY_DEFINITION]
@@ -1013,10 +1011,10 @@ namespace Virtual_EDW
                         // Create the column-to-column mapping
                         var columnMetadataQuery = @"SELECT 
                                                       [SOURCE_ATTRIBUTE_NAME]
-                                                     ,[SATELLITE_ATTRIBUTE_NAME]
+                                                     ,[TARGET_ATTRIBUTE_NAME]
                                                      ,[MULTI_ACTIVE_KEY_INDICATOR]
                                                    FROM [interface].[INTERFACE_SOURCE_SATELLITE_ATTRIBUTE_XREF]
-                                                   WHERE SATELLITE_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='"+(string)row["SOURCE_NAME"]+"'";
+                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='"+(string)row["SOURCE_NAME"]+"'";
 
                         var columnMetadataDataTable = GetDataTable(ref connOmd, columnMetadataQuery);
 
@@ -1025,7 +1023,7 @@ namespace Virtual_EDW
                         {
                             ColumnMapping columnMapping = new ColumnMapping();
                             columnMapping.sourceColumn = (string) column["SOURCE_ATTRIBUTE_NAME"];
-                            columnMapping.targetColumn = (string) column["SATELLITE_ATTRIBUTE_NAME"];
+                            columnMapping.targetColumn = (string) column["TARGET_ATTRIBUTE_NAME"];
                             columnMappingList.Add(columnMapping);
                         }
 
@@ -1058,17 +1056,16 @@ namespace Virtual_EDW
 
                         try
                         {   //Output to file
-                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql"))
                             {
                                 outfile.Write(result);
                                 outfile.Close();
-                                SetTextSatOutput($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
                             }
                         }
                         catch (Exception ex)
                         {
                             errorCounter++;
-                            SetTextSatOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
+                            SetTextSat("There was an issue in saving the SQL script to disk. The message is: " + ex);
                         }
 
                         try
@@ -1084,13 +1081,13 @@ namespace Virtual_EDW
                         catch (Exception ex)
                         {
                             errorCounter++;
-                            SetTextSatOutput("There was an issue executing the code against the database. The message is: " + ex);
+                            SetTextSat("There was an issue executing the code against the database. The message is: " + ex);
                         }
                     }
                     catch (Exception ex)
                     {
                         errorCounter++;
-                        SetTextSatOutput("The template could not be compiled, the error message is " + ex);
+                        SetTextSat("The template could not be compiled, the error message is " + ex);
                     }
                 }
             }
@@ -1102,8 +1099,8 @@ namespace Virtual_EDW
             connOmd.Close();
             connOmd.Dispose();
 
-            SetTextSat($"\r\n{errorCounter} errors have been found.\r\n");
-            SetTextSat($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            SetTextMain($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
             SetTextSatOutputSyntax(richTextBoxSatOutput);
@@ -2384,7 +2381,7 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxLinkMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
-                    SetTextLink($"Processing Link generation for {targetTableName}\r\n");
+                    SetTextLink($"Processing generation for {targetTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery =
@@ -2395,7 +2392,7 @@ namespace Virtual_EDW
                                   ,[TARGET_BUSINESS_KEY_DEFINITION]
                                   ,[FILTER_CRITERIA]
                                   ,[SURROGATE_KEY]
-                                FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
+                                FROM [interface].[INTERFACE_SOURCE_LINK_XREF]
                                 WHERE [TARGET_NAME] = '" + targetTableName + "'";
 
                     var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
@@ -2443,17 +2440,16 @@ namespace Virtual_EDW
 
                         try
                         {   //Output to file
-                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql"))
                             {
                                 outfile.Write(result);
                                 outfile.Close();
-                                SetTextLink($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
                             }
                         }
                         catch (Exception ex)
                         {
                             errorCounter++;
-                            SetTextLinkOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
+                            SetTextLink("There was an issue in saving the SQL script to disk. The message is: " + ex);
                         }
 
                         try
@@ -2469,13 +2465,13 @@ namespace Virtual_EDW
                         catch (Exception ex)
                         {
                             errorCounter++;
-                            SetTextLinkOutput("There was an issue executing the code against the database. The message is: " + ex);
+                            SetTextLink("There was an issue executing the code against the database. The message is: " + ex);
                         }
                     }
                     catch (Exception ex)
                     {
                         errorCounter++;
-                        SetTextLinkOutput("The template could not be compiled, the error message is " + ex);
+                        SetTextLink("The template could not be compiled, the error message is " + ex);
                     }
                 }
             }
@@ -2487,7 +2483,8 @@ namespace Virtual_EDW
             connOmd.Close();
             connOmd.Dispose();
 
-            SetTextLink($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
             SetTextLnkOutputSyntax(richTextBoxLinkOutput);
@@ -5156,19 +5153,23 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxPsaMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxPsaMetadata.CheckedItems[x].ToString();
-                    SetTextPsa($"Processing Persistent Staging Area generation for {targetTableName}\r\n");
+                    SetTextPsa(@"Processing generation for " + targetTableName + "\r\n");
 
                     // Retrieve metadata and store in a data table object
-                    var metadataQuery =
-                               @"SELECT 
-                                   [SOURCE_NAME]
-                                  ,[SOURCE_BUSINESS_KEY_DEFINITION]
-                                  ,[TARGET_NAME]
-                                  ,[TARGET_BUSINESS_KEY_DEFINITION]
-                                  ,[FILTER_CRITERIA]
-                                  ,[SURROGATE_KEY]
-                                FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
-                                WHERE [TARGET_NAME] = '" + targetTableName + "'";
+                    var metadataQuery = @"SELECT 
+                                             [SOURCE_SCHEMA_NAME]
+                                            ,[SOURCE_NAME]
+                                            ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                                            ,[TARGET_SCHEMA_NAME]
+                                            ,[TARGET_NAME]
+                                            ,[TARGET_BUSINESS_KEY_DEFINITION]
+                                            ,[TARGET_TYPE]
+                                            ,[SURROGATE_KEY]
+                                            ,[FILTER_CRITERIA]
+                                            ,[LOAD_VECTOR]
+                                          FROM interface.INTERFACE_SOURCE_PERSISTENT_STAGING_XREF 
+                                          WHERE TARGET_TYPE = 'PersistentStagingArea' 
+                                          AND TARGET_NAME = '" + targetTableName + "'";
 
                     var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
 
@@ -5178,23 +5179,42 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+                        List<BusinessKeyComponentMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
                             new BusinessKey
                             {
-                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                                businessKeyComponentMapping = businessKeyComponentList
                             };
+
+                        // Create the column-to-column mapping
+                        var columnMetadataQuery = @"SELECT 
+                                                      [SOURCE_ATTRIBUTE_NAME]
+                                                     ,[TARGET_ATTRIBUTE_NAME]
+                                                   FROM [interface].[INTERFACE_SOURCE_PERSISTENT_STAGING_ATTRIBUTE_XREF]
+                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" + (string)row["SOURCE_NAME"] + "'";
+
+                        var columnMetadataDataTable = GetDataTable(ref connOmd, columnMetadataQuery);
+
+                        List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
+                        foreach (DataRow column in columnMetadataDataTable.Rows)
+                        {
+                            ColumnMapping columnMapping = new ColumnMapping();
+                            columnMapping.sourceColumn = (string)column["SOURCE_ATTRIBUTE_NAME"];
+                            columnMapping.targetColumn = (string)column["TARGET_ATTRIBUTE_NAME"];
+                            columnMappingList.Add(columnMapping);
+                        }
 
                         // Add the created Business Key to the source-to-target mapping
                         var sourceToTargetMapping = new SourceToTargetMapping();
 
                         sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
                         sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+                        //sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
                         sourceToTargetMapping.businessKey = businessKey;
                         sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+                        sourceToTargetMapping.columnMapping = columnMappingList;
 
                         // Add the source-to-target mapping to the mapping list
                         sourceToTargetMappingList.Add(sourceToTargetMapping);
@@ -5215,17 +5235,16 @@ namespace Virtual_EDW
 
                         try
                         {   //Output to file
-                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql"))
                             {
                                 outfile.Write(result);
                                 outfile.Close();
-                                SetTextPsa($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
                             }
                         }
                         catch (Exception ex)
                         {
                             errorCounter++;
-                            SetTextPsaOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
+                            SetTextPsa("There was an issue in saving the SQL script to disk. The message is: " + ex);
                         }
 
                         try
@@ -5241,13 +5260,13 @@ namespace Virtual_EDW
                         catch (Exception ex)
                         {
                             errorCounter++;
-                            SetTextPsaOutput("There was an issue executing the code against the database. The message is: " + ex);
+                            SetTextPsa("There was an issue executing the code against the database. The message is: " + ex);
                         }
                     }
                     catch (Exception ex)
                     {
                         errorCounter++;
-                        SetTextPsaOutput("The template could not be compiled, the error message is " + ex);
+                        SetTextPsa("The template could not be compiled, the error message is " + ex);
                     }
                 }
             }
@@ -5259,7 +5278,9 @@ namespace Virtual_EDW
             connOmd.Close();
             connOmd.Dispose();
 
-            SetTextPsa($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+
 
             // Call a delegate to handle multi-threading for syntax highlighting
             SetTextPsaOutputSyntax(richTextBoxPsaOutput);
@@ -5730,19 +5751,23 @@ namespace Virtual_EDW
                 for (int x = 0; x <= checkedListBoxStgMetadata.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = checkedListBoxStgMetadata.CheckedItems[x].ToString();
-                    SetTextStg($"Processing Staging Area generation for {targetTableName}\r\n");
+                    SetTextStg(@"Processing generation for " + targetTableName + "\r\n");
 
                     // Retrieve metadata and store in a data table object
-                    var metadataQuery =
-                               @"SELECT 
-                                   [SOURCE_NAME]
-                                  ,[SOURCE_BUSINESS_KEY_DEFINITION]
-                                  ,[TARGET_NAME]
-                                  ,[TARGET_BUSINESS_KEY_DEFINITION]
-                                  ,[FILTER_CRITERIA]
-                                  ,[SURROGATE_KEY]
-                                FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
-                                WHERE [TARGET_NAME] = '" + targetTableName + "'";
+                    var metadataQuery = @"SELECT 
+                                             [SOURCE_SCHEMA_NAME]
+                                            ,[SOURCE_NAME]
+                                            ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                                            ,[TARGET_SCHEMA_NAME]
+                                            ,[TARGET_NAME]
+                                            ,[TARGET_BUSINESS_KEY_DEFINITION]
+                                            ,[TARGET_TYPE]
+                                            ,[SURROGATE_KEY]
+                                            ,[FILTER_CRITERIA]
+                                            ,[LOAD_VECTOR]
+                                          FROM interface.INTERFACE_SOURCE_STAGING_XREF 
+                                          WHERE TARGET_TYPE = 'StagingArea' 
+                                          AND TARGET_NAME = '" + targetTableName + "'";
 
                     var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
 
@@ -5752,23 +5777,42 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+                        List<BusinessKeyComponentMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
                             new BusinessKey
                             {
-                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                                businessKeyComponentMapping = businessKeyComponentList
                             };
+
+                        // Create the column-to-column mapping
+                        var columnMetadataQuery = @"SELECT 
+                                                      [SOURCE_ATTRIBUTE_NAME]
+                                                     ,[TARGET_ATTRIBUTE_NAME]
+                                                   FROM [interface].[INTERFACE_SOURCE_STAGING_ATTRIBUTE_XREF]
+                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" + (string)row["SOURCE_NAME"] + "'";
+
+                        var columnMetadataDataTable = GetDataTable(ref connOmd, columnMetadataQuery);
+
+                        List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
+                        foreach (DataRow column in columnMetadataDataTable.Rows)
+                        {
+                            ColumnMapping columnMapping = new ColumnMapping();
+                            columnMapping.sourceColumn = (string)column["SOURCE_ATTRIBUTE_NAME"];
+                            columnMapping.targetColumn = (string)column["TARGET_ATTRIBUTE_NAME"];
+                            columnMappingList.Add(columnMapping);
+                        }
 
                         // Add the created Business Key to the source-to-target mapping
                         var sourceToTargetMapping = new SourceToTargetMapping();
 
                         sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
                         sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+                        //sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
                         sourceToTargetMapping.businessKey = businessKey;
                         sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+                        sourceToTargetMapping.columnMapping = columnMappingList;
 
                         // Add the source-to-target mapping to the mapping list
                         sourceToTargetMappingList.Add(sourceToTargetMapping);
@@ -5789,17 +5833,16 @@ namespace Virtual_EDW
 
                         try
                         {   //Output to file
-                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\VIEW_" + targetTableName + ".sql"))
+                            using (var outfile = new StreamWriter(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql"))
                             {
                                 outfile.Write(result);
                                 outfile.Close();
-                                SetTextStg($"SQL Scripts have been successfully saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
                             }
                         }
                         catch (Exception ex)
                         {
                             errorCounter++;
-                            SetTextStgOutput("There was an issue in saving the SQL script to disk. The message is: " + ex);
+                            SetTextStg("There was an issue in saving the SQL script to disk. The message is: " + ex);
                         }
 
                         try
@@ -5815,13 +5858,13 @@ namespace Virtual_EDW
                         catch (Exception ex)
                         {
                             errorCounter++;
-                            SetTextStgOutput("There was an issue executing the code against the database. The message is: " + ex);
+                            SetTextStg("There was an issue executing the code against the database. The message is: " + ex);
                         }
                     }
                     catch (Exception ex)
                     {
                         errorCounter++;
-                        SetTextStgOutput("The template could not be compiled, the error message is " + ex);
+                        SetTextStg("The template could not be compiled, the error message is " + ex);
                     }
                 }
             }
@@ -5833,7 +5876,8 @@ namespace Virtual_EDW
             connOmd.Close();
             connOmd.Dispose();
 
-            SetTextStg($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"\r\n{errorCounter} errors have been found.\r\n");
+            SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
             SetTextStgOutputSyntax(richTextBoxStgOutput);
