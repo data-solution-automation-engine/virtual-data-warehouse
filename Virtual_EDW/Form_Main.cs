@@ -871,7 +871,7 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"],(string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+                        List<ColumnMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"],(string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
@@ -999,7 +999,7 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
+                        List<ColumnMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
@@ -2384,16 +2384,16 @@ namespace Virtual_EDW
                     SetTextLink($"Processing generation for {targetTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
-                    var metadataQuery =
-                               @"SELECT 
-                                   [SOURCE_NAME]
-                                  ,[SOURCE_BUSINESS_KEY_DEFINITION]
-                                  ,[TARGET_NAME]
-                                  ,[TARGET_BUSINESS_KEY_DEFINITION]
-                                  ,[FILTER_CRITERIA]
-                                  ,[SURROGATE_KEY]
-                                FROM [interface].[INTERFACE_SOURCE_LINK_XREF]
-                                WHERE [TARGET_NAME] = '" + targetTableName + "'";
+                    var metadataQuery = @"
+                    SELECT 
+                       [SOURCE_NAME]
+                      ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                      ,[TARGET_NAME]
+                      ,[TARGET_BUSINESS_KEY_DEFINITION]
+                      ,[FILTER_CRITERIA]
+                      ,[SURROGATE_KEY]
+                    FROM [interface].[INTERFACE_SOURCE_LINK_XREF]
+                    WHERE [TARGET_NAME] = '" + targetTableName + "'";
 
                     var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
 
@@ -2403,13 +2403,14 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+                        List<ColumnMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
                             new BusinessKey
                             {
-                                businessKeyComponentMapping = targetBusinessKeyComponentList
+                                businessKeyComponentMapping = targetBusinessKeyComponentList,
+                                surrogateKey = (string)row["SURROGATE_KEY"]
                             };
 
                         // Add the created Business Key to the source-to-target mapping
@@ -3524,7 +3525,7 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+                        List<ColumnMapping> targetBusinessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
@@ -5179,7 +5180,7 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
+                        List<ColumnMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =
@@ -5777,7 +5778,7 @@ namespace Virtual_EDW
                     foreach (DataRow row in metadataDataTable.Rows)
                     {
                         // Creating the Business Key Component Mapping list (from the input array)
-                        List<BusinessKeyComponentMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
+                        List<ColumnMapping> businessKeyComponentList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "");
 
                         // Creating the Business Key definition, using the available components (see above)
                         BusinessKey businessKey =

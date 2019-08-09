@@ -1,5 +1,5 @@
 --
--- Hub View definition for {{mainTable}}
+-- Link View definition for {{mainTable}}
 -- Generated at {{generationDateTime}}
 --
 
@@ -11,24 +11,35 @@ DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]
 GO
 
 CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}] AS
-SELECT hub.*
-FROM (
+SELECT link.*
+FROM 
+(   
 {{#each individualSourceToTargetMapping}}{{#if @first}}
 SELECT
+    {{!-- 
+      Create the Link Surrogate Key using the combined Business Keys
+    --}}
     HASHBYTES('MD5',
     {{#each businessKey.businessKeyComponentMapping}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
     {{/each}}
     ) AS {{targetTableHashKey}},
+    {{!-- 
+      List out the ETL Framework attributes
+    --}}
     -1 AS {{../metadataConfiguration.etlProcessAttribute}},
     {{../metadataConfiguration.loadDateTimeAttribute}},
     {{../metadataConfiguration.recordSourceAttribute}},
+    {{!-- 
+      List out the Hub Business Keys belonging to the Link 
+    --}}
     {{#each businessKey.businessKeyComponentMapping}}
     {{targetComponentName}},
     {{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey.businessKeyComponentMapping}}{{targetComponentName}}{{#unless @last}},{{/unless}}{{/each}} ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}) AS ROW_NR
-FROM {{/if}}{{/each}}
+FROM 
 (
+{{/if}}{{/each}}
     {{#each individualSourceToTargetMapping }}
     SELECT
     {{#each businessKey.businessKeyComponentMapping}}
@@ -47,7 +58,7 @@ FROM {{/if}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}
-) HUB_selection
+) LINK_selection
 ) hub
 WHERE ROW_NR = 1
 UNION
@@ -57,14 +68,3 @@ SELECT 0x00000000000000000000000000000000,
 'Data Warehouse',
 'Unknown',
 1 AS ROW_NR
-
-
-
-
-
-
-
-
-
-
-

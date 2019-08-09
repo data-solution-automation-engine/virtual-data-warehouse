@@ -170,21 +170,25 @@ namespace Virtual_EDW
     }
 
     /// <summary>
-    /// A Business Key, which consists of one or more components.
+    /// A Business Key, which consists of one or more components (column mappings) and has its own surrogate key.
     /// </summary>
     class BusinessKey
     {
-        public List<BusinessKeyComponentMapping> businessKeyComponentMapping { get; set; }
+        public List<ColumnMapping> businessKeyComponentMapping { get; set; }
+        public string surrogateKey { get; set; }
     }
 
-    /// <summary>
-    /// The mapping between a source and target component
-    /// </summary>
-    class BusinessKeyComponentMapping
-    {
-        public string sourceComponentName { get; set; } 
-        public string targetComponentName { get; set; }
-    }
+
+    ///// <summary>
+    ///// The mapping between a source and target component
+    ///// </summary>
+    //class BusinessKeyComponentMapping
+    //{
+    //    public string sourceComponentName { get; set; } 
+    //    public string targetComponentName { get; set; }
+    //}
+
+
 
     /// <summary>
     /// The parameters that have been inherited from TEAM or are set in VEDW, passed as properties of the metadata.

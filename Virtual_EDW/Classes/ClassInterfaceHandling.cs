@@ -7,9 +7,9 @@ namespace Virtual_Data_Warehouse.Classes
 {
     class InterfaceHandling
     {
-        public static List<BusinessKeyComponentMapping> BusinessKeyComponentMappingList (string sourceBusinessKeyDefinition, string targetBusinessKeyDefinition)
+        public static List<ColumnMapping> BusinessKeyComponentMappingList (string sourceBusinessKeyDefinition, string targetBusinessKeyDefinition)
         {
-            List<BusinessKeyComponentMapping> returnList = new List<BusinessKeyComponentMapping>();
+            List<ColumnMapping> returnList = new List<ColumnMapping>();
 
             // Evaluate source key components
             List<string> sourceBusinessKeyComponentList = new List<string>();
@@ -38,19 +38,28 @@ namespace Virtual_Data_Warehouse.Classes
             targetBusinessKeyComponentList = targetBusinessKeyComponentList.Select(t => t.Trim()).ToList();
 
             int counter = 0;
-            foreach (string keyPart in targetBusinessKeyComponentList)
-            {
-                BusinessKeyComponentMapping keyComponent = new BusinessKeyComponentMapping();
 
-                keyComponent.sourceComponentName = sourceBusinessKeyComponentList[counter];
-                keyComponent.targetComponentName = keyPart;
+            foreach (string keyPart in sourceBusinessKeyComponentList)
+            {
+                ColumnMapping keyComponent = new ColumnMapping();
+ 
+                keyComponent.sourceColumn = keyPart;
+
+                var indexExists = targetBusinessKeyComponentList.ElementAtOrDefault(counter) != null;
+                if (indexExists)
+                {
+                    keyComponent.targetColumn = targetBusinessKeyComponentList[counter];
+                }
+                else
+                {
+                    keyComponent.targetColumn = "";
+                }
+
                 returnList.Add(keyComponent);
                 counter++;
             }
 
             return returnList;
         }
-
-
     }
 }
