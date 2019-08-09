@@ -155,18 +155,9 @@ namespace Virtual_EDW
         public string sourceTable { get; set; }
         public string targetTable { get; set; }
         public string targetTableHashKey { get; set; }
-        public BusinessKey businessKey { get; set; }
+        public List<BusinessKey> businessKey { get; set; }
         public string filterCriterion { get; set; }
         public List<ColumnMapping> columnMapping { get; set; }
-    }
-
-    /// <summary>
-    /// The individual column-to-column mapping
-    /// </summary>
-    class ColumnMapping
-    {
-        public string sourceColumn { get; set; }
-        public string targetColumn { get; set; }
     }
 
     /// <summary>
@@ -178,15 +169,14 @@ namespace Virtual_EDW
         public string surrogateKey { get; set; }
     }
 
-
-    ///// <summary>
-    ///// The mapping between a source and target component
-    ///// </summary>
-    //class BusinessKeyComponentMapping
-    //{
-    //    public string sourceComponentName { get; set; } 
-    //    public string targetComponentName { get; set; }
-    //}
+    /// <summary>
+    /// The individual column-to-column mapping
+    /// </summary>
+    class ColumnMapping
+    {
+        public string sourceColumn { get; set; }
+        public string targetColumn { get; set; }
+    }
 
 
 
