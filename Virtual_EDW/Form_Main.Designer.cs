@@ -197,6 +197,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
+            this.checkBoxGenerateJsonSchema = new System.Windows.Forms.CheckBox();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.tabControlStg.SuspendLayout();
@@ -2029,10 +2030,11 @@
             // SQLGenerationGroupBox
             // 
             this.SQLGenerationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateJsonSchema);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateInDatabase);
             this.SQLGenerationGroupBox.Location = new System.Drawing.Point(16, 677);
             this.SQLGenerationGroupBox.Name = "SQLGenerationGroupBox";
-            this.SQLGenerationGroupBox.Size = new System.Drawing.Size(191, 106);
+            this.SQLGenerationGroupBox.Size = new System.Drawing.Size(200, 106);
             this.SQLGenerationGroupBox.TabIndex = 14;
             this.SQLGenerationGroupBox.TabStop = false;
             this.SQLGenerationGroupBox.Text = "SQL Generation Options";
@@ -2060,9 +2062,9 @@
             // 
             this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox9.Controls.Add(this.richTextBoxInformationMain);
-            this.groupBox9.Location = new System.Drawing.Point(213, 677);
+            this.groupBox9.Location = new System.Drawing.Point(222, 677);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(1018, 106);
+            this.groupBox9.Size = new System.Drawing.Size(1009, 106);
             this.groupBox9.TabIndex = 12;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Information";
@@ -2074,9 +2076,19 @@
             this.richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 17);
             this.richTextBoxInformationMain.Name = "richTextBoxInformationMain";
-            this.richTextBoxInformationMain.Size = new System.Drawing.Size(1006, 82);
+            this.richTextBoxInformationMain.Size = new System.Drawing.Size(997, 82);
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
+            // 
+            // checkBoxGenerateJsonSchema
+            // 
+            this.checkBoxGenerateJsonSchema.AutoSize = true;
+            this.checkBoxGenerateJsonSchema.Location = new System.Drawing.Point(6, 43);
+            this.checkBoxGenerateJsonSchema.Name = "checkBoxGenerateJsonSchema";
+            this.checkBoxGenerateJsonSchema.Size = new System.Drawing.Size(188, 17);
+            this.checkBoxGenerateJsonSchema.TabIndex = 8;
+            this.checkBoxGenerateJsonSchema.Text = "Generate JSON metadata schema";
+            this.checkBoxGenerateJsonSchema.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -2332,6 +2344,7 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.ComboBox comboBoxLsatPattern;
         private System.Windows.Forms.RichTextBox richTextBoxLsatPattern;
+        private System.Windows.Forms.CheckBox checkBoxGenerateJsonSchema;
     }
 }
 

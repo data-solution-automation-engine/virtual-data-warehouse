@@ -2468,14 +2468,17 @@ namespace Virtual_EDW
                     listing.metadataConfiguration = new MetadataConfiguration();
                     listing.mainTable = targetTableName;
 
-                    try
+                    if (checkBoxGenerateJsonSchema.Checked)
                     {
-                        var json = Newtonsoft.Json.JsonConvert.SerializeObject(listing, Formatting.Indented);
-                        SetTextLinkOutput(json);
-                    }
-                    catch
-                    {
-
+                        try
+                        {
+                            var json = JsonConvert.SerializeObject(listing, Formatting.Indented);
+                            SetTextLinkOutput(json+"\r\n\r\n");
+                        }
+                        catch (Exception ex)
+                        {
+                            SetTextMain("An error was encountered while generating the JSON metadata. The error message is: "+ex);
+                        }
                     }
 
                     // Return the result to the user
