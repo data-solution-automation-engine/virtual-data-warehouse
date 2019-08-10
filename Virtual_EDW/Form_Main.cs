@@ -2410,7 +2410,7 @@ namespace Virtual_EDW
                         BusinessKey businessKey =
                             new BusinessKey
                             {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], ""),
+                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]),
                                 surrogateKey = (string)row["SURROGATE_KEY"]
                             };
 
@@ -2443,7 +2443,7 @@ namespace Virtual_EDW
 
                             hubBusinessKey.businessKeyComponentMapping =
                                 InterfaceHandling.BusinessKeyComponentMappingList(
-                                    (string)hubRow["HUB_SOURCE_BUSINESS_KEY_DEFINITION"], (string)hubRow["HUB_SOURCE_BUSINESS_KEY_DEFINITION"]);
+                                    (string)hubRow["HUB_SOURCE_BUSINESS_KEY_DEFINITION"], (string)hubRow["HUB_TARGET_BUSINESS_KEY_DEFINITION"]);
                             hubBusinessKey.surrogateKey = (string)hubRow["HUB_SURROGATE_KEY"];
 
                             businessKeyList.Add(hubBusinessKey); // Adding the Link Business Key
