@@ -155,6 +155,7 @@ namespace Virtual_EDW
     {
         public string sourceTable { get; set; }
         public string targetTable { get; set; }
+        public string lookupTable { get; set; }
         public string targetTableHashKey { get; set; }
         public List<BusinessKey> businessKey { get; set; }
         public string filterCriterion { get; set; }
@@ -186,11 +187,17 @@ namespace Virtual_EDW
     /// </summary>
     class MetadataConfiguration
     {
-        public string psadatabaseName { get; } = FormBase.TeamConfigurationSettings.PsaDatabaseName;
-        public string psaSchemaName { get;} = FormBase.TeamConfigurationSettings.SchemaName;
+        public string sourceDatabaseName { get; } = FormBase.TeamConfigurationSettings.SourceDatabaseName;
+        public string staingAreaDatabaseName { get; } = FormBase.TeamConfigurationSettings.StagingDatabaseName;
+        public string persistentStagingDatabaseName { get; } = FormBase.TeamConfigurationSettings.PsaDatabaseName;
+        public string persistentStagingSchemaName { get;} = FormBase.TeamConfigurationSettings.SchemaName;
+        public string integrationDatabaseName { get; } = FormBase.TeamConfigurationSettings.IntegrationDatabaseName;
+        public string presentationDatabaseName { get; } = FormBase.TeamConfigurationSettings.PresentationDatabaseName;
         public string vedwSchemaName { get; } = FormBase.VedwConfigurationSettings.VedwSchema;
+        public string changeDataCaptureAttribute { get; set; } = FormBase.TeamConfigurationSettings.ChangeDataCaptureAttribute;
         public string recordSourceAttribute { get; } = FormBase.TeamConfigurationSettings.RecordSourceAttribute;
         public string loadDateTimeAttribute { get; } = FormBase.TeamConfigurationSettings.LoadDateTimeAttribute;
+        public string eventDateTimeAttribute { get; set; } = FormBase.TeamConfigurationSettings.EventDateTimeAttribute;
         public string etlProcessAttribute { get; } = FormBase.TeamConfigurationSettings.EtlProcessAttribute;
         public string sourceRowId { get; } = FormBase.TeamConfigurationSettings.RowIdAttribute;
     }

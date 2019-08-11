@@ -5,7 +5,7 @@
 -- Generated at {{../generationDateTime}}
 --
 
-USE [{{../metadataConfiguration.psaDatabaseName}}]
+USE [{{../metadataConfiguration.staingAreaDatabaseName}}]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]') AND type in (N'V'))
@@ -13,12 +13,64 @@ DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
 GO
 
 CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
-AS
+WITH STG_CTE AS
+(
 SELECT
-  {{#each columnMapping}}
-  {{sourceColumn}} AS {{targetColumn}}{{#unless @last}},{{/unless}}
-  {{/each}}
-FROM {{sourceTable}}
-WHERE 1=1
-    {{#if filterCriterion}} AND {{filterCriterion}}{{/if}}
+   {{#each columnMapping}}
+   [{{sourceColumn}}] AS [{{targetColumn}}],
+   {{/each}}
+   HASHBYTES('MD5',
+   {{#each columnMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceColumn}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
+   {{/each}}
+   ) AS [HASH_FULL_RECORD]
+FROM [{{../metadataConfiguration.sourceDatabaseName}}].[dbo].[{{sourceTable}}]
+),
+PSA_CTE AS
+(
+SELECT
+   A.[HASH_FULL_RECORD] AS [HASH_FULL_RECORD], 
+   {{#each columnMapping}}
+   A.[{{sourceColumn}}] AS [{{targetColumn}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{lookupTable}}] A
+JOIN
+   (
+   SELECT {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+      [{{sourceColumn}}], {{/each}} {{/each}}
+      MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
+   FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{lookupTable}}]
+   GROUP BY {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+      [{{sourceColumn}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
+   ) B ON {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+   A.[{{sourceColumn}}] = B.[{{sourceColumn}}] AND {{/each}} {{/each}}
+   A.{{../metadataConfiguration.loadDateTimeAttribute}} = B.MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
+   WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'Delete'
+)
+SELECT
+   {{#each columnMapping}}
+   CASE 
+     WHEN STG_CTE.{{#each ../businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn}}]{{/if}}{{/each}}{{/each}} IS NULL 
+     THEN PSA_CTE.[{{sourceColumn}}]
+     ELSE STG_CTE.[{{sourceColumn}}] 
+   END AS [{{sourceColumn}}],{{/each}}
+   'PROFILER' AS {{../metadataConfiguration.recordSourceAttribute}},
+   ROW_NUMBER() OVER
+      (ORDER BY
+         {{#each businessKey}}{{#each businessKeyComponentMapping}}CASE WHEN STG_CTE.[{{sourceColumn}}] IS NULL THEN PSA_CTE.[{{sourceColumn}}] ELSE STG_CTE.[{{sourceColumn}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+      ) AS {{../metadataConfiguration.sourceRowId}},
+   GETDATE() {{../metadataConfiguration.eventDateTimeAttribute}}
+FROM STG_CTE
+FULL OUTER JOIN PSA_CTE ON
+ {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+    PSA_CTE.[{{sourceColumn}}] = STG_CTE.[{{sourceColumn}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
+WHERE
+(
+   CASE
+      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}STG_CTE.[{{sourceColumn}}] IS NULL THEN 'Delete'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceColumn}}] IS NULL THEN 'Insert'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceColumn}}] IS NOT NULL AND PSA_CTE.{{sourceColumn}} IS NOT NULL AND STG_CTE.HASH_FULL_RECORD != PSA_CTE.HASH_FULL_RECORD THEN 'Change'{{/if}}{{/each}}{{/each}}
+      ELSE 'No Change'
+   END
+) != 'No Change'
 {{/each}}

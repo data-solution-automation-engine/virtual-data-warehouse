@@ -2103,6 +2103,7 @@
             this.richTextBoxInformationMain.Size = new System.Drawing.Size(997, 82);
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
+            this.richTextBoxInformationMain.TextChanged += new System.EventHandler(this.richTextBoxInformationMain_TextChanged);
             // 
             // FormMain
             // 

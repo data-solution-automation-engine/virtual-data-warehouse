@@ -2113,11 +2113,26 @@ namespace Virtual_EDW
                             columnMappingList.Add(columnMapping);
                         }
 
+                        var lookupTable = (string) row["TARGET_NAME"];
+                        if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
+                        {
+                            int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
+
+                            lookupTable = lookupTable.Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length).Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                        }
+                        else
+                        {
+                            int prefixLocation = lookupTable.LastIndexOf(TeamConfigurationSettings.StgTablePrefixValue);
+
+                            lookupTable = lookupTable.Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length).Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                        }
+
                         // Add the created Business Key to the source-to-target mapping
                         var sourceToTargetMapping = new SourceToTargetMapping();
 
                         sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
                         sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
+                        sourceToTargetMapping.lookupTable = lookupTable;
                         //sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
                         sourceToTargetMapping.businessKey = businessKeyList;
                         sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
@@ -2140,11 +2155,11 @@ namespace Virtual_EDW
                         var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
                         var result = template(sourceTargetMappingList);
 
+                        // Check if the metadata needs to be displayed also
+                        DisplayJsonMetadata(sourceTargetMappingList, "StagingArea");
+
                         // Display the output of the template to the user
                         SetTextStgOutput(result);
-
-                        // Check if the metadata needs to be displayed also
-                        DisplayJsonMetadata(sourceTargetMappingList,"StagingArea");
 
                         // Spool the output to disk
                         errorCounter = SaveOutputToDisk(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
@@ -3940,5 +3955,12 @@ namespace Virtual_EDW
         }
         #endregion
 
+        private void richTextBoxInformationMain_TextChanged(object sender, EventArgs e)
+        {
+            // Set the current caret position to the end
+            richTextBoxInformationMain.SelectionStart = richTextBoxStaging.Text.Length;
+            // Scroll automatically
+            richTextBoxInformationMain.ScrollToCaret();
+        }
     }
 }

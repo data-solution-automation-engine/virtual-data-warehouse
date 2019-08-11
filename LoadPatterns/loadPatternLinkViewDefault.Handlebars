@@ -3,7 +3,7 @@
 -- Generated at {{generationDateTime}}
 --
 
-USE [{{metadataConfiguration.psaDatabaseName}}]
+USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]') AND type in (N'V'))
@@ -40,7 +40,7 @@ FROM
         CAST([{{sourceColumn}}] AS NVARCHAR(100)) AS {{targetColumn}}{{/each}},{{/unless}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM [{{../metadataConfiguration.psadatabaseName}}].[{{../metadataConfiguration.psaSchemaName}}].[{{sourceTable}}]
+    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}]
     WHERE {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
        {{sourceColumn}}{{/each}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/unless}}{{/each}}
        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
