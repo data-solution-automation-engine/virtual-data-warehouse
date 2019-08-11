@@ -173,9 +173,7 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dimensionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rawDataMartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pointInTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.unknownKeysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runEverythingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateTestDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1647,7 +1645,6 @@
             this.tabPageSettings.TabIndex = 8;
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
-            this.tabPageSettings.Click += new System.EventHandler(this.tabPageDefaultSettings_Click);
             // 
             // groupBox8
             // 
@@ -1842,43 +1839,25 @@
             // dimensionalToolStripMenuItem
             // 
             this.dimensionalToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.rawDataMartToolStripMenuItem,
             this.pointInTimeToolStripMenuItem,
-            this.unknownKeysToolStripMenuItem,
             this.runEverythingToolStripMenuItem});
             this.dimensionalToolStripMenuItem.Name = "dimensionalToolStripMenuItem";
             this.dimensionalToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.dimensionalToolStripMenuItem.Text = "Delivery";
             // 
-            // rawDataMartToolStripMenuItem
-            // 
-            this.rawDataMartToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.CubeIcon;
-            this.rawDataMartToolStripMenuItem.Name = "rawDataMartToolStripMenuItem";
-            this.rawDataMartToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.rawDataMartToolStripMenuItem.Text = "Raw Data Mart";
-            this.rawDataMartToolStripMenuItem.Click += new System.EventHandler(this.rawDataMartToolStripMenuItem_Click);
-            // 
             // pointInTimeToolStripMenuItem
             // 
             this.pointInTimeToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.Time;
             this.pointInTimeToolStripMenuItem.Name = "pointInTimeToolStripMenuItem";
-            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pointInTimeToolStripMenuItem.Text = "Point In Time";
             this.pointInTimeToolStripMenuItem.Click += new System.EventHandler(this.pointInTimeToolStripMenuItem_Click);
-            // 
-            // unknownKeysToolStripMenuItem
-            // 
-            this.unknownKeysToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.ghost_icon;
-            this.unknownKeysToolStripMenuItem.Name = "unknownKeysToolStripMenuItem";
-            this.unknownKeysToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.unknownKeysToolStripMenuItem.Text = "Unknown Keys";
-            this.unknownKeysToolStripMenuItem.Click += new System.EventHandler(this.unknownKeysToolStripMenuItem_Click);
             // 
             // runEverythingToolStripMenuItem
             // 
             this.runEverythingToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.CogIcon;
             this.runEverythingToolStripMenuItem.Name = "runEverythingToolStripMenuItem";
-            this.runEverythingToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.runEverythingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.runEverythingToolStripMenuItem.Text = "Run Everything";
             this.runEverythingToolStripMenuItem.Click += new System.EventHandler(this.runEverythingToolStripMenuItem_Click);
             // 
@@ -2154,7 +2133,6 @@
         private System.Windows.Forms.TabPage tabPageSettings;
         private System.Windows.Forms.GroupBox SQLGenerationGroupBox;
         private System.Windows.Forms.ToolStripMenuItem dimensionalToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem rawDataMartToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem linksToolStripMenuItem;
@@ -2207,7 +2185,6 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.TextBox textBoxFilterCriterionLsat;
         private System.Windows.Forms.ToolStripMenuItem pointInTimeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem unknownKeysToolStripMenuItem;
         private System.Windows.Forms.CheckBox checkBoxEvaluateSatDelete;
         private System.Windows.Forms.CheckBox checkBoxEvaluateLsatDeletes;
         public System.ComponentModel.BackgroundWorker backgroundWorkerActivateMetadata;
