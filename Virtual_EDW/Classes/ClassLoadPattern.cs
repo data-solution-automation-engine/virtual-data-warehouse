@@ -187,19 +187,22 @@ namespace Virtual_EDW
     /// </summary>
     class MetadataConfiguration
     {
+        // Databases
         public string sourceDatabaseName { get; } = FormBase.TeamConfigurationSettings.SourceDatabaseName;
-        public string staingAreaDatabaseName { get; } = FormBase.TeamConfigurationSettings.StagingDatabaseName;
+        public string stagingAreaDatabaseName { get; } = FormBase.TeamConfigurationSettings.StagingDatabaseName;
         public string persistentStagingDatabaseName { get; } = FormBase.TeamConfigurationSettings.PsaDatabaseName;
         public string persistentStagingSchemaName { get;} = FormBase.TeamConfigurationSettings.SchemaName;
         public string integrationDatabaseName { get; } = FormBase.TeamConfigurationSettings.IntegrationDatabaseName;
         public string presentationDatabaseName { get; } = FormBase.TeamConfigurationSettings.PresentationDatabaseName;
         public string vedwSchemaName { get; } = FormBase.VedwConfigurationSettings.VedwSchema;
+        // Attributes
         public string changeDataCaptureAttribute { get; set; } = FormBase.TeamConfigurationSettings.ChangeDataCaptureAttribute;
         public string recordSourceAttribute { get; } = FormBase.TeamConfigurationSettings.RecordSourceAttribute;
         public string loadDateTimeAttribute { get; } = FormBase.TeamConfigurationSettings.LoadDateTimeAttribute;
         public string eventDateTimeAttribute { get; set; } = FormBase.TeamConfigurationSettings.EventDateTimeAttribute;
+        public string recordChecksumAttribute { get; set; } = FormBase.TeamConfigurationSettings.RecordChecksumAttribute;
         public string etlProcessAttribute { get; } = FormBase.TeamConfigurationSettings.EtlProcessAttribute;
-        public string sourceRowId { get; } = FormBase.TeamConfigurationSettings.RowIdAttribute;
+        public string sourceRowIdAttribute { get; } = FormBase.TeamConfigurationSettings.RowIdAttribute;
     }
     #endregion
 }

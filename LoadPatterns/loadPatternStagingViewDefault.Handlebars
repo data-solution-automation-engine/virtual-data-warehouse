@@ -5,7 +5,7 @@
 -- Generated at {{../generationDateTime}}
 --
 
-USE [{{../metadataConfiguration.staingAreaDatabaseName}}]
+USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]') AND type in (N'V'))
@@ -23,13 +23,13 @@ SELECT
    {{#each columnMapping}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceColumn}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
    {{/each}}
-   ) AS [HASH_FULL_RECORD]
+   ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
 FROM [{{../metadataConfiguration.sourceDatabaseName}}].[dbo].[{{sourceTable}}]
 ),
 PSA_CTE AS
 (
 SELECT
-   A.[HASH_FULL_RECORD] AS [HASH_FULL_RECORD], 
+   A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
    {{#each columnMapping}}
    A.[{{sourceColumn}}] AS [{{targetColumn}}]{{#unless @last}},{{/unless}}
    {{/each}}
@@ -54,22 +54,33 @@ SELECT
      THEN PSA_CTE.[{{sourceColumn}}]
      ELSE STG_CTE.[{{sourceColumn}}] 
    END AS [{{sourceColumn}}],{{/each}}
+   CASE 
+     WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn}}]{{/if}}{{/each}}{{/each}} IS NULL
+     THEN PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
+     ELSE STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
+   END AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
+   CASE 
+      WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'Delete' 
+      WHEN PSA_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'Insert' 
+      WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
+         AND PSA_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
+         AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change' ELSE 'No Change' 
+   END AS [CDC_OPERATION],
    'PROFILER' AS {{../metadataConfiguration.recordSourceAttribute}},
    ROW_NUMBER() OVER
       (ORDER BY
          {{#each businessKey}}{{#each businessKeyComponentMapping}}CASE WHEN STG_CTE.[{{sourceColumn}}] IS NULL THEN PSA_CTE.[{{sourceColumn}}] ELSE STG_CTE.[{{sourceColumn}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-      ) AS {{../metadataConfiguration.sourceRowId}},
+      ) AS {{../metadataConfiguration.sourceRowIdAttribute}},
    GETDATE() {{../metadataConfiguration.eventDateTimeAttribute}}
 FROM STG_CTE
-FULL OUTER JOIN PSA_CTE ON
- {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+FULL OUTER JOIN PSA_CTE ON {{#each businessKey}}  {{#each businessKeyComponentMapping}}
     PSA_CTE.[{{sourceColumn}}] = STG_CTE.[{{sourceColumn}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
 WHERE
 (
    CASE
       WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}STG_CTE.[{{sourceColumn}}] IS NULL THEN 'Delete'{{/if}}{{/each}}{{/each}}
       WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceColumn}}] IS NULL THEN 'Insert'{{/if}}{{/each}}{{/each}}
-      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceColumn}}] IS NOT NULL AND PSA_CTE.{{sourceColumn}} IS NOT NULL AND STG_CTE.HASH_FULL_RECORD != PSA_CTE.HASH_FULL_RECORD THEN 'Change'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceColumn}}] IS NOT NULL AND PSA_CTE.{{sourceColumn}} IS NOT NULL AND STG_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] != PSA_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change'{{/if}}{{/each}}{{/each}}
       ELSE 'No Change'
    END
 ) != 'No Change'

@@ -2,6 +2,8 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace Virtual_EDW
 {
@@ -16,7 +18,7 @@ namespace Virtual_EDW
             InitializeComponent();
 
             radioButtonStagingArea.Checked=true;
-            DebuggingTextbox.AutoSize = true;
+            textBoxOutput.AutoSize = true;
         }
 
         public int GetRandomNumber(int maxNumber)
@@ -55,11 +57,18 @@ namespace Virtual_EDW
 
         private void buttonGenerateTestcases_Click(object sender, EventArgs e)
         {
-            var connStg = new SqlConnection();
+            var connStg = new SqlConnection
+            {
+                ConnectionString = TeamConfigurationSettings.ConnectionStringStg
+            };
+
+            var connMetadata = new SqlConnection
+            {
+                ConnectionString = TeamConfigurationSettings.ConnectionStringOmd
+            };
+
             var connVariable = new SqlConnection();
 
-            // Assign database connection string
-            connStg.ConnectionString = TeamConfigurationSettings.ConnectionStringStg;
 
             try
             {
@@ -68,23 +77,32 @@ namespace Virtual_EDW
                 var testCaseQuery = new StringBuilder();
 
                 testCaseQuery.AppendLine("--");
-                testCaseQuery.AppendLine("-- Test Data");
+                testCaseQuery.AppendLine("-- Test data");
                 testCaseQuery.AppendLine("-- Generated at " + DateTime.Now);
                 testCaseQuery.AppendLine("--");
 
-                const string queryTableArray =
-                    "SELECT TABLE_SCHEMA,TABLE_NAME, ROW_NUMBER() OVER (ORDER BY TABLE_NAME) as ROW_NR " +
-                    "FROM INFORMATION_SCHEMA.TABLES " +
-                    "WHERE TABLE_TYPE='BASE TABLE' AND TABLE_NAME NOT LIKE '%_USERMANAGED_%'";
+                const string queryTableArray = @"
+                    SELECT [SOURCE_SCHEMA_NAME]
+                          ,[SOURCE_NAME]
+                          ,[SOURCE_BUSINESS_KEY_DEFINITION]
+                          ,[TARGET_SCHEMA_NAME]
+                          ,[TARGET_NAME]
+                          ,[TARGET_BUSINESS_KEY_DEFINITION]
+                          ,[TARGET_TYPE]
+                          ,[SURROGATE_KEY]
+                          ,[FILTER_CRITERIA]
+                          ,[LOAD_VECTOR]
+                      FROM [interface].[INTERFACE_SOURCE_STAGING_XREF]
+                    ";
 
-                var tables = MyParent.GetDataTable(ref connStg, queryTableArray);
+                var tables = MyParent.GetDataTable(ref connMetadata, queryTableArray);
 
                 if (tables != null)
                 {
-                    DebuggingTextbox.Clear();
+                    textBoxOutput.Clear();
                     foreach (DataRow row in tables.Rows)
                     {
-                        var stgTableName = (string) row["TABLE_NAME"];
+                        var stgTableName = (string) row["TARGET_NAME"];
 
                         if (checkBoxTruncate.Checked)
                         {
@@ -95,33 +113,42 @@ namespace Virtual_EDW
                         }
 
                         testCaseQuery.AppendLine();
-                        testCaseQuery.AppendLine("-- Creating testcases for " + stgTableName);
+                        testCaseQuery.AppendLine("-- Creating test cases for " + stgTableName);
                         testCaseQuery.AppendLine();
 
                         var localkeyLength = TeamConfigurationSettings.DwhKeyIdentifier.Length;
                         var localkeySubstring = TeamConfigurationSettings.DwhKeyIdentifier.Length + 1;
 
-                        var queryAttributeArray =
-                            "SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION " +
-                            "FROM INFORMATION_SCHEMA.COLUMNS " +
-                            "WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'" +
-                            " AND TABLE_NAME= '" + stgTableName + "'" +
-                            " AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +
-                            TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +
-                            TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
-                            TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
-                            TeamConfigurationSettings.EtlProcessAttribute + "','" +
-                            TeamConfigurationSettings.EventDateTimeAttribute + "','" +
-                            TeamConfigurationSettings.ChangeDataCaptureAttribute + "','" +
-                            TeamConfigurationSettings.RecordChecksumAttribute + "','" +
-                            TeamConfigurationSettings.RowIdAttribute + "','" +
-                            TeamConfigurationSettings.LoadDateTimeAttribute + "')";
+                        var queryAttributeArray = 
+                            //SELECT [SOURCE_SCHEMA_NAME]
+                            //      ,[SOURCE_NAME]
+                            //      ,[TARGET_SCHEMA_NAME]
+                            //      ,[TARGET_NAME]
+                            //      ,[SOURCE_ATTRIBUTE_NAME]
+                            //      ,[TARGET_ATTRIBUTE_NAME]
+                            //  FROM [interface].[INTERFACE_SOURCE_STAGING_ATTRIBUTE_XREF]
+                            //";
+                        "SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION " +
+                        "FROM INFORMATION_SCHEMA.COLUMNS " +
+                        "WHERE SUBSTRING(COLUMN_NAME,LEN(COLUMN_NAME)-" + localkeyLength + "," + localkeySubstring + ")!='_" + TeamConfigurationSettings.DwhKeyIdentifier + "'" +
+                        " AND TABLE_NAME= '" + stgTableName + "'" +
+                        " AND TABLE_SCHEMA = '" + (string)row["TARGET_SCHEMA_NAME"] + "'" +
+                        " AND COLUMN_NAME NOT IN ('" + TeamConfigurationSettings.RecordSourceAttribute + "','" +
+                        TeamConfigurationSettings.AlternativeRecordSourceAttribute + "','" +
+                        TeamConfigurationSettings.AlternativeLoadDateTimeAttribute + "','" +
+                        TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute + "','" +
+                        TeamConfigurationSettings.EtlProcessAttribute + "','" +
+                        TeamConfigurationSettings.EventDateTimeAttribute + "','" +
+                        TeamConfigurationSettings.ChangeDataCaptureAttribute + "','" +
+                        TeamConfigurationSettings.RecordChecksumAttribute + "','" +
+                        TeamConfigurationSettings.RowIdAttribute + "','" +
+                        TeamConfigurationSettings.LoadDateTimeAttribute + "')";
 
                         var attributeArray = MyParent.GetDataTable(ref connStg, queryAttributeArray);
 
                         for (var intCounter = 1; intCounter <= Convert.ToInt32(textBoxTestCaseAmount.Text); intCounter++)
                         {
-                            testCaseQuery.AppendLine("-- Testcase " + intCounter);
+                            testCaseQuery.AppendLine("-- Test case " + intCounter);
                             testCaseQuery.AppendLine("INSERT INTO [dbo].[" + stgTableName + "]");
                             testCaseQuery.AppendLine("(");
                             testCaseQuery.AppendLine("[" + TeamConfigurationSettings.EtlProcessAttribute + "],");
@@ -143,9 +170,17 @@ namespace Virtual_EDW
 
                             testCaseQuery.AppendLine("-1,");
                             testCaseQuery.AppendLine("GETDATE(),");
-                            testCaseQuery.AppendLine("'Testcases',");
+                            testCaseQuery.AppendLine("'Test cases',");
                             testCaseQuery.AppendLine("'Insert',");
-                            testCaseQuery.AppendLine("'N/A',");
+
+                            if (radioButtonBinaryHash.Checked)
+                            {
+                                testCaseQuery.AppendLine("0x00000000000000000000000000000000,");
+                            }
+                            else
+                            {
+                                testCaseQuery.AppendLine("'N/A',");
+                            }
 
                             foreach (DataRow attributeRow in attributeArray.Rows)
                             {
@@ -170,7 +205,7 @@ namespace Virtual_EDW
                                 }
                                 else
                                 {
-                                    DebuggingTextbox.Text+=("Issue encountered, the datatype " +
+                                    textBoxOutput.Text+=("Issue encountered, the data type " +
                                                     attributeRow["DATA_TYPE"] + " is not supported. The attribute is " + attributeRow["COLUMN_NAME"] + " of table " + stgTableName + ".\n\r");
                                 }
                             }
@@ -186,40 +221,64 @@ namespace Virtual_EDW
                             {
                                 connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringStg;
                             }
+
                             if (radioButtonPSA.Checked)
                             {
                                 connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
                             }
+
                             if (radiobuttonSource.Checked)
                             {
                                 connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringSource;
-                                    //_myParent.textBoxSourceConnection.Text;
                             }
 
+                            int errorCounter = 0;
                             try
                             {
-                                var errorCounter = MyParent.ExecuteOutputInDatabase(connVariable, testCaseQuery.ToString(), 0);
+                                using (var connection = connVariable)
+                                {
+                                    var server = new Server(new ServerConnection(connection));
+                                    try
+                                    {
+                                        server.ConnectionContext.ExecuteNonQuery(testCaseQuery.ToString());
+                                        richTextBoxInformationMain.AppendText(
+                                            "The statement was executed successfully.\r\n");
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        richTextBoxInformationMain.AppendText(
+                                            "Issues occurred executing the SQL statement.\r\n");
+                                        richTextBoxInformationMain.AppendText(
+                                            @"SQL error: " + exception.Message + "\r\n\r\n");
+                                        errorCounter++;
+                                    }
+                                }
 
-                                richTextBoxOutput.Text = "The " + textBoxTestCaseAmount.Text + " test cases were created in the designated database.";
+
+                                richTextBoxInformationMain.Text =
+                                    "The " + textBoxTestCaseAmount.Text +
+                                    " test cases were created in the designated database.";
                             }
                             catch (Exception ex)
                             {
-                                richTextBoxOutput.Text =
-                                    "Errors in executing the SQL statement against the database. The error message is " + ex;
+                                richTextBoxInformationMain.Text =
+                                    "There have been " + errorCounter +
+                                    " errors detected when executing the SQL statement against the database. The error message is " +
+                                    ex;
                             }
                         }
 
-                        DebuggingTextbox.Text += testCaseQuery.ToString();
+                        textBoxOutput.Text += testCaseQuery.ToString();
                     }
                 }
                 else
                 {
-                    DebuggingTextbox.Text = "There is no metadata to process";
+                    textBoxOutput.Text = "There is no metadata to process";
                 }
             }
             catch (Exception exception)
             {
-                DebuggingTextbox.Text = "There was an error connecting to the Staging Area database. \r\n\r\nA connection could not be established. Can you verify the connection details for the Staging Area in the main screen? \r\n\r\nThe error message is: " + exception.Message;
+                textBoxOutput.Text = "There was an error connecting to the database. \r\n\r\nA connection could not be established. Can you verify the connection details for the Staging Area in the main screen? \r\n\r\nThe error message is: " + exception.Message;
             } 
         }
 

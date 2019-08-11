@@ -154,14 +154,9 @@
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.textBoxSchemaName = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.checkBoxDisableHash = new System.Windows.Forms.CheckBox();
-            this.checkBoxUnicode = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButtonProduction = new System.Windows.Forms.RadioButton();
             this.radioButtonDevelopment = new System.Windows.Forms.RadioButton();
-            this.groupBoxhashKeyoutput = new System.Windows.Forms.GroupBox();
-            this.radioButtonCharacterHash = new System.Windows.Forms.RadioButton();
-            this.radioButtonBinaryHash = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxConfigurationPath = new System.Windows.Forms.TextBox();
             this.OutputPathLabel = new System.Windows.Forms.Label();
@@ -233,7 +228,6 @@
             this.tabPageSettings.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBoxhashKeyoutput.SuspendLayout();
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -1642,7 +1636,6 @@
             // 
             this.tabPageSettings.Controls.Add(this.groupBox8);
             this.tabPageSettings.Controls.Add(this.groupBox1);
-            this.tabPageSettings.Controls.Add(this.groupBoxhashKeyoutput);
             this.tabPageSettings.Controls.Add(this.label6);
             this.tabPageSettings.Controls.Add(this.textBoxConfigurationPath);
             this.tabPageSettings.Controls.Add(this.OutputPathLabel);
@@ -1660,18 +1653,16 @@
             // 
             this.groupBox8.Controls.Add(this.textBoxSchemaName);
             this.groupBox8.Controls.Add(this.label12);
-            this.groupBox8.Controls.Add(this.checkBoxDisableHash);
-            this.groupBox8.Controls.Add(this.checkBoxUnicode);
             this.groupBox8.Location = new System.Drawing.Point(142, 155);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(366, 160);
+            this.groupBox8.Size = new System.Drawing.Size(366, 70);
             this.groupBox8.TabIndex = 89;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "ETL output options";
             // 
             // textBoxSchemaName
             // 
-            this.textBoxSchemaName.Location = new System.Drawing.Point(84, 63);
+            this.textBoxSchemaName.Location = new System.Drawing.Point(87, 20);
             this.textBoxSchemaName.Name = "textBoxSchemaName";
             this.textBoxSchemaName.Size = new System.Drawing.Size(273, 20);
             this.textBoxSchemaName.TabIndex = 91;
@@ -1679,37 +1670,17 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(3, 66);
+            this.label12.Location = new System.Drawing.Point(6, 23);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(75, 13);
             this.label12.TabIndex = 92;
             this.label12.Text = "Schema name";
             // 
-            // checkBoxDisableHash
-            // 
-            this.checkBoxDisableHash.AutoSize = true;
-            this.checkBoxDisableHash.Location = new System.Drawing.Point(6, 19);
-            this.checkBoxDisableHash.Name = "checkBoxDisableHash";
-            this.checkBoxDisableHash.Size = new System.Drawing.Size(183, 17);
-            this.checkBoxDisableHash.TabIndex = 87;
-            this.checkBoxDisableHash.Text = "Disable Hash Keys (experimental)";
-            this.checkBoxDisableHash.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxUnicode
-            // 
-            this.checkBoxUnicode.AutoSize = true;
-            this.checkBoxUnicode.Location = new System.Drawing.Point(6, 42);
-            this.checkBoxUnicode.Name = "checkBoxUnicode";
-            this.checkBoxUnicode.Size = new System.Drawing.Size(112, 17);
-            this.checkBoxUnicode.TabIndex = 89;
-            this.checkBoxUnicode.Text = "Output in Unicode";
-            this.checkBoxUnicode.UseVisualStyleBackColor = true;
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.radioButtonProduction);
             this.groupBox1.Controls.Add(this.radioButtonDevelopment);
-            this.groupBox1.Location = new System.Drawing.Point(17, 245);
+            this.groupBox1.Location = new System.Drawing.Point(17, 155);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(119, 70);
             this.groupBox1.TabIndex = 90;
@@ -1735,39 +1706,6 @@
             this.radioButtonDevelopment.TabIndex = 38;
             this.radioButtonDevelopment.Text = "Development";
             this.radioButtonDevelopment.UseVisualStyleBackColor = true;
-            this.radioButtonDevelopment.CheckedChanged += new System.EventHandler(this.radioButtonDevelopment_CheckedChanged);
-            // 
-            // groupBoxhashKeyoutput
-            // 
-            this.groupBoxhashKeyoutput.Controls.Add(this.radioButtonCharacterHash);
-            this.groupBoxhashKeyoutput.Controls.Add(this.radioButtonBinaryHash);
-            this.groupBoxhashKeyoutput.Location = new System.Drawing.Point(17, 155);
-            this.groupBoxhashKeyoutput.Name = "groupBoxhashKeyoutput";
-            this.groupBoxhashKeyoutput.Size = new System.Drawing.Size(119, 70);
-            this.groupBoxhashKeyoutput.TabIndex = 88;
-            this.groupBoxhashKeyoutput.TabStop = false;
-            this.groupBoxhashKeyoutput.Text = "Hash key output";
-            // 
-            // radioButtonCharacterHash
-            // 
-            this.radioButtonCharacterHash.AutoSize = true;
-            this.radioButtonCharacterHash.Location = new System.Drawing.Point(6, 42);
-            this.radioButtonCharacterHash.Name = "radioButtonCharacterHash";
-            this.radioButtonCharacterHash.Size = new System.Drawing.Size(71, 17);
-            this.radioButtonCharacterHash.TabIndex = 1;
-            this.radioButtonCharacterHash.Text = "Character";
-            this.radioButtonCharacterHash.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonBinaryHash
-            // 
-            this.radioButtonBinaryHash.AutoSize = true;
-            this.radioButtonBinaryHash.Location = new System.Drawing.Point(6, 19);
-            this.radioButtonBinaryHash.Name = "radioButtonBinaryHash";
-            this.radioButtonBinaryHash.Size = new System.Drawing.Size(54, 17);
-            this.radioButtonBinaryHash.TabIndex = 0;
-            this.radioButtonBinaryHash.Text = "Binary";
-            this.radioButtonBinaryHash.UseVisualStyleBackColor = true;
-            this.radioButtonBinaryHash.CheckedChanged += new System.EventHandler(this.radioButtonBinaryHash_CheckedChanged);
             // 
             // label6
             // 
@@ -2084,7 +2022,8 @@
             // 
             // groupBox9
             // 
-            this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox9.Controls.Add(this.richTextBoxInformationMain);
             this.groupBox9.Location = new System.Drawing.Point(222, 677);
             this.groupBox9.Name = "groupBox9";
@@ -2177,8 +2116,6 @@
             this.groupBox8.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBoxhashKeyoutput.ResumeLayout(false);
-            this.groupBoxhashKeyoutput.PerformLayout();
             this.menuStripMainMenu.ResumeLayout(false);
             this.menuStripMainMenu.PerformLayout();
             this.SQLGenerationGroupBox.ResumeLayout(false);
@@ -2277,11 +2214,6 @@
         private System.Windows.Forms.CheckBox checkBoxExcludeLanding;
         private System.Windows.Forms.ToolStripMenuItem saveConfigurationFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openConfigurationDirectoryToolStripMenuItem;
-        private System.Windows.Forms.CheckBox checkBoxUnicode;
-        internal System.Windows.Forms.GroupBox groupBoxhashKeyoutput;
-        internal System.Windows.Forms.RadioButton radioButtonCharacterHash;
-        internal System.Windows.Forms.RadioButton radioButtonBinaryHash;
-        private System.Windows.Forms.CheckBox checkBoxDisableHash;
         private System.Windows.Forms.Label label6;
         internal System.Windows.Forms.TextBox textBoxConfigurationPath;
         private System.Windows.Forms.Label OutputPathLabel;

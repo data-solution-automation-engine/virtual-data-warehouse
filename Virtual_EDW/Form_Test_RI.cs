@@ -64,11 +64,9 @@ namespace Virtual_EDW
             var queryTableArraySat = new StringBuilder();
 
             queryTableArraySat.AppendLine("SELECT");
-            queryTableArraySat.AppendLine("  [SOURCE_ID]");
             queryTableArraySat.AppendLine(" ,[SOURCE_NAME]");
             queryTableArraySat.AppendLine(" ,[SOURCE_BUSINESS_KEY_DEFINITION]");
             queryTableArraySat.AppendLine(" ,[FILTER_CRITERIA]");
-            queryTableArraySat.AppendLine(" ,[SATELLITE_ID]");
             queryTableArraySat.AppendLine(" ,[SATELLITE_NAME]");
             queryTableArraySat.AppendLine(" ,[SATELLITE_TYPE]");
             queryTableArraySat.AppendLine(" ,[HUB_ID]");
@@ -98,11 +96,8 @@ namespace Virtual_EDW
                     // Retrieving the business key attributes for the Hub                 
                     var hubKeyList = MyParent.GetHubTargetBusinessKeyList(hubTableName);
 
-                    // Construct the join clauses, where clauses etc. for the Hubs
-                    var queryClauses =
-                        MyParent.GetHubClauses(stagingAreaTableName, hubTableName, businessKeyDefinition, "");
 
-                    var hubQuerySelect = queryClauses[0];
+                    var hubQuerySelect = "";
 
 
                     queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + satTableName + "'");

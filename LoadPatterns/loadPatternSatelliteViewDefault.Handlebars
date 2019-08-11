@@ -19,7 +19,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{sourceComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
     {{/each}}
     ) AS {{targetTableHashKey}},
-    DATEADD(mcs,[{{../metadataConfiguration.sourceRowId}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
+    DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
     {{#each columnMapping}}
     {{sourceColumn}} AS {{targetColumn}}{{#unless @last}},{{/unless}}
     {{/each}}

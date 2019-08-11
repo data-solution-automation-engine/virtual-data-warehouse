@@ -21,7 +21,6 @@ namespace Virtual_EDW
 {
     public partial class FormMain : FormBase
     {
-        Form_Alert _alert;
         private StringBuilder _errorMessage;
         private StringBuilder _errorDetails;
         private int _errorCounter;
@@ -353,48 +352,6 @@ namespace Virtual_EDW
             textBoxConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
             textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
 
-            // Unicode checkbox
-            if (VedwConfigurationSettings.EnableUnicode == "True")
-            {
-                checkBoxUnicode.Checked = true;
-            }
-            else if (VedwConfigurationSettings.DisableHash == "False")
-            {
-                checkBoxDisableHash.Checked = false;
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText("An issue was encountered updating the Unicode setting on the application - please verify.");
-            }
-
-            // Hash key vs natural key checkbox
-            if (VedwConfigurationSettings.DisableHash == "True")
-            {
-                checkBoxDisableHash.Checked = true;
-            }
-            else if (VedwConfigurationSettings.DisableHash == "False")
-            {
-                checkBoxDisableHash.Checked = false;
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText("An issue was encountered updating the Unicode setting on the application - please verify.");
-            }
-
-            // Hash key output radiobutton
-            if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
-            {
-                radioButtonBinaryHash.Checked = true;
-            }
-            else if (VedwConfigurationSettings.HashKeyOutputType == "Character")
-            {
-                radioButtonCharacterHash.Checked = true;
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText(
-                    "An issue was encountered updating the Hash output setting on the application - please verify.");
-            }
 
             // Environment radiobutton
             if (VedwConfigurationSettings.WorkingEnvironment == "Development")
@@ -520,191 +477,6 @@ namespace Virtual_EDW
             GenerateHubFromPattern();
         }
 
-        internal List<String> GetHubClauses(string stagingAreaTableName, string hubTableName, string businessKeyDefinition, string groupCounter)
-        {
-            var fieldList = new StringBuilder();
-            var compositeKey = new StringBuilder();
-            var fieldDict = new Dictionary<string, string>();
-            var fieldOrderedList = new List<string>();
-            // Retrieving the business key attributes for the Hub                 
-            var hubKeyList = GetHubTargetBusinessKeyList(hubTableName);
-
-            var hubQuerySelect = new StringBuilder();
-            var hubQueryWhere = new StringBuilder();
-            var hubQueryGroupBy = new StringBuilder();
-
-            string firstKey;
-            var sqlStatementForSourceQuery = new StringBuilder();
-
-            // Depending on the ignore version the connection is set.
-            //var conn = checkBoxIgnoreVersion.Checked ? new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg } : new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-
-
-            var stringDataType = checkBoxUnicode.Checked ? "NVARCHAR" : "VARCHAR";
-
-            // For every STG / Hub relationship, the business key needs to be defined - starting with the components of the key
-            var componentList = GetBusinessKeyComponentList(stagingAreaTableName, hubTableName, businessKeyDefinition);
-
-            foreach (DataRow component in componentList.Rows)
-            {
-                var componentId = (int)component["BUSINESS_KEY_COMPONENT_ID"] - 1;
-
-                // Retrieve the elements of each business key component
-                // This only concerns concatenated keys as they are single component keys comprising of multiple elements.
-                var elementList = GetBusinessKeyElements(stagingAreaTableName, hubTableName, businessKeyDefinition, (int)component["BUSINESS_KEY_COMPONENT_ID"]);
-
-                if (elementList == null)
-                {
-                    SetTextMain("\n");
-                    SetTextHub($"An error occurred for the Hub Insert Into statement for {hubTableName}. The collection of Business Keys is empty.\r\n");
-                }
-                else
-                {
-                    if (elementList.Rows.Count > 1) // Build a concatenated key if the count of elements is greater than 1 for a component (key part)
-                    {
-                        fieldList.Clear();
-                        fieldDict.Clear();
-
-                        foreach (DataRow element in elementList.Rows)
-                        {
-                            var elementType = element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString();
-
-                            if (elementType == "Attribute")
-                            {
-                                fieldList.Append("'" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "',");
-
-                                //if (checkBoxIgnoreVersion.Checked)
-                                //{
-                                    // Make sure the live database is hit when the checkbox is ticked
-                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                    sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
-                              //  }
-                                //else
-                                //{
-                                //    //Ignore version is not checked, so versioning is used based on the activated metadata
-                                //    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                //    sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
-                                //    sqlStatementForSourceQuery.AppendLine("WHERE [TABLE_NAME] = '" + stagingAreaTableName + "'");
-                                //    sqlStatementForSourceQuery.AppendLine("AND [SCHEMA_NAME] = '" + TeamConfigurationSettings.SchemaName + "'");
-                                //    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME IN (" + fieldList.ToString().Substring(0, fieldList.ToString().Length - 1) + ")");
-                                //}
-
-                                var elementDataTypes = GetDataTable(ref conn, sqlStatementForSourceQuery.ToString());
-
-                                foreach (DataRow attribute in elementDataTypes.Rows)
-                                {
-                                    fieldDict.Add(attribute["COLUMN_NAME"].ToString(), attribute["DATA_TYPE"].ToString());
-                                }
-                            }
-                            else if (elementType == "User Defined Value")
-                            {
-                                fieldList.Append("''" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "'',");
-                            }
-
-                            fieldOrderedList.Add(element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString());
-                        }
-
-
-                        // Build the concatenated key
-                        foreach (var busKey in fieldOrderedList)
-                        {
-                            if (fieldDict.ContainsKey(busKey))
-                            {
-                                var key = "ISNULL([" + busKey + "], '')";
-
-                                if ((fieldDict[busKey] == "datetime2") || (fieldDict[busKey] == "datetime"))
-                                {
-                                    key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CONVERT(" + stringDataType + "(100), [" + busKey + "], 112) ELSE '' END";
-                                }
-                                else if ((fieldDict[busKey] == "numeric") || (fieldDict[busKey] == "integer") || (fieldDict[busKey] == "int") || (fieldDict[busKey] == "tinyint") || (fieldDict[busKey] == "decimal"))
-                                {
-                                    key = "CASE WHEN [" + busKey + "] IS NOT NULL THEN CAST([" + busKey + "] AS " + stringDataType + "(100)) ELSE '' END";
-                                }
-
-                                compositeKey.Append(key).Append(" + ");
-                            }
-                            else
-                            {
-                                var key = " " + busKey;
-                                compositeKey.Append(key).Append(" + ");
-                            }
-                        }
-
-                        hubQuerySelect.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                        hubQueryWhere.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + " != '' AND");
-                        hubQueryGroupBy.AppendLine(compositeKey.ToString().Substring(0, compositeKey.ToString().Length - 2) + ",");
-                    }
-                    else // Handle a component of a single or composite key 
-                    {
-                        foreach (DataRow element in elementList.Rows) // Only a single element...
-                        {
-                            if (element["BUSINESS_KEY_COMPONENT_ELEMENT_TYPE"].ToString() == "User Defined Value")
-                            {
-                                firstKey = element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"].ToString();
-                                hubQuerySelect.AppendLine("    " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                            }
-                            else // It's a normal attribute
-                            {
-                                // We need the data type again
-
-                                //if (checkBoxIgnoreVersion.Checked)
-                                //{
-                                    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                    sqlStatementForSourceQuery.AppendLine("FROM INFORMATION_SCHEMA.COLUMNS");
-                                    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                    sqlStatementForSourceQuery.AppendLine("AND TABLE_SCHEMA = '" + TeamConfigurationSettings.SchemaName + "'");
-                                    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
-                                //}
-                                //else
-                                //{
-                                //    //Ignore version is not checked, so versioning is used based on the activated metadata
-                                //    sqlStatementForSourceQuery.AppendLine("SELECT COLUMN_NAME, DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION");
-                                //    sqlStatementForSourceQuery.AppendLine("FROM [interface].[INTERFACE_PHYSICAL_MODEL]");
-                                //    sqlStatementForSourceQuery.AppendLine("WHERE TABLE_NAME= '" + stagingAreaTableName + "'");
-                                //    sqlStatementForSourceQuery.AppendLine("AND SCHEMA_NAME = '" + TeamConfigurationSettings.SchemaName + "'");
-                                //    sqlStatementForSourceQuery.AppendLine("AND COLUMN_NAME = ('" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "')");
-                                //}
-
-
-
-                                firstKey = "[" + element["BUSINESS_KEY_COMPONENT_ELEMENT_VALUE"] + "]";
-
-                                var elementDataTypes = GetDataTable(ref conn, sqlStatementForSourceQuery.ToString());
-
-                                foreach (DataRow attribute in elementDataTypes.Rows)
-                                {
-                                    if (attribute["DATA_TYPE"].ToString() == "numeric" || attribute["DATA_TYPE"].ToString() == "int")
-                                    {
-                                        hubQuerySelect.AppendLine("    CAST(" + firstKey + " AS " + stringDataType + "(100)) AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                                    }
-                                    else
-                                    {
-                                        hubQuerySelect.AppendLine("      " + firstKey + " AS [" + hubKeyList.Rows[componentId]["COLUMN_NAME"] + groupCounter + "],");
-                                    }
-                                }
-
-                                hubQueryWhere.AppendLine(" " + firstKey + " IS NOT NULL AND");
-                                hubQueryGroupBy.AppendLine("    " + firstKey + ",");
-                            }
-
-                        } // End of element loop (for single element)
-                    }
-                }
-            } // End of component elements
-
-            // Return the results
-            var outputList = new List<String>();
-
-            outputList.Add(hubQuerySelect.ToString());
-            outputList.Add(hubQueryWhere.ToString());
-            outputList.Add(hubQueryGroupBy.ToString());
-
-            return outputList;
-        }
 
         /// <summary>
         ///   Create Hub SQL using Handlebars as templating engine
@@ -2785,8 +2557,7 @@ namespace Virtual_EDW
             //labelResult.Text = (e.ProgressPercentage + "%");
 
             // Pass the progress to AlertForm label and progressbar
-            _alert.Message = "In progress, please wait... " + e.ProgressPercentage + "%";
-            _alert.ProgressValue = e.ProgressPercentage;
+
 
             // Manage the logging
         }
@@ -3261,48 +3032,6 @@ namespace Virtual_EDW
             VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
             VedwConfigurationSettings.VedwSchema = textBoxSchemaName.Text;
 
-            // Unicode checkbox
-            if (checkBoxUnicode.Checked)
-            {
-                VedwConfigurationSettings.EnableUnicode = "True";
-            }
-            else if (!checkBoxUnicode.Checked)
-            {
-                VedwConfigurationSettings.EnableUnicode = "False";
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText("An issue was encountered saving the Unicode checkbox, can you verify the settings file in the Configuration directory?");
-            }
-
-            // Hashing vs natural BK checkbox
-            if (checkBoxDisableHash.Checked)
-            {
-                VedwConfigurationSettings.DisableHash = "True";
-            }
-            else if (!checkBoxDisableHash.Checked)
-            {
-                VedwConfigurationSettings.DisableHash = "False";
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
-            }
-            
-            // Hash type radiobutton
-            if (radioButtonBinaryHash.Checked)
-            {
-                VedwConfigurationSettings.HashKeyOutputType = "Binary";
-            }
-            else if (!radioButtonBinaryHash.Checked)
-            {
-                VedwConfigurationSettings.HashKeyOutputType = "Character";
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
-            }
-
             // Working environment radiobutton
             if (radioButtonDevelopment.Checked)
             {
@@ -3316,8 +3045,6 @@ namespace Virtual_EDW
             {
                 richTextBoxInformationMain.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
             }
-
-
 
             // Update the root path file (from memory)
             var rootPathConfigurationFile = new StringBuilder();
@@ -3389,16 +3116,6 @@ namespace Virtual_EDW
             {
                 richTextBoxInformationMain.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
             }
-        }
-
-        private void radioButtonBinaryHash_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateHashSnippets();
-        }
-
-        private void radioButtonDevelopment_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void richTextBoxStaging_TextChanged(object sender, EventArgs e)
