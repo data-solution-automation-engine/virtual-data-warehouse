@@ -193,11 +193,12 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxGenerateInDatabase = new System.Windows.Forms.CheckBox();
             this.SQLGenerationGroupBox = new System.Windows.Forms.GroupBox();
+            this.checkBoxSaveToFile = new System.Windows.Forms.CheckBox();
+            this.checkBoxGenerateJsonSchema = new System.Windows.Forms.CheckBox();
             this.backgroundWorkerActivateMetadata = new System.ComponentModel.BackgroundWorker();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
-            this.checkBoxGenerateJsonSchema = new System.Windows.Forms.CheckBox();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.tabControlStg.SuspendLayout();
@@ -2030,6 +2031,7 @@
             // SQLGenerationGroupBox
             // 
             this.SQLGenerationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.SQLGenerationGroupBox.Controls.Add(this.checkBoxSaveToFile);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateJsonSchema);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateInDatabase);
             this.SQLGenerationGroupBox.Location = new System.Drawing.Point(16, 677);
@@ -2038,6 +2040,28 @@
             this.SQLGenerationGroupBox.TabIndex = 14;
             this.SQLGenerationGroupBox.TabStop = false;
             this.SQLGenerationGroupBox.Text = "SQL Generation Options";
+            // 
+            // checkBoxSaveToFile
+            // 
+            this.checkBoxSaveToFile.AutoSize = true;
+            this.checkBoxSaveToFile.Checked = true;
+            this.checkBoxSaveToFile.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxSaveToFile.Location = new System.Drawing.Point(6, 66);
+            this.checkBoxSaveToFile.Name = "checkBoxSaveToFile";
+            this.checkBoxSaveToFile.Size = new System.Drawing.Size(165, 17);
+            this.checkBoxSaveToFile.TabIndex = 9;
+            this.checkBoxSaveToFile.Text = "Save generation output to file";
+            this.checkBoxSaveToFile.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxGenerateJsonSchema
+            // 
+            this.checkBoxGenerateJsonSchema.AutoSize = true;
+            this.checkBoxGenerateJsonSchema.Location = new System.Drawing.Point(6, 43);
+            this.checkBoxGenerateJsonSchema.Name = "checkBoxGenerateJsonSchema";
+            this.checkBoxGenerateJsonSchema.Size = new System.Drawing.Size(188, 17);
+            this.checkBoxGenerateJsonSchema.TabIndex = 8;
+            this.checkBoxGenerateJsonSchema.Text = "Generate JSON metadata schema";
+            this.checkBoxGenerateJsonSchema.UseVisualStyleBackColor = true;
             // 
             // backgroundWorkerActivateMetadata
             // 
@@ -2079,16 +2103,6 @@
             this.richTextBoxInformationMain.Size = new System.Drawing.Size(997, 82);
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
-            // 
-            // checkBoxGenerateJsonSchema
-            // 
-            this.checkBoxGenerateJsonSchema.AutoSize = true;
-            this.checkBoxGenerateJsonSchema.Location = new System.Drawing.Point(6, 43);
-            this.checkBoxGenerateJsonSchema.Name = "checkBoxGenerateJsonSchema";
-            this.checkBoxGenerateJsonSchema.Size = new System.Drawing.Size(188, 17);
-            this.checkBoxGenerateJsonSchema.TabIndex = 8;
-            this.checkBoxGenerateJsonSchema.Text = "Generate JSON metadata schema";
-            this.checkBoxGenerateJsonSchema.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -2345,6 +2359,7 @@
         private System.Windows.Forms.ComboBox comboBoxLsatPattern;
         private System.Windows.Forms.RichTextBox richTextBoxLsatPattern;
         private System.Windows.Forms.CheckBox checkBoxGenerateJsonSchema;
+        private System.Windows.Forms.CheckBox checkBoxSaveToFile;
     }
 }
 

@@ -198,9 +198,9 @@ namespace Virtual_EDW
 
                             try
                             {
-                                MyParent.GenerateInDatabase(connVariable, testCaseQuery.ToString());
-                                richTextBoxOutput.Text = "The " + textBoxTestCaseAmount.Text +
-                                                         " testcases were created in the designated database.";
+                                var errorCounter = MyParent.ExecuteOutputInDatabase(connVariable, testCaseQuery.ToString(), 0);
+
+                                richTextBoxOutput.Text = "The " + textBoxTestCaseAmount.Text + " test cases were created in the designated database.";
                             }
                             catch (Exception ex)
                             {

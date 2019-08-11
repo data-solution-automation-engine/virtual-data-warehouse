@@ -86,6 +86,7 @@ namespace Virtual_EDW
         /// <param name="loadPatternType></param>
         internal static void ActivateLoadPattern(string loadPattern, string loadPatternType)
         {
+            loadPattern = loadPattern.TrimEnd();
             if (loadPatternType == "StagingArea")
             {
                 FormBase.VedwConfigurationSettings.activeLoadPatternStg = loadPattern;

@@ -15,39 +15,41 @@ SELECT hub.*
 FROM (
 {{#each individualSourceToTargetMapping}}{{#if @first}}
 SELECT
-    HASHBYTES('MD5',
-    {{#each businessKey.businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
+    HASHBYTES('MD5', {{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}}
+    {{#each businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
-    ) AS {{targetTableHashKey}},
-    -1 AS {{../metadataConfiguration.etlProcessAttribute}},
-    {{../metadataConfiguration.loadDateTimeAttribute}},
-    {{../metadataConfiguration.recordSourceAttribute}},
-    {{#each businessKey.businessKeyComponentMapping}}
-    {{targetComponentName}},
-    {{/each}}
-    ROW_NUMBER() OVER (PARTITION BY {{#each businessKey.businessKeyComponentMapping}}{{targetComponentName}}{{#unless @last}},{{/unless}}{{/each}} ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}) AS ROW_NR
-FROM {{/if}}{{/each}}
-(
+    ) AS {{surrogateKey}},{{/if}}{{/each}}
+    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
+    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}} {{!-- The Hub business key --}}
+    {{#each businessKeyComponentMapping}}
+    {{targetColumn}},{{/each}}{{/each}}
+    ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+       {{targetColumn}}{{/each}}{{#unless @last}},{{/unless}} {{/each}}
+    ORDER BY 
+       MIN({{../metadataConfiguration.loadDateTimeAttribute}})
+    ) AS ROW_NR
+FROM 
+( {{/if}}{{/each}}
     {{#each individualSourceToTargetMapping }}
-    SELECT
-    {{#each businessKey.businessKeyComponentMapping}}
-        CONVERT(NVARCHAR(100),[{{sourceComponentName}}]) AS [{{targetComponentName}}],
-    {{/each}}
+    SELECT {{#each businessKey}}{{#each businessKeyComponentMapping}}
+        CAST([{{sourceColumn}}] AS NVARCHAR(100)) AS {{targetColumn}}{{/each}},{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM {{sourceTable}}
-    WHERE
-    {{#each businessKey.businessKeyComponentMapping}}
-        [{{sourceComponentName}}] IS NOT NULL {{/each}}{{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
-    GROUP BY
-    {{#each businessKey.businessKeyComponentMapping}}
-        [{{sourceComponentName}}],
-    {{/each}}
+    FROM [{{../metadataConfiguration.psadatabaseName}}].[{{../metadataConfiguration.psaSchemaName}}].[{{sourceTable}}]
+    WHERE {{#each businessKey}}{{#each businessKeyComponentMapping}}
+        {{sourceColumn}}{{/each}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}
+        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
+    GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
+        {{sourceColumn}}{{/each}},{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}
-) HUB_selection
+) HUB_selection {{#each individualSourceToTargetMapping}}{{#if @first}}
+GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
+    {{targetColumn}}{{/each}},{{/each}}
+    {{../metadataConfiguration.recordSourceAttribute}} {{/if}}{{/each}}
 ) hub
 WHERE ROW_NR = 1
 UNION
