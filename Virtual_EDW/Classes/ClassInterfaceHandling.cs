@@ -12,24 +12,37 @@ namespace Virtual_Data_Warehouse.Classes
             List<ColumnMapping> returnList = new List<ColumnMapping>();
 
             // Evaluate source key components
+            List<string> temporaryBusinessKeyComponentList = new List<string>();
+            temporaryBusinessKeyComponentList = sourceBusinessKeyDefinition.Split(',').ToList(); // Split by the comma first to get the key parts
+
             List<string> sourceBusinessKeyComponentList = new List<string>();
 
-            sourceBusinessKeyDefinition = sourceBusinessKeyDefinition.Replace("(", "").Replace(")","");
-            if (sourceBusinessKeyDefinition.StartsWith("COMPOSITE"))
+            foreach (var keyComponent in temporaryBusinessKeyComponentList)
             {
-                sourceBusinessKeyDefinition = sourceBusinessKeyDefinition.Replace("COMPOSITE", "");
-                sourceBusinessKeyComponentList = sourceBusinessKeyDefinition.Split(';').ToList();
-            }
-            else if (sourceBusinessKeyDefinition.StartsWith("CONCATENATE"))
-            {
-                sourceBusinessKeyDefinition = sourceBusinessKeyDefinition.Replace("CONCATENATE", "");
-                sourceBusinessKeyDefinition = sourceBusinessKeyDefinition.Replace(";", "+");
+                var keyPart = keyComponent.TrimStart().TrimEnd();
+                keyPart = keyComponent.Replace("(", "").Replace(")", "").Replace(" ","");
 
-                sourceBusinessKeyComponentList.Add(sourceBusinessKeyDefinition);
-            }
-            else
-            {
-                sourceBusinessKeyComponentList = sourceBusinessKeyDefinition.Split(',').ToList();
+                if (keyPart.StartsWith("COMPOSITE"))
+                {
+                    keyPart = keyPart.Replace("COMPOSITE", "");
+
+                    var temporaryKeyPartList = keyPart.Split(';').ToList();
+                    foreach (var item in temporaryKeyPartList)
+                    {
+                        sourceBusinessKeyComponentList.Add(item);
+                    }
+                }
+                else if (keyPart.StartsWith("CONCATENATE"))
+                {
+                    keyPart = keyPart.Replace("CONCATENATE", "");
+                    keyPart = keyPart.Replace(";", "+");
+
+                    sourceBusinessKeyComponentList.Add(keyPart);
+                }
+                else
+                {
+                    sourceBusinessKeyComponentList.Add(keyPart);
+                }
             }
 
             List<string> targetBusinessKeyComponentList = targetBusinessKeyDefinition.Split(',').ToList();
