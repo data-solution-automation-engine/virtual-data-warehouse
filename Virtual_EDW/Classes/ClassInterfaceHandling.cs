@@ -55,18 +55,25 @@ namespace Virtual_Data_Warehouse.Classes
             foreach (string keyPart in sourceBusinessKeyComponentList)
             {
                 ColumnMapping keyComponent = new ColumnMapping();
- 
-                keyComponent.sourceColumn = keyPart;
+
+                Column sourceColumn = new Column();
+                Column targetColumn = new Column();
+
+                sourceColumn.columnName = keyPart;                
+
+                keyComponent.sourceColumn = sourceColumn;
 
                 var indexExists = targetBusinessKeyComponentList.ElementAtOrDefault(counter) != null;
                 if (indexExists)
                 {
-                    keyComponent.targetColumn = targetBusinessKeyComponentList[counter];
+                    targetColumn.columnName = targetBusinessKeyComponentList[counter];                    
                 }
                 else
                 {
-                    keyComponent.targetColumn = "";
+                    targetColumn.columnName = "";
                 }
+
+                keyComponent.targetColumn = targetColumn;
 
                 returnList.Add(keyComponent);
                 counter++;
@@ -78,13 +85,13 @@ namespace Virtual_Data_Warehouse.Classes
         internal static string EvaluateBusinessKey(ColumnMapping businessKey)
         {
             var businessKeyEval = "";
-            if (businessKey.sourceColumn.Contains("'"))
+            if (businessKey.sourceColumn.columnName.Contains("'"))
             {
-                businessKeyEval = businessKey.sourceColumn;
+                businessKeyEval = businessKey.sourceColumn.columnName;
             }
             else
             {
-                businessKeyEval = "[" + businessKey.sourceColumn + "]";
+                businessKeyEval = "[" + businessKey.sourceColumn.columnName + "]";
             }
 
             return businessKeyEval;

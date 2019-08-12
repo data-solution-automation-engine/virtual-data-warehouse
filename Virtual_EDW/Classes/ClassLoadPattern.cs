@@ -16,9 +16,9 @@ namespace Virtual_EDW
     /// </summary>
     class LoadPattern
     {
-        public string loadPatternName { get; set; }
-        public string loadPatternType { get; set; }
-        public string loadPatternFilePath { get; set; }
+        public string LoadPatternName { get; set; }
+        public string LoadPatternType { get; set; }
+        public string LoadPatternFilePath { get; set; }
 
         /// <summary>
         ///    Create a file backup for the configuration file at the provided location and return notice of success or failure as a string.
@@ -176,10 +176,18 @@ namespace Virtual_EDW
     /// </summary>
     class ColumnMapping
     {
-        public string sourceColumn { get; set; }
-        public string targetColumn { get; set; }
+        public Column sourceColumn { get; set; }
+        public Column targetColumn { get; set; }
     }
 
+    /// <summary>
+    /// And individual column
+    /// </summary>
+    class Column
+    {
+        public string columnName { get; set; }
+        public string columnType { get; set; }
+    }
 
 
     /// <summary>

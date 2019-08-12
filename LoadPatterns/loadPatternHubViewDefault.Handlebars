@@ -17,16 +17,16 @@ FROM (
 SELECT
     HASHBYTES('MD5', {{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
     {{#each businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
     -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
     MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
     {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}} {{!-- The Hub business key --}}
     {{#each businessKeyComponentMapping}}
-    {{targetColumn}},{{/each}}{{/each}}
+    {{targetColumn.columnName}},{{/each}}{{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-       {{targetColumn}}{{/each}}{{#unless @last}},{{/unless}} {{/each}}
+       {{targetColumn.columnName}}{{/each}}{{#unless @last}},{{/unless}} {{/each}}
     ORDER BY 
        MIN({{../metadataConfiguration.loadDateTimeAttribute}})
     ) AS ROW_NR
@@ -34,21 +34,21 @@ FROM
 ( {{/if}}{{/each}}
     {{#each individualSourceToTargetMapping }}
     SELECT {{#each businessKey}}{{#each businessKeyComponentMapping}}
-        CAST([{{sourceColumn}}] AS NVARCHAR(100)) AS {{targetColumn}}{{/each}},{{/each}}
+        CAST([{{sourceColumn.columnName}}] AS NVARCHAR(100)) AS {{targetColumn.columnName}}{{/each}},{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
     FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}]
     WHERE {{#each businessKey}}{{#each businessKeyComponentMapping}}
-        {{sourceColumn}}{{/each}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}
+        {{sourceColumn.columnName}}{{/each}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
-        {{sourceColumn}}{{/each}},{{/each}}
+        {{sourceColumn.columnName}}{{/each}},{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}
 ) HUB_selection {{#each individualSourceToTargetMapping}}{{#if @first}}
 GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
-    {{targetColumn}}{{/each}},{{/each}}
+    {{targetColumn.columnName}}{{/each}},{{/each}}
     {{../metadataConfiguration.recordSourceAttribute}} {{/if}}{{/each}}
 ) hub
 WHERE ROW_NR = 1

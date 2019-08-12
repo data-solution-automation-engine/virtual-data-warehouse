@@ -21,7 +21,7 @@ SELECT
     ) AS {{targetTableHashKey}},
     DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
     {{#each columnMapping}}
-    {{sourceColumn}} AS {{targetColumn}}{{#unless @last}},{{/unless}}
+    {{sourceColumn.columnName}} AS {{targetColumn.columnName}}{{#unless @last}},{{/unless}}
     {{/each}}
 FROM {{sourceTable}}
 

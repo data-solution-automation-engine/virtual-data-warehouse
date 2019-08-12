@@ -747,8 +747,8 @@ namespace Virtual_EDW
                         foreach (DataRow column in columnMetadataDataTable.Rows)
                         {
                             ColumnMapping columnMapping = new ColumnMapping();
-                            columnMapping.sourceColumn = (string) column["SOURCE_ATTRIBUTE_NAME"];
-                            columnMapping.targetColumn = (string) column["TARGET_ATTRIBUTE_NAME"];
+                            columnMapping.sourceColumn.columnName = (string) column["SOURCE_ATTRIBUTE_NAME"];
+                            columnMapping.targetColumn.columnName = (string) column["TARGET_ATTRIBUTE_NAME"];
                             columnMappingList.Add(columnMapping);
                         }
 
@@ -1366,8 +1366,8 @@ namespace Virtual_EDW
                         foreach (DataRow column in columnMetadataDataTable.Rows)
                         {
                             ColumnMapping columnMapping = new ColumnMapping();
-                            columnMapping.sourceColumn = (string)column["SOURCE_ATTRIBUTE_NAME"];
-                            columnMapping.targetColumn = (string)column["TARGET_ATTRIBUTE_NAME"];
+                            columnMapping.sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
+                            columnMapping.targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
                             columnMappingList.Add(columnMapping);
                         }
 
@@ -1527,8 +1527,15 @@ namespace Virtual_EDW
                         foreach (DataRow column in columnMetadataDataTable.Rows)
                         {
                             ColumnMapping columnMapping = new ColumnMapping();
-                            columnMapping.sourceColumn = (string)column["SOURCE_ATTRIBUTE_NAME"];
-                            columnMapping.targetColumn = (string)column["TARGET_ATTRIBUTE_NAME"];
+                            Column sourceColumn = new Column();
+                            Column targetColumn = new Column();
+
+                            sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
+                            targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
+
+                            columnMapping.sourceColumn = sourceColumn;
+                            columnMapping.targetColumn = targetColumn;
+
                             columnMappingList.Add(columnMapping);
                         }
 
@@ -2830,9 +2837,9 @@ namespace Virtual_EDW
 
                 foreach (var patternDetail in patternList)
                 {
-                    if (patternDetail.loadPatternType == "StagingArea")
+                    if (patternDetail.LoadPatternType == "StagingArea")
                     {
-                        comboBoxStgPattern.Items.Add(patternDetail.loadPatternName);
+                        comboBoxStgPattern.Items.Add(patternDetail.LoadPatternName);
                     }
                 }
             }
@@ -2853,9 +2860,9 @@ namespace Virtual_EDW
 
                 foreach (var patternDetail in patternList)
                 {
-                    if (patternDetail.loadPatternType == "PersistentStagingArea")
+                    if (patternDetail.LoadPatternType == "PersistentStagingArea")
                     {
-                        comboBoxPsaPattern.Items.Add(patternDetail.loadPatternName);
+                        comboBoxPsaPattern.Items.Add(patternDetail.LoadPatternName);
                     }
                 }
             }
@@ -2876,9 +2883,9 @@ namespace Virtual_EDW
 
                 foreach (var patternDetail in patternList)
                 {
-                    if (patternDetail.loadPatternType == "Hub")
+                    if (patternDetail.LoadPatternType == "Hub")
                     {
-                        comboBoxHubPattern.Items.Add(patternDetail.loadPatternName);
+                        comboBoxHubPattern.Items.Add(patternDetail.LoadPatternName);
                     }
                 }
             }
@@ -2899,9 +2906,9 @@ namespace Virtual_EDW
 
                 foreach (var patternDetail in patternList)
                 {
-                    if (patternDetail.loadPatternType == "Satellite")
+                    if (patternDetail.LoadPatternType == "Satellite")
                     {
-                        comboBoxSatPattern.Items.Add(patternDetail.loadPatternName);
+                        comboBoxSatPattern.Items.Add(patternDetail.LoadPatternName);
                     }
                 }
             }
@@ -2922,9 +2929,9 @@ namespace Virtual_EDW
 
                 foreach (var patternDetail in patternList)
                 {
-                    if (patternDetail.loadPatternType == "Link")
+                    if (patternDetail.LoadPatternType == "Link")
                     {
-                        comboBoxLinkPattern.Items.Add(patternDetail.loadPatternName);
+                        comboBoxLinkPattern.Items.Add(patternDetail.LoadPatternName);
                     }
                 }
             }
@@ -2945,9 +2952,9 @@ namespace Virtual_EDW
 
                 foreach (var patternDetail in patternList)
                 {
-                    if (patternDetail.loadPatternType == "LinkSatellite")
+                    if (patternDetail.LoadPatternType == "LinkSatellite")
                     {
-                        comboBoxLsatPattern.Items.Add(patternDetail.loadPatternName);
+                        comboBoxLsatPattern.Items.Add(patternDetail.LoadPatternName);
                     }
                 }
             }
@@ -2998,19 +3005,19 @@ namespace Virtual_EDW
         private void comboBoxHubPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxHubPattern.Text);
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxHubPattern.Text);
 
             // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternHubPath.Text = loadPattern.loadPatternFilePath;
+            labelLoadPatternHubPath.Text = loadPattern.LoadPatternFilePath;
 
             // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath).TrimEnd();
+            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath).TrimEnd();
 
             // Display the pattern in the text box on the screen
             richTextBoxHubPattern.Text = loadPatternTemplate;
 
             // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
             if (startUpIndicator == false)
@@ -3023,19 +3030,19 @@ namespace Virtual_EDW
         private void comboBoxSatPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxSatPattern.Text);
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxSatPattern.Text);
 
             // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternSatPath.Text = loadPattern.loadPatternFilePath;
+            labelLoadPatternSatPath.Text = loadPattern.LoadPatternFilePath;
 
             // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
 
             // Display the pattern in the text box on the screen
             richTextBoxSatPattern.Text = loadPatternTemplate;
 
             // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
             if (startUpIndicator == false)
@@ -3048,19 +3055,19 @@ namespace Virtual_EDW
         private void comboBoxLsatPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxLsatPattern.Text);
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxLsatPattern.Text);
 
             // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternLsatPath.Text = loadPattern.loadPatternFilePath;
+            labelLoadPatternLsatPath.Text = loadPattern.LoadPatternFilePath;
 
             // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
 
             // Display the pattern in the text box on the screen
             richTextBoxLsatPattern.Text = loadPatternTemplate;
 
             // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
             if (startUpIndicator == false)
@@ -3073,19 +3080,19 @@ namespace Virtual_EDW
         private void comboBoxLinkPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxLinkPattern.Text);
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxLinkPattern.Text);
 
             // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternLinkPath.Text = loadPattern.loadPatternFilePath;
+            labelLoadPatternLinkPath.Text = loadPattern.LoadPatternFilePath;
 
             // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
 
             // Display the pattern in the text box on the screen
             richTextBoxLinkPattern.Text = loadPatternTemplate;
 
             // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
             if (startUpIndicator == false)
@@ -3098,19 +3105,19 @@ namespace Virtual_EDW
         private void comboBoxPsaPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxPsaPattern.Text);
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxPsaPattern.Text);
 
             // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternPsaPath.Text = loadPattern.loadPatternFilePath;
+            labelLoadPatternPsaPath.Text = loadPattern.LoadPatternFilePath;
 
             // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
 
             // Display the pattern in the text box on the screen
             richTextBoxPsaPattern.Text = loadPatternTemplate;
 
             // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
             if (startUpIndicator == false)
@@ -3123,19 +3130,19 @@ namespace Virtual_EDW
         private void comboBoxStgPattern_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.loadPatternName == comboBoxStgPattern.Text);
+            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxStgPattern.Text);
 
             // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternStgPath.Text = loadPattern.loadPatternFilePath;
+            labelLoadPatternStgPath.Text = loadPattern.LoadPatternFilePath;
 
             // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.loadPatternFilePath);
+            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
 
             // Display the pattern in the text box on the screen
             richTextBoxStgPattern.Text = loadPatternTemplate;
 
             // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.loadPatternType);
+            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
             if (startUpIndicator == false)

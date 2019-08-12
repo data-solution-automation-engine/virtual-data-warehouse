@@ -16,7 +16,7 @@ CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
 AS
 SELECT
   {{#each columnMapping}}
-  {{sourceColumn}} AS {{targetColumn}}{{#unless @last}},{{/unless}}
+  {{sourceColumn.columnName}} AS {{targetColumn.columnName}}{{#unless @last}},{{/unless}}
   {{/each}}
 FROM {{sourceTable}}
 WHERE 1=1

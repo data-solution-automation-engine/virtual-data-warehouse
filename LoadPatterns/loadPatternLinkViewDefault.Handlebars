@@ -17,7 +17,7 @@ FROM
 SELECT
     HASHBYTES('MD5', {{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}}
     {{#each businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
     -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
@@ -25,11 +25,11 @@ SELECT
     {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}} {{#unless @first}} {{!-- List out the separate (Hub) business keys --}}
     HASHBYTES('MD5', 
     {{#each businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
     {{/each}}
      ) AS {{surrogateKey}},{{/unless}} {{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-      {{targetColumn}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
+      {{targetColumn.columnName}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
     ORDER BY 
        MIN({{../metadataConfiguration.loadDateTimeAttribute}})
     ) AS ROW_NR
@@ -37,19 +37,19 @@ FROM
 ( {{/if}}{{/each}}
     {{#each individualSourceToTargetMapping }}
     SELECT {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-        CAST([{{sourceColumn}}] AS NVARCHAR(100)) AS {{targetColumn}}{{/each}},{{/unless}}{{/each}}
+        CAST([{{sourceColumn.columnName}}] AS NVARCHAR(100)) AS {{targetColumn.columnName}}{{/each}},{{/unless}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
     FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}]
     WHERE {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-       {{sourceColumn}}{{/each}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/unless}}{{/each}}
+       {{sourceColumn.columnName}}{{/each}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/unless}}{{/each}}
        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-       {{sourceColumn}}{{/each}},{{/unless}}{{/each}}
+       {{sourceColumn.columnName}}{{/each}},{{/unless}}{{/each}}
        {{../metadataConfiguration.recordSourceAttribute}} {{#unless @last}}UNION{{/unless}}
   ) LINK_selection
   GROUP BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-     {{targetColumn}}{{/each}},{{/unless}}{{/each}}
+     {{targetColumn.columnName}}{{/each}},{{/unless}}{{/each}}
      {{../metadataConfiguration.recordSourceAttribute}} {{/each}}
 ) link
 WHERE ROW_NR = 1

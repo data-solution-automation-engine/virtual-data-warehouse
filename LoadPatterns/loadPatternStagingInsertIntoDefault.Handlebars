@@ -18,7 +18,7 @@ INSERT INTO [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{targ
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
    {{#each columnMapping}}
-   [{{sourceColumn}}]{{#unless @last}},{{/unless}}
+   [{{sourceColumn.columnName}}]{{#unless @last}},{{/unless}}
    {{/each}}
 )
 SELECT
@@ -28,7 +28,7 @@ SELECT
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
    {{#each columnMapping}}
-   [{{sourceColumn}}]{{#unless @last}},{{/unless}}
+   [{{sourceColumn.columnName}}]{{#unless @last}},{{/unless}}
    {{/each}}
 FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
 {{/each}}
