@@ -9,6 +9,7 @@ namespace Virtual_Data_Warehouse.Classes
     {
         public static List<ColumnMapping> BusinessKeyComponentMappingList (string sourceBusinessKeyDefinition, string targetBusinessKeyDefinition)
         {
+            // Set the return type
             List<ColumnMapping> returnList = new List<ColumnMapping>();
 
             // Evaluate source key components
@@ -54,12 +55,19 @@ namespace Virtual_Data_Warehouse.Classes
 
             foreach (string keyPart in sourceBusinessKeyComponentList)
             {
+                var businessKeyEval = "";
+                if (keyPart.StartsWith("'") && keyPart.EndsWith("'"))
+                {
+                    businessKeyEval = "HardCoded";
+                }
+
                 ColumnMapping keyComponent = new ColumnMapping();
 
                 Column sourceColumn = new Column();
                 Column targetColumn = new Column();
 
-                sourceColumn.columnName = keyPart;                
+                sourceColumn.columnName = keyPart;
+                sourceColumn.columnType = businessKeyEval;
 
                 keyComponent.sourceColumn = sourceColumn;
 

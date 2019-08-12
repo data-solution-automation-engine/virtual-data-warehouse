@@ -2,7 +2,7 @@
 -- Hub View definition for {{mainTable}}
 -- Generated at {{generationDateTime}}
 --
-
+GO
 USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
 GO
 
@@ -26,7 +26,8 @@ SELECT
     {{#each businessKeyComponentMapping}}
     {{targetColumn.columnName}},{{/each}}{{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-       {{targetColumn.columnName}}{{/each}}{{#unless @last}},{{/unless}} {{/each}}
+       {{targetColumn.columnName}}{{#unless @last}},{{/unless}}{{/each}}
+    {{/each}}
     ORDER BY 
        MIN({{../metadataConfiguration.loadDateTimeAttribute}})
     ) AS ROW_NR
@@ -34,28 +35,29 @@ FROM
 ( {{/if}}{{/each}}
     {{#each individualSourceToTargetMapping }}
     SELECT {{#each businessKey}}{{#each businessKeyComponentMapping}}
-        CAST([{{sourceColumn.columnName}}] AS NVARCHAR(100)) AS {{targetColumn.columnName}}{{/each}},{{/each}}
+        CAST({{sourceColumn.columnName}} AS NVARCHAR(100)) AS {{targetColumn.columnName}},{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
     FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}]
     WHERE {{#each businessKey}}{{#each businessKeyComponentMapping}}
-        {{sourceColumn.columnName}}{{/each}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}
+        {{sourceColumn.columnName}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
-        {{sourceColumn.columnName}}{{/each}},{{/each}}
+        {{#unless sourceColumn.columnType}}{{sourceColumn.columnName}},{{/unless}}{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}
 ) HUB_selection {{#each individualSourceToTargetMapping}}{{#if @first}}
 GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
-    {{targetColumn.columnName}}{{/each}},{{/each}}
+    {{targetColumn.columnName}},{{/each}}{{/each}}
     {{../metadataConfiguration.recordSourceAttribute}} {{/if}}{{/each}}
 ) hub
 WHERE ROW_NR = 1
 UNION
-SELECT 0x00000000000000000000000000000000,
-- 1,
-'1900-01-01',
-'Data Warehouse',
-'Unknown',
-1 AS ROW_NR
+SELECT 
+  0x00000000000000000000000000000000,
+  - 1,
+  '1900-01-01',
+  'Data Warehouse',{{#each individualSourceToTargetMapping}}{{#if @first}}{{#each businessKey}} {{#each businessKeyComponentMapping}}
+  'Unknown',{{/each}}{{/each}}{{/if}}{{/each}}
+  1 AS ROW_NR
