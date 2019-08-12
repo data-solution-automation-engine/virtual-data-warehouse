@@ -153,7 +153,16 @@ namespace Virtual_EDW
                     // MatchCollection matches = handleBarsSyntaxPattern.Matches(token);
 
                     //Check whether the token is a keyword, or between {{ }}  
-                    String[] keyWordSql = { "UNION", "SELECT", "FROM", "INSERT", "INTO", "OVER", "PARTITION", "IN", "ORDER", "BY", "GROUP", "AS", "WHERE", "NVARCHAR", "NOT EXISTS", "LEFT", "OUTER", "JOIN"};
+                    String[] keyWordSql = {
+                        "UNION",
+                        "TRUNCATE",
+                        "USE",
+                        "GO",
+                        "ON",
+                        "SELECT",
+                        "FROM",
+                        "INSERT",
+                        "INTO", "OVER", "PARTITION", "IN", "ORDER", "BY", "GROUP", "AS", "WHERE", "NVARCHAR", "NOT EXISTS", "LEFT", "OUTER", "JOIN"};
                     for (int i = 0; i < keyWordSql.Length; i++)
                     {
                         if (keyWordSql[i] == token)
@@ -172,6 +181,18 @@ namespace Virtual_EDW
                         {
                             // Apply alternative color and font to highlight keyword.  
                             inputTextBox.SelectionColor = Color.Purple;
+                            //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
+                            break;
+                        }
+                    }
+
+                    String[] keyWordFunctionComment = { "--", "/*", "*/" };
+                    for (int i = 0; i < keyWordFunctionComment.Length; i++)
+                    {
+                        if (keyWordFunctionComment[i] == token)
+                        {
+                            // Apply alternative color and font to highlight keyword.  
+                            inputTextBox.SelectionColor = Color.ForestGreen;
                             //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                             break;
                         }
