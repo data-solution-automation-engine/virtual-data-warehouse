@@ -61,5 +61,20 @@ namespace Virtual_Data_Warehouse.Classes
 
             return returnList;
         }
+
+        internal static string EvaluateBusinessKey(ColumnMapping businessKey)
+        {
+            var businessKeyEval = "";
+            if (businessKey.sourceColumn.Contains("'"))
+            {
+                businessKeyEval = businessKey.sourceColumn;
+            }
+            else
+            {
+                businessKeyEval = "[" + businessKey.sourceColumn + "]";
+            }
+
+            return businessKeyEval;
+        }
     }
 }

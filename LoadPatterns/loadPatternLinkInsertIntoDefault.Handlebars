@@ -3,7 +3,7 @@
 -- Generated at {{generationDateTime}}
 --
 
-USE [{{metadataConfiguration.psaDatabaseName}}]
+USE [{{metadataConfiguration.persistentStagingDatabaseName}}]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]') AND type in (N'V'))
@@ -57,14 +57,3 @@ SELECT 0x00000000000000000000000000000000,
 'Data Warehouse',
 'Unknown',
 1 AS ROW_NR
-
-
-
-
-
-
-
-
-
-
-

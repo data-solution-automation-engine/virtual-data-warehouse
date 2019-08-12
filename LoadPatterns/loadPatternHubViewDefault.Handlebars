@@ -15,7 +15,7 @@ SELECT hub.*
 FROM (
 {{#each individualSourceToTargetMapping}}{{#if @first}}
 SELECT
-    HASHBYTES('MD5', {{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}}
+    HASHBYTES('MD5', {{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
     {{#each businessKeyComponentMapping}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}

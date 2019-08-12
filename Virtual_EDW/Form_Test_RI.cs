@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using Virtual_Data_Warehouse.Classes;
 
 namespace Virtual_EDW
 {
@@ -33,7 +34,20 @@ namespace Virtual_EDW
                     exception.Message;
             }
 
-            string virtualisationSnippet = "";
+            // Evaluate the query types based on the environments / radio buttons
+            string environmentSnippet = "";
+            string schemaSnippet = "";
+
+            if (radioButtonPSA.Checked)
+            {
+                environmentSnippet=TeamConfigurationSettings.PsaDatabaseName;
+                schemaSnippet = VedwConfigurationSettings.VedwSchema;
+            }
+            else if (radioButtonIntegrationLayer.Checked)
+            {
+                environmentSnippet = TeamConfigurationSettings.IntegrationDatabaseName;
+                schemaSnippet = "";
+            }
 
             var queryRi = new StringBuilder();
             queryRi.AppendLine("--");
@@ -41,19 +55,6 @@ namespace Virtual_EDW
             queryRi.AppendLine("-- Generated at " + DateTime.Now);
             queryRi.AppendLine("--");
             queryRi.AppendLine();
-
-            if (radioButtonPSA.Checked)
-            {
-                queryRi.AppendLine("USE [" + TeamConfigurationSettings.PsaDatabaseName + "]");
-                virtualisationSnippet = VedwConfigurationSettings.VedwSchema + ".";
-            }
-            else if (radioButtonIntegrationLayer.Checked)
-            {
-                queryRi.AppendLine("USE [" + TeamConfigurationSettings.IntegrationDatabaseName + "]");
-                virtualisationSnippet = "";
-            }
-
-            var stringDataType = VedwConfigurationSettings.EnableUnicode == "True" ? "NVARCHAR" : "VARCHAR";
 
             // Satellite component
             queryRi.AppendLine("GO");
@@ -75,12 +76,13 @@ namespace Virtual_EDW
               ,sat.[SURROGATE_KEY]
               ,sat.[FILTER_CRITERIA]
               ,sat.[LOAD_VECTOR]
+              ,hub.[TARGET_SCHEMA_NAME] AS [HUB_SCHEMA_NAME]
               ,hub.[TARGET_NAME] AS [HUB_NAME]
-              FROM [interface].[INTERFACE_SOURCE_SATELLITE_XREF] sat
+            FROM [interface].[INTERFACE_SOURCE_SATELLITE_XREF] sat
             JOIN [interface].[INTERFACE_SOURCE_HUB_XREF] hub 
-	            ON sat.SOURCE_NAME = hub.SOURCE_NAME
-            AND sat.TARGET_BUSINESS_KEY_DEFINITION = hub.TARGET_BUSINESS_KEY_DEFINITION
-            WHERE sat.TARGET_TYPE='Normal'
+	          ON sat.[SOURCE_NAME] = hub.[SOURCE_NAME]
+            AND sat.[TARGET_BUSINESS_KEY_DEFINITION] = hub.[TARGET_BUSINESS_KEY_DEFINITION]
+            WHERE sat.[TARGET_TYPE]='Normal'
             ");
 
             var satTables = MyParent.GetDataTable(ref connOmd, queryTableArraySat.ToString());
@@ -94,42 +96,45 @@ namespace Virtual_EDW
                 foreach (DataRow row in satTables.Rows)
                 {
                     queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + (string)row["TARGET_NAME"] + "'");
-                    queryRi.AppendLine("FROM "+ virtualisationSnippet + (string)row["TARGET_NAME"] + " sat");
-                    queryRi.AppendLine("WHERE NOT EXISTS ");
+                    queryRi.AppendLine("FROM [" + environmentSnippet + "].[" + (string)row["TARGET_SCHEMA_NAME"] + "].[" + (string)row["TARGET_NAME"] + "] sat");
+                    queryRi.AppendLine("WHERE NOT EXISTS");
                     queryRi.AppendLine("(");
-                    queryRi.AppendLine("  SELECT 1 FROM "+ (string)row["HUB_NAME"] + " hub WHERE hub."+(string)row["SURROGATE_KEY"]+" = sat."+(string)row["SURROGATE_KEY"]);
+                    queryRi.AppendLine("  SELECT 1 FROM [" + environmentSnippet + "].[" + (string)row["HUB_SCHEMA_NAME"] + "].[" + (string)row["HUB_NAME"] + "] hub WHERE sat.["+(string)row["SURROGATE_KEY"]+"] = hub.["+(string)row["SURROGATE_KEY"]+"]");
                     queryRi.AppendLine(")");
+
+                    if (radioButtonDeltaValidation.Checked)
+                    {
+                        var businessKeyList = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]);
+
+                        var surrogateKeySnippet = new StringBuilder();
+                        surrogateKeySnippet.AppendLine("HASHBYTES('MD5',");
+
+                        
+                        foreach (var businessKey in businessKeyList)
+                        {
+                            string businessKeyEval = InterfaceHandling.EvaluateBusinessKey(businessKey);
+
+                            surrogateKeySnippet.AppendLine("    ISNULL(RTRIM(CONVERT(NVARCHAR(100)," + businessKeyEval + ")),'NA')+'|'+");
+                        }
+
+                        surrogateKeySnippet.Remove(surrogateKeySnippet.Length - 3, 3);
+                        surrogateKeySnippet.AppendLine();
+                        surrogateKeySnippet.AppendLine("  )");
+
+                        queryRi.AppendLine("AND EXISTS");
+                        queryRi.AppendLine("(");
+                        queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = ");
+                        queryRi.AppendLine("  " + surrogateKeySnippet.ToString());
+                        queryRi.Remove(queryRi.Length - 3, 3);
+                        queryRi.AppendLine(")");
+                    }
+
                     queryRi.AppendLine("--");
                     queryRi.AppendLine("UNION ALL");
                     queryRi.AppendLine("--");
-
-                    //if (radioButtonDeltaValidation.Checked) 
-                    //{
-                    //    queryRi.AppendLine("JOIN ");
-                    //    queryRi.AppendLine("(");
-                    //    queryRi.AppendLine("  SELECT ");
-                    //    queryRi.AppendLine("    CONVERT(CHAR(32),HASHBYTES('MD5',");
-
-                    //    foreach (DataRow hubKey in hubKeyList.Rows)
-                    //    {
-                    //        queryRi.AppendLine("      ISNULL(RTRIM(CONVERT(" + stringDataType + "(100),[" +(string) hubKey["COLUMN_NAME"] + "])),'NA')+'|'+");
-                    //    }
-
-                    //    queryRi.Remove(queryRi.Length - 3, 3);
-                    //    queryRi.AppendLine();
-                    //    queryRi.AppendLine("    ),2) AS " + hubSk);
-                    //    queryRi.AppendLine("  FROM ");
-                    //    queryRi.AppendLine("  (");
-                    //    queryRi.AppendLine("    SELECT " + hubQuerySelect + " FROM [" +TeamConfigurationSettings.StagingDatabaseName + "].[dbo].[" +stagingAreaTableName + "]");
-                    //    queryRi.AppendLine("  ) stgsub");
-                    //    queryRi.AppendLine(") staging ON ");
-                    //    queryRi.AppendLine("A." + (string)row["SURROGATE_KEY"] + " = staging." + (string)row["SURROGATE_KEY"]);
-                    //    // queryRI.AppendLine("JOIN " + stgTableName + " stg ON "+hubQuerySelect);
-                    //}
-
                 }
 
-                queryRi.Remove(queryRi.Length - 15, 15);
+                queryRi.Remove(queryRi.Length - 19, 19);
             }
 
 
@@ -247,5 +252,7 @@ namespace Virtual_EDW
             richTextBoxOutput.Text = queryRi.ToString();
 
         }
+
+
     }
 }

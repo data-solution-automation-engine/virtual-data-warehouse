@@ -43,14 +43,10 @@
             this.radioButtonDeltaValidation = new System.Windows.Forms.RadioButton();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
-            this.groupBoxhashKeyoutput = new System.Windows.Forms.GroupBox();
-            this.radioButtonCharacterHash = new System.Windows.Forms.RadioButton();
-            this.radioButtonBinaryHash = new System.Windows.Forms.RadioButton();
             this.menuStrip1.SuspendLayout();
             this.TargetPlatformGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox9.SuspendLayout();
-            this.groupBoxhashKeyoutput.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonGenerateTestcases
@@ -124,22 +120,22 @@
             // radioButtonPSA
             // 
             this.radioButtonPSA.AutoSize = true;
-            this.radioButtonPSA.Checked = true;
             this.radioButtonPSA.Location = new System.Drawing.Point(6, 19);
             this.radioButtonPSA.Name = "radioButtonPSA";
             this.radioButtonPSA.Size = new System.Drawing.Size(147, 17);
             this.radioButtonPSA.TabIndex = 3;
-            this.radioButtonPSA.TabStop = true;
             this.radioButtonPSA.Text = "Persistent Staging (virtual)";
             this.radioButtonPSA.UseVisualStyleBackColor = true;
             // 
             // radioButtonIntegrationLayer
             // 
             this.radioButtonIntegrationLayer.AutoSize = true;
+            this.radioButtonIntegrationLayer.Checked = true;
             this.radioButtonIntegrationLayer.Location = new System.Drawing.Point(6, 42);
             this.radioButtonIntegrationLayer.Name = "radioButtonIntegrationLayer";
             this.radioButtonIntegrationLayer.Size = new System.Drawing.Size(151, 17);
             this.radioButtonIntegrationLayer.TabIndex = 1;
+            this.radioButtonIntegrationLayer.TabStop = true;
             this.radioButtonIntegrationLayer.Text = "Integration Layer (physical)";
             this.radioButtonIntegrationLayer.UseVisualStyleBackColor = true;
             // 
@@ -157,22 +153,22 @@
             // radioButtonFullValidation
             // 
             this.radioButtonFullValidation.AutoSize = true;
-            this.radioButtonFullValidation.Checked = true;
             this.radioButtonFullValidation.Location = new System.Drawing.Point(6, 19);
             this.radioButtonFullValidation.Name = "radioButtonFullValidation";
             this.radioButtonFullValidation.Size = new System.Drawing.Size(128, 17);
             this.radioButtonFullValidation.TabIndex = 3;
-            this.radioButtonFullValidation.TabStop = true;
             this.radioButtonFullValidation.Text = "Data Warehouse (full)";
             this.radioButtonFullValidation.UseVisualStyleBackColor = true;
             // 
             // radioButtonDeltaValidation
             // 
             this.radioButtonDeltaValidation.AutoSize = true;
+            this.radioButtonDeltaValidation.Checked = true;
             this.radioButtonDeltaValidation.Location = new System.Drawing.Point(6, 42);
             this.radioButtonDeltaValidation.Name = "radioButtonDeltaValidation";
             this.radioButtonDeltaValidation.Size = new System.Drawing.Size(118, 17);
             this.radioButtonDeltaValidation.TabIndex = 1;
+            this.radioButtonDeltaValidation.TabStop = true;
             this.radioButtonDeltaValidation.Text = "Staging Area (delta)";
             this.radioButtonDeltaValidation.UseVisualStyleBackColor = true;
             // 
@@ -199,45 +195,11 @@
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
             // 
-            // groupBoxhashKeyoutput
-            // 
-            this.groupBoxhashKeyoutput.Controls.Add(this.radioButtonCharacterHash);
-            this.groupBoxhashKeyoutput.Controls.Add(this.radioButtonBinaryHash);
-            this.groupBoxhashKeyoutput.Location = new System.Drawing.Point(25, 207);
-            this.groupBoxhashKeyoutput.Name = "groupBoxhashKeyoutput";
-            this.groupBoxhashKeyoutput.Size = new System.Drawing.Size(171, 70);
-            this.groupBoxhashKeyoutput.TabIndex = 93;
-            this.groupBoxhashKeyoutput.TabStop = false;
-            this.groupBoxhashKeyoutput.Text = "Hash key output";
-            // 
-            // radioButtonCharacterHash
-            // 
-            this.radioButtonCharacterHash.AutoSize = true;
-            this.radioButtonCharacterHash.Location = new System.Drawing.Point(6, 42);
-            this.radioButtonCharacterHash.Name = "radioButtonCharacterHash";
-            this.radioButtonCharacterHash.Size = new System.Drawing.Size(71, 17);
-            this.radioButtonCharacterHash.TabIndex = 1;
-            this.radioButtonCharacterHash.Text = "Character";
-            this.radioButtonCharacterHash.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonBinaryHash
-            // 
-            this.radioButtonBinaryHash.AutoSize = true;
-            this.radioButtonBinaryHash.Checked = true;
-            this.radioButtonBinaryHash.Location = new System.Drawing.Point(6, 19);
-            this.radioButtonBinaryHash.Name = "radioButtonBinaryHash";
-            this.radioButtonBinaryHash.Size = new System.Drawing.Size(54, 17);
-            this.radioButtonBinaryHash.TabIndex = 0;
-            this.radioButtonBinaryHash.TabStop = true;
-            this.radioButtonBinaryHash.Text = "Binary";
-            this.radioButtonBinaryHash.UseVisualStyleBackColor = true;
-            // 
             // FormTestRi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(841, 527);
-            this.Controls.Add(this.groupBoxhashKeyoutput);
+            this.ClientSize = new System.Drawing.Size(841, 528);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.TargetPlatformGroupBox);
@@ -258,8 +220,6 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox9.ResumeLayout(false);
-            this.groupBoxhashKeyoutput.ResumeLayout(false);
-            this.groupBoxhashKeyoutput.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -281,8 +241,5 @@
         private System.Windows.Forms.RadioButton radioButtonDeltaValidation;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.RichTextBox richTextBoxInformationMain;
-        internal System.Windows.Forms.GroupBox groupBoxhashKeyoutput;
-        internal System.Windows.Forms.RadioButton radioButtonCharacterHash;
-        internal System.Windows.Forms.RadioButton radioButtonBinaryHash;
     }
 }

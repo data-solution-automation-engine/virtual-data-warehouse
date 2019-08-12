@@ -2,71 +2,71 @@
   {
     "loadPatternName": "Staging Area View Pattern",
     "loadPatternType": "StagingArea",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternStagingViewDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternStagingViewDefault.handlebars"
   },
   {
     "loadPatternName": "Staging Area Insert Into Pattern",
     "loadPatternType": "StagingArea",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternStagingInsertIntoDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternStagingInsertIntoDefault.handlebars"
   },
   {
     "loadPatternName": "Persistent Staging Area View Pattern",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternPersistentStagingViewDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternPersistentStagingViewDefault.handlebars"
   },
   {
     "loadPatternName": "Persistent Staging Area Insert Into Pattern",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternPersistentStagingInsertIntoDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternPersistentStagingInsertIntoDefault.handlebars"
   },
   {
     "loadPatternName": "Hub View Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubViewDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubViewDefault.handlebars"
   },
   {
     "loadPatternName": "Default Hub Select Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubSelectDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubSelectDefault.handlebars"
   },
   {
     "loadPatternName": "Modified Hub Select Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubSelectModified.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubSelectModified.handlebars"
   },
   {
     "loadPatternName": "Hub Insert Into Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubSelectModified.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubSelectModified.handlebars"
   },
   {
     "loadPatternName": "Satellite View Pattern",
     "loadPatternType": "Satellite",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternSatelliteViewDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternSatelliteViewDefault.handlebars"
   },
   {
     "loadPatternName": "Satellite Insert Into Pattern",
     "loadPatternType": "Satellite",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternSatelliteInsertIntoDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternSatelliteInsertIntoDefault.handlebars"
   },
   {
     "loadPatternName": "Link View Pattern",
     "loadPatternType": "Link",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkViewDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkViewDefault.handlebars"
   },
   {
     "loadPatternName": "Link Insert Into Pattern",
     "loadPatternType": "Link",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkInsertIntoDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkInsertIntoDefault.handlebars"
   },
   {
     "loadPatternName": "Link Satellite View Pattern",
     "loadPatternType": "LinkSatellite",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteViewDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkSatelliteViewDefault.handlebars"
   },
   {
     "loadPatternName": "Link Satellite Insert Into Pattern",
     "loadPatternType": "LinkSatellite",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteInsertIntoDefault.handlebars"
+    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkSatelliteInsertIntoDefault.handlebars"
   }
 ]
