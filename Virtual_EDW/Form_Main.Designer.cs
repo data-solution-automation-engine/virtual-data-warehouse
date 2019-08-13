@@ -151,6 +151,10 @@
             this.richTextBoxLsat = new System.Windows.Forms.RichTextBox();
             this.buttonGenerateLsats = new System.Windows.Forms.Button();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.dataGridViewLoadPatternMetadata = new System.Windows.Forms.DataGridView();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.textBoxSchemaName = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -192,6 +196,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
+            this.buttonSaveLoadPatternList = new System.Windows.Forms.Button();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.tabControlStg.SuspendLayout();
@@ -224,6 +229,7 @@
             this.tabPage8.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternMetadata)).BeginInit();
             this.groupBox8.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStripMainMenu.SuspendLayout();
@@ -1632,6 +1638,11 @@
             // 
             // tabPageSettings
             // 
+            this.tabPageSettings.Controls.Add(this.buttonSaveLoadPatternList);
+            this.tabPageSettings.Controls.Add(this.label10);
+            this.tabPageSettings.Controls.Add(this.textBoxLoadPatternPath);
+            this.tabPageSettings.Controls.Add(this.label7);
+            this.tabPageSettings.Controls.Add(this.dataGridViewLoadPatternMetadata);
             this.tabPageSettings.Controls.Add(this.groupBox8);
             this.tabPageSettings.Controls.Add(this.groupBox1);
             this.tabPageSettings.Controls.Add(this.label6);
@@ -1646,11 +1657,49 @@
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(14, 139);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(91, 13);
+            this.label10.TabIndex = 94;
+            this.label10.Text = "Load pattern path";
+            // 
+            // textBoxLoadPatternPath
+            // 
+            this.textBoxLoadPatternPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxLoadPatternPath.Location = new System.Drawing.Point(17, 157);
+            this.textBoxLoadPatternPath.Multiline = true;
+            this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
+            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(493, 27);
+            this.textBoxLoadPatternPath.TabIndex = 93;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(526, 43);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(72, 13);
+            this.label7.TabIndex = 92;
+            this.label7.Text = "Load patterns";
+            // 
+            // dataGridViewLoadPatternMetadata
+            // 
+            this.dataGridViewLoadPatternMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewLoadPatternMetadata.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewLoadPatternMetadata.Location = new System.Drawing.Point(529, 61);
+            this.dataGridViewLoadPatternMetadata.Name = "dataGridViewLoadPatternMetadata";
+            this.dataGridViewLoadPatternMetadata.Size = new System.Drawing.Size(782, 463);
+            this.dataGridViewLoadPatternMetadata.TabIndex = 91;
+            // 
             // groupBox8
             // 
             this.groupBox8.Controls.Add(this.textBoxSchemaName);
             this.groupBox8.Controls.Add(this.label12);
-            this.groupBox8.Location = new System.Drawing.Point(142, 155);
+            this.groupBox8.Location = new System.Drawing.Point(142, 204);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(366, 70);
             this.groupBox8.TabIndex = 89;
@@ -1677,7 +1726,7 @@
             // 
             this.groupBox1.Controls.Add(this.radioButtonProduction);
             this.groupBox1.Controls.Add(this.radioButtonDevelopment);
-            this.groupBox1.Location = new System.Drawing.Point(17, 155);
+            this.groupBox1.Location = new System.Drawing.Point(17, 204);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(119, 70);
             this.groupBox1.TabIndex = 90;
@@ -1849,7 +1898,7 @@
             // 
             this.pointInTimeToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.Time;
             this.pointInTimeToolStripMenuItem.Name = "pointInTimeToolStripMenuItem";
-            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.pointInTimeToolStripMenuItem.Text = "Point In Time";
             this.pointInTimeToolStripMenuItem.Click += new System.EventHandler(this.pointInTimeToolStripMenuItem_Click);
             // 
@@ -1857,7 +1906,7 @@
             // 
             this.runEverythingToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.CogIcon;
             this.runEverythingToolStripMenuItem.Name = "runEverythingToolStripMenuItem";
-            this.runEverythingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.runEverythingToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.runEverythingToolStripMenuItem.Text = "Run Everything";
             this.runEverythingToolStripMenuItem.Click += new System.EventHandler(this.runEverythingToolStripMenuItem_Click);
             // 
@@ -1867,14 +1916,14 @@
             this.generateTestDataToolStripMenuItem,
             this.generateRIValidationToolStripMenuItem});
             this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.testingToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.testingToolStripMenuItem.Text = "Testing";
             // 
             // generateTestDataToolStripMenuItem
             // 
             this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
             this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
             this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
             this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
             // 
@@ -1882,7 +1931,7 @@
             // 
             this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
             this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
             this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
             this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
             // 
@@ -2023,6 +2072,16 @@
             this.richTextBoxInformationMain.Text = "";
             this.richTextBoxInformationMain.TextChanged += new System.EventHandler(this.richTextBoxInformationMain_TextChanged);
             // 
+            // buttonSaveLoadPatternList
+            // 
+            this.buttonSaveLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSaveLoadPatternList.Location = new System.Drawing.Point(529, 530);
+            this.buttonSaveLoadPatternList.Name = "buttonSaveLoadPatternList";
+            this.buttonSaveLoadPatternList.Size = new System.Drawing.Size(109, 40);
+            this.buttonSaveLoadPatternList.TabIndex = 95;
+            this.buttonSaveLoadPatternList.Text = "Save Load Pattern Overview";
+            this.buttonSaveLoadPatternList.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2040,6 +2099,8 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Virtual Enterprise Data Warehouse - v1.6";
+            this.Shown += new System.EventHandler(this.FormMain_Shown);
+            this.SizeChanged += new System.EventHandler(this.FormMain_SizeChanged);
             this.MainTabControl.ResumeLayout(false);
             this.tabPageStaging.ResumeLayout(false);
             this.tabPageStaging.PerformLayout();
@@ -2091,6 +2152,7 @@
             this.groupBox7.PerformLayout();
             this.tabPageSettings.ResumeLayout(false);
             this.tabPageSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternMetadata)).EndInit();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -2270,6 +2332,11 @@
         private System.Windows.Forms.RichTextBox richTextBoxLsatPattern;
         private System.Windows.Forms.CheckBox checkBoxGenerateJsonSchema;
         private System.Windows.Forms.CheckBox checkBoxSaveToFile;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.DataGridView dataGridViewLoadPatternMetadata;
+        private System.Windows.Forms.Label label10;
+        internal System.Windows.Forms.TextBox textBoxLoadPatternPath;
+        private System.Windows.Forms.Button buttonSaveLoadPatternList;
     }
 }
 

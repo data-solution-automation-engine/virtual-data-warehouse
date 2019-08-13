@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -7,7 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using Virtual_Data_Warehouse.Classes;
 using Virtual_EDW;
+using static Virtual_EDW.FormBase;
 
 namespace Virtual_EDW
 {
@@ -19,6 +23,8 @@ namespace Virtual_EDW
         public string LoadPatternName { get; set; }
         public string LoadPatternType { get; set; }
         public string LoadPatternFilePath { get; set; }
+
+        public string LoadPatternNotes { get; set; }
 
         /// <summary>
         ///    Create a file backup for the configuration file at the provided location and return notice of success or failure as a string.
@@ -118,17 +124,11 @@ namespace Virtual_EDW
     {
         internal List<LoadPattern> DeserializeLoadPatternCollection()
         {
-            var path = Application.StartupPath + @"\loadPatterns\loadPatternCollection.json";
-            path = path.Remove(path.IndexOf("Virtual_EDW"),22);
-
             // Retrieve the file contents and store in a string
-             var jsonInput = File.ReadAllText(path);
+             var jsonInput = File.ReadAllText(VedwConfigurationSettings.loadPatternPath);
 
             //Move the (json) string into a List object (a list of the type LoadPattern)
             List<LoadPattern> loadPatternList = JsonConvert.DeserializeObject<List<LoadPattern>>(jsonInput);
-
-            // Update the list in memory
-            FormBase.VedwConfigurationSettings.patternList = loadPatternList;
 
             // Return the list to the instance
             return loadPatternList;

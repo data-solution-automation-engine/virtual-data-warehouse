@@ -195,6 +195,7 @@
     <Compile Include="Classes\ClassTextHandling.cs" />
     <Compile Include="Classes\ClassEnvironmentConfiguration.cs" />
     <Compile Include="Classes\ClassLoadPattern.cs" />
+    <Compile Include="Classes\ClassUtility.cs" />
     <Compile Include="CustomDataGridViewAttribute.cs">
       <SubType>Component</SubType>
     </Compile>

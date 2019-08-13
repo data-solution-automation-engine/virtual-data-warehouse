@@ -33,7 +33,6 @@ namespace Virtual_EDW
             public static string VedwConfigurationfileName { get; } = "VEDW_configuration";
             public static string VedwFileExtension { get; } = ".txt";
 
-
             // TEAM core file names, not meant to be updated
             public static string TeamConfigurationfileName { get; } = "TEAM_configuration";
             public static string TeamPathfileName { get; } = "TEAM_Path_configuration";
@@ -61,6 +60,7 @@ namespace Virtual_EDW
             public static string hashingZeroKey { get; set; }
 
             public static List<LoadPattern> patternList { get; set; }
+            public static string loadPatternPath { get; set; }
             public static string activeLoadPatternStg { get; set; }
             public static string activeLoadPatternPsa { get; set; }
             public static string activeLoadPatternHub { get; set; }

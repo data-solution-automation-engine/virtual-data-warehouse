@@ -26,6 +26,8 @@ namespace Virtual_EDW
         private int _errorCounter;
         internal bool startUpIndicator = true;
 
+        private BindingSource _bindingSourceLoadPatternMetadata = new BindingSource();
+
         public FormMain()
         {
             _errorMessage = new StringBuilder();
@@ -60,8 +62,6 @@ namespace Virtual_EDW
             richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
-            //checkBoxIfExistsStatement.Checked = true;
-            //radiobuttonViews.Checked = true;
             checkBoxDisableSatZeroRecords.Checked = false;
             checkBoxDisableLsatZeroRecords.Checked = false;
 
@@ -77,6 +77,46 @@ namespace Virtual_EDW
             CheckAllLinkValues();
             CheckAllLsatValues();
 
+
+
+            //QUICKFIX - NEEDS TO BE ADDED TO CONFIG FILE
+            var path = Application.StartupPath + @"\loadPatterns\loadPatternCollection.json";
+            path = path.Remove(path.IndexOf("Virtual_EDW"), 22);
+            textBoxLoadPatternPath.Text = path;
+            VedwConfigurationSettings.loadPatternPath = path;
+            // END OF QUICK FIX
+
+
+
+
+            // Load Pattern metadata & update in memory
+            var patternCollection = new LoadPatternHandling();
+            VedwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();           
+
+            // Create a datatable 
+            DataTable dt = VedwConfigurationSettings.patternList.ToDataTable();
+
+            dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
+            dt.Columns[0].ColumnName = "Name";
+            dt.Columns[1].ColumnName = "Type";
+            dt.Columns[2].ColumnName = "Path";
+            dt.Columns[3].ColumnName = "Notes";
+            _bindingSourceLoadPatternMetadata.DataSource = dt;
+
+            if (VedwConfigurationSettings.patternList != null)
+            {
+                // Set the column header names.
+                dataGridViewLoadPatternMetadata.DataSource = _bindingSourceLoadPatternMetadata;
+                dataGridViewLoadPatternMetadata.ColumnHeadersVisible = true;
+                dataGridViewLoadPatternMetadata.Columns[0].HeaderText = "Name";
+                dataGridViewLoadPatternMetadata.Columns[1].HeaderText = "Type";
+                dataGridViewLoadPatternMetadata.Columns[2].HeaderText = "Path";
+                dataGridViewLoadPatternMetadata.Columns[3].HeaderText = "Notes";
+            }
+            GridAutoLayoutLoadPatternMetadata();
+
+
+
             // Load the patterns into the tool based on the available list
             LoadStgPatternCombobox();
             LoadPsaPatternCombobox();
@@ -85,6 +125,26 @@ namespace Virtual_EDW
             LoadLinkPatternCombobox();
             LoadLsatPatternCombobox();
             startUpIndicator = false;
+        }
+
+        private void GridAutoLayoutLoadPatternMetadata()
+        {
+            //Table Mapping metadata grid - set the autosize based on all cells for each column
+            for (var i = 0; i < dataGridViewLoadPatternMetadata.Columns.Count - 1; i++)
+            {
+                dataGridViewLoadPatternMetadata.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
+            if (dataGridViewLoadPatternMetadata.Columns.Count > 0)
+            {
+                dataGridViewLoadPatternMetadata.Columns[dataGridViewLoadPatternMetadata.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+            // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
+            for (var i = 0; i < dataGridViewLoadPatternMetadata.Columns.Count - 1; i++)
+            {
+                int columnWidth = dataGridViewLoadPatternMetadata.Columns[i].Width;
+                dataGridViewLoadPatternMetadata.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                dataGridViewLoadPatternMetadata.Columns[i].Width = columnWidth;
+            }
         }
 
         private void SetDatabaseConnections()
@@ -2846,7 +2906,7 @@ namespace Virtual_EDW
             var patternCollection = new LoadPatternHandling();
             try
             {
-                var patternList = patternCollection.DeserializeLoadPatternCollection();
+                var patternList = VedwConfigurationSettings.patternList;
 
                 foreach (var patternDetail in patternList)
                 {
@@ -3327,6 +3387,16 @@ namespace Virtual_EDW
             richTextBoxInformationMain.SelectionStart = richTextBoxStaging.Text.Length;
             // Scroll automatically
             richTextBoxInformationMain.ScrollToCaret();
+        }
+
+        private void FormMain_SizeChanged(object sender, EventArgs e)
+        {
+            GridAutoLayoutLoadPatternMetadata();
+        }
+
+        private void FormMain_Shown(object sender, EventArgs e)
+        {
+            GridAutoLayoutLoadPatternMetadata();
         }
     }
 }
