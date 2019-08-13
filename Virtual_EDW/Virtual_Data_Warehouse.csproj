@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ClassInterfaceHandling.cs" />
+    <Compile Include="Classes\ClassJsonHandling.cs" />
     <Compile Include="Classes\ClassTextHandling.cs" />
     <Compile Include="Classes\ClassEnvironmentConfiguration.cs" />
     <Compile Include="Classes\ClassLoadPattern.cs" />

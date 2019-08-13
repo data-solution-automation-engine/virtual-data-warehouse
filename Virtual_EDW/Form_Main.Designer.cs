@@ -151,6 +151,9 @@
             this.richTextBoxLsat = new System.Windows.Forms.RichTextBox();
             this.buttonGenerateLsats = new System.Windows.Forms.Button();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
+            this.checkBoxBackupFiles = new System.Windows.Forms.CheckBox();
+            this.buttonOpenLoadPatternList = new System.Windows.Forms.Button();
+            this.buttonSaveLoadPatternList = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -196,7 +199,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
-            this.buttonSaveLoadPatternList = new System.Windows.Forms.Button();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.tabControlStg.SuspendLayout();
@@ -1638,6 +1640,8 @@
             // 
             // tabPageSettings
             // 
+            this.tabPageSettings.Controls.Add(this.checkBoxBackupFiles);
+            this.tabPageSettings.Controls.Add(this.buttonOpenLoadPatternList);
             this.tabPageSettings.Controls.Add(this.buttonSaveLoadPatternList);
             this.tabPageSettings.Controls.Add(this.label10);
             this.tabPageSettings.Controls.Add(this.textBoxLoadPatternPath);
@@ -1656,6 +1660,40 @@
             this.tabPageSettings.TabIndex = 8;
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxBackupFiles
+            // 
+            this.checkBoxBackupFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBoxBackupFiles.AutoSize = true;
+            this.checkBoxBackupFiles.Checked = true;
+            this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxBackupFiles.Location = new System.Drawing.Point(759, 530);
+            this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
+            this.checkBoxBackupFiles.Size = new System.Drawing.Size(181, 17);
+            this.checkBoxBackupFiles.TabIndex = 97;
+            this.checkBoxBackupFiles.Text = "Automatically create file backups";
+            this.checkBoxBackupFiles.UseVisualStyleBackColor = true;
+            // 
+            // buttonOpenLoadPatternList
+            // 
+            this.buttonOpenLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonOpenLoadPatternList.Location = new System.Drawing.Point(644, 530);
+            this.buttonOpenLoadPatternList.Name = "buttonOpenLoadPatternList";
+            this.buttonOpenLoadPatternList.Size = new System.Drawing.Size(109, 40);
+            this.buttonOpenLoadPatternList.TabIndex = 96;
+            this.buttonOpenLoadPatternList.Text = "Open Load Pattern Overview File";
+            this.buttonOpenLoadPatternList.UseVisualStyleBackColor = true;
+            this.buttonOpenLoadPatternList.Click += new System.EventHandler(this.ButtonOpenLoadPatternList);
+            // 
+            // buttonSaveLoadPatternList
+            // 
+            this.buttonSaveLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSaveLoadPatternList.Location = new System.Drawing.Point(529, 530);
+            this.buttonSaveLoadPatternList.Name = "buttonSaveLoadPatternList";
+            this.buttonSaveLoadPatternList.Size = new System.Drawing.Size(109, 40);
+            this.buttonSaveLoadPatternList.TabIndex = 95;
+            this.buttonSaveLoadPatternList.Text = "Save Load Pattern Overview";
+            this.buttonSaveLoadPatternList.UseVisualStyleBackColor = true;
             // 
             // label10
             // 
@@ -2062,7 +2100,8 @@
             // 
             // richTextBoxInformationMain
             // 
-            this.richTextBoxInformationMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxInformationMain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBoxInformationMain.BackColor = System.Drawing.SystemColors.Control;
             this.richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 17);
@@ -2071,16 +2110,6 @@
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
             this.richTextBoxInformationMain.TextChanged += new System.EventHandler(this.richTextBoxInformationMain_TextChanged);
-            // 
-            // buttonSaveLoadPatternList
-            // 
-            this.buttonSaveLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSaveLoadPatternList.Location = new System.Drawing.Point(529, 530);
-            this.buttonSaveLoadPatternList.Name = "buttonSaveLoadPatternList";
-            this.buttonSaveLoadPatternList.Size = new System.Drawing.Size(109, 40);
-            this.buttonSaveLoadPatternList.TabIndex = 95;
-            this.buttonSaveLoadPatternList.Text = "Save Load Pattern Overview";
-            this.buttonSaveLoadPatternList.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -2337,6 +2366,8 @@
         private System.Windows.Forms.Label label10;
         internal System.Windows.Forms.TextBox textBoxLoadPatternPath;
         private System.Windows.Forms.Button buttonSaveLoadPatternList;
+        private System.Windows.Forms.Button buttonOpenLoadPatternList;
+        private System.Windows.Forms.CheckBox checkBoxBackupFiles;
     }
 }
 

@@ -91,8 +91,31 @@ namespace Virtual_EDW
 
             // Load Pattern metadata & update in memory
             var patternCollection = new LoadPatternHandling();
-            VedwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();           
+            VedwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
 
+            // Populate the data grid
+            populateLoadPatternDataGrid();
+
+
+
+            // Load the patterns into the tool based on the available list
+
+            LoadAllLoadPatternComboBoxes();
+            startUpIndicator = false;
+        }
+
+        public void LoadAllLoadPatternComboBoxes()
+        {
+            LoadStgPatternCombobox();
+            LoadPsaPatternCombobox();
+            LoadHubPatternCombobox();
+            LoadSatPatternCombobox();
+            LoadLinkPatternCombobox();
+            LoadLsatPatternCombobox();
+        }
+
+        public void populateLoadPatternDataGrid()
+        {
             // Create a datatable 
             DataTable dt = VedwConfigurationSettings.patternList.ToDataTable();
 
@@ -114,17 +137,6 @@ namespace Virtual_EDW
                 dataGridViewLoadPatternMetadata.Columns[3].HeaderText = "Notes";
             }
             GridAutoLayoutLoadPatternMetadata();
-
-
-
-            // Load the patterns into the tool based on the available list
-            LoadStgPatternCombobox();
-            LoadPsaPatternCombobox();
-            LoadHubPatternCombobox();
-            LoadSatPatternCombobox();
-            LoadLinkPatternCombobox();
-            LoadLsatPatternCombobox();
-            startUpIndicator = false;
         }
 
         private void GridAutoLayoutLoadPatternMetadata()
@@ -926,8 +938,7 @@ namespace Virtual_EDW
         }
         
         private void openOutputDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
+        {            
             try
             {
                 Process.Start(VedwConfigurationSettings.VedwOutputPath);
@@ -2903,16 +2914,20 @@ namespace Virtual_EDW
         #region Load Combo Box events
         private void LoadStgPatternCombobox()
         {
-            var patternCollection = new LoadPatternHandling();
+            bool available = false;
             try
             {
                 var patternList = VedwConfigurationSettings.patternList;
+                comboBoxStgPattern.Items.Clear();
+                richTextBoxStgPattern.Clear();
+                labelLoadPatternStgPath.Text = "";
 
                 foreach (var patternDetail in patternList)
                 {
                     if (patternDetail.LoadPatternType == "StagingArea")
                     {
                         comboBoxStgPattern.Items.Add(patternDetail.LoadPatternName);
+                        available = true;
                     }
                 }
             }
@@ -2921,21 +2936,33 @@ namespace Virtual_EDW
                 SetTextMain(ex.ToString());
             }
 
-            comboBoxStgPattern.SelectedItem = comboBoxStgPattern.Items[0];
+            if (available == true)
+            {
+                comboBoxStgPattern.SelectedItem = comboBoxStgPattern.Items[0];
+            }
+            else
+            {
+                comboBoxStgPattern.ResetText();
+                comboBoxStgPattern.SelectedIndex = -1;
+            }
         }
 
         private void LoadPsaPatternCombobox()
         {
-            var patternCollection = new LoadPatternHandling();
+            bool available = false;
             try
             {
-                var patternList = patternCollection.DeserializeLoadPatternCollection();
+                var patternList = VedwConfigurationSettings.patternList;
+                comboBoxPsaPattern.Items.Clear();
+                richTextBoxPsaPattern.Clear();
+                labelLoadPatternPsaPath.Text = "";
 
                 foreach (var patternDetail in patternList)
                 {
                     if (patternDetail.LoadPatternType == "PersistentStagingArea")
                     {
                         comboBoxPsaPattern.Items.Add(patternDetail.LoadPatternName);
+                        available = true;
                     }
                 }
             }
@@ -2944,21 +2971,33 @@ namespace Virtual_EDW
                 SetTextMain(ex.ToString());
             }
 
-            comboBoxPsaPattern.SelectedItem = comboBoxPsaPattern.Items[0];
+            if (available == true)
+            {
+                comboBoxPsaPattern.SelectedItem = comboBoxPsaPattern.Items[0];
+            }
+            else
+            {
+                comboBoxPsaPattern.ResetText();
+                comboBoxPsaPattern.SelectedIndex = -1;
+            }
         }
 
         private void LoadHubPatternCombobox()
         {
-            var patternCollection = new LoadPatternHandling();
+            bool available = false;
             try
             {
-                var patternList = patternCollection.DeserializeLoadPatternCollection();
+                var patternList = VedwConfigurationSettings.patternList;
+                comboBoxHubPattern.Items.Clear();
+                richTextBoxHubPattern.Clear();
+                labelLoadPatternHubPath.Text = "";
 
                 foreach (var patternDetail in patternList)
                 {
                     if (patternDetail.LoadPatternType == "Hub")
                     {
                         comboBoxHubPattern.Items.Add(patternDetail.LoadPatternName);
+                        available = true;
                     }
                 }
             }
@@ -2967,44 +3006,69 @@ namespace Virtual_EDW
                 SetTextMain(ex.ToString());
             }
 
-            comboBoxHubPattern.SelectedItem = comboBoxHubPattern.Items[0];
+            if (available == true)
+            {
+                comboBoxHubPattern.SelectedItem = comboBoxHubPattern.Items[0];
+            }
+            else
+            {
+                comboBoxHubPattern.ResetText();
+                comboBoxHubPattern.SelectedIndex = -1;
+            }
         }
 
         private void LoadSatPatternCombobox()
         {
-            var patternCollection = new LoadPatternHandling();
+            bool available = false;
             try
             {
-                var patternList = patternCollection.DeserializeLoadPatternCollection();
+                var patternList = VedwConfigurationSettings.patternList;
+                comboBoxSatPattern.Items.Clear();
+                richTextBoxSatPattern.Clear();
+                labelLoadPatternSatPath.Text = "";
 
                 foreach (var patternDetail in patternList)
                 {
                     if (patternDetail.LoadPatternType == "Satellite")
                     {
                         comboBoxSatPattern.Items.Add(patternDetail.LoadPatternName);
-                    }
+                        available = true;
+                    }                    
                 }
+                
             }
             catch (Exception ex)
             {
                 SetTextMain(ex.ToString());
             }
 
-            comboBoxSatPattern.SelectedItem = comboBoxSatPattern.Items[0];
+            if (available == true)
+            {
+                comboBoxSatPattern.SelectedItem = comboBoxSatPattern.Items[0];
+            }
+            else
+            {
+                comboBoxSatPattern.ResetText();
+                comboBoxSatPattern.SelectedIndex = -1;
+            }
         }
 
         private void LoadLinkPatternCombobox()
         {
-            var patternCollection = new LoadPatternHandling();
+            bool available = false;
             try
             {
-                var patternList = patternCollection.DeserializeLoadPatternCollection();
+                var patternList = VedwConfigurationSettings.patternList;
+                comboBoxLinkPattern.Items.Clear();
+                richTextBoxLinkPattern.Clear();
+                labelLoadPatternLinkPath.Text = "";
 
                 foreach (var patternDetail in patternList)
                 {
                     if (patternDetail.LoadPatternType == "Link")
                     {
                         comboBoxLinkPattern.Items.Add(patternDetail.LoadPatternName);
+                        available = true;
                     }
                 }
             }
@@ -3013,21 +3077,33 @@ namespace Virtual_EDW
                 SetTextMain(ex.ToString());
             }
 
-            comboBoxLinkPattern.SelectedItem = comboBoxLinkPattern.Items[0];
+            if (available == true)
+            {
+                comboBoxLinkPattern.SelectedItem = comboBoxLinkPattern.Items[0];
+            }
+            else
+            {
+                comboBoxLinkPattern.ResetText();
+                comboBoxLinkPattern.SelectedIndex = -1;
+            }
         }
 
         private void LoadLsatPatternCombobox()
         {
-            var patternCollection = new LoadPatternHandling();
+            bool available = false;
             try
             {
-                var patternList = patternCollection.DeserializeLoadPatternCollection();
+                var patternList = VedwConfigurationSettings.patternList;
+                comboBoxLsatPattern.Items.Clear();
+                richTextBoxLsatPattern.Clear();
+                labelLoadPatternLsatPath.Text = "";
 
                 foreach (var patternDetail in patternList)
                 {
                     if (patternDetail.LoadPatternType == "LinkSatellite")
                     {
                         comboBoxLsatPattern.Items.Add(patternDetail.LoadPatternName);
+                        available = true;
                     }
                 }
             }
@@ -3036,7 +3112,15 @@ namespace Virtual_EDW
                 SetTextMain(ex.ToString());
             }
 
-            comboBoxLsatPattern.SelectedItem = comboBoxLsatPattern.Items[0];
+            if (available == true)
+            {
+                comboBoxLsatPattern.SelectedItem = comboBoxLsatPattern.Items[0];
+            }
+            else
+            {
+                comboBoxLsatPattern.ResetText();
+                comboBoxLsatPattern.SelectedIndex = -1;
+            }
         }
         #endregion
 
@@ -3397,6 +3481,79 @@ namespace Virtual_EDW
         private void FormMain_Shown(object sender, EventArgs e)
         {
             GridAutoLayoutLoadPatternMetadata();
+        }
+
+        private DialogResult STAShowDialog(FileDialog dialog)
+        {
+            var state = new DialogState { FileDialog = dialog };
+            var t = new Thread(state.ThreadProcShowDialog);
+            t.SetApartmentState(ApartmentState.STA);
+
+            t.Start();
+            t.Join();
+
+            return state.DialogResult;
+        }
+        public class DialogState
+        {
+            public DialogResult DialogResult;
+            public FileDialog FileDialog;
+
+            public void ThreadProcShowDialog()
+            {
+                DialogResult = FileDialog.ShowDialog();
+            }
+        }
+
+        private void ButtonOpenLoadPatternList(object sender, EventArgs e)
+        {
+            var theDialog = new OpenFileDialog
+            {
+                Title = @"Open Load Pattern List File",
+                Filter = @"Load Pattern List|*.json",
+                InitialDirectory = VedwConfigurationSettings.loadPatternPath
+            };
+
+            var ret = STAShowDialog(theDialog);
+
+            if (ret == DialogResult.OK)
+            {
+                try
+                {
+                    var chosenFile = theDialog.FileName;
+                    var dataSet = new DataSet();
+
+                    string fileExtension = Path.GetExtension(theDialog.FileName);
+
+                    //// Create a backup file, if enabled
+                    //if (checkBoxBackupFiles.Checked)
+                    //{
+                    //    try
+                    //    {
+                    //        var backupFile = new ClassJsonHandling();
+                    //        var targetFileName = backupFile.BackupJsonFile(chosenFile);
+                    //        SetTextMain("A backup of the in-use JSON file was created as " + targetFileName + ".\r\n\r\n");
+                    //    }
+                    //    catch (Exception exception)
+                    //    {
+                    //        SetTextMain("An issue occured when trying to make a backup of the in-use JSON file. The error message was " + exception + ".");
+                    //    }
+                    //}
+
+                    // Save the list to memory
+                    VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+
+                    // ... and populate the data grid
+                    LoadAllLoadPatternComboBoxes();
+                    populateLoadPatternDataGrid();
+
+                    SetTextMain("The file " + chosenFile + " was loaded.\r\n");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error has been encountered! The reported error is: " + ex);
+                }
+            }
         }
     }
 }
