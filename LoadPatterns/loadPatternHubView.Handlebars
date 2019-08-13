@@ -58,6 +58,6 @@ SELECT
   0x00000000000000000000000000000000,
   - 1,
   '1900-01-01',
-  'Data Warehouse',{{#each individualSourceToTargetMapping}}{{#if @first}}{{#each businessKey}} {{#each businessKeyComponentMapping}}
+  'Data Warehouse',{{#each individualSourceToTargetMapping}}{{#if @first}}{{#each businessKey}}{{#each businessKeyComponentMapping}}
   'Unknown',{{/each}}{{/each}}{{/if}}{{/each}}
   1 AS ROW_NR

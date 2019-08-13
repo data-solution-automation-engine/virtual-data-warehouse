@@ -1,10 +1,10 @@
 {{#each individualSourceToTargetMapping}}
-
 --
 -- Staging Area View definition for {{targetTable}}
 -- Generated at {{../generationDateTime}}
 --
 
+GO
 USE [{{../metadataConfiguration.psaDatabaseName}}]
 GO
 
@@ -22,3 +22,4 @@ FROM {{sourceTable}}
 WHERE 1=1
     {{#if filterCriterion}} AND {{filterCriterion}}{{/if}}
 {{/each}}
+

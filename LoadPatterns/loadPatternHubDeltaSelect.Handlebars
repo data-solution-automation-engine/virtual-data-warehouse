@@ -1,0 +1,42 @@
+{{#each individualSourceToTargetMapping }}
+--
+-- Working on mapping to {{targetTable}} from source table {{sourceTable}}
+-- Generated at {{../generationDateTime}}
+--
+SELECT
+    HASHBYTES('MD5', {{#each businessKey}} {{#if @first}}
+    {{#each businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetColumn.columnName}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
+    {{/each}}
+    ) AS [{{surrogateKey}}],{{/if}}{{/each}}{{#each businessKey}}{{#each businessKeyComponentMapping}}
+    [{{targetColumn.columnName}}],{{/each}}{{/each}}
+    [{{../metadataConfiguration.loadDateTimeAttribute}}],
+    [{{../metadataConfiguration.etlProcessAttribute}}],
+    [{{../metadataConfiguration.recordSourceAttribute}}]
+FROM
+(
+    SELECT
+        sub.*,
+        ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
+           [{{targetColumn.columnName}}]{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+           ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}]
+        ) AS LDTS_ORDER
+        FROM
+        (
+          SELECT {{#each businessKey}}{{#each businessKeyComponentMapping}}
+            {{sourceColumn.columnName}} AS [{{targetColumn.columnName}}],{{/each}}{{/each}}
+            stg.[{{../metadataConfiguration.loadDateTimeAttribute}}],
+            -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
+            stg.[{{../metadataConfiguration.recordSourceAttribute}}]
+          FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}] stg
+          WHERE NOT EXISTS
+          (
+             SELECT 1
+             FROM [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}] hub
+             WHERE {{#each businessKey}}{{#each businessKeyComponentMapping}}
+                {{sourceColumn.columnName}} = hub.{{targetColumn.columnName}}{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
+        )
+    ) sub
+) supersub
+WHERE LDTS_ORDER=1
+{{/each}}

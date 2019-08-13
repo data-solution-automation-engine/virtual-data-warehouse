@@ -1,0 +1,33 @@
+{{#each individualSourceToTargetMapping}}
+--
+-- Persistent Staging Area Insert Into statement for {{targetTable}}
+-- Generated at {{../generationDateTime}}
+--
+
+USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
+GO
+
+TRUNCATE TABLE [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetTable}}]
+
+INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetTable}}]
+(
+   [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each columnMapping}}
+   [{{sourceColumn.columnName}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+)
+SELECT
+   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each columnMapping}}
+   [{{sourceColumn.columnName}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
+{{/each}}

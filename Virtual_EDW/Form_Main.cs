@@ -747,8 +747,15 @@ namespace Virtual_EDW
                         foreach (DataRow column in columnMetadataDataTable.Rows)
                         {
                             ColumnMapping columnMapping = new ColumnMapping();
-                            columnMapping.sourceColumn.columnName = (string) column["SOURCE_ATTRIBUTE_NAME"];
-                            columnMapping.targetColumn.columnName = (string) column["TARGET_ATTRIBUTE_NAME"];
+                            Column sourceColumn = new Column();
+                            Column targetColumn = new Column();
+
+                            sourceColumn.columnName = (string) column["SOURCE_ATTRIBUTE_NAME"];
+                            targetColumn.columnName = (string) column["TARGET_ATTRIBUTE_NAME"];
+
+                            columnMapping.sourceColumn = sourceColumn;
+                            columnMapping.targetColumn = targetColumn;
+
                             columnMappingList.Add(columnMapping);
                         }
 
@@ -1366,8 +1373,14 @@ namespace Virtual_EDW
                         foreach (DataRow column in columnMetadataDataTable.Rows)
                         {
                             ColumnMapping columnMapping = new ColumnMapping();
-                            columnMapping.sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
-                            columnMapping.targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
+                            Column sourceColumn = new Column();
+                            Column targetColumn = new Column();
+
+                            sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
+                            targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
+
+                            columnMapping.sourceColumn = sourceColumn;
+                            columnMapping.targetColumn = targetColumn;
                             columnMappingList.Add(columnMapping);
                         }
 

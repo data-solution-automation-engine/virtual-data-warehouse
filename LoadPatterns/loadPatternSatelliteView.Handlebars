@@ -7,7 +7,6 @@ USE [{{metadataConfiguration.psaDatabaseName}}]
 GO
 
 {{#each individualSourceToTargetMapping}}
-
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]') AND type in (N'V'))
 DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
 GO
