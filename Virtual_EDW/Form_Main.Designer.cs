@@ -1,4 +1,4 @@
-﻿namespace Virtual_EDW
+﻿namespace Virtual_Data_Warehouse
 {
     partial class FormMain
     {
@@ -199,6 +199,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
+            this.button7 = new System.Windows.Forms.Button();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.tabControlStg.SuspendLayout();
@@ -1640,6 +1641,7 @@
             // 
             // tabPageSettings
             // 
+            this.tabPageSettings.Controls.Add(this.button7);
             this.tabPageSettings.Controls.Add(this.checkBoxBackupFiles);
             this.tabPageSettings.Controls.Add(this.buttonOpenLoadPatternList);
             this.tabPageSettings.Controls.Add(this.buttonSaveLoadPatternList);
@@ -1667,7 +1669,7 @@
             this.checkBoxBackupFiles.AutoSize = true;
             this.checkBoxBackupFiles.Checked = true;
             this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxBackupFiles.Location = new System.Drawing.Point(759, 530);
+            this.checkBoxBackupFiles.Location = new System.Drawing.Point(933, 530);
             this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
             this.checkBoxBackupFiles.Size = new System.Drawing.Size(181, 17);
             this.checkBoxBackupFiles.TabIndex = 97;
@@ -1677,7 +1679,7 @@
             // buttonOpenLoadPatternList
             // 
             this.buttonOpenLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonOpenLoadPatternList.Location = new System.Drawing.Point(644, 530);
+            this.buttonOpenLoadPatternList.Location = new System.Drawing.Point(529, 530);
             this.buttonOpenLoadPatternList.Name = "buttonOpenLoadPatternList";
             this.buttonOpenLoadPatternList.Size = new System.Drawing.Size(109, 40);
             this.buttonOpenLoadPatternList.TabIndex = 96;
@@ -1688,12 +1690,13 @@
             // buttonSaveLoadPatternList
             // 
             this.buttonSaveLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSaveLoadPatternList.Location = new System.Drawing.Point(529, 530);
+            this.buttonSaveLoadPatternList.Location = new System.Drawing.Point(644, 530);
             this.buttonSaveLoadPatternList.Name = "buttonSaveLoadPatternList";
             this.buttonSaveLoadPatternList.Size = new System.Drawing.Size(109, 40);
             this.buttonSaveLoadPatternList.TabIndex = 95;
-            this.buttonSaveLoadPatternList.Text = "Save Load Pattern Overview";
+            this.buttonSaveLoadPatternList.Text = "Save As";
             this.buttonSaveLoadPatternList.UseVisualStyleBackColor = true;
+            this.buttonSaveLoadPatternList.Click += new System.EventHandler(this.buttonSaveLoadPatternList_Click);
             // 
             // label10
             // 
@@ -1954,14 +1957,14 @@
             this.generateTestDataToolStripMenuItem,
             this.generateRIValidationToolStripMenuItem});
             this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.testingToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.testingToolStripMenuItem.Text = "Testing";
             // 
             // generateTestDataToolStripMenuItem
             // 
             this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
             this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
             this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
             // 
@@ -1969,7 +1972,7 @@
             // 
             this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
             this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
             this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
             // 
@@ -2110,6 +2113,17 @@
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
             this.richTextBoxInformationMain.TextChanged += new System.EventHandler(this.richTextBoxInformationMain_TextChanged);
+            // 
+            // button7
+            // 
+            this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button7.Location = new System.Drawing.Point(759, 530);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(109, 40);
+            this.button7.TabIndex = 98;
+            this.button7.Text = "Save In Place (Update)";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // FormMain
             // 
@@ -2368,6 +2382,7 @@
         private System.Windows.Forms.Button buttonSaveLoadPatternList;
         private System.Windows.Forms.Button buttonOpenLoadPatternList;
         private System.Windows.Forms.CheckBox checkBoxBackupFiles;
+        private System.Windows.Forms.Button button7;
     }
 }
 

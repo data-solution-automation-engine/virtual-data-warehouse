@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using System.Windows.Forms;
+using Virtual_Data_Warehouse;
 
 namespace Virtual_EDW
 {
@@ -32,6 +33,7 @@ namespace Virtual_EDW
             public static string VedwConfigurationPath { get; } = Application.StartupPath + @"\Configuration\";
             public static string VedwConfigurationfileName { get; } = "VEDW_configuration";
             public static string VedwFileExtension { get; } = ".txt";
+            public static string LoadPatternListFile { get; } = "loadPatternCollection.json";
 
             // TEAM core file names, not meant to be updated
             public static string TeamConfigurationfileName { get; } = "TEAM_configuration";
@@ -51,6 +53,7 @@ namespace Virtual_EDW
             public static string VedwSchema { get; set; } = "dbo";
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string VedwOutputPath { get; set; } = Application.StartupPath + @"\Configuration\";
+            public static string LoadPatternListPath { get; set; } = Application.StartupPath + @"\LoadPatterns\";
             public static string WorkingEnvironment { get; set; }
 
             // Parameters that can be changed at runtime
@@ -60,7 +63,6 @@ namespace Virtual_EDW
             public static string hashingZeroKey { get; set; }
 
             public static List<LoadPattern> patternList { get; set; }
-            public static string loadPatternPath { get; set; }
             public static string activeLoadPatternStg { get; set; }
             public static string activeLoadPatternPsa { get; set; }
             public static string activeLoadPatternHub { get; set; }

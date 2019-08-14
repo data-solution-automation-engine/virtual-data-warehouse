@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using Virtual_EDW;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse.Classes
 {
     class EnvironmentConfiguration
     {
@@ -39,6 +40,20 @@ namespace Virtual_EDW
             {
                 MessageBox.Show("Error creation default directory at " + FormBase.VedwConfigurationSettings.VedwOutputPath + " the message is " +ex, "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            // Create the pattern directory if it does not exist yet
+            try
+            {
+                if (!Directory.Exists(FormBase.VedwConfigurationSettings.LoadPatternListPath))
+                {
+                    Directory.CreateDirectory(FormBase.VedwConfigurationSettings.LoadPatternListPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error creation default directory at " + FormBase.VedwConfigurationSettings.LoadPatternListPath + " the message is " + ex, "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
             #endregion
 
             #region Create Default Configuration File
@@ -52,6 +67,7 @@ namespace Virtual_EDW
                     initialConfigurationFile.AppendLine("/* Virtual Enterprise Data Warehouse (VEDW) Core Settings */");
                     initialConfigurationFile.AppendLine("TeamConfigurationPath|" + FormBase.VedwConfigurationSettings.TeamConfigurationPath); //Initially make this the same as the VEDW application root
                     initialConfigurationFile.AppendLine("VedwOutputPath|" + FormBase.VedwConfigurationSettings.VedwOutputPath);
+                    initialConfigurationFile.AppendLine("LoadPatternListPath|" + FormBase.VedwConfigurationSettings.LoadPatternListPath);
                     initialConfigurationFile.AppendLine("EnableUnicode|True");
                     initialConfigurationFile.AppendLine("DisableHash|False");
                     initialConfigurationFile.AppendLine("HashKeyOutputType|Binary");
@@ -104,6 +120,7 @@ namespace Virtual_EDW
                 // Load the information from the VEDW settings file into memory
                 FormBase.VedwConfigurationSettings.TeamConfigurationPath = configList["TeamConfigurationPath"];
                 FormBase.VedwConfigurationSettings.VedwOutputPath = configList["VedwOutputPath"];
+                FormBase.VedwConfigurationSettings.LoadPatternListPath = configList["LoadPatternListPath"];
                 FormBase.VedwConfigurationSettings.EnableUnicode = configList["EnableUnicode"];
                 FormBase.VedwConfigurationSettings.DisableHash = configList["DisableHash"];
                 FormBase.VedwConfigurationSettings.HashKeyOutputType = configList["HashKeyOutputType"];

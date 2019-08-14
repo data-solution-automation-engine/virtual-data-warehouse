@@ -3,8 +3,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using Virtual_Data_Warehouse.Classes;
+using Virtual_EDW;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class FormTestRi : FormBase
     {
@@ -22,7 +23,6 @@ namespace Virtual_EDW
         private void buttonGenerateTestcases_Click(object sender, EventArgs e)
         {
             var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-            var metaDataTable = new DataTable();
 
             try
             {
@@ -37,17 +37,14 @@ namespace Virtual_EDW
 
             // Evaluate the query types based on the environments / radio buttons
             string environmentSnippet = "";
-            string schemaSnippet = "";
-            
+
             if (radioButtonPSA.Checked)
             {
                 environmentSnippet=TeamConfigurationSettings.PsaDatabaseName;
-                schemaSnippet = VedwConfigurationSettings.VedwSchema;
             }
             else if (radioButtonIntegrationLayer.Checked)
             {
                 environmentSnippet = TeamConfigurationSettings.IntegrationDatabaseName;
-                schemaSnippet = "";
             }
 
             var queryRi = new StringBuilder();
@@ -87,7 +84,7 @@ namespace Virtual_EDW
             WHERE sat.[TARGET_TYPE]='Normal'
             ");
 
-            metaDataTable = MyParent.GetDataTable(ref connOmd, queryTableArraySat.ToString());
+            var metaDataTable = MyParent.GetDataTable(ref connOmd, queryTableArraySat.ToString());
 
             if (metaDataTable.Rows.Count == 0)
             {
@@ -126,7 +123,7 @@ namespace Virtual_EDW
                         queryRi.AppendLine("AND EXISTS");
                         queryRi.AppendLine("(");
                         queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = ");
-                        queryRi.AppendLine("  " + surrogateKeySnippet.ToString());
+                        queryRi.AppendLine("  " + surrogateKeySnippet);
                         queryRi.Remove(queryRi.Length - 3, 3);
                         queryRi.AppendLine(")");
                     }
@@ -202,7 +199,7 @@ namespace Virtual_EDW
                         queryRi.AppendLine("AND EXISTS");
                         queryRi.AppendLine("(");
                         queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE lnk.[" + (string)row["HUB_SURROGATE_KEY"] + "] = ");
-                        queryRi.AppendLine("  " + surrogateKeySnippet.ToString());
+                        queryRi.AppendLine("  " + surrogateKeySnippet);
                         queryRi.Remove(queryRi.Length - 3, 3);
                         queryRi.AppendLine(")");
                     }
@@ -283,7 +280,7 @@ namespace Virtual_EDW
                         queryRi.AppendLine("AND EXISTS");
                         queryRi.AppendLine("(");
                         queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = ");
-                        queryRi.AppendLine("  " + surrogateKeySnippet.ToString());
+                        queryRi.AppendLine("  " + surrogateKeySnippet);
                         queryRi.Remove(queryRi.Length - 3, 3);
                         queryRi.AppendLine(")");
                     }

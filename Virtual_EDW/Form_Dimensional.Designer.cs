@@ -1,4 +1,4 @@
-﻿namespace Virtual_EDW
+﻿namespace Virtual_Data_Warehouse
 {
     partial class FormDimensional
     {

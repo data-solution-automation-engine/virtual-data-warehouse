@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Text;
-using System.Windows.Forms;
-using System.IO;
-using System.Data.SqlClient;
-using Microsoft.SqlServer.Management.Smo;
-using Microsoft.SqlServer.Management.Common;
-using System.Threading;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Security.Permissions;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 using HandlebarsDotNet;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Virtual_Data_Warehouse.Classes;
+using Virtual_EDW;
+using Column = Virtual_EDW.Column;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class FormMain : FormBase
     {
@@ -54,7 +57,6 @@ namespace Virtual_EDW
 
             // Make sure the retrieved variables are displayed on the form
             UpdateVedwConfigurationSettingsOnForm();
-            UpdateHashSnippets();
 
             // Start monitoring the configuration directories for file changes
             // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
@@ -80,10 +82,10 @@ namespace Virtual_EDW
 
 
             //QUICKFIX - NEEDS TO BE ADDED TO CONFIG FILE
-            var path = Application.StartupPath + @"\loadPatterns\loadPatternCollection.json";
-            path = path.Remove(path.IndexOf("Virtual_EDW"), 22);
-            textBoxLoadPatternPath.Text = path;
-            VedwConfigurationSettings.loadPatternPath = path;
+            //var path = Application.StartupPath + @"\loadPatterns\loadPatternCollection.json";
+            //path = path.Remove(path.IndexOf("Virtual_EDW"), 22);
+            //textBoxLoadPatternPath.Text = path;
+            //VedwConfigurationSettings.loadPatternPath = path;
             // END OF QUICK FIX
 
 
@@ -92,6 +94,11 @@ namespace Virtual_EDW
             // Load Pattern metadata & update in memory
             var patternCollection = new LoadPatternHandling();
             VedwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
+
+            if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
+            {
+                SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a "+GlobalParameters.LoadPatternListFile+" in the "+VedwConfigurationSettings.LoadPatternListPath+" directory, and if the file contains patterns.");
+            }
 
             // Populate the data grid
             populateLoadPatternDataGrid();
@@ -390,30 +397,30 @@ namespace Virtual_EDW
             }
         }
 
-        /// <summary>
-        /// Updating the SQL statements used for either Binary or Character hash value calculation.
-        /// </summary>
-        private void UpdateHashSnippets()
-        {
-            if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
-            {
-                VedwConfigurationSettings.hashingStartSnippet = "HASHBYTES('MD5',";
-                VedwConfigurationSettings.hashingEndSnippet = ")";
-                VedwConfigurationSettings.hashingCollation = "";
-                VedwConfigurationSettings.hashingZeroKey = "0x00000000000000000000000000000000";
-            }
-            else if (VedwConfigurationSettings.HashKeyOutputType == "Character")
-            {
-                VedwConfigurationSettings.hashingStartSnippet = "CONVERT(CHAR(32),HASHBYTES('MD5',";
-                VedwConfigurationSettings.hashingEndSnippet = "),2)";
-                VedwConfigurationSettings.hashingCollation = "COLLATE DATABASE_DEFAULT";
-                VedwConfigurationSettings.hashingZeroKey = "'00000000000000000000000000000000'";
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText("An issue was encountered updating the Hash output setting on the application - please verify.");
-            }
-        }
+        ///// <summary>
+        ///// Updating the SQL statements used for either Binary or Character hash value calculation.
+        ///// </summary>
+        //private void UpdateHashSnippets()
+        //{
+        //    if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
+        //    {
+        //        VedwConfigurationSettings.hashingStartSnippet = "HASHBYTES('MD5',";
+        //        VedwConfigurationSettings.hashingEndSnippet = ")";
+        //        VedwConfigurationSettings.hashingCollation = "";
+        //        VedwConfigurationSettings.hashingZeroKey = "0x00000000000000000000000000000000";
+        //    }
+        //    else if (VedwConfigurationSettings.HashKeyOutputType == "Character")
+        //    {
+        //        VedwConfigurationSettings.hashingStartSnippet = "CONVERT(CHAR(32),HASHBYTES('MD5',";
+        //        VedwConfigurationSettings.hashingEndSnippet = "),2)";
+        //        VedwConfigurationSettings.hashingCollation = "COLLATE DATABASE_DEFAULT";
+        //        VedwConfigurationSettings.hashingZeroKey = "'00000000000000000000000000000000'";
+        //    }
+        //    else
+        //    {
+        //        richTextBoxInformationMain.AppendText("An issue was encountered updating the Hash output setting on the application - please verify.");
+        //    }
+        //}
 
         /// <summary>
         /// This is the local updates on the VEDW specific configuration.
@@ -422,6 +429,7 @@ namespace Virtual_EDW
         {
             textBoxOutputPath.Text = VedwConfigurationSettings.VedwOutputPath;
             textBoxConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
+            textBoxLoadPatternPath.Text = VedwConfigurationSettings.LoadPatternListPath;
             textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
 
 
@@ -436,7 +444,7 @@ namespace Virtual_EDW
             }
             else
             {
-                richTextBoxInformationMain.AppendText("An issue was encountered updating the Hash outpu setting on the application - please verify.");
+                richTextBoxInformationMain.AppendText("An issue was encountered updating the environment setting on the application - please verify.");
             }
         }
 
@@ -2750,6 +2758,7 @@ namespace Virtual_EDW
             // Paths
             VedwConfigurationSettings.TeamConfigurationPath = textBoxConfigurationPath.Text;
             VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
+            VedwConfigurationSettings.LoadPatternListPath = textBoxLoadPatternPath.Text;
             VedwConfigurationSettings.VedwSchema = textBoxSchemaName.Text;
 
             // Working environment radiobutton
@@ -2772,6 +2781,7 @@ namespace Virtual_EDW
             rootPathConfigurationFile.AppendLine("/* Saved at " + DateTime.Now + " */");
             rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VedwConfigurationSettings.TeamConfigurationPath + "");
             rootPathConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath + "");
+            rootPathConfigurationFile.AppendLine("LoadPatternListPath|" + VedwConfigurationSettings.LoadPatternListPath + "");
             rootPathConfigurationFile.AppendLine("EnableUnicode|"+ VedwConfigurationSettings.EnableUnicode+"");
             rootPathConfigurationFile.AppendLine("DisableHash|" + VedwConfigurationSettings.DisableHash + "");
             rootPathConfigurationFile.AppendLine("HashKeyOutputType|" + VedwConfigurationSettings.HashKeyOutputType + "");
@@ -2785,9 +2795,6 @@ namespace Virtual_EDW
                 outfile.Write(rootPathConfigurationFile.ToString());
                 outfile.Close();
             }
-
-            // Reset the hash interpretation
-            UpdateHashSnippets();
 
             // Reload the TEAM settings, as the environment may have changed
             LoadTeamConfigurationFile();
@@ -3273,7 +3280,7 @@ namespace Virtual_EDW
             // Display the pattern in the text box on the screen
             richTextBoxPsaPattern.Text = loadPatternTemplate;
 
-            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
+            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
             LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
@@ -3511,7 +3518,7 @@ namespace Virtual_EDW
             {
                 Title = @"Open Load Pattern List File",
                 Filter = @"Load Pattern List|*.json",
-                InitialDirectory = VedwConfigurationSettings.loadPatternPath
+                InitialDirectory = VedwConfigurationSettings.LoadPatternListPath
             };
 
             var ret = STAShowDialog(theDialog);
@@ -3525,21 +3532,6 @@ namespace Virtual_EDW
 
                     string fileExtension = Path.GetExtension(theDialog.FileName);
 
-                    //// Create a backup file, if enabled
-                    //if (checkBoxBackupFiles.Checked)
-                    //{
-                    //    try
-                    //    {
-                    //        var backupFile = new ClassJsonHandling();
-                    //        var targetFileName = backupFile.BackupJsonFile(chosenFile);
-                    //        SetTextMain("A backup of the in-use JSON file was created as " + targetFileName + ".\r\n\r\n");
-                    //    }
-                    //    catch (Exception exception)
-                    //    {
-                    //        SetTextMain("An issue occured when trying to make a backup of the in-use JSON file. The error message was " + exception + ".");
-                    //    }
-                    //}
-
                     // Save the list to memory
                     VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
 
@@ -3548,6 +3540,7 @@ namespace Virtual_EDW
                     populateLoadPatternDataGrid();
 
                     SetTextMain("The file " + chosenFile + " was loaded.\r\n");
+                    GridAutoLayoutLoadPatternMetadata();
                 }
                 catch (Exception ex)
                 {
@@ -3555,5 +3548,118 @@ namespace Virtual_EDW
                 }
             }
         }
+
+        private void buttonSaveLoadPatternList_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var theDialog = new SaveFileDialog
+                {
+                    Title = @"Save Load Pattern List File",
+                    Filter = @"Load Pattern List|*.json",
+                    InitialDirectory = textBoxLoadPatternPath.Text
+                };
+
+                var ret = STAShowDialog(theDialog);
+
+                if (ret == DialogResult.OK)
+                {
+                    try
+                    {
+                        var chosenFile = theDialog.FileName;
+
+                        DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternMetadata.DataSource;
+
+                        // Make sure the output is sorted
+                        gridDataTable.DefaultView.Sort = "[NAME] ASC";
+
+                        gridDataTable.TableName = "LoadPatternList";
+
+                        JArray outputFileArray = new JArray();
+                        foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
+                        {
+                            JObject individualRow = JObject.FromObject(new
+                            {
+                                loadPatternName = singleRow[0].ToString(),
+                                loadPatternType = singleRow[1].ToString(),
+                                loadPatternFilePath = singleRow[2].ToString(),
+                                loadPatternNotes = singleRow[3].ToString()
+                            });
+                            outputFileArray.Add(individualRow);
+                        }
+
+                        string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
+
+                        File.WriteAllText(chosenFile, json);
+
+                        SetTextMain("The file " + chosenFile + " was loaded.\r\n");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has been encountered! The reported error is: " + ex);
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                var chosenFile = textBoxLoadPatternPath.Text;
+
+                DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternMetadata.DataSource;
+
+                // Make sure the output is sorted
+                gridDataTable.DefaultView.Sort = "[NAME] ASC";
+
+                gridDataTable.TableName = "LoadPatternList";
+
+                JArray outputFileArray = new JArray();
+                foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
+                {
+                    JObject individualRow = JObject.FromObject(new
+                    {
+                        loadPatternName = singleRow[0].ToString(),
+                        loadPatternType = singleRow[1].ToString(),
+                        loadPatternFilePath = singleRow[2].ToString(),
+                        loadPatternNotes = singleRow[3].ToString()
+                    });
+                    outputFileArray.Add(individualRow);
+                }
+
+                string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
+
+                // Create a backup file, if enabled
+                if (checkBoxBackupFiles.Checked)
+                {
+                    try
+                    {
+                        var backupFile = new ClassJsonHandling();
+                        var targetFileName = backupFile.BackupJsonFile(chosenFile);
+                        SetTextMain("A backup of the in-use JSON file was created as " + targetFileName + ".\r\n\r\n");
+                    }
+                    catch (Exception exception)
+                    {
+                        SetTextMain("An issue occured when trying to make a backup of the in-use JSON file. The error message was " + exception + ".");
+                    }
+                }
+
+                File.WriteAllText(chosenFile, json);
+
+                SetTextMain("The file " + chosenFile + " was updated.\r\n");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+    
     }
 }

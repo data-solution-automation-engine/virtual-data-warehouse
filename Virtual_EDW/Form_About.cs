@@ -4,8 +4,9 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
+using Virtual_EDW;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class FormAbout : FormBase
     {

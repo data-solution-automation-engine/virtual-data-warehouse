@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Text;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using Virtual_Data_Warehouse;
 
 namespace Virtual_EDW
 {

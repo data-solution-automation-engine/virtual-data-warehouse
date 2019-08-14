@@ -1,80 +1,80 @@
 [
   {
-    "loadPatternName": "Staging Area View Pattern",
-    "loadPatternType": "StagingArea",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternStagingView.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Staging Area Insert Into Pattern",
-    "loadPatternType": "StagingArea",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternStagingInsertInto.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Persistent Staging Area View Pattern",
-    "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternPersistentStagingView.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Persistent Staging Area Insert Into Pattern",
-    "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternPersistentStagingInsertInto.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Hub View Pattern",
-    "loadPatternType": "Hub",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubView.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
     "loadPatternName": "Hub Delta Select From Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubDeltaSelect.handlebars",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubDeltaSelect.handlebars",
     "loadPatternNotes": "This pattern simulates a delta detection from the Staging Layer to the Data Vault."
   },
   {
     "loadPatternName": "Hub Insert Into Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubInsertInto.handlebars",
-    "loadPatternNotes": ""
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubInsertInto.handlebars",
+    "loadPatternNotes": "Use the Hub view to load into a physical table."
   },
   {
-    "loadPatternName": "Satellite View Pattern",
-    "loadPatternType": "Satellite",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternSatelliteView.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Satellite Insert Into Pattern",
-    "loadPatternType": "Satellite",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternSatelliteInsertInto.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Link View Pattern",
-    "loadPatternType": "Link",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkView.handlebars",
+    "loadPatternName": "Hub View Pattern",
+    "loadPatternType": "Hub",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Link Insert Into Pattern",
     "loadPatternType": "Link",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkInsertInto.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Link Satellite View Pattern",
-    "loadPatternType": "LinkSatellite",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkSatelliteView.handlebars",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Link Satellite Insert Into Pattern",
     "loadPatternType": "LinkSatellite",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkSatelliteInsertInto.handlebars",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteInsertInto.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Link Satellite View Pattern",
+    "loadPatternType": "LinkSatellite",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteView.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Link View Pattern",
+    "loadPatternType": "Link",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkView.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Persistent Staging Area Insert Into Pattern",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternPersistentStagingInsertInto.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Persistent Staging Area View Pattern",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternPersistentStagingView.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Satellite Insert Into Pattern",
+    "loadPatternType": "Satellite",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternSatelliteInsertInto.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Satellite View Pattern",
+    "loadPatternType": "Satellite",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternSatelliteView.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Staging Area Insert Into Pattern",
+    "loadPatternType": "StagingArea",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternStagingInsertInto.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Staging Area View Pattern",
+    "loadPatternType": "StagingArea",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternStagingView.handlebars",
     "loadPatternNotes": ""
   }
 ]

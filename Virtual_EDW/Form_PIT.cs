@@ -4,11 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Linq;
+using Virtual_EDW;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class FormPit : FormBase
     {
@@ -296,7 +297,8 @@ namespace Virtual_EDW
                     regularAttributes.Add(attribute["COLUMN_NAME"].ToString());
                 }
             }
-            regularAttributes.ToArray();
+
+            var strings = regularAttributes.ToArray();
 
 
             // Remove system attributes from Datatable (if selected)
@@ -451,7 +453,7 @@ namespace Virtual_EDW
             // Create a counter to see if anything is checked at all
             var checkedCounter = 0;
 
-            var schemaName = "";
+            string schemaName;
             if (radioButtonPSA.Checked)
             {
                 schemaName = VedwConfigurationSettings.VedwSchema;

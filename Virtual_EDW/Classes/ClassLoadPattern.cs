@@ -124,11 +124,16 @@ namespace Virtual_EDW
     {
         internal List<LoadPattern> DeserializeLoadPatternCollection()
         {
+            List<LoadPattern> loadPatternList = new List<LoadPattern>();
             // Retrieve the file contents and store in a string
-             var jsonInput = File.ReadAllText(VedwConfigurationSettings.loadPatternPath);
+            if (File.Exists(VedwConfigurationSettings.LoadPatternListPath + GlobalParameters.LoadPatternListFile))
+            {
+                var jsonInput = File.ReadAllText(VedwConfigurationSettings.LoadPatternListPath +
+                                                 GlobalParameters.LoadPatternListFile);
 
-            //Move the (json) string into a List object (a list of the type LoadPattern)
-            List<LoadPattern> loadPatternList = JsonConvert.DeserializeObject<List<LoadPattern>>(jsonInput);
+                //Move the (json) string into a List object (a list of the type LoadPattern)
+                loadPatternList = JsonConvert.DeserializeObject<List<LoadPattern>>(jsonInput);
+            }
 
             // Return the list to the instance
             return loadPatternList;

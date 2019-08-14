@@ -33,7 +33,7 @@ namespace Virtual_Data_Warehouse.Classes
         /// </summary>
         internal static void RemoveExistingJsonFile(string inputFileName)
         {
-            File.Delete(VedwConfigurationSettings.loadPatternPath + inputFileName);
+            File.Delete(VedwConfigurationSettings.LoadPatternListPath + inputFileName);
         }
 
     }
