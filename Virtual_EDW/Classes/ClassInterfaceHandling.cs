@@ -12,44 +12,9 @@ namespace Virtual_Data_Warehouse.Classes
             // Set the return type
             List<ColumnMapping> returnList = new List<ColumnMapping>();
 
-            // Evaluate source key components
-            List<string> temporaryBusinessKeyComponentList = new List<string>();
-            temporaryBusinessKeyComponentList = sourceBusinessKeyDefinition.Split(',').ToList(); // Split by the comma first to get the key parts
-
-            List<string> sourceBusinessKeyComponentList = new List<string>();
-
-            foreach (var keyComponent in temporaryBusinessKeyComponentList)
-            {
-                var keyPart = keyComponent.TrimStart().TrimEnd();
-                keyPart = keyComponent.Replace("(", "").Replace(")", "").Replace(" ","");
-
-                if (keyPart.StartsWith("COMPOSITE"))
-                {
-                    keyPart = keyPart.Replace("COMPOSITE", "");
-
-                    var temporaryKeyPartList = keyPart.Split(';').ToList();
-                    foreach (var item in temporaryKeyPartList)
-                    {
-                        sourceBusinessKeyComponentList.Add(item);
-                    }
-                }
-                else if (keyPart.StartsWith("CONCATENATE"))
-                {
-                    keyPart = keyPart.Replace("CONCATENATE", "");
-                    keyPart = keyPart.Replace(";", "+");
-
-                    sourceBusinessKeyComponentList.Add(keyPart);
-                }
-                else
-                {
-                    sourceBusinessKeyComponentList.Add(keyPart);
-                }
-            }
-
-            List<string> targetBusinessKeyComponentList = targetBusinessKeyDefinition.Split(',').ToList();
-
-            sourceBusinessKeyComponentList = sourceBusinessKeyComponentList.Select(t => t.Trim()).ToList();
-            targetBusinessKeyComponentList = targetBusinessKeyComponentList.Select(t => t.Trim()).ToList();
+            // Evaluate key components for source and target key definitions
+            var sourceBusinessKeyComponentList = businessKeyComponentList(sourceBusinessKeyDefinition);
+            var targetBusinessKeyComponentList = businessKeyComponentList(targetBusinessKeyDefinition);
 
             int counter = 0;
 
@@ -88,6 +53,46 @@ namespace Virtual_Data_Warehouse.Classes
             }
 
             return returnList;
+        }
+
+        private static List<string> businessKeyComponentList(string sourceBusinessKeyDefinition)
+        {
+            List<string> temporaryBusinessKeyComponentList = new List<string>();
+            temporaryBusinessKeyComponentList =
+                sourceBusinessKeyDefinition.Split(',').ToList(); // Split by the comma first to get the key parts
+
+            List<string> sourceBusinessKeyComponentList = new List<string>();
+
+            foreach (var keyComponent in temporaryBusinessKeyComponentList)
+            {
+                var keyPart = keyComponent.TrimStart().TrimEnd();
+                keyPart = keyComponent.Replace("(", "").Replace(")", "").Replace(" ", "");
+
+                if (keyPart.StartsWith("COMPOSITE"))
+                {
+                    keyPart = keyPart.Replace("COMPOSITE", "");
+
+                    var temporaryKeyPartList = keyPart.Split(';').ToList();
+                    foreach (var item in temporaryKeyPartList)
+                    {
+                        sourceBusinessKeyComponentList.Add(item);
+                    }
+                }
+                else if (keyPart.StartsWith("CONCATENATE"))
+                {
+                    keyPart = keyPart.Replace("CONCATENATE", "");
+                    keyPart = keyPart.Replace(";", "+");
+
+                    sourceBusinessKeyComponentList.Add(keyPart);
+                }
+                else
+                {
+                    sourceBusinessKeyComponentList.Add(keyPart);
+                }
+            }
+
+            sourceBusinessKeyComponentList = sourceBusinessKeyComponentList.Select(t => t.Trim()).ToList();
+            return sourceBusinessKeyComponentList;
         }
 
         internal static string EvaluateBusinessKey(ColumnMapping businessKey)

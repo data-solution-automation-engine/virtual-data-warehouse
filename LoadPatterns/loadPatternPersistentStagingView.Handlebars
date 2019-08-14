@@ -1,11 +1,11 @@
 {{#each individualSourceToTargetMapping}}
 --
--- Staging Area View definition for {{targetTable}}
+-- Persistent Staging Area View definition for {{targetTable}}
 -- Generated at {{../generationDateTime}}
 --
 
 GO
-USE [{{../metadataConfiguration.psaDatabaseName}}]
+USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]') AND type in (N'V'))
@@ -13,13 +13,101 @@ DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
 GO
 
 CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
-AS
-SELECT
-  {{#each columnMapping}}
-  {{sourceColumn.columnName}} AS {{targetColumn.columnName}}{{#unless @last}},{{/unless}}
-  {{/each}}
-FROM {{sourceTable}}
-WHERE 1=1
-    {{#if filterCriterion}} AND {{filterCriterion}}{{/if}}
-{{/each}}
 
+SELECT
+   {{#each columnMapping}}
+   [{{targetColumn.columnName}}],
+   {{/each}}
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.sourceRowIdAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
+   [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [KEY_ROW_NUMBER]
+FROM 
+(
+  SELECT
+     STG.[{{../metadataConfiguration.loadDateTimeAttribute}}],
+     STG.[{{../metadataConfiguration.eventDateTimeAttribute}}],
+     STG.[{{../metadataConfiguration.recordSourceAttribute}}],
+     STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
+     STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
+     STG.[{{../metadataConfiguration.recordChecksumAttribute}}],
+     {{#each columnMapping}}
+     STG.[{{sourceColumn.columnName}}],
+     {{/each}}
+     COALESCE(maxsub.[LKP_{{../metadataConfiguration.recordChecksumAttribute}}], 'N/A') AS [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
+     COALESCE(maxsub.[LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}], 'N/A') AS [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}],
+     CAST(ROW_NUMBER() OVER
+        (  PARTITION BY
+             {{#each businessKey}}{{#each businessKeyComponentMapping}}STG.[{{sourceColumn.columnName}}],
+             {{/each}}{{/each}}
+             STG.[{{../metadataConfiguration.sourceRowIdAttribute}}]
+           ORDER BY
+             {{#each businessKey}}{{#each businessKeyComponentMapping}}STG.[{{sourceColumn.columnName}}],
+             {{/each}}{{/each}}
+             STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
+             STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
+      )  AS INT
+    ) AS KEY_ROW_NUMBER
+  FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{sourceTable}}] STG
+  LEFT OUTER JOIN -- Prevent reprocessing
+    [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetTable}}] HSTG
+    ON
+       {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+       HSTG.[{{targetColumn.columnName}}] = STG.[{{sourceColumn.columnName}}] AND{{/each}} {{/each}}
+       HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
+       HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
+  LEFT OUTER JOIN -- max HSTG checksum
+  (
+      SELECT {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+         A.[{{sourceColumn.columnName}}], {{/each}} {{/each}}
+         A.[{{../metadataConfiguration.sourceRowIdAttribute}}],  
+         A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
+         A.[{{../metadataConfiguration.changeDataCaptureAttribute}}] AS [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}]
+      FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{targetTable}}] A
+      JOIN
+      (
+        SELECT {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+          B.[{{sourceColumn.columnName}}], {{/each}} {{/each}}
+          B.[{{../metadataConfiguration.sourceRowIdAttribute}}],  
+          MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
+        FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{targetTable}}] B
+        GROUP BY {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+          B.[{{sourceColumn.columnName}}],{{/each}} {{/each}}
+          B.[{{../metadataConfiguration.sourceRowIdAttribute}}]
+     ) C ON
+         {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+         A.[{{targetColumn.columnName}}] = C.[{{targetColumn.columnName}}] AND{{/each}} {{/each}}
+         A.[{{../metadataConfiguration.sourceRowIdAttribute}}] = C.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
+         A.[{{../metadataConfiguration.loadDateTimeAttribute}}] = C.[MAX_{{../metadataConfiguration.loadDateTimeAttribute}}]
+  ) maxsub ON
+     {{#each businessKey}}  {{#each businessKeyComponentMapping}}
+     STG.[{{sourceColumn.columnName}}] = maxsub.[{{targetColumn.columnName}}] AND{{/each}} {{/each}}
+     STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = maxsub.[{{../metadataConfiguration.sourceRowIdAttribute}}] 
+  WHERE {{#each businessKey}}  {{#each businessKeyComponentMapping}} {{#if @first}}
+     HSTG.[{{targetColumn.columnName}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
+) sub
+WHERE
+(
+  KEY_ROW_NUMBER=1
+  AND
+  (
+    ( {{../metadataConfiguration.recordChecksumAttribute}} != LKP_{{../metadataConfiguration.recordChecksumAttribute}} )
+    -- The checksums are different
+    OR
+    ( [{{../metadataConfiguration.recordChecksumAttribute}}] = [LKP_{{../metadataConfiguration.recordChecksumAttribute}}] AND     
+      [{{../metadataConfiguration.changeDataCaptureAttribute}}] != [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}] )
+    -- The checksums are the same but the CDC is different
+    -- In other words, if the hash is the same AND the CDC operation is the same then there is no change
+  )
+)
+OR
+(
+  -- It's not the most recent change in the set, so the record can be inserted as-is
+  KEY_ROW_NUMBER!=1
+)
+{{/each}}

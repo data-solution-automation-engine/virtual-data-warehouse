@@ -1433,7 +1433,7 @@ namespace Virtual_Data_Warehouse
                         BusinessKey businessKey =
                             new BusinessKey
                             {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "")
+                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["SOURCE_BUSINESS_KEY_DEFINITION"])
                             };
 
                         businessKeyList.Add(businessKey);
@@ -1490,11 +1490,11 @@ namespace Virtual_Data_Warehouse
                         var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternPsa);
                         var result = template(sourceTargetMappingList);
 
+                        // Check if the metadata needs to be displayed also
+                        DisplayJsonMetadata(sourceTargetMappingList, "PersistentStagingArea");
+
                         // Display the output of the template to the user
                         SetTextPsaOutput(result);
-
-                        // Check if the metadata needs to be displayed also
-                        DisplayJsonMetadata(sourceTargetMappingList,"PersistentStagingArea");
 
                         // Spool the output to disk
                         errorCounter = SaveOutputToDisk(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);

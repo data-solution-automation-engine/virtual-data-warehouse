@@ -154,6 +154,9 @@ namespace Virtual_EDW
 
                     //Check whether the token is a keyword, or between {{ }}  
                     String[] keyWordSql = {
+                        "CREATE",
+                        "VIEW",
+                        "GO",
                         "UNION",
                         "TRUNCATE",
                         "USE",
@@ -174,7 +177,7 @@ namespace Virtual_EDW
                         }
                     }
 
-                    String[] keyWordFunction = { "HASHBYTES","ROW_NUMBER()", "PARTITION" };
+                    String[] keyWordFunction = { "HASHBYTES","ROW_NUMBER()", "COALESCE", "CAST" };
                     for (int i = 0; i < keyWordFunction.Length; i++)
                     {
                         if (keyWordFunction[i] == token)

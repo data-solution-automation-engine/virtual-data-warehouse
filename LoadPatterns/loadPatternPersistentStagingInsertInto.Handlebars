@@ -4,16 +4,16 @@
 -- Generated at {{../generationDateTime}}
 --
 
-USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
+USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
 GO
-
-TRUNCATE TABLE [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetTable}}]
 
 INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetTable}}]
 (
    [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
    [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
    {{#each columnMapping}}
@@ -22,8 +22,10 @@ INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[
 )
 SELECT
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
    [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
    {{#each columnMapping}}
