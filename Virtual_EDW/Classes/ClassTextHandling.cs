@@ -157,6 +157,7 @@ namespace Virtual_EDW
                         "CREATE",
                         "VIEW",
                         "GO",
+                        "TABLE",
                         "UNION",
                         "TRUNCATE",
                         "USE",
