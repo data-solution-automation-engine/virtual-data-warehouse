@@ -48,9 +48,11 @@ namespace Virtual_Data_Warehouse
             EnvironmentConfiguration.InitialiseVedwRootPath();
 
             // Load the VEDW settings information, to be able to locate the TEAM configuration file and load it
-            EnvironmentConfiguration.LoadVedwSettingsFile(GlobalParameters.VedwConfigurationPath +
+            string loadVedwConfigurationResult = EnvironmentConfiguration.LoadVedwSettingsFile(GlobalParameters.VedwConfigurationPath +
                                                           GlobalParameters.VedwConfigurationfileName +
                                                           GlobalParameters.VedwFileExtension);
+
+            richTextBoxInformationMain.AppendText(loadVedwConfigurationResult + "\r\n\r\n");
 
             // Load the TEAM configuration settings from the TEAM configuration directory
             LoadTeamConfigurationFile();
@@ -385,7 +387,7 @@ namespace Virtual_Data_Warehouse
                                             VedwConfigurationSettings.WorkingEnvironment +
                                             GlobalParameters.VedwFileExtension;
 
-            richTextBoxInformationMain.Text = "Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n";
+            richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n");
 
             var teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
 

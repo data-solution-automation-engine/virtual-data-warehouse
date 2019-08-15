@@ -95,8 +95,11 @@ namespace Virtual_Data_Warehouse.Classes
         /// <summary>
         /// Retrieve the values of the VEDW core settings file (where the paths to the TEAM configuration file are maintained)
         /// </summary>
-        public static void LoadVedwSettingsFile(string filename)
+        public static string LoadVedwSettingsFile(string filename)
         {
+            string returnValue = "";
+            string errorValue = "";
+
             // This is the hardcoded base path that always needs to be accessible, it has the main file which can locate the rest of the configuration
             var configList = new Dictionary<string, string>();
             var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
@@ -118,19 +121,51 @@ namespace Virtual_Data_Warehouse.Classes
                 fs.Close();
 
                 // Load the information from the VEDW settings file into memory
+                int errorCounter = 0;
+                string configurationValue = "";
+
                 FormBase.VedwConfigurationSettings.TeamConfigurationPath = configList["TeamConfigurationPath"];
                 FormBase.VedwConfigurationSettings.VedwOutputPath = configList["VedwOutputPath"];
-                FormBase.VedwConfigurationSettings.LoadPatternListPath = configList["LoadPatternListPath"];
+
+                configurationValue = "LoadPatternListPath";
+                if (configList.ContainsKey(configurationValue))
+                {
+                    FormBase.VedwConfigurationSettings.LoadPatternListPath = configList[configurationValue];
+                }
+                else
+                {
+                    errorValue = errorValue + $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>).\r\n";
+                    errorCounter++;
+                }
+
                 FormBase.VedwConfigurationSettings.EnableUnicode = configList["EnableUnicode"];
                 FormBase.VedwConfigurationSettings.DisableHash = configList["DisableHash"];
                 FormBase.VedwConfigurationSettings.HashKeyOutputType = configList["HashKeyOutputType"];
-                FormBase.VedwConfigurationSettings.WorkingEnvironment = configList["WorkingEnvironment"];
+
+                configurationValue = "WorkingEnvironment";
+                if (configList.ContainsKey(configurationValue))
+                {
+                    FormBase.VedwConfigurationSettings.WorkingEnvironment = configList[configurationValue];
+                }
+                else
+                {
+                    errorValue = errorValue + $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
+                    errorCounter++;
+                }
+
                 FormBase.VedwConfigurationSettings.VedwSchema = configList["VedwSchema"];
+
+                returnValue = "The configuration file " + filename + " was loaded.";
+                if (errorCounter>0)
+                {
+                    returnValue = returnValue+ $"\r\n\r\nHowever, the file was loaded with {errorCounter} error(s). The reported errors are:\r\n" + errorValue;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // richTextBoxInformation.AppendText("\r\n\r\nAn error occured while interpreting the configuration file. The original error is: '" + ex.Message + "'");
+                returnValue = "There was an unhandled issue loading the configuration file. The file that was attempted to be loaded was: " + filename +"\r\n\r\n."+ "The exception message returned was "+ex;
             }
+            return returnValue;
         }
 
 
