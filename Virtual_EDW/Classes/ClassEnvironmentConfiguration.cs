@@ -68,9 +68,6 @@ namespace Virtual_Data_Warehouse.Classes
                     initialConfigurationFile.AppendLine("TeamConfigurationPath|" + FormBase.VedwConfigurationSettings.TeamConfigurationPath); //Initially make this the same as the VEDW application root
                     initialConfigurationFile.AppendLine("VedwOutputPath|" + FormBase.VedwConfigurationSettings.VedwOutputPath);
                     initialConfigurationFile.AppendLine("LoadPatternListPath|" + FormBase.VedwConfigurationSettings.LoadPatternListPath);
-                    initialConfigurationFile.AppendLine("EnableUnicode|True");
-                    initialConfigurationFile.AppendLine("DisableHash|False");
-                    initialConfigurationFile.AppendLine("HashKeyOutputType|Binary");
                     initialConfigurationFile.AppendLine("WorkingEnvironment|Development");
                     initialConfigurationFile.AppendLine("VedwSchema|dbo");
                     initialConfigurationFile.AppendLine("/* End of file */");
@@ -124,8 +121,28 @@ namespace Virtual_Data_Warehouse.Classes
                 int errorCounter = 0;
                 string configurationValue = "";
 
-                FormBase.VedwConfigurationSettings.TeamConfigurationPath = configList["TeamConfigurationPath"];
-                FormBase.VedwConfigurationSettings.VedwOutputPath = configList["VedwOutputPath"];
+                configurationValue = "TeamConfigurationPath";
+                if (configList.ContainsKey(configurationValue))
+                {
+                    FormBase.VedwConfigurationSettings.TeamConfigurationPath = configList[configurationValue];
+                }
+                else
+                {
+                    errorValue = errorValue + $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
+                    errorCounter++;
+                }
+
+
+                configurationValue = "VedwOutputPath";
+                if (configList.ContainsKey(configurationValue))
+                {
+                    FormBase.VedwConfigurationSettings.VedwOutputPath = configList[configurationValue];
+                }
+                else
+                {
+                    errorValue = errorValue + $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
+                    errorCounter++;
+                }
 
                 configurationValue = "LoadPatternListPath";
                 if (configList.ContainsKey(configurationValue))
@@ -138,10 +155,6 @@ namespace Virtual_Data_Warehouse.Classes
                     errorCounter++;
                 }
 
-                FormBase.VedwConfigurationSettings.EnableUnicode = configList["EnableUnicode"];
-                FormBase.VedwConfigurationSettings.DisableHash = configList["DisableHash"];
-                FormBase.VedwConfigurationSettings.HashKeyOutputType = configList["HashKeyOutputType"];
-
                 configurationValue = "WorkingEnvironment";
                 if (configList.ContainsKey(configurationValue))
                 {
@@ -153,7 +166,16 @@ namespace Virtual_Data_Warehouse.Classes
                     errorCounter++;
                 }
 
-                FormBase.VedwConfigurationSettings.VedwSchema = configList["VedwSchema"];
+                configurationValue = "VedwSchema";
+                if (configList.ContainsKey(configurationValue))
+                {
+                    FormBase.VedwConfigurationSettings.VedwSchema = configList[configurationValue];
+                }
+                else
+                {
+                    errorValue = errorValue + $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>).\r\n";
+                    errorCounter++;
+                }
 
                 returnValue = "The configuration file " + filename + " was loaded.";
                 if (errorCounter>0)

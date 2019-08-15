@@ -151,6 +151,7 @@
             this.richTextBoxLsat = new System.Windows.Forms.RichTextBox();
             this.buttonGenerateLsats = new System.Windows.Forms.Button();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
+            this.button7 = new System.Windows.Forms.Button();
             this.checkBoxBackupFiles = new System.Windows.Forms.CheckBox();
             this.buttonOpenLoadPatternList = new System.Windows.Forms.Button();
             this.buttonSaveLoadPatternList = new System.Windows.Forms.Button();
@@ -199,7 +200,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
-            this.button7 = new System.Windows.Forms.Button();
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainTabControl.SuspendLayout();
             this.tabPageStaging.SuspendLayout();
             this.tabControlStg.SuspendLayout();
@@ -1663,6 +1664,17 @@
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
             // 
+            // button7
+            // 
+            this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button7.Location = new System.Drawing.Point(759, 530);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(109, 40);
+            this.button7.TabIndex = 98;
+            this.button7.Text = "Save In Place (Update)";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // checkBoxBackupFiles
             // 
             this.checkBoxBackupFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1857,6 +1869,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openOutputDirectoryToolStripMenuItem,
             this.openConfigurationDirectoryToolStripMenuItem,
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem,
             this.openTEAMConfigurationSettingsFileToolStripMenuItem,
             this.saveConfigurationFileToolStripMenuItem,
             this.toolStripSeparator2,
@@ -2114,16 +2127,13 @@
             this.richTextBoxInformationMain.Text = "";
             this.richTextBoxInformationMain.TextChanged += new System.EventHandler(this.richTextBoxInformationMain_TextChanged);
             // 
-            // button7
+            // openVEDWConfigurationSettingsFileToolStripMenuItem
             // 
-            this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button7.Location = new System.Drawing.Point(759, 530);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(109, 40);
-            this.button7.TabIndex = 98;
-            this.button7.Text = "Save In Place (Update)";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Name = "openVEDWConfigurationSettingsFileToolStripMenuItem";
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Text = "Open VEDW Configuration Settings File";
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openVEDWConfigurationSettingsFileToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -2383,6 +2393,7 @@
         private System.Windows.Forms.Button buttonOpenLoadPatternList;
         private System.Windows.Forms.CheckBox checkBoxBackupFiles;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.ToolStripMenuItem openVEDWConfigurationSettingsFileToolStripMenuItem;
     }
 }
 

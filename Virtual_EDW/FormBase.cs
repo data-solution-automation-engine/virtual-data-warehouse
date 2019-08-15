@@ -47,9 +47,6 @@ namespace Virtual_EDW
         /// </summary>
         internal static class VedwConfigurationSettings
         {
-            public static string EnableUnicode { get; set; } // Unicode checkbox
-            public static string DisableHash { get; set; } // Disable hash checkbox (use natural business key)
-            public static string HashKeyOutputType { get; set; } // Toggle output for the hash (binary or character)
             public static string VedwSchema { get; set; } = "dbo";
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string VedwOutputPath { get; set; } = Application.StartupPath + @"\Configuration\";

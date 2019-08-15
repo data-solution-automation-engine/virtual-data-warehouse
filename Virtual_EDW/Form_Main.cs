@@ -2784,9 +2784,6 @@ namespace Virtual_Data_Warehouse
             rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VedwConfigurationSettings.TeamConfigurationPath + "");
             rootPathConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath + "");
             rootPathConfigurationFile.AppendLine("LoadPatternListPath|" + VedwConfigurationSettings.LoadPatternListPath + "");
-            rootPathConfigurationFile.AppendLine("EnableUnicode|"+ VedwConfigurationSettings.EnableUnicode+"");
-            rootPathConfigurationFile.AppendLine("DisableHash|" + VedwConfigurationSettings.DisableHash + "");
-            rootPathConfigurationFile.AppendLine("HashKeyOutputType|" + VedwConfigurationSettings.HashKeyOutputType + "");
             rootPathConfigurationFile.AppendLine("WorkingEnvironment|" + VedwConfigurationSettings.WorkingEnvironment + "");
             rootPathConfigurationFile.AppendLine("VedwSchema|" + VedwConfigurationSettings.VedwSchema + "");
             rootPathConfigurationFile.AppendLine("/* End of file */");
@@ -2843,7 +2840,7 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
+                richTextBoxInformationMain.Text = "An error has occured while attempting to open the TEAM configuration file. The error message is: " + ex;
             }
         }
 
@@ -3662,6 +3659,20 @@ namespace Virtual_Data_Warehouse
             }
 
         }
-    
+
+        private void openVEDWConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(GlobalParameters.VedwConfigurationPath +
+                              GlobalParameters.VedwConfigurationfileName +
+                              GlobalParameters.VedwFileExtension);
+
+            }
+            catch (Exception ex)
+            {
+                richTextBoxInformationMain.Text = "An error has occured while attempting to open the VEDW configuration file. The error message is: " + ex;
+            }
+        }
     }
 }
