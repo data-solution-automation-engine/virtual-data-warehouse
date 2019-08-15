@@ -31,27 +31,52 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.buttonGenerateHubs = new System.Windows.Forms.Button();
-            this.MainTabControl = new System.Windows.Forms.TabControl();
-            this.tabPageStaging = new System.Windows.Forms.TabPage();
-            this.tabControlStg = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabControlMain = new System.Windows.Forms.TabControl();
+            this.tabPageHome = new System.Windows.Forms.TabPage();
+            this.buttonTabGenerationTest = new System.Windows.Forms.Button();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
+            this.tabPageSettings = new System.Windows.Forms.TabPage();
+            this.button7 = new System.Windows.Forms.Button();
+            this.checkBoxBackupFiles = new System.Windows.Forms.CheckBox();
+            this.buttonOpenLoadPatternList = new System.Windows.Forms.Button();
+            this.buttonSaveLoadPatternList = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.dataGridViewLoadPatternMetadata = new System.Windows.Forms.DataGridView();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.textBoxSchemaName = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButtonProduction = new System.Windows.Forms.RadioButton();
+            this.radioButtonDevelopment = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBoxConfigurationPath = new System.Windows.Forms.TextBox();
+            this.OutputPathLabel = new System.Windows.Forms.Label();
+            this.textBoxOutputPath = new System.Windows.Forms.TextBox();
+            this.label31 = new System.Windows.Forms.Label();
+            this.tabPageStagingArea = new System.Windows.Forms.TabPage();
+            this.tabControlStagingArea = new System.Windows.Forms.TabControl();
+            this.tabPageStagingAreaGenerationOutput = new System.Windows.Forms.TabPage();
             this.richTextBoxStgOutput = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.labelLoadPatternStgPath = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
-            this.comboBoxStgPattern = new System.Windows.Forms.ComboBox();
+            this.comboBoxStagingAreaPattern = new System.Windows.Forms.ComboBox();
             this.richTextBoxStgPattern = new System.Windows.Forms.RichTextBox();
             this.checkBoxExcludeLanding = new System.Windows.Forms.CheckBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.textBoxFilterCriterionStg = new System.Windows.Forms.TextBox();
+            this.groupBoxFilterStagingArea = new System.Windows.Forms.GroupBox();
+            this.textBoxFilterCriterionStagingArea = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.checkBoxSelectAllStg = new System.Windows.Forms.CheckBox();
-            this.checkedListBoxStgMetadata = new System.Windows.Forms.CheckedListBox();
-            this.label26 = new System.Windows.Forms.Label();
+            this.checkBoxStagingAreaSelectAll = new System.Windows.Forms.CheckBox();
+            this.checkedListBoxStagingArea = new System.Windows.Forms.CheckedListBox();
+            this.labelStagingAreaProcessing = new System.Windows.Forms.Label();
             this.richTextBoxStaging = new System.Windows.Forms.RichTextBox();
-            this.buttonGenerateStaging = new System.Windows.Forms.Button();
+            this.buttonGenerateStagingArea = new System.Windows.Forms.Button();
             this.tabPagePSA = new System.Windows.Forms.TabPage();
             this.tabControlPsa = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -150,30 +175,11 @@
             this.label5 = new System.Windows.Forms.Label();
             this.richTextBoxLsat = new System.Windows.Forms.RichTextBox();
             this.buttonGenerateLsats = new System.Windows.Forms.Button();
-            this.tabPageSettings = new System.Windows.Forms.TabPage();
-            this.button7 = new System.Windows.Forms.Button();
-            this.checkBoxBackupFiles = new System.Windows.Forms.CheckBox();
-            this.buttonOpenLoadPatternList = new System.Windows.Forms.Button();
-            this.buttonSaveLoadPatternList = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
-            this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.dataGridViewLoadPatternMetadata = new System.Windows.Forms.DataGridView();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.textBoxSchemaName = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButtonProduction = new System.Windows.Forms.RadioButton();
-            this.radioButtonDevelopment = new System.Windows.Forms.RadioButton();
-            this.label6 = new System.Windows.Forms.Label();
-            this.textBoxConfigurationPath = new System.Windows.Forms.TextBox();
-            this.OutputPathLabel = new System.Windows.Forms.Label();
-            this.textBoxOutputPath = new System.Windows.Forms.TextBox();
-            this.label31 = new System.Windows.Forms.Label();
             this.menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openTEAMConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveConfigurationFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -189,9 +195,8 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.linksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.linksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxGenerateInDatabase = new System.Windows.Forms.CheckBox();
             this.SQLGenerationGroupBox = new System.Windows.Forms.GroupBox();
             this.checkBoxSaveToFile = new System.Windows.Forms.CheckBox();
@@ -200,13 +205,18 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
-            this.openVEDWConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MainTabControl.SuspendLayout();
-            this.tabPageStaging.SuspendLayout();
-            this.tabControlStg.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tabControlMain.SuspendLayout();
+            this.tabPageHome.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.tabPageSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternMetadata)).BeginInit();
+            this.groupBox8.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.tabPageStagingArea.SuspendLayout();
+            this.tabControlStagingArea.SuspendLayout();
+            this.tabPageStagingAreaGenerationOutput.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.groupBoxFilterStagingArea.SuspendLayout();
             this.tabPagePSA.SuspendLayout();
             this.tabControlPsa.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -232,10 +242,6 @@
             this.tabPage7.SuspendLayout();
             this.tabPage8.SuspendLayout();
             this.groupBox7.SuspendLayout();
-            this.tabPageSettings.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternMetadata)).BeginInit();
-            this.groupBox8.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -253,66 +259,334 @@
             this.buttonGenerateHubs.UseVisualStyleBackColor = true;
             this.buttonGenerateHubs.Click += new System.EventHandler(this.HubButtonClick);
             // 
-            // MainTabControl
+            // tabControlMain
             // 
-            this.MainTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabControlMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.MainTabControl.Controls.Add(this.tabPageStaging);
-            this.MainTabControl.Controls.Add(this.tabPagePSA);
-            this.MainTabControl.Controls.Add(this.tabPageHub);
-            this.MainTabControl.Controls.Add(this.tabPageSat);
-            this.MainTabControl.Controls.Add(this.tabPageLink);
-            this.MainTabControl.Controls.Add(this.tabPageLinkSat);
-            this.MainTabControl.Controls.Add(this.tabPageSettings);
-            this.MainTabControl.Location = new System.Drawing.Point(12, 44);
-            this.MainTabControl.Name = "MainTabControl";
-            this.MainTabControl.SelectedIndex = 0;
-            this.MainTabControl.Size = new System.Drawing.Size(1338, 627);
-            this.MainTabControl.TabIndex = 3;
+            this.tabControlMain.Controls.Add(this.tabPageHome);
+            this.tabControlMain.Controls.Add(this.tabPageSettings);
+            this.tabControlMain.Controls.Add(this.tabPageStagingArea);
+            this.tabControlMain.Controls.Add(this.tabPagePSA);
+            this.tabControlMain.Controls.Add(this.tabPageHub);
+            this.tabControlMain.Controls.Add(this.tabPageSat);
+            this.tabControlMain.Controls.Add(this.tabPageLink);
+            this.tabControlMain.Controls.Add(this.tabPageLinkSat);
+            this.tabControlMain.Location = new System.Drawing.Point(12, 44);
+            this.tabControlMain.Name = "tabControlMain";
+            this.tabControlMain.SelectedIndex = 0;
+            this.tabControlMain.Size = new System.Drawing.Size(1338, 627);
+            this.tabControlMain.TabIndex = 3;
             // 
-            // tabPageStaging
+            // tabPageHome
             // 
-            this.tabPageStaging.Controls.Add(this.tabControlStg);
-            this.tabPageStaging.Controls.Add(this.checkBoxExcludeLanding);
-            this.tabPageStaging.Controls.Add(this.groupBox2);
-            this.tabPageStaging.Controls.Add(this.button1);
-            this.tabPageStaging.Controls.Add(this.checkBoxSelectAllStg);
-            this.tabPageStaging.Controls.Add(this.checkedListBoxStgMetadata);
-            this.tabPageStaging.Controls.Add(this.label26);
-            this.tabPageStaging.Controls.Add(this.richTextBoxStaging);
-            this.tabPageStaging.Controls.Add(this.buttonGenerateStaging);
-            this.tabPageStaging.Location = new System.Drawing.Point(4, 22);
-            this.tabPageStaging.Name = "tabPageStaging";
-            this.tabPageStaging.Size = new System.Drawing.Size(1330, 601);
-            this.tabPageStaging.TabIndex = 11;
-            this.tabPageStaging.Text = "Staging Area";
-            this.tabPageStaging.UseVisualStyleBackColor = true;
+            this.tabPageHome.Controls.Add(this.buttonTabGenerationTest);
+            this.tabPageHome.Controls.Add(this.linkLabel1);
+            this.tabPageHome.Controls.Add(this.pictureBox2);
+            this.tabPageHome.Controls.Add(this.richTextBoxMainScreen);
+            this.tabPageHome.Location = new System.Drawing.Point(4, 22);
+            this.tabPageHome.Name = "tabPageHome";
+            this.tabPageHome.Size = new System.Drawing.Size(1330, 601);
+            this.tabPageHome.TabIndex = 12;
+            this.tabPageHome.Text = "Home";
+            this.tabPageHome.UseVisualStyleBackColor = true;
             // 
-            // tabControlStg
+            // buttonTabGenerationTest
             // 
-            this.tabControlStg.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.buttonTabGenerationTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonTabGenerationTest.Location = new System.Drawing.Point(840, 119);
+            this.buttonTabGenerationTest.Name = "buttonTabGenerationTest";
+            this.buttonTabGenerationTest.Size = new System.Drawing.Size(109, 40);
+            this.buttonTabGenerationTest.TabIndex = 30;
+            this.buttonTabGenerationTest.Text = "TEST ";
+            this.buttonTabGenerationTest.UseVisualStyleBackColor = true;
+            this.buttonTabGenerationTest.Click += new System.EventHandler(this.buttonTabGenerationTest_Click);
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(149, 49);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(137, 13);
+            this.linkLabel1.TabIndex = 19;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "http://www.roelantvos.com";
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox2.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
+            this.pictureBox2.Location = new System.Drawing.Point(34, 31);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(109, 100);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.TabIndex = 18;
+            this.pictureBox2.TabStop = false;
+            // 
+            // richTextBoxMainScreen
+            // 
+            this.richTextBoxMainScreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxMainScreen.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxMainScreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBoxMainScreen.Location = new System.Drawing.Point(149, 31);
+            this.richTextBoxMainScreen.Name = "richTextBoxMainScreen";
+            this.richTextBoxMainScreen.Size = new System.Drawing.Size(393, 115);
+            this.richTextBoxMainScreen.TabIndex = 17;
+            this.richTextBoxMainScreen.Text = "Welcome to the Virtual Data Warehouse - open source code generation.";
+            // 
+            // tabPageSettings
+            // 
+            this.tabPageSettings.Controls.Add(this.button7);
+            this.tabPageSettings.Controls.Add(this.checkBoxBackupFiles);
+            this.tabPageSettings.Controls.Add(this.buttonOpenLoadPatternList);
+            this.tabPageSettings.Controls.Add(this.buttonSaveLoadPatternList);
+            this.tabPageSettings.Controls.Add(this.label10);
+            this.tabPageSettings.Controls.Add(this.textBoxLoadPatternPath);
+            this.tabPageSettings.Controls.Add(this.label7);
+            this.tabPageSettings.Controls.Add(this.dataGridViewLoadPatternMetadata);
+            this.tabPageSettings.Controls.Add(this.groupBox8);
+            this.tabPageSettings.Controls.Add(this.groupBox1);
+            this.tabPageSettings.Controls.Add(this.label6);
+            this.tabPageSettings.Controls.Add(this.textBoxConfigurationPath);
+            this.tabPageSettings.Controls.Add(this.OutputPathLabel);
+            this.tabPageSettings.Controls.Add(this.textBoxOutputPath);
+            this.tabPageSettings.Controls.Add(this.label31);
+            this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSettings.Name = "tabPageSettings";
+            this.tabPageSettings.Size = new System.Drawing.Size(1330, 601);
+            this.tabPageSettings.TabIndex = 8;
+            this.tabPageSettings.Text = "Settings";
+            this.tabPageSettings.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button7.Location = new System.Drawing.Point(759, 530);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(109, 40);
+            this.button7.TabIndex = 98;
+            this.button7.Text = "Save In Place (Update)";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // checkBoxBackupFiles
+            // 
+            this.checkBoxBackupFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBoxBackupFiles.AutoSize = true;
+            this.checkBoxBackupFiles.Checked = true;
+            this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxBackupFiles.Location = new System.Drawing.Point(933, 530);
+            this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
+            this.checkBoxBackupFiles.Size = new System.Drawing.Size(181, 17);
+            this.checkBoxBackupFiles.TabIndex = 97;
+            this.checkBoxBackupFiles.Text = "Automatically create file backups";
+            this.checkBoxBackupFiles.UseVisualStyleBackColor = true;
+            // 
+            // buttonOpenLoadPatternList
+            // 
+            this.buttonOpenLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonOpenLoadPatternList.Location = new System.Drawing.Point(529, 530);
+            this.buttonOpenLoadPatternList.Name = "buttonOpenLoadPatternList";
+            this.buttonOpenLoadPatternList.Size = new System.Drawing.Size(109, 40);
+            this.buttonOpenLoadPatternList.TabIndex = 96;
+            this.buttonOpenLoadPatternList.Text = "Open Load Pattern Overview File";
+            this.buttonOpenLoadPatternList.UseVisualStyleBackColor = true;
+            this.buttonOpenLoadPatternList.Click += new System.EventHandler(this.ButtonOpenLoadPatternList);
+            // 
+            // buttonSaveLoadPatternList
+            // 
+            this.buttonSaveLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSaveLoadPatternList.Location = new System.Drawing.Point(644, 530);
+            this.buttonSaveLoadPatternList.Name = "buttonSaveLoadPatternList";
+            this.buttonSaveLoadPatternList.Size = new System.Drawing.Size(109, 40);
+            this.buttonSaveLoadPatternList.TabIndex = 95;
+            this.buttonSaveLoadPatternList.Text = "Save As";
+            this.buttonSaveLoadPatternList.UseVisualStyleBackColor = true;
+            this.buttonSaveLoadPatternList.Click += new System.EventHandler(this.buttonSaveLoadPatternList_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(14, 139);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(91, 13);
+            this.label10.TabIndex = 94;
+            this.label10.Text = "Load pattern path";
+            // 
+            // textBoxLoadPatternPath
+            // 
+            this.textBoxLoadPatternPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxLoadPatternPath.Location = new System.Drawing.Point(17, 157);
+            this.textBoxLoadPatternPath.Multiline = true;
+            this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
+            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(493, 27);
+            this.textBoxLoadPatternPath.TabIndex = 93;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(526, 43);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(72, 13);
+            this.label7.TabIndex = 92;
+            this.label7.Text = "Load patterns";
+            // 
+            // dataGridViewLoadPatternMetadata
+            // 
+            this.dataGridViewLoadPatternMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControlStg.Controls.Add(this.tabPage1);
-            this.tabControlStg.Controls.Add(this.tabPage2);
-            this.tabControlStg.Location = new System.Drawing.Point(416, 9);
-            this.tabControlStg.Name = "tabControlStg";
-            this.tabControlStg.SelectedIndex = 0;
-            this.tabControlStg.Size = new System.Drawing.Size(896, 573);
-            this.tabControlStg.TabIndex = 28;
-            this.tabControlStg.SelectedIndexChanged += new System.EventHandler(this.tabControlStg_SelectedIndexChanged);
+            this.dataGridViewLoadPatternMetadata.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewLoadPatternMetadata.Location = new System.Drawing.Point(529, 61);
+            this.dataGridViewLoadPatternMetadata.Name = "dataGridViewLoadPatternMetadata";
+            this.dataGridViewLoadPatternMetadata.Size = new System.Drawing.Size(782, 463);
+            this.dataGridViewLoadPatternMetadata.TabIndex = 91;
             // 
-            // tabPage1
+            // groupBox8
             // 
-            this.tabPage1.Controls.Add(this.richTextBoxStgOutput);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(888, 547);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Staging Area Generation Output";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.groupBox8.Controls.Add(this.textBoxSchemaName);
+            this.groupBox8.Controls.Add(this.label12);
+            this.groupBox8.Location = new System.Drawing.Point(142, 204);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(366, 70);
+            this.groupBox8.TabIndex = 89;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "ETL output options";
+            // 
+            // textBoxSchemaName
+            // 
+            this.textBoxSchemaName.Location = new System.Drawing.Point(87, 20);
+            this.textBoxSchemaName.Name = "textBoxSchemaName";
+            this.textBoxSchemaName.Size = new System.Drawing.Size(273, 20);
+            this.textBoxSchemaName.TabIndex = 91;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 23);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(75, 13);
+            this.label12.TabIndex = 92;
+            this.label12.Text = "Schema name";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.radioButtonProduction);
+            this.groupBox1.Controls.Add(this.radioButtonDevelopment);
+            this.groupBox1.Location = new System.Drawing.Point(17, 204);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(119, 70);
+            this.groupBox1.TabIndex = 90;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Target environment";
+            // 
+            // radioButtonProduction
+            // 
+            this.radioButtonProduction.AutoSize = true;
+            this.radioButtonProduction.Location = new System.Drawing.Point(6, 42);
+            this.radioButtonProduction.Name = "radioButtonProduction";
+            this.radioButtonProduction.Size = new System.Drawing.Size(76, 17);
+            this.radioButtonProduction.TabIndex = 39;
+            this.radioButtonProduction.Text = "Production";
+            this.radioButtonProduction.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonDevelopment
+            // 
+            this.radioButtonDevelopment.AutoSize = true;
+            this.radioButtonDevelopment.Location = new System.Drawing.Point(6, 19);
+            this.radioButtonDevelopment.Name = "radioButtonDevelopment";
+            this.radioButtonDevelopment.Size = new System.Drawing.Size(88, 17);
+            this.radioButtonDevelopment.TabIndex = 38;
+            this.radioButtonDevelopment.Text = "Development";
+            this.radioButtonDevelopment.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(14, 91);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(306, 13);
+            this.label6.TabIndex = 84;
+            this.label6.Text = "TEAM configuration path (TEAM metadata settings file location)";
+            // 
+            // textBoxConfigurationPath
+            // 
+            this.textBoxConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxConfigurationPath.Location = new System.Drawing.Point(17, 109);
+            this.textBoxConfigurationPath.Multiline = true;
+            this.textBoxConfigurationPath.Name = "textBoxConfigurationPath";
+            this.textBoxConfigurationPath.Size = new System.Drawing.Size(493, 27);
+            this.textBoxConfigurationPath.TabIndex = 83;
+            // 
+            // OutputPathLabel
+            // 
+            this.OutputPathLabel.AutoSize = true;
+            this.OutputPathLabel.Location = new System.Drawing.Point(14, 43);
+            this.OutputPathLabel.Name = "OutputPathLabel";
+            this.OutputPathLabel.Size = new System.Drawing.Size(288, 13);
+            this.OutputPathLabel.TabIndex = 82;
+            this.OutputPathLabel.Text = "VEDW output path (location of the ETL output from VEDW)";
+            // 
+            // textBoxOutputPath
+            // 
+            this.textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxOutputPath.Location = new System.Drawing.Point(17, 61);
+            this.textBoxOutputPath.Multiline = true;
+            this.textBoxOutputPath.Name = "textBoxOutputPath";
+            this.textBoxOutputPath.Size = new System.Drawing.Size(493, 27);
+            this.textBoxOutputPath.TabIndex = 81;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(14, 12);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(199, 13);
+            this.label31.TabIndex = 53;
+            this.label31.Text = "Configuration settings for ETL generation";
+            // 
+            // tabPageStagingArea
+            // 
+            this.tabPageStagingArea.Controls.Add(this.tabControlStagingArea);
+            this.tabPageStagingArea.Controls.Add(this.checkBoxExcludeLanding);
+            this.tabPageStagingArea.Controls.Add(this.groupBoxFilterStagingArea);
+            this.tabPageStagingArea.Controls.Add(this.button1);
+            this.tabPageStagingArea.Controls.Add(this.checkBoxStagingAreaSelectAll);
+            this.tabPageStagingArea.Controls.Add(this.checkedListBoxStagingArea);
+            this.tabPageStagingArea.Controls.Add(this.labelStagingAreaProcessing);
+            this.tabPageStagingArea.Controls.Add(this.richTextBoxStaging);
+            this.tabPageStagingArea.Controls.Add(this.buttonGenerateStagingArea);
+            this.tabPageStagingArea.Location = new System.Drawing.Point(4, 22);
+            this.tabPageStagingArea.Name = "tabPageStagingArea";
+            this.tabPageStagingArea.Size = new System.Drawing.Size(1330, 601);
+            this.tabPageStagingArea.TabIndex = 11;
+            this.tabPageStagingArea.Text = "Staging Area";
+            this.tabPageStagingArea.UseVisualStyleBackColor = true;
+            // 
+            // tabControlStagingArea
+            // 
+            this.tabControlStagingArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlStagingArea.Controls.Add(this.tabPageStagingAreaGenerationOutput);
+            this.tabControlStagingArea.Controls.Add(this.tabPage2);
+            this.tabControlStagingArea.Location = new System.Drawing.Point(416, 9);
+            this.tabControlStagingArea.Name = "tabControlStagingArea";
+            this.tabControlStagingArea.SelectedIndex = 0;
+            this.tabControlStagingArea.Size = new System.Drawing.Size(896, 573);
+            this.tabControlStagingArea.TabIndex = 28;
+            this.tabControlStagingArea.SelectedIndexChanged += new System.EventHandler(this.tabControlStg_SelectedIndexChanged);
+            // 
+            // tabPageStagingAreaGenerationOutput
+            // 
+            this.tabPageStagingAreaGenerationOutput.Controls.Add(this.richTextBoxStgOutput);
+            this.tabPageStagingAreaGenerationOutput.Location = new System.Drawing.Point(4, 22);
+            this.tabPageStagingAreaGenerationOutput.Name = "tabPageStagingAreaGenerationOutput";
+            this.tabPageStagingAreaGenerationOutput.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageStagingAreaGenerationOutput.Size = new System.Drawing.Size(888, 547);
+            this.tabPageStagingAreaGenerationOutput.TabIndex = 0;
+            this.tabPageStagingAreaGenerationOutput.Text = "Staging Area Generation Output";
+            this.tabPageStagingAreaGenerationOutput.UseVisualStyleBackColor = true;
             // 
             // richTextBoxStgOutput
             // 
@@ -332,7 +606,7 @@
             this.tabPage2.Controls.Add(this.label8);
             this.tabPage2.Controls.Add(this.button3);
             this.tabPage2.Controls.Add(this.label9);
-            this.tabPage2.Controls.Add(this.comboBoxStgPattern);
+            this.tabPage2.Controls.Add(this.comboBoxStagingAreaPattern);
             this.tabPage2.Controls.Add(this.richTextBoxStgPattern);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -379,14 +653,14 @@
             this.label9.TabIndex = 3;
             this.label9.Text = "Active Pattern:";
             // 
-            // comboBoxStgPattern
+            // comboBoxStagingAreaPattern
             // 
-            this.comboBoxStgPattern.FormattingEnabled = true;
-            this.comboBoxStgPattern.Location = new System.Drawing.Point(108, 8);
-            this.comboBoxStgPattern.Name = "comboBoxStgPattern";
-            this.comboBoxStgPattern.Size = new System.Drawing.Size(496, 21);
-            this.comboBoxStgPattern.TabIndex = 2;
-            this.comboBoxStgPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxStgPattern_SelectedIndexChanged);
+            this.comboBoxStagingAreaPattern.FormattingEnabled = true;
+            this.comboBoxStagingAreaPattern.Location = new System.Drawing.Point(108, 8);
+            this.comboBoxStagingAreaPattern.Name = "comboBoxStagingAreaPattern";
+            this.comboBoxStagingAreaPattern.Size = new System.Drawing.Size(496, 21);
+            this.comboBoxStagingAreaPattern.TabIndex = 2;
+            this.comboBoxStagingAreaPattern.SelectedIndexChanged += new System.EventHandler(this.comboBoxStgPattern_SelectedIndexChanged);
             // 
             // richTextBoxStgPattern
             // 
@@ -414,24 +688,24 @@
             this.checkBoxExcludeLanding.Text = "Exclude Landing Tables";
             this.checkBoxExcludeLanding.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
+            // groupBoxFilterStagingArea
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox2.Controls.Add(this.textBoxFilterCriterionStg);
-            this.groupBox2.Location = new System.Drawing.Point(247, 539);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(163, 43);
-            this.groupBox2.TabIndex = 24;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Filter Criterion";
+            this.groupBoxFilterStagingArea.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxFilterStagingArea.Controls.Add(this.textBoxFilterCriterionStagingArea);
+            this.groupBoxFilterStagingArea.Location = new System.Drawing.Point(247, 539);
+            this.groupBoxFilterStagingArea.Name = "groupBoxFilterStagingArea";
+            this.groupBoxFilterStagingArea.Size = new System.Drawing.Size(163, 43);
+            this.groupBoxFilterStagingArea.TabIndex = 24;
+            this.groupBoxFilterStagingArea.TabStop = false;
+            this.groupBoxFilterStagingArea.Text = "Filter Criterion";
             // 
-            // textBoxFilterCriterionStg
+            // textBoxFilterCriterionStagingArea
             // 
-            this.textBoxFilterCriterionStg.Location = new System.Drawing.Point(6, 15);
-            this.textBoxFilterCriterionStg.Name = "textBoxFilterCriterionStg";
-            this.textBoxFilterCriterionStg.Size = new System.Drawing.Size(151, 20);
-            this.textBoxFilterCriterionStg.TabIndex = 23;
-            this.textBoxFilterCriterionStg.TextChanged += new System.EventHandler(this.button_Repopulate_STG);
+            this.textBoxFilterCriterionStagingArea.Location = new System.Drawing.Point(6, 15);
+            this.textBoxFilterCriterionStagingArea.Name = "textBoxFilterCriterionStagingArea";
+            this.textBoxFilterCriterionStagingArea.Size = new System.Drawing.Size(151, 20);
+            this.textBoxFilterCriterionStagingArea.TabIndex = 23;
+            this.textBoxFilterCriterionStagingArea.TextChanged += new System.EventHandler(this.button_Repopulate_STG);
             // 
             // button1
             // 
@@ -445,41 +719,41 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button_Repopulate_STG);
             // 
-            // checkBoxSelectAllStg
+            // checkBoxStagingAreaSelectAll
             // 
-            this.checkBoxSelectAllStg.AutoSize = true;
-            this.checkBoxSelectAllStg.Checked = true;
-            this.checkBoxSelectAllStg.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSelectAllStg.Location = new System.Drawing.Point(140, 11);
-            this.checkBoxSelectAllStg.Name = "checkBoxSelectAllStg";
-            this.checkBoxSelectAllStg.Size = new System.Drawing.Size(69, 17);
-            this.checkBoxSelectAllStg.TabIndex = 21;
-            this.checkBoxSelectAllStg.Text = "Select all";
-            this.checkBoxSelectAllStg.UseVisualStyleBackColor = true;
-            this.checkBoxSelectAllStg.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
+            this.checkBoxStagingAreaSelectAll.AutoSize = true;
+            this.checkBoxStagingAreaSelectAll.Checked = true;
+            this.checkBoxStagingAreaSelectAll.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxStagingAreaSelectAll.Location = new System.Drawing.Point(140, 11);
+            this.checkBoxStagingAreaSelectAll.Name = "checkBoxStagingAreaSelectAll";
+            this.checkBoxStagingAreaSelectAll.Size = new System.Drawing.Size(69, 17);
+            this.checkBoxStagingAreaSelectAll.TabIndex = 21;
+            this.checkBoxStagingAreaSelectAll.Text = "Select all";
+            this.checkBoxStagingAreaSelectAll.UseVisualStyleBackColor = true;
+            this.checkBoxStagingAreaSelectAll.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
             // 
-            // checkedListBoxStgMetadata
+            // checkedListBoxStagingArea
             // 
-            this.checkedListBoxStgMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.checkedListBoxStagingArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkedListBoxStgMetadata.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.checkedListBoxStgMetadata.CheckOnClick = true;
-            this.checkedListBoxStgMetadata.ColumnWidth = 261;
-            this.checkedListBoxStgMetadata.FormattingEnabled = true;
-            this.checkedListBoxStgMetadata.Location = new System.Drawing.Point(17, 31);
-            this.checkedListBoxStgMetadata.MultiColumn = true;
-            this.checkedListBoxStgMetadata.Name = "checkedListBoxStgMetadata";
-            this.checkedListBoxStgMetadata.Size = new System.Drawing.Size(393, 377);
-            this.checkedListBoxStgMetadata.TabIndex = 10;
+            this.checkedListBoxStagingArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.checkedListBoxStagingArea.CheckOnClick = true;
+            this.checkedListBoxStagingArea.ColumnWidth = 261;
+            this.checkedListBoxStagingArea.FormattingEnabled = true;
+            this.checkedListBoxStagingArea.Location = new System.Drawing.Point(17, 31);
+            this.checkedListBoxStagingArea.MultiColumn = true;
+            this.checkedListBoxStagingArea.Name = "checkedListBoxStagingArea";
+            this.checkedListBoxStagingArea.Size = new System.Drawing.Size(393, 377);
+            this.checkedListBoxStagingArea.TabIndex = 10;
             // 
-            // label26
+            // labelStagingAreaProcessing
             // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(14, 12);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(123, 13);
-            this.label26.TabIndex = 6;
-            this.label26.Text = "Staging Area Processing";
+            this.labelStagingAreaProcessing.AutoSize = true;
+            this.labelStagingAreaProcessing.Location = new System.Drawing.Point(14, 12);
+            this.labelStagingAreaProcessing.Name = "labelStagingAreaProcessing";
+            this.labelStagingAreaProcessing.Size = new System.Drawing.Size(123, 13);
+            this.labelStagingAreaProcessing.TabIndex = 6;
+            this.labelStagingAreaProcessing.Text = "Staging Area Processing";
             // 
             // richTextBoxStaging
             // 
@@ -493,16 +767,16 @@
             this.richTextBoxStaging.Text = "";
             this.richTextBoxStaging.TextChanged += new System.EventHandler(this.richTextBoxStaging_TextChanged);
             // 
-            // buttonGenerateStaging
+            // buttonGenerateStagingArea
             // 
-            this.buttonGenerateStaging.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonGenerateStaging.Location = new System.Drawing.Point(17, 542);
-            this.buttonGenerateStaging.Name = "buttonGenerateStaging";
-            this.buttonGenerateStaging.Size = new System.Drawing.Size(109, 40);
-            this.buttonGenerateStaging.TabIndex = 5;
-            this.buttonGenerateStaging.Text = "Generate Staging";
-            this.buttonGenerateStaging.UseVisualStyleBackColor = true;
-            this.buttonGenerateStaging.Click += new System.EventHandler(this.buttonGenerateStaging_Click);
+            this.buttonGenerateStagingArea.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonGenerateStagingArea.Location = new System.Drawing.Point(17, 542);
+            this.buttonGenerateStagingArea.Name = "buttonGenerateStagingArea";
+            this.buttonGenerateStagingArea.Size = new System.Drawing.Size(109, 40);
+            this.buttonGenerateStagingArea.TabIndex = 5;
+            this.buttonGenerateStagingArea.Text = "Generate Staging";
+            this.buttonGenerateStagingArea.UseVisualStyleBackColor = true;
+            this.buttonGenerateStagingArea.Click += new System.EventHandler(this.buttonGenerateStaging_Click);
             // 
             // tabPagePSA
             // 
@@ -1640,217 +1914,6 @@
             this.buttonGenerateLsats.UseVisualStyleBackColor = true;
             this.buttonGenerateLsats.Click += new System.EventHandler(this.LinkSatelliteButtonClick);
             // 
-            // tabPageSettings
-            // 
-            this.tabPageSettings.Controls.Add(this.button7);
-            this.tabPageSettings.Controls.Add(this.checkBoxBackupFiles);
-            this.tabPageSettings.Controls.Add(this.buttonOpenLoadPatternList);
-            this.tabPageSettings.Controls.Add(this.buttonSaveLoadPatternList);
-            this.tabPageSettings.Controls.Add(this.label10);
-            this.tabPageSettings.Controls.Add(this.textBoxLoadPatternPath);
-            this.tabPageSettings.Controls.Add(this.label7);
-            this.tabPageSettings.Controls.Add(this.dataGridViewLoadPatternMetadata);
-            this.tabPageSettings.Controls.Add(this.groupBox8);
-            this.tabPageSettings.Controls.Add(this.groupBox1);
-            this.tabPageSettings.Controls.Add(this.label6);
-            this.tabPageSettings.Controls.Add(this.textBoxConfigurationPath);
-            this.tabPageSettings.Controls.Add(this.OutputPathLabel);
-            this.tabPageSettings.Controls.Add(this.textBoxOutputPath);
-            this.tabPageSettings.Controls.Add(this.label31);
-            this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
-            this.tabPageSettings.Name = "tabPageSettings";
-            this.tabPageSettings.Size = new System.Drawing.Size(1330, 601);
-            this.tabPageSettings.TabIndex = 8;
-            this.tabPageSettings.Text = "Settings";
-            this.tabPageSettings.UseVisualStyleBackColor = true;
-            // 
-            // button7
-            // 
-            this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button7.Location = new System.Drawing.Point(759, 530);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(109, 40);
-            this.button7.TabIndex = 98;
-            this.button7.Text = "Save In Place (Update)";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
-            // 
-            // checkBoxBackupFiles
-            // 
-            this.checkBoxBackupFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkBoxBackupFiles.AutoSize = true;
-            this.checkBoxBackupFiles.Checked = true;
-            this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxBackupFiles.Location = new System.Drawing.Point(933, 530);
-            this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
-            this.checkBoxBackupFiles.Size = new System.Drawing.Size(181, 17);
-            this.checkBoxBackupFiles.TabIndex = 97;
-            this.checkBoxBackupFiles.Text = "Automatically create file backups";
-            this.checkBoxBackupFiles.UseVisualStyleBackColor = true;
-            // 
-            // buttonOpenLoadPatternList
-            // 
-            this.buttonOpenLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonOpenLoadPatternList.Location = new System.Drawing.Point(529, 530);
-            this.buttonOpenLoadPatternList.Name = "buttonOpenLoadPatternList";
-            this.buttonOpenLoadPatternList.Size = new System.Drawing.Size(109, 40);
-            this.buttonOpenLoadPatternList.TabIndex = 96;
-            this.buttonOpenLoadPatternList.Text = "Open Load Pattern Overview File";
-            this.buttonOpenLoadPatternList.UseVisualStyleBackColor = true;
-            this.buttonOpenLoadPatternList.Click += new System.EventHandler(this.ButtonOpenLoadPatternList);
-            // 
-            // buttonSaveLoadPatternList
-            // 
-            this.buttonSaveLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSaveLoadPatternList.Location = new System.Drawing.Point(644, 530);
-            this.buttonSaveLoadPatternList.Name = "buttonSaveLoadPatternList";
-            this.buttonSaveLoadPatternList.Size = new System.Drawing.Size(109, 40);
-            this.buttonSaveLoadPatternList.TabIndex = 95;
-            this.buttonSaveLoadPatternList.Text = "Save As";
-            this.buttonSaveLoadPatternList.UseVisualStyleBackColor = true;
-            this.buttonSaveLoadPatternList.Click += new System.EventHandler(this.buttonSaveLoadPatternList_Click);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(14, 139);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(91, 13);
-            this.label10.TabIndex = 94;
-            this.label10.Text = "Load pattern path";
-            // 
-            // textBoxLoadPatternPath
-            // 
-            this.textBoxLoadPatternPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxLoadPatternPath.Location = new System.Drawing.Point(17, 157);
-            this.textBoxLoadPatternPath.Multiline = true;
-            this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
-            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(493, 27);
-            this.textBoxLoadPatternPath.TabIndex = 93;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(526, 43);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(72, 13);
-            this.label7.TabIndex = 92;
-            this.label7.Text = "Load patterns";
-            // 
-            // dataGridViewLoadPatternMetadata
-            // 
-            this.dataGridViewLoadPatternMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridViewLoadPatternMetadata.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewLoadPatternMetadata.Location = new System.Drawing.Point(529, 61);
-            this.dataGridViewLoadPatternMetadata.Name = "dataGridViewLoadPatternMetadata";
-            this.dataGridViewLoadPatternMetadata.Size = new System.Drawing.Size(782, 463);
-            this.dataGridViewLoadPatternMetadata.TabIndex = 91;
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.textBoxSchemaName);
-            this.groupBox8.Controls.Add(this.label12);
-            this.groupBox8.Location = new System.Drawing.Point(142, 204);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(366, 70);
-            this.groupBox8.TabIndex = 89;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "ETL output options";
-            // 
-            // textBoxSchemaName
-            // 
-            this.textBoxSchemaName.Location = new System.Drawing.Point(87, 20);
-            this.textBoxSchemaName.Name = "textBoxSchemaName";
-            this.textBoxSchemaName.Size = new System.Drawing.Size(273, 20);
-            this.textBoxSchemaName.TabIndex = 91;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 23);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(75, 13);
-            this.label12.TabIndex = 92;
-            this.label12.Text = "Schema name";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.radioButtonProduction);
-            this.groupBox1.Controls.Add(this.radioButtonDevelopment);
-            this.groupBox1.Location = new System.Drawing.Point(17, 204);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(119, 70);
-            this.groupBox1.TabIndex = 90;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Target environment";
-            // 
-            // radioButtonProduction
-            // 
-            this.radioButtonProduction.AutoSize = true;
-            this.radioButtonProduction.Location = new System.Drawing.Point(6, 42);
-            this.radioButtonProduction.Name = "radioButtonProduction";
-            this.radioButtonProduction.Size = new System.Drawing.Size(76, 17);
-            this.radioButtonProduction.TabIndex = 39;
-            this.radioButtonProduction.Text = "Production";
-            this.radioButtonProduction.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonDevelopment
-            // 
-            this.radioButtonDevelopment.AutoSize = true;
-            this.radioButtonDevelopment.Location = new System.Drawing.Point(6, 19);
-            this.radioButtonDevelopment.Name = "radioButtonDevelopment";
-            this.radioButtonDevelopment.Size = new System.Drawing.Size(88, 17);
-            this.radioButtonDevelopment.TabIndex = 38;
-            this.radioButtonDevelopment.Text = "Development";
-            this.radioButtonDevelopment.UseVisualStyleBackColor = true;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(14, 91);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(306, 13);
-            this.label6.TabIndex = 84;
-            this.label6.Text = "TEAM configuration path (TEAM metadata settings file location)";
-            // 
-            // textBoxConfigurationPath
-            // 
-            this.textBoxConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxConfigurationPath.Location = new System.Drawing.Point(17, 109);
-            this.textBoxConfigurationPath.Multiline = true;
-            this.textBoxConfigurationPath.Name = "textBoxConfigurationPath";
-            this.textBoxConfigurationPath.Size = new System.Drawing.Size(493, 27);
-            this.textBoxConfigurationPath.TabIndex = 83;
-            // 
-            // OutputPathLabel
-            // 
-            this.OutputPathLabel.AutoSize = true;
-            this.OutputPathLabel.Location = new System.Drawing.Point(14, 43);
-            this.OutputPathLabel.Name = "OutputPathLabel";
-            this.OutputPathLabel.Size = new System.Drawing.Size(288, 13);
-            this.OutputPathLabel.TabIndex = 82;
-            this.OutputPathLabel.Text = "VEDW output path (location of the ETL output from VEDW)";
-            // 
-            // textBoxOutputPath
-            // 
-            this.textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxOutputPath.Location = new System.Drawing.Point(17, 61);
-            this.textBoxOutputPath.Multiline = true;
-            this.textBoxOutputPath.Name = "textBoxOutputPath";
-            this.textBoxOutputPath.Size = new System.Drawing.Size(493, 27);
-            this.textBoxOutputPath.TabIndex = 81;
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(14, 12);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(199, 13);
-            this.label31.TabIndex = 53;
-            this.label31.Text = "Configuration settings for ETL generation";
-            // 
             // menuStripMainMenu
             // 
             this.menuStripMainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1895,6 +1958,14 @@
             this.openConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.openConfigurationDirectoryToolStripMenuItem.Text = "Open Configuration Directory";
             this.openConfigurationDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openConfigurationDirectoryToolStripMenuItem_Click);
+            // 
+            // openVEDWConfigurationSettingsFileToolStripMenuItem
+            // 
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Name = "openVEDWConfigurationSettingsFileToolStripMenuItem";
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Text = "Open VEDW Configuration Settings File";
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openVEDWConfigurationSettingsFileToolStripMenuItem_Click);
             // 
             // openTEAMConfigurationSettingsFileToolStripMenuItem
             // 
@@ -1994,9 +2065,8 @@
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.helpToolStripMenuItem1,
             this.toolStripMenuItem1,
-            this.linksToolStripMenuItem,
             this.toolStripSeparator1,
-            this.aboutToolStripMenuItem});
+            this.linksToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
@@ -2017,6 +2087,11 @@
             this.toolStripMenuItem1.Text = "Reset Documentation";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(185, 6);
+            // 
             // linksToolStripMenuItem
             // 
             this.linksToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.LinkIcon;
@@ -2024,19 +2099,6 @@
             this.linksToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.linksToolStripMenuItem.Text = "Links";
             this.linksToolStripMenuItem.Click += new System.EventHandler(this.linksToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(185, 6);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.ToolTipText = "Information about Virtual Enterprise Data Warehouse";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // checkBoxGenerateInDatabase
             // 
@@ -2127,14 +2189,6 @@
             this.richTextBoxInformationMain.Text = "";
             this.richTextBoxInformationMain.TextChanged += new System.EventHandler(this.richTextBoxInformationMain_TextChanged);
             // 
-            // openVEDWConfigurationSettingsFileToolStripMenuItem
-            // 
-            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
-            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Name = "openVEDWConfigurationSettingsFileToolStripMenuItem";
-            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
-            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Text = "Open VEDW Configuration Settings File";
-            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openVEDWConfigurationSettingsFileToolStripMenuItem_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2144,7 +2198,7 @@
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.SQLGenerationGroupBox);
-            this.Controls.Add(this.MainTabControl);
+            this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.menuStripMainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMainMenu;
@@ -2154,15 +2208,25 @@
             this.Text = "Virtual Enterprise Data Warehouse - v1.6";
             this.Shown += new System.EventHandler(this.FormMain_Shown);
             this.SizeChanged += new System.EventHandler(this.FormMain_SizeChanged);
-            this.MainTabControl.ResumeLayout(false);
-            this.tabPageStaging.ResumeLayout(false);
-            this.tabPageStaging.PerformLayout();
-            this.tabControlStg.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.tabControlMain.ResumeLayout(false);
+            this.tabPageHome.ResumeLayout(false);
+            this.tabPageHome.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.tabPageSettings.ResumeLayout(false);
+            this.tabPageSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternMetadata)).EndInit();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.tabPageStagingArea.ResumeLayout(false);
+            this.tabPageStagingArea.PerformLayout();
+            this.tabControlStagingArea.ResumeLayout(false);
+            this.tabPageStagingAreaGenerationOutput.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.groupBoxFilterStagingArea.ResumeLayout(false);
+            this.groupBoxFilterStagingArea.PerformLayout();
             this.tabPagePSA.ResumeLayout(false);
             this.tabPagePSA.PerformLayout();
             this.tabControlPsa.ResumeLayout(false);
@@ -2203,13 +2267,6 @@
             this.tabPage8.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
-            this.tabPageSettings.ResumeLayout(false);
-            this.tabPageSettings.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternMetadata)).EndInit();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.menuStripMainMenu.ResumeLayout(false);
             this.menuStripMainMenu.PerformLayout();
             this.SQLGenerationGroupBox.ResumeLayout(false);
@@ -2224,7 +2281,7 @@
         #endregion
 
         private System.Windows.Forms.Button buttonGenerateHubs;
-        private System.Windows.Forms.TabControl MainTabControl;
+        private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.TabPage tabPageHub;
         private System.Windows.Forms.TabPage tabPageSat;
         private System.Windows.Forms.RichTextBox richTextBoxHub;
@@ -2251,7 +2308,6 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem linksToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TabPage tabPagePSA;
@@ -2259,10 +2315,6 @@
         private System.Windows.Forms.RichTextBox richTextBoxPSA;
         private System.Windows.Forms.Button buttonGeneratePSA;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.TabPage tabPageStaging;
-        private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.RichTextBox richTextBoxStaging;
-        private System.Windows.Forms.Button buttonGenerateStaging;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.ToolStripMenuItem testingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateTestDataToolStripMenuItem;
@@ -2271,8 +2323,6 @@
         private System.Windows.Forms.Button buttonRepopulateHubs;
         private System.Windows.Forms.CheckedListBox checkedListBoxHubMetadata;
         private System.Windows.Forms.CheckBox checkBoxSelectAllHubs;
-        private System.Windows.Forms.CheckBox checkBoxSelectAllStg;
-        private System.Windows.Forms.CheckedListBox checkedListBoxStgMetadata;
         private System.Windows.Forms.CheckBox checkBoxSelectAllPsa;
         private System.Windows.Forms.CheckedListBox checkedListBoxPsaMetadata;
         private System.Windows.Forms.CheckBox checkBoxSelectAllSats;
@@ -2281,14 +2331,11 @@
         private System.Windows.Forms.CheckedListBox checkedListBoxLinkMetadata;
         private System.Windows.Forms.CheckBox checkBoxSelectAllLsats;
         private System.Windows.Forms.CheckedListBox checkedListBoxLsatMetadata;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.CheckBox checkBoxDisableLsatZeroRecords;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox textBoxFilterCriterionStg;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox textBoxFilterCriterionPsa;
         private System.Windows.Forms.GroupBox groupBox4;
@@ -2303,7 +2350,6 @@
         private System.Windows.Forms.CheckBox checkBoxEvaluateSatDelete;
         private System.Windows.Forms.CheckBox checkBoxEvaluateLsatDeletes;
         public System.ComponentModel.BackgroundWorker backgroundWorkerActivateMetadata;
-        private System.Windows.Forms.CheckBox checkBoxExcludeLanding;
         private System.Windows.Forms.ToolStripMenuItem saveConfigurationFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openConfigurationDirectoryToolStripMenuItem;
         private System.Windows.Forms.Label label6;
@@ -2333,16 +2379,6 @@
         private System.Windows.Forms.ComboBox comboBoxHubPattern;
         private System.Windows.Forms.Label labelLoadPatternPathHub;
         private System.Windows.Forms.Label labelLoadPatternHubPath;
-        private System.Windows.Forms.TabControl tabControlStg;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.RichTextBox richTextBoxStgOutput;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Label labelLoadPatternStgPath;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox comboBoxStgPattern;
-        private System.Windows.Forms.RichTextBox richTextBoxStgPattern;
         private System.Windows.Forms.TabControl tabControlPsa;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.RichTextBox richTextBoxPsaOutput;
@@ -2394,6 +2430,31 @@
         private System.Windows.Forms.CheckBox checkBoxBackupFiles;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.ToolStripMenuItem openVEDWConfigurationSettingsFileToolStripMenuItem;
+        private System.Windows.Forms.TabPage tabPageHome;
+        private System.Windows.Forms.RichTextBox richTextBoxMainScreen;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.TabPage tabPageStagingArea;
+        private System.Windows.Forms.TabControl tabControlStagingArea;
+        private System.Windows.Forms.TabPage tabPageStagingAreaGenerationOutput;
+        private System.Windows.Forms.RichTextBox richTextBoxStgOutput;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Label labelLoadPatternStgPath;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox comboBoxStagingAreaPattern;
+        private System.Windows.Forms.RichTextBox richTextBoxStgPattern;
+        private System.Windows.Forms.CheckBox checkBoxExcludeLanding;
+        private System.Windows.Forms.GroupBox groupBoxFilterStagingArea;
+        private System.Windows.Forms.TextBox textBoxFilterCriterionStagingArea;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox checkBoxStagingAreaSelectAll;
+        private System.Windows.Forms.CheckedListBox checkedListBoxStagingArea;
+        private System.Windows.Forms.Label labelStagingAreaProcessing;
+        private System.Windows.Forms.RichTextBox richTextBoxStaging;
+        private System.Windows.Forms.Button buttonGenerateStagingArea;
+        private System.Windows.Forms.Button buttonTabGenerationTest;
     }
 }
 
