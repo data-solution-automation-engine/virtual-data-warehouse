@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
-using Virtual_EDW;
+using Virtual_Data_Warehouse;
 
 namespace Virtual_Data_Warehouse
 {
@@ -62,7 +62,7 @@ namespace Virtual_Data_Warehouse
                 sqlForWorkCountDown.AppendLine(") as sub");
 
                 //  MessageBox.Show(sqlForWorkCountdDown.ToString());
-                var workCountDownDatatable = GetDataTable(ref connHstg, sqlForWorkCountDown.ToString());
+                var workCountDownDatatable = Utility.GetDataTable(ref connHstg, sqlForWorkCountDown.ToString());
 
                 //var workCountDownDatatable = _myParent.Invoke((MethodInvoker)delegate() { _myParent.GetDataTable(ref connHstg, sqlForWorkCountdDown.ToString()); });
 

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using Virtual_EDW;
 
-namespace Virtual_Data_Warehouse.Classes
+namespace Virtual_Data_Warehouse
 {
     class EnvironmentConfiguration
     {

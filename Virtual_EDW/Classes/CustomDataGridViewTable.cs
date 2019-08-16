@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     class CustomDataGridViewTable : DataGridView 
     {

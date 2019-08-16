@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Permissions;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using HandlebarsDotNet;
@@ -17,9 +16,6 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Virtual_Data_Warehouse.Classes;
-using Virtual_EDW;
-using Column = Virtual_EDW.Column;
 
 namespace Virtual_Data_Warehouse
 {
@@ -29,6 +25,8 @@ namespace Virtual_Data_Warehouse
         private StringBuilder _errorDetails;
         private int _errorCounter;
         internal bool startUpIndicator = true;
+
+        List<CustomTabpage> localCustomTabPageList = new List<CustomTabpage>();
 
         private BindingSource _bindingSourceLoadPatternMetadata = new BindingSource();
 
@@ -41,6 +39,8 @@ namespace Virtual_Data_Warehouse
             _errorDetails = new StringBuilder();
             _errorDetails.AppendLine();
             _errorCounter = 0;
+
+            localCustomTabPageList = new List<CustomTabpage>();
 
             InitializeComponent();
 
@@ -544,7 +544,7 @@ namespace Virtual_Data_Warehouse
         private void BackgroundDoHub()
         {
             // Check if the schema needs to be created
-            CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
+            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
             GenerateHubFromPattern();
         }
@@ -579,7 +579,7 @@ namespace Virtual_Data_Warehouse
                                 FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
                                 WHERE [TARGET_NAME] = '"+targetTableName+"'";
 
-                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
@@ -630,10 +630,10 @@ namespace Virtual_Data_Warehouse
                         SetTextHubOutput(result);
 
                         // Spool the output to disk
-                        errorCounter = SaveOutputToDisk(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         // Generate in database
-                        errorCounter = ExecuteOutputInDatabase(connPsa, result, errorCounter);
+                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -657,63 +657,9 @@ namespace Virtual_Data_Warehouse
             SetTextHubOutputSyntax(richTextBoxHubOutput);
         }
 
-        internal int ExecuteOutputInDatabase(SqlConnection sqlConnection, string result, int errorCounter)
-        {
-            if (checkBoxGenerateInDatabase.Checked)
-            {
-                try
-                {
-                    sqlConnection.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                    using (var connection = sqlConnection)
-                    {
-                        var server = new Server(new ServerConnection(connection));
-                        try
-                        {
-                            server.ConnectionContext.ExecuteNonQuery(result);
-                            SetTextMain("The statement was executed successfully.\r\n");
-                        }
-                        catch (Exception exception)
-                        {
-                            SetTextMain("Issues occurred executing the SQL statement.\r\n");
-                            SetTextMain(@"SQL error: " + exception.Message + "\r\n\r\n");
-                            errorCounter++;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    errorCounter++;
-                    SetTextMain(
-                        "There was an issue executing the code against the database. The message is: " +
-                        ex);
-                }
-            }
 
-            return errorCounter;
-        }
 
-        private int SaveOutputToDisk(string targetFile, string textContent, int errorCounter)
-        {
-            if (checkBoxSaveToFile.Checked)
-            {
-                try
-                {
-                    //Output to file
-                    using (var outfile = new StreamWriter(targetFile))
-                    {
-                        outfile.Write(textContent);
-                        outfile.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    errorCounter++;
-                    SetTextMain("There was an issue in saving the output to disk. The message is: " + ex);
-                }
-            }
 
-            return errorCounter;
-        }
 
         private void DisplayJsonMetadata(SourceToTargetMappingList sourceTargetMappingList, string output)
         {
@@ -788,7 +734,7 @@ namespace Virtual_Data_Warehouse
                                           WHERE TARGET_TYPE = 'Normal' 
                                           AND TARGET_NAME = '" + targetTableName + "'";
 
-                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
@@ -813,7 +759,7 @@ namespace Virtual_Data_Warehouse
                                                    FROM [interface].[INTERFACE_SOURCE_SATELLITE_ATTRIBUTE_XREF]
                                                    WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='"+(string)row["SOURCE_NAME"]+"'";
 
-                        var columnMetadataDataTable = GetDataTable(ref connOmd, columnMetadataQuery);
+                        var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
 
                         List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
                         foreach (DataRow column in columnMetadataDataTable.Rows)
@@ -865,10 +811,10 @@ namespace Virtual_Data_Warehouse
                         DisplayJsonMetadata(sourceTargetMappingList, "Satellite");
 
                         // Spool the output to disk
-                        errorCounter = SaveOutputToDisk(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         //Generate in database
-                        errorCounter = ExecuteOutputInDatabase(connPsa, result, errorCounter);
+                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -927,7 +873,7 @@ namespace Virtual_Data_Warehouse
             sqlStatementForComponent.AppendLine("  AND HUB_NAME = '" + hubTableName + "'");
             sqlStatementForComponent.AppendLine("  AND BUSINESS_KEY_DEFINITION = '" + businessKeyDefinition + "'");
 
-            var componentList = GetDataTable(ref conn, sqlStatementForComponent.ToString());
+            var componentList = Utility.GetDataTable(ref conn, sqlStatementForComponent.ToString());
 
             if (componentList == null)
             {
@@ -969,7 +915,7 @@ namespace Virtual_Data_Warehouse
         private void BackgroundDoSat(Object obj)
         {
             // Check if the schema needs to be created
-            CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
+            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
             //if (radiobuttonViews.Checked)
             //{
@@ -996,7 +942,7 @@ namespace Virtual_Data_Warehouse
         private void BackgroundDoLink(Object obj)
         {
             // Check if the schema needs to be created
-            CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
+            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
             GenerateLinkFromPattern();
         }
 
@@ -1029,7 +975,8 @@ namespace Virtual_Data_Warehouse
                     FROM [interface].[INTERFACE_SOURCE_LINK_XREF]
                     WHERE [TARGET_NAME] = '" + targetTableName + "'";
 
-                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+                    DataTable metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
@@ -1068,7 +1015,7 @@ namespace Virtual_Data_Warehouse
                             WHERE [LINK_NAME] = '" + targetTableName + "'" + 
                             "ORDER BY [HUB_ORDER]";
 
-                        var hubDataTable = GetDataTable(ref connOmd, hubLinkQuery);
+                        var hubDataTable = Utility.GetDataTable(ref connOmd, hubLinkQuery);
 
                         foreach (DataRow hubRow in hubDataTable.Rows)
                         {
@@ -1115,10 +1062,10 @@ namespace Virtual_Data_Warehouse
                         SetTextLinkOutput(result);
 
                         // Spool the output to disk
-                        errorCounter = SaveOutputToDisk(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         // Generate in database
-                        errorCounter = ExecuteOutputInDatabase(connPsa, result, errorCounter);
+                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -1159,14 +1106,14 @@ namespace Virtual_Data_Warehouse
             sqlStatementForSourceBusinessKey.AppendLine("  AND BUSINESS_KEY_COMPONENT_ID = '" + businessKeyComponentId + "'");
             sqlStatementForSourceBusinessKey.AppendLine("ORDER BY BUSINESS_KEY_COMPONENT_ORDER, BUSINESS_KEY_COMPONENT_ELEMENT_ORDER");
 
-            var elementList = GetDataTable(ref connOmd, sqlStatementForSourceBusinessKey.ToString());
+            var elementList = Utility.GetDataTable(ref connOmd, sqlStatementForSourceBusinessKey.ToString());
             return elementList;
         }
 
         private void LinkSatelliteButtonClick (object sender, EventArgs e)
         {
             // Check if the schema needs to be created
-            CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
+            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
             richTextBoxLsat.Clear();
             richTextBoxLsatOutput.Clear();
@@ -1179,7 +1126,7 @@ namespace Virtual_Data_Warehouse
 
         private void BackgroundDoLsat(Object obj)
         {
-            CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
+            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
             GenerateLinkSatelliteFromPattern();
             //if (radiobuttonViews.Checked)
             //{
@@ -1221,7 +1168,7 @@ namespace Virtual_Data_Warehouse
                                 FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
                                 WHERE [TARGET_NAME] = '" + targetTableName + "'";
 
-                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
@@ -1271,10 +1218,10 @@ namespace Virtual_Data_Warehouse
                         DisplayJsonMetadata(sourceTargetMappingList,"LinkSatellite");
 
                         // Spool the output to disk
-                        errorCounter = SaveOutputToDisk(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         //Generate in database
-                        errorCounter = ExecuteOutputInDatabase(connPsa, result, errorCounter);
+                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -1368,7 +1315,7 @@ namespace Virtual_Data_Warehouse
         private void BackgroundDoPsa(Object obj)
         {
             // Check if the schema needs to be created
-            CreateSchema(TeamConfigurationSettings.ConnectionStringHstg);
+            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringHstg);
             GeneratePersistentStagingAreaFromPattern();
             //if (radiobuttonViews.Checked)
             //{
@@ -1413,7 +1360,7 @@ namespace Virtual_Data_Warehouse
                                           WHERE TARGET_TYPE = 'PersistentStagingArea' 
                                           AND TARGET_NAME = '" + targetTableName + "'";
 
-                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
@@ -1438,7 +1385,7 @@ namespace Virtual_Data_Warehouse
                                                    FROM [interface].[INTERFACE_SOURCE_PERSISTENT_STAGING_ATTRIBUTE_XREF]
                                                    WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" + (string)row["SOURCE_NAME"] + "'";
 
-                        var columnMetadataDataTable = GetDataTable(ref connOmd, columnMetadataQuery);
+                        var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
 
                         List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
                         foreach (DataRow column in columnMetadataDataTable.Rows)
@@ -1489,10 +1436,10 @@ namespace Virtual_Data_Warehouse
                         SetTextPsaOutput(result);
 
                         // Spool the output to disk
-                        errorCounter = SaveOutputToDisk(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         //Generate in database
-                        errorCounter = ExecuteOutputInDatabase(connPsa, result, errorCounter);
+                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -1521,6 +1468,7 @@ namespace Virtual_Data_Warehouse
 
         private void buttonGenerateStaging_Click(object sender, EventArgs e)
         {
+            // Clear out  main screen
             richTextBoxStaging.Clear();
             richTextBoxStgOutput.Clear();
             richTextBoxInformationMain.Clear();
@@ -1533,19 +1481,8 @@ namespace Virtual_Data_Warehouse
         private void BackgroundDoStaging(Object obj)
         {
             // Check if the schema needs to be created
-            CreateSchema(TeamConfigurationSettings.ConnectionStringStg);
-
+            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringStg);
             GenerateStagingAreaFromPattern();
-            //if (radiobuttonViews.Checked)
-            //{
-            // StagingGenerateViews();
-
-
-            //}
-            //else if (radioButtonIntoStatement.Checked)
-            //{
-            //    StagingGenerateInsertInto();
-            //}
         }
 
         /// <summary>
@@ -1581,7 +1518,7 @@ namespace Virtual_Data_Warehouse
                                           WHERE TARGET_TYPE = 'StagingArea' 
                                           AND TARGET_NAME = '" + targetTableName + "'";
 
-                    var metadataDataTable = GetDataTable(ref connOmd, metadataQuery);
+                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
@@ -1605,7 +1542,7 @@ namespace Virtual_Data_Warehouse
                                                    FROM [interface].[INTERFACE_SOURCE_STAGING_ATTRIBUTE_XREF]
                                                    WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" + (string)row["SOURCE_NAME"] + "'";
 
-                        var columnMetadataDataTable = GetDataTable(ref connOmd, columnMetadataQuery);
+                        var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
 
                         List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
                         foreach (DataRow column in columnMetadataDataTable.Rows)
@@ -1672,10 +1609,10 @@ namespace Virtual_Data_Warehouse
                         SetTextStgOutput(result);
 
                         // Spool the output to disk
-                        errorCounter = SaveOutputToDisk(textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        errorCounter = Utility.SaveOutputToDisk(true,textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         //Generate in database
-                        errorCounter = ExecuteOutputInDatabase(connPsa, result, errorCounter);
+                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -2396,7 +2333,7 @@ namespace Virtual_Data_Warehouse
                 queryMetadata.AppendLine("  AND TABLE_NAME LIKE '"+TeamConfigurationSettings.StgTablePrefixValue+"_%'");
                 queryMetadata.AppendLine("ORDER BY TABLE_NAME");
 
-                var tables = GetDataTable(ref connStg, queryMetadata.ToString());
+                var tables = Utility.GetDataTable(ref connStg, queryMetadata.ToString());
 
                 if (tables.Rows.Count == 0)
                 {
@@ -2435,7 +2372,7 @@ namespace Virtual_Data_Warehouse
                                          "  AND TABLE_NAME LIKE '" + TeamConfigurationSettings.PsaTablePrefixValue + "_%'");
 
 
-                var tables = GetDataTable(ref connPsa, queryMetadata.ToString());
+                var tables = Utility.GetDataTable(ref connPsa, queryMetadata.ToString());
 
                 if (tables.Rows.Count == 0)
                 {
@@ -2472,7 +2409,7 @@ namespace Virtual_Data_Warehouse
                 queryMetadata.AppendLine("AND HUB_NAME != 'Not applicable'");
                 queryMetadata.AppendLine("ORDER BY HUB_NAME");
 
-                var tables = GetDataTable(ref connOmd, queryMetadata.ToString());
+                var tables = Utility.GetDataTable(ref connOmd, queryMetadata.ToString());
 
                 if (tables.Rows.Count == 0)
                 {
@@ -2509,7 +2446,7 @@ namespace Virtual_Data_Warehouse
                 queryMetadata.AppendLine("WHERE SATELLITE_TYPE='Normal' AND SATELLITE_NAME LIKE '%"+textBoxFilterCriterionSat.Text+"%'");
                 queryMetadata.AppendLine("ORDER BY SATELLITE_NAME");
 
-                var tables = GetDataTable(ref connOmd, queryMetadata.ToString());
+                var tables = Utility.GetDataTable(ref connOmd, queryMetadata.ToString());
 
                 if (tables.Rows.Count == 0)
                 {
@@ -2548,7 +2485,7 @@ namespace Virtual_Data_Warehouse
                 queryMetadata.AppendLine("AND LINK_NAME != 'Not applicable'");
                 queryMetadata.AppendLine("ORDER BY LINK_NAME");
 
-                var tables = GetDataTable(ref connOmd, queryMetadata.ToString());
+                var tables = Utility.GetDataTable(ref connOmd, queryMetadata.ToString());
 
                 if (tables.Rows.Count == 0)
                 {
@@ -2585,7 +2522,7 @@ namespace Virtual_Data_Warehouse
                 queryMetadata.AppendLine("WHERE SATELLITE_TYPE !='Normal' AND SATELLITE_NAME LIKE '%"+textBoxFilterCriterionLsat.Text+"%'");
                 queryMetadata.AppendLine(" ORDER BY SATELLITE_NAME");
                 
-                var tables = GetDataTable(ref connOmd, queryMetadata.ToString());
+                var tables = Utility.GetDataTable(ref connOmd, queryMetadata.ToString());
 
                 if (tables.Rows.Count == 0)
                 {
@@ -2618,8 +2555,7 @@ namespace Virtual_Data_Warehouse
         }
 
         private void button_Repopulate_STG(object sender, EventArgs e)
-        {
-            
+        {           
 
             var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
             _errorMessage.Clear();
@@ -2708,35 +2644,7 @@ namespace Virtual_Data_Warehouse
         }
 
 
-        private void CreateSchema(string connString)
-        {
-            var createStatement = new StringBuilder();
 
-            createStatement.AppendLine("-- Creating the schema");
-            createStatement.AppendLine("IF NOT EXISTS (");
-            createStatement.AppendLine("SELECT SCHEMA_NAME");
-            createStatement.AppendLine("FROM INFORMATION_SCHEMA.SCHEMATA");
-            createStatement.AppendLine("WHERE SCHEMA_NAME = '" + VedwConfigurationSettings.VedwSchema + "')");
-            createStatement.AppendLine("");
-            createStatement.AppendLine("BEGIN");
-            createStatement.AppendLine(" EXEC sp_executesql N'CREATE SCHEMA [" + VedwConfigurationSettings.VedwSchema + "]'");
-            createStatement.AppendLine("END");
-
-            using (var connectionVersion = new SqlConnection(connString))
-            {
-                var commandVersion = new SqlCommand(createStatement.ToString(), connectionVersion);
-
-                try
-                {
-                    connectionVersion.Open();
-                    commandVersion.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    SetTextMain("An issue occured creating the VEDW schema '" + VedwConfigurationSettings.VedwSchema + "'. The reported error is " + ex);
-                }
-            }
-        }
 
 
 
@@ -3445,19 +3353,19 @@ namespace Virtual_Data_Warehouse
             LoadPattern.ActivateLoadPattern(richTextBoxLinkPattern.Text.TrimEnd(), "Link");
         }
 
-        private void richTextBoxStgPattern_TextChanged(object sender, EventArgs e)
+        private void RichTextBoxStgPattern_TextChanged(object sender, EventArgs e)
         {
             // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
             LoadPattern.ActivateLoadPattern(richTextBoxStgPattern.Text.TrimEnd(), "StagingArea");
         }
 
-        private void richTextBoxPsaPattern_TextChanged(object sender, EventArgs e)
+        private void RichTextBoxPsaPattern_TextChanged(object sender, EventArgs e)
         {
             // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
             LoadPattern.ActivateLoadPattern(richTextBoxPsaPattern.Text.TrimEnd(), "PersistentStagingArea");
         }
 
-        private void richTextBoxLsatPattern_TextChanged(object sender, EventArgs e)
+        private void RichTextBoxLsatPattern_TextChanged(object sender, EventArgs e)
         {
             // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
             LoadPattern.ActivateLoadPattern(richTextBoxLsatPattern.Text.TrimEnd(), "LinkSatellite");
@@ -3541,7 +3449,7 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void buttonSaveLoadPatternList_Click(object sender, EventArgs e)
+        private void ButtonSaveLoadPatternList_Click(object sender, EventArgs e)
         {
             try
             {
@@ -3668,252 +3576,58 @@ namespace Virtual_Data_Warehouse
             }
         }
 
- 
+        private void UpdateMainInformationTextBox(Object o, MyEventArgs e)
+        {
+            richTextBoxInformationMain.AppendText(e.Value);
+        }
+
+        private void ClearMainInformationTextBox(Object o, MyClearArgs e)
+        {
+            richTextBoxInformationMain.Clear();
+        }
+
+        internal void CreateTabPages()
+        {
+            var inputTableMetadata = (DataTable)_bindingSourceLoadPatternMetadata.DataSource;
+            DataView view = new DataView(inputTableMetadata);
+            DataTable distinctValues = view.ToTable(true, "Type");
+
+            foreach (DataRow row in distinctValues.Rows)
+            {
+                //var input = "StagingArea";
+
+                var input = row["Type"].ToString();
+
+                CustomTabpage localCustomTabPage = new CustomTabpage(input);
+                localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
+                localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);
+
+          
+
+                localCustomTabPageList.Add(localCustomTabPage);
+
+                //if (tabControlMain.Contains(localCustomTabPage) == true)
+                //    return; 
+                //foreach(CustomTabpage t in localCustomTabPageList)
+                //    if(t.Name == localCustomTabPage.Name)
+                //        return;
+
+                tabControlMain.TabPages.Add(localCustomTabPage);
+            }
+        }
 
 
         private void buttonTabGenerationTest_Click(object sender, EventArgs e)
         {
-            var input = "StagingArea";
-            var inputNiceName = Regex.Replace(input, "(\\B[A-Z])", " $1");
-
-            TabPage localTabPage = new TabPage(inputNiceName);
-            localTabPage.Name = $"tabPage{input}";
-
-            //if (tabControlMain.Contains(localTabPage) == true)
-            //{
-            //    var bla = "";
-            //    return;
-            //}
-                
-
-            localTabPage.BackColor = Color.Transparent;
-            localTabPage.BorderStyle = BorderStyle.None;
-
-            localTabPage.UseVisualStyleBackColor = true;
-            tabControlMain.TabPages.Add(localTabPage);
-
-            // Processing Label
-            Label localLabel = new Label();
-            localLabel.Location = new Point(14, 12);
-            localLabel.Size = new Size(123, 13);
-            localLabel.Name = $"label{input}Processing";
-            localLabel.Text = $"{inputNiceName} Processing";
-            localTabPage.Controls.Add(localLabel);
-
-            // Select All CheckBox
-            CheckBox localCheckBoxSelectAll = new CheckBox();
-            localCheckBoxSelectAll.Location = new Point(140, 11);
-            localCheckBoxSelectAll.Size = new Size(69, 17);
-            localCheckBoxSelectAll.Name = "checkBoxStagingAreaSelectAll";
-            localCheckBoxSelectAll.Checked = true;
-            localCheckBoxSelectAll.Text = "Select all";
-            localTabPage.Controls.Add(localCheckBoxSelectAll);
-
-            // Checked List Box
-            CheckedListBox localCheckedListBox = new CheckedListBox();
-            localCheckedListBox.Location = new Point(17, 31);
-            localCheckedListBox.Size = new Size(393, 377);
-            localCheckedListBox.Name = $"checkedListBox{input}";
-            localTabPage.Controls.Add(localCheckedListBox);
-
-            // User feedback
-            RichTextBox localRichTextBox = new RichTextBox();
-            localRichTextBox.Location = new Point(17, 418);
-            localRichTextBox.Size = new Size(393, 115);
-            localRichTextBox.BorderStyle = BorderStyle.None;
-            localRichTextBox.BackColor = SystemColors.Window;
-            localRichTextBox.Text = $"The {inputNiceName} pattern type.";
-            localTabPage.Controls.Add(localRichTextBox);
-
-            // Button Generate
-            Button localButtonGenerate = new Button();
-            localButtonGenerate.Location = new Point(17, 542);
-            localButtonGenerate.Size = new Size(109, 40);
-            localButtonGenerate.Text = $"Generate {inputNiceName}";
-            localButtonGenerate.Name = $"Generate{input}";
-            localTabPage.Controls.Add(localButtonGenerate);
-
-            // Button Generate
-            Button localButtonPopulate = new Button();
-            localButtonPopulate.Location = new Point(132, 542);
-            localButtonPopulate.Size = new Size(109, 40);
-            localButtonPopulate.Text = $"Repopulate Selection";
-            localButtonPopulate.Name = $"Populate{input}";
-            localTabPage.Controls.Add(localButtonPopulate);
-
-            // Group Box
-            GroupBox localGroupBox = new GroupBox();
-            localGroupBox.Location = new Point(247, 539);
-            localGroupBox.Size = new Size(163, 43);
-            localGroupBox.Text = "Filter Criterion";
-            localGroupBox.Name = $"groupBoxFilter{inputNiceName}";
-            localTabPage.Controls.Add(localGroupBox);
-
-            // Text Box
-            TextBox localTextBox = new TextBox();
-            localTextBox.Location = new Point(6, 15);
-            localTextBox.Size = new Size(151, 20);
-            localTextBox.Name = $"textBoxFilterCriterion{inputNiceName}";
-            localGroupBox.Controls.Add(localTextBox);
-
-
-            // Tab Control
-            TabControl localTabControl = new TabControl();
-            localTabControl.Location = new Point(416, 9);
-            localTabControl.Size = new Size(896, 573);
-            localTabControl.Name = $"tabControl{input}";
-            localTabControl.BackColor = Color.White;
-            localTabPage.Controls.Add(localTabControl);
-
-            // Generation Output Tab Page
-            TabPage localTabPageGenerationOutput = new TabPage($"{inputNiceName} Generation Output");
-            localTabPageGenerationOutput.BackColor = Color.Transparent;
-            localTabPageGenerationOutput.BorderStyle = BorderStyle.None;
-            localTabPageGenerationOutput.UseVisualStyleBackColor = true;
-            localTabControl.TabPages.Add(localTabPageGenerationOutput);
-
-            RichTextBox localRichTextBoxGenerationOutput = new RichTextBox();
-            localRichTextBoxGenerationOutput.Text = $"No {inputNiceName} logic has been generated at the moment.";
-            localRichTextBoxGenerationOutput.Location = new Point(3, 6);
-            localRichTextBoxGenerationOutput.Size = new Size(882, 535);
-            localRichTextBoxGenerationOutput.BorderStyle = BorderStyle.None;
-            localTabPageGenerationOutput.Controls.Add(localRichTextBoxGenerationOutput);
-
-            // Pattern Tab Page
-            TabPage localTabPageGenerationPattern = new TabPage($"{inputNiceName} Pattern");
-            localTabPageGenerationPattern.BackColor = Color.Transparent;
-            localTabPageGenerationPattern.BorderStyle = BorderStyle.None;
-            localTabPageGenerationPattern.UseVisualStyleBackColor = true;
-            localTabControl.TabPages.Add(localTabPageGenerationPattern);
-
-            RichTextBox localRichTextBoxGenerationPattern = new RichTextBox();
-            localRichTextBoxGenerationPattern.Location = new Point(3, 59);
-            localRichTextBoxGenerationPattern.Size = new Size(882, 485);
-            localRichTextBoxGenerationPattern.BorderStyle = BorderStyle.None;
-            localTabPageGenerationPattern.Controls.Add(localRichTextBoxGenerationPattern);
-
-            ComboBox localComboBoxGenerationPattern = new ComboBox();
-            localComboBoxGenerationPattern.Location = new Point(108, 8);
-            localComboBoxGenerationPattern.Size = new Size(496, 21);
-            localComboBoxGenerationPattern.Name = $"comboBox{input}Pattern";
-            localTabPageGenerationPattern.Controls.Add(localComboBoxGenerationPattern);
-
-            // Active Pattern Label
-            Label localLabelActivePattern = new Label();
-            localLabelActivePattern.Location = new Point(2, 11);
-            localLabelActivePattern.Size = new Size(77, 13);
-            localLabelActivePattern.Name = $"label{input}ActivePattern";
-            localLabelActivePattern.Text = "Active Pattern:";
-            localTabPageGenerationPattern.Controls.Add(localLabelActivePattern);
-
-            // File Path Label
-            Label localLabelFilePath = new Label();
-            localLabelFilePath.Location = new Point(2,34);
-            localLabelFilePath.Size = new Size(60, 13);
-            localLabelFilePath.Name = $"label{input}FilePath";
-            localLabelFilePath.Text = @"File Path:";
-            localTabPageGenerationPattern.Controls.Add(localLabelFilePath);
-
-            // Full Path Label
-            Label localLabelFullFilePath = new Label();
-            localLabelFullFilePath.Location = new Point(105, 34);
-            localLabelFullFilePath.Size = new Size(40, 13);
-            localLabelFullFilePath.Name = $"label{input}FullFilePath";
-            localLabelFullFilePath.Text = @"<path>";
-            localTabPageGenerationPattern.Controls.Add(localLabelFullFilePath);
-
-            // Button Save Pattern
-            Button localSavePattern = new Button();
-            localSavePattern.Location = new Point(610, 7);
-            localSavePattern.Size = new Size(101, 23);
-            localSavePattern.Text = $"Save updates";
-            localSavePattern.Name = $"Generate{input}";
-            localTabPageGenerationPattern.Controls.Add(localSavePattern);
-
-            // Testing 123
-            LoadDynamicComboBox(input, localTabPageGenerationPattern, localComboBoxGenerationPattern, localRichTextBoxGenerationPattern);
-
-            var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
-            var inputQuery = new StringBuilder();
-
-            inputQuery.AppendLine("SELECT TABLE_NAME");
-            inputQuery.AppendLine("FROM INFORMATION_SCHEMA.TABLES ");
-            inputQuery.AppendLine("WHERE TABLE_TYPE='BASE TABLE' ");
-            inputQuery.AppendLine("  AND TABLE_NAME LIKE '%" + textBoxFilterCriterionStagingArea.Text + "%'");
-            inputQuery.AppendLine("  AND TABLE_NAME NOT LIKE '%USERMANAGED%'");
-            inputQuery.AppendLine("  AND TABLE_NAME NOT LIKE '%_LANDING'");
-            inputQuery.AppendLine("  AND TABLE_NAME LIKE '" + TeamConfigurationSettings.StgTablePrefixValue + "_%'");
-            inputQuery.AppendLine("ORDER BY TABLE_NAME");
-
-            LoadDynamicCheckedListBox(inputNiceName, conn, localCheckedListBox, inputQuery, localCheckBoxSelectAll);
+            CreateTabPages();
         }
 
-        private void LoadDynamicCheckedListBox(string patternNiceName, SqlConnection conn, CheckedListBox inputCheckedListBox, StringBuilder inputQuery, CheckBox inputCheckBoxSelectAll)
+        private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
         {
-            // Clear the existing checkboxes
-            inputCheckedListBox.Items.Clear();
-
-            try
+          //  localCustomTabPage.Set
+          foreach (CustomTabpage bla in localCustomTabPageList)
             {
-                var tables = GetDataTable(ref conn, inputQuery.ToString());
-
-                if (tables.Rows.Count == 0)
-                {
-                    SetTextStg($"There was no metadata available to display {patternNiceName} content. Please check the metadata schema (are there any {patternNiceName} tables available?) or the database connection.");
-                }
-
-                foreach (DataRow row in tables.Rows)
-                {
-                    inputCheckedListBox.Items.Add(row["TABLE_NAME"]);
-                }
-            }
-            catch (Exception ex)
-            {
-                _errorCounter++;
-                _errorMessage.AppendLine($"Unable to populate the {patternNiceName} selection, there is no database connection.");
-                _errorDetails.AppendLine("Error logging details: " + ex);
-            }
-
-            for (int x = 0; x <= inputCheckedListBox.Items.Count - 1; x++)
-            {
-                inputCheckedListBox.SetItemChecked(x, inputCheckBoxSelectAll.Checked);
-            }
-        }
-
-        private void LoadDynamicComboBox(string patternClassification, TabPage inputTabPage, ComboBox inputComboBox, RichTextBox inputRichTextBox)
-        {
-            bool available = false;
-            try
-            {
-                var patternList = VedwConfigurationSettings.patternList;
-
-
-                inputComboBox.Items.Clear();
-                inputRichTextBox.Clear();
-                //labelLoadPatternStgPath.Text = "";
-
-                foreach (var patternDetail in patternList)
-                {
-                    if (patternDetail.LoadPatternType == patternClassification)
-                    {
-                        inputComboBox.Items.Add(patternDetail.LoadPatternName);
-                        available = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(ex.ToString());
-            }
-
-            if (available == true)
-            {
-                inputComboBox.SelectedItem = inputComboBox.Items[0];
-            }
-            else
-            {
-                inputComboBox.ResetText();
-                inputComboBox.SelectedIndex = -1;
+                bla.setDisplayJson(checkBoxGenerateJsonSchema.Checked);
             }
         }
     }

@@ -4,10 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     class TextHandling
     {

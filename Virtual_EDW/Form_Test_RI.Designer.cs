@@ -57,7 +57,7 @@
             this.buttonGenerateTestcases.TabIndex = 19;
             this.buttonGenerateTestcases.Text = "Generate Referential Integrity Test";
             this.buttonGenerateTestcases.UseVisualStyleBackColor = true;
-            this.buttonGenerateTestcases.Click += new System.EventHandler(this.buttonGenerateTestcases_Click);
+            this.buttonGenerateTestcases.Click += new System.EventHandler(this.ButtonGenerateTestcases_Click);
             // 
             // label4
             // 
@@ -104,7 +104,7 @@
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem.Text = "Close";
-            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
             // TargetPlatformGroupBox
             // 

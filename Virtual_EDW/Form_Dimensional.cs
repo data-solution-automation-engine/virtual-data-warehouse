@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Virtual_EDW;
+using Virtual_Data_Warehouse;
 
 namespace Virtual_Data_Warehouse
 {
@@ -292,7 +292,7 @@ namespace Virtual_Data_Warehouse
                 queryMetadata.AppendLine("WHERE HUB_TABLE_SOURCE IN ("+hubList+")");
                 queryMetadata.AppendLine("ORDER BY 1");
 
-                var pathWaytables = GetDataTable(ref conn, queryMetadata.ToString());
+                var pathWaytables = Utility.GetDataTable(ref conn, queryMetadata.ToString());
 
                 if (pathWaytables.Rows.Count == 0)
                 {

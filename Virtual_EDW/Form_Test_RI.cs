@@ -2,8 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-using Virtual_Data_Warehouse.Classes;
-using Virtual_EDW;
 
 namespace Virtual_Data_Warehouse
 {
@@ -15,12 +13,12 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
         }
 
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void buttonGenerateTestcases_Click(object sender, EventArgs e)
+        private void ButtonGenerateTestcases_Click(object sender, EventArgs e)
         {
             var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
 
@@ -84,7 +82,7 @@ namespace Virtual_Data_Warehouse
             WHERE sat.[TARGET_TYPE]='Normal'
             ");
 
-            var metaDataTable = MyParent.GetDataTable(ref connOmd, queryTableArraySat.ToString());
+            var metaDataTable = Utility.GetDataTable(ref connOmd, queryTableArraySat.ToString());
 
             if (metaDataTable.Rows.Count == 0)
             {
@@ -155,7 +153,7 @@ namespace Virtual_Data_Warehouse
             WHERE LINK_NAME !='Not applicable'
             ";
 
-            metaDataTable= MyParent.GetDataTable(ref connOmd, queryTableArrayLink);
+            metaDataTable= Utility.GetDataTable(ref connOmd, queryTableArrayLink);
 
             queryRi.AppendLine();
             queryRi.AppendLine("-- Link validation");
@@ -242,7 +240,7 @@ namespace Virtual_Data_Warehouse
             WHERE sat.[TARGET_TYPE]='Link Satellite'
             ");
 
-            metaDataTable = MyParent.GetDataTable(ref connOmd, queryTableArrayLsat.ToString());
+            metaDataTable = Utility.GetDataTable(ref connOmd, queryTableArrayLsat.ToString());
 
             if (metaDataTable.Rows.Count == 0)
             {

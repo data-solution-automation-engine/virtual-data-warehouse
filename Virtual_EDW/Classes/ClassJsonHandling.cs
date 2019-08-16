@@ -2,12 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Virtual_EDW.FormBase;
+using static Virtual_Data_Warehouse.FormBase;
 
-namespace Virtual_Data_Warehouse.Classes
+namespace Virtual_Data_Warehouse
 {
     class ClassJsonHandling
     {

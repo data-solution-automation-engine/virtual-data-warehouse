@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Newtonsoft.Json;
-using Virtual_Data_Warehouse.Classes;
-using Virtual_EDW;
-using static Virtual_EDW.FormBase;
+using static Virtual_Data_Warehouse.FormBase;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     /// <summary>
     ///   This class contains the basic information for a load pattern, such as name, type and location.

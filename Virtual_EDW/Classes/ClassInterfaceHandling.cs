@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security;
-using Virtual_EDW;
+using Virtual_Data_Warehouse;
 
-namespace Virtual_Data_Warehouse.Classes
+namespace Virtual_Data_Warehouse
 {
     class InterfaceHandling
     {

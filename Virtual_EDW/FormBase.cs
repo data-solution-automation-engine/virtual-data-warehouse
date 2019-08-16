@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using Virtual_Data_Warehouse;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class FormBase : Form
     {
@@ -166,32 +166,7 @@ namespace Virtual_EDW
         }
 
 
-        /// <summary>
-        /// Load a data set into an in-memory datatable
-        /// </summary>
-        /// <param name="sqlConnection"></param>
-        /// <param name="sql"></param>
-        /// <returns></returns>
-        public DataTable GetDataTable(ref SqlConnection sqlConnection, string sql)
-        {
-            // Pass the connection to a command object
-            var sqlCommand = new SqlCommand(sql, sqlConnection);
-            var sqlDataAdapter = new SqlDataAdapter { SelectCommand = sqlCommand };
 
-            var dataTable = new DataTable();
-
-            // Adds or refreshes rows in the DataSet to match those in the data source
-            try
-            {
-                sqlDataAdapter.Fill(dataTable);
-            }
-
-            catch (Exception)
-            {
-               return null;
-            }
-            return dataTable;
-        }
 
 
 
@@ -219,7 +194,7 @@ namespace Virtual_EDW
             sqlStatementForVersion.AppendLine("FROM MD_VERSION");
             sqlStatementForVersion.AppendLine("WHERE VERSION_ID = " + currentVersion);
 
-            var versionList = GetDataTable(ref connOmd, sqlStatementForVersion.ToString());
+            var versionList = Utility.GetDataTable(ref connOmd, sqlStatementForVersion.ToString());
 
             if (versionList != null)
             {
@@ -270,7 +245,7 @@ namespace Virtual_EDW
             sqlStatementForVersion.AppendLine("SELECT COALESCE(MAX(VERSION_ID),0) AS VERSION_ID");
             sqlStatementForVersion.AppendLine("FROM MD_VERSION");
 
-            var versionList = GetDataTable(ref connOmd, sqlStatementForVersion.ToString());
+            var versionList = Utility.GetDataTable(ref connOmd, sqlStatementForVersion.ToString());
 
             if (versionList!= null)
             {
@@ -305,7 +280,7 @@ namespace Virtual_EDW
             sqlStatementForVersion.AppendLine("SELECT COUNT(*) AS VERSION_COUNT");
             sqlStatementForVersion.AppendLine("FROM MD_VERSION");
 
-            var versionList = GetDataTable(ref connOmd, sqlStatementForVersion.ToString());
+            var versionList = Utility.GetDataTable(ref connOmd, sqlStatementForVersion.ToString());
 
             if (versionList != null)
             {

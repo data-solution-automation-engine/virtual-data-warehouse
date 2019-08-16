@@ -6,7 +6,7 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Virtual_Data_Warehouse;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class FormTestData : FormBase
     {
@@ -96,7 +96,7 @@ namespace Virtual_EDW
                       FROM [interface].[INTERFACE_SOURCE_STAGING_XREF]
                     ";
 
-                var tables = MyParent.GetDataTable(ref connMetadata, queryTableArray);
+                var tables = Utility.GetDataTable(ref connMetadata, queryTableArray);
 
                 if (tables != null)
                 {
@@ -145,7 +145,7 @@ namespace Virtual_EDW
                         TeamConfigurationSettings.RowIdAttribute + "','" +
                         TeamConfigurationSettings.LoadDateTimeAttribute + "')";
 
-                        var attributeArray = MyParent.GetDataTable(ref connStg, queryAttributeArray);
+                        var attributeArray = Utility.GetDataTable(ref connStg, queryAttributeArray);
 
                         for (var intCounter = 1; intCounter <= Convert.ToInt32(textBoxTestCaseAmount.Text); intCounter++)
                         {

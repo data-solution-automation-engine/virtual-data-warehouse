@@ -34,7 +34,7 @@
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageHome = new System.Windows.Forms.TabPage();
             this.buttonTabGenerationTest = new System.Windows.Forms.Button();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.linkLabelWebLog = new System.Windows.Forms.LinkLabel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
@@ -196,7 +196,6 @@
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.linksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxGenerateInDatabase = new System.Windows.Forms.CheckBox();
             this.SQLGenerationGroupBox = new System.Windows.Forms.GroupBox();
             this.checkBoxSaveToFile = new System.Windows.Forms.CheckBox();
@@ -281,7 +280,7 @@
             // tabPageHome
             // 
             this.tabPageHome.Controls.Add(this.buttonTabGenerationTest);
-            this.tabPageHome.Controls.Add(this.linkLabel1);
+            this.tabPageHome.Controls.Add(this.linkLabelWebLog);
             this.tabPageHome.Controls.Add(this.pictureBox2);
             this.tabPageHome.Controls.Add(this.richTextBoxMainScreen);
             this.tabPageHome.Location = new System.Drawing.Point(4, 22);
@@ -302,19 +301,18 @@
             this.buttonTabGenerationTest.UseVisualStyleBackColor = true;
             this.buttonTabGenerationTest.Click += new System.EventHandler(this.buttonTabGenerationTest_Click);
             // 
-            // linkLabel1
+            // linkLabelWebLog
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(149, 49);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(137, 13);
-            this.linkLabel1.TabIndex = 19;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "http://www.roelantvos.com";
+            this.linkLabelWebLog.AutoSize = true;
+            this.linkLabelWebLog.Location = new System.Drawing.Point(149, 49);
+            this.linkLabelWebLog.Name = "linkLabelWebLog";
+            this.linkLabelWebLog.Size = new System.Drawing.Size(137, 13);
+            this.linkLabelWebLog.TabIndex = 19;
+            this.linkLabelWebLog.TabStop = true;
+            this.linkLabelWebLog.Text = "http://www.roelantvos.com";
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
             this.pictureBox2.Location = new System.Drawing.Point(34, 31);
             this.pictureBox2.Name = "pictureBox2";
@@ -325,7 +323,6 @@
             // 
             // richTextBoxMainScreen
             // 
-            this.richTextBoxMainScreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBoxMainScreen.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxMainScreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxMainScreen.Location = new System.Drawing.Point(149, 31);
@@ -402,7 +399,7 @@
             this.buttonSaveLoadPatternList.TabIndex = 95;
             this.buttonSaveLoadPatternList.Text = "Save As";
             this.buttonSaveLoadPatternList.UseVisualStyleBackColor = true;
-            this.buttonSaveLoadPatternList.Click += new System.EventHandler(this.buttonSaveLoadPatternList_Click);
+            this.buttonSaveLoadPatternList.Click += new System.EventHandler(this.ButtonSaveLoadPatternList_Click);
             // 
             // label10
             // 
@@ -673,7 +670,7 @@
             this.richTextBoxStgPattern.Size = new System.Drawing.Size(882, 485);
             this.richTextBoxStgPattern.TabIndex = 1;
             this.richTextBoxStgPattern.Text = "";
-            this.richTextBoxStgPattern.TextChanged += new System.EventHandler(this.richTextBoxStgPattern_TextChanged);
+            this.richTextBoxStgPattern.TextChanged += new System.EventHandler(this.RichTextBoxStgPattern_TextChanged);
             // 
             // checkBoxExcludeLanding
             // 
@@ -906,7 +903,7 @@
             this.richTextBoxPsaPattern.Size = new System.Drawing.Size(882, 485);
             this.richTextBoxPsaPattern.TabIndex = 1;
             this.richTextBoxPsaPattern.Text = "";
-            this.richTextBoxPsaPattern.TextChanged += new System.EventHandler(this.richTextBoxPsaPattern_TextChanged);
+            this.richTextBoxPsaPattern.TextChanged += new System.EventHandler(this.RichTextBoxPsaPattern_TextChanged);
             // 
             // groupBox3
             // 
@@ -1799,7 +1796,7 @@
             this.richTextBoxLsatPattern.Size = new System.Drawing.Size(882, 485);
             this.richTextBoxLsatPattern.TabIndex = 1;
             this.richTextBoxLsatPattern.Text = "";
-            this.richTextBoxLsatPattern.TextChanged += new System.EventHandler(this.richTextBoxLsatPattern_TextChanged);
+            this.richTextBoxLsatPattern.TextChanged += new System.EventHandler(this.RichTextBoxLsatPattern_TextChanged);
             // 
             // checkBoxEvaluateLsatDeletes
             // 
@@ -2041,14 +2038,14 @@
             this.generateTestDataToolStripMenuItem,
             this.generateRIValidationToolStripMenuItem});
             this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.testingToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.testingToolStripMenuItem.Text = "Testing";
             // 
             // generateTestDataToolStripMenuItem
             // 
             this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
             this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
             this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
             this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
             // 
@@ -2056,7 +2053,7 @@
             // 
             this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
             this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
+            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
             this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
             this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
             // 
@@ -2065,8 +2062,7 @@
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.helpToolStripMenuItem1,
             this.toolStripMenuItem1,
-            this.toolStripSeparator1,
-            this.linksToolStripMenuItem});
+            this.toolStripSeparator1});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
@@ -2092,14 +2088,6 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(185, 6);
             // 
-            // linksToolStripMenuItem
-            // 
-            this.linksToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.LinkIcon;
-            this.linksToolStripMenuItem.Name = "linksToolStripMenuItem";
-            this.linksToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.linksToolStripMenuItem.Text = "Links";
-            this.linksToolStripMenuItem.Click += new System.EventHandler(this.linksToolStripMenuItem_Click);
-            // 
             // checkBoxGenerateInDatabase
             // 
             this.checkBoxGenerateInDatabase.AutoSize = true;
@@ -2109,6 +2097,7 @@
             this.checkBoxGenerateInDatabase.TabIndex = 7;
             this.checkBoxGenerateInDatabase.Text = "Generate in database";
             this.checkBoxGenerateInDatabase.UseVisualStyleBackColor = true;
+            this.checkBoxGenerateInDatabase.CheckedChanged += new System.EventHandler(this.checkBoxGenerateInDatabase_CheckedChanged);
             // 
             // SQLGenerationGroupBox
             // 
@@ -2307,7 +2296,6 @@
         private System.Windows.Forms.ToolStripMenuItem dimensionalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem linksToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TabPage tabPagePSA;
@@ -2433,7 +2421,7 @@
         private System.Windows.Forms.TabPage tabPageHome;
         private System.Windows.Forms.RichTextBox richTextBoxMainScreen;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel linkLabelWebLog;
         private System.Windows.Forms.TabPage tabPageStagingArea;
         private System.Windows.Forms.TabControl tabControlStagingArea;
         private System.Windows.Forms.TabPage tabPageStagingAreaGenerationOutput;

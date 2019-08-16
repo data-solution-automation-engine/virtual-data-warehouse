@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Virtual_EDW;
+using Virtual_Data_Warehouse;
 
 namespace Virtual_Data_Warehouse
 {
@@ -252,7 +252,7 @@ namespace Virtual_Data_Warehouse
 
             // Create the DataTable for later drawing into the GridView
             conn.Open();
-            var attributeSelection = GetDataTable(ref conn, queryAttributes.ToString());
+            var attributeSelection = Utility.GetDataTable(ref conn, queryAttributes.ToString());
 
             // Create the Hub Primary Key / Surrogate Key from the above information so it can be automatically included
             var hubSk = "Unknown";
