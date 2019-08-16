@@ -33,7 +33,7 @@ namespace Virtual_Data_Warehouse
 
 
 
-    class CustomTabpage : TabPage
+    class CustomTabPage : TabPage
     {
         string inputNiceName;
         //SqlConnection conn = new SqlConnection();
@@ -91,7 +91,7 @@ namespace Virtual_Data_Warehouse
         /// Constructor to instantiate a new Custom Tab Page
         /// </summary>
         /// <param name="input"></param>
-        public CustomTabpage(string input, List<string> itemList)
+        public CustomTabPage(string input, List<string> itemList)
         {
             inputNiceName = Regex.Replace(input, "(\\B[A-Z])", " $1");
             this.itemList = itemList;
@@ -101,46 +101,65 @@ namespace Virtual_Data_Warehouse
             saveOutputFileFlag = true;
 
             #region Main Tab Page
-            // Base properties of custom tab page
+            // Base properties of the custom tab page
             Name = $"tabPage{input}";
             Text = inputNiceName;
             BackColor = Color.Transparent;
             BorderStyle = BorderStyle.None;
-            //Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Left);
             UseVisualStyleBackColor = true;
+            Size = new Size(1330, 601);
+            AutoSizeMode = AutoSizeMode.GrowOnly;
+            AutoSize = true;
 
-            // Add Panel to faciliate docking
-            //localPanel = new Panel();
-            //Controls.Add(localPanel);
-            ////localPanel.Dock = DockStyle.Fill;
+            // Add Panel to facilitate docking
+            localPanel = new Panel();
+            Controls.Add(localPanel);
+            localPanel.Dock = DockStyle.Fill;
+            localPanel.AutoSize = true;
+
+            // Add 'Generate' Button 
+            localButtonGenerate = new Button();
+            localPanel.Controls.Add(localButtonGenerate);
+            localButtonGenerate.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
+            localButtonGenerate.Location = new Point(17, 542);
+            localButtonGenerate.Name = $"Generate{input}";
+            localButtonGenerate.Size = new Size(109, 40);
+            localButtonGenerate.Text = $"Generate {inputNiceName}";
+            localButtonGenerate.Click += new EventHandler(Generate);
 
             // Add 'Processing' Label
             localLabelProcessing = new Label();
+            localPanel.Controls.Add(localLabelProcessing);
+            localLabelProcessing.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelProcessing.Location = new Point(14, 12);
             localLabelProcessing.Size = new Size(123, 13);
             localLabelProcessing.Name = $"label{input}Processing";
             localLabelProcessing.Text = $"{inputNiceName} Processing";
-            Controls.Add(localLabelProcessing);
+
 
             // Add 'Select All' CheckBox
             localCheckBoxSelectAll = new CheckBox();
+            localPanel.Controls.Add(localCheckBoxSelectAll);
+            localCheckBoxSelectAll.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localCheckBoxSelectAll.Location = new Point(140, 11);
             localCheckBoxSelectAll.Size = new Size(69, 17);
             localCheckBoxSelectAll.Name = "checkBoxStagingAreaSelectAll";
             localCheckBoxSelectAll.Checked = true;
             localCheckBoxSelectAll.Text = "Select all";
             localCheckBoxSelectAll.CheckedChanged += new EventHandler(SelectAllCheckBoxItems);
-            Controls.Add(localCheckBoxSelectAll);
+
 
             // Add Checked List Box
             localCheckedListBox = new CheckedListBox();
+            localPanel.Controls.Add(localCheckedListBox);
+            localCheckedListBox.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
             localCheckedListBox.Location = new Point(17, 31);
             localCheckedListBox.Size = new Size(393, 377);
             localCheckedListBox.BorderStyle = BorderStyle.FixedSingle;
             localCheckedListBox.CheckOnClick = true;
             localCheckedListBox.Name = $"checkedListBox{input}";
-            //localCheckedListBox.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
-            Controls.Add(localCheckedListBox);
+
+
 
             // Add User feedback RichTextBox (left hand side of form)
             localRichTextBox = new RichTextBox();
@@ -152,19 +171,8 @@ namespace Virtual_Data_Warehouse
             //localRichTextBox.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             Controls.Add(localRichTextBox);
 
-            // Add 'Generate' Button 
 
-            localButtonGenerate = new Button();            
-            localButtonGenerate.Dock = DockStyle.None;
-            //localButtonGenerate.Anchor = AnchorStyles.Left & AnchorStyles.Bottom;
-            localButtonGenerate.Location = new Point(17, 542);
-            localButtonGenerate.Size = new Size(109, 40);
-            localButtonGenerate.Text = $"Generate {inputNiceName}";
-            localButtonGenerate.Name = $"Generate{input}";
-            localButtonGenerate.TabIndex = 4;
-            //localButtonGenerate.UseVisualStyleBackColor = true;
-            localButtonGenerate.Click += new EventHandler(Generate);
-            Controls.Add(localButtonGenerate);
+
 
 
 

@@ -24,7 +24,7 @@ namespace Virtual_Data_Warehouse
         private int _errorCounter;
         internal bool startUpIndicator = true;
 
-        private List<CustomTabpage> localCustomTabPageList = new List<CustomTabpage>();
+        private List<CustomTabPage> localCustomTabPageList = new List<CustomTabPage>();
 
         private BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
         private BindingSource _bindingSourceLoadPatternDefinition = new BindingSource();
@@ -43,7 +43,7 @@ namespace Virtual_Data_Warehouse
             _errorDetails.AppendLine();
             _errorCounter = 0;
 
-            localCustomTabPageList = new List<CustomTabpage>();
+            localCustomTabPageList = new List<CustomTabPage>();
 
             InitializeComponent();
 
@@ -118,7 +118,7 @@ namespace Virtual_Data_Warehouse
 
             CreateTabPages();
 
-            foreach (CustomTabpage localTabPage in localCustomTabPageList)
+            foreach (CustomTabPage localTabPage in localCustomTabPageList)
             {
                 localTabPage.setDisplayJsonFlag(false);
                 localTabPage.setGenerateInDatabaseFlag(false);
@@ -3713,7 +3713,7 @@ namespace Virtual_Data_Warehouse
 
                 var inputItemList = databaseHandling.GetItemList(input);
 
-                CustomTabpage localCustomTabPage = new CustomTabpage(input, inputItemList);
+                CustomTabPage localCustomTabPage = new CustomTabPage(input, inputItemList);
                 localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
                 localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);          
 
@@ -3731,7 +3731,7 @@ namespace Virtual_Data_Warehouse
 
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (CustomTabpage localTabPage in localCustomTabPageList)
+            foreach (CustomTabPage localTabPage in localCustomTabPageList)
             {
                 if (checkBoxGenerateInDatabase.Checked)
                 {
@@ -3746,7 +3746,7 @@ namespace Virtual_Data_Warehouse
 
         private void checkBoxGenerateJsonSchema_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (CustomTabpage localTabPage in localCustomTabPageList)
+            foreach (CustomTabPage localTabPage in localCustomTabPageList)
             {
                 if (checkBoxGenerateJsonSchema.Checked)
                 {
@@ -3761,7 +3761,7 @@ namespace Virtual_Data_Warehouse
 
         private void checkBoxSaveToFile_CheckedChanged(object sender, EventArgs e)
         {
-            foreach (CustomTabpage localTabPage in localCustomTabPageList)
+            foreach (CustomTabPage localTabPage in localCustomTabPageList)
             {
                 if (checkBoxSaveToFile.Checked)
                 {
@@ -3779,7 +3779,7 @@ namespace Virtual_Data_Warehouse
             string tabName = tabControlMain.SelectedTab.Name;
             var inputItemList = databaseHandling.GetItemList(tabName);
 
-            foreach (CustomTabpage bla in localCustomTabPageList)
+            foreach (CustomTabPage bla in localCustomTabPageList)
             {
                 if (bla.Name == tabName)
                 {
