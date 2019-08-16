@@ -12,8 +12,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using HandlebarsDotNet;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -26,12 +24,16 @@ namespace Virtual_Data_Warehouse
         private int _errorCounter;
         internal bool startUpIndicator = true;
 
-        List<CustomTabpage> localCustomTabPageList = new List<CustomTabpage>();
+        private List<CustomTabpage> localCustomTabPageList = new List<CustomTabpage>();
 
         private BindingSource _bindingSourceLoadPatternMetadata = new BindingSource();
 
+        private DatabaseHandling databaseHandling;
+
         public FormMain()
         {
+            databaseHandling = new DatabaseHandling();
+
             _errorMessage = new StringBuilder();
             _errorMessage.AppendLine("Error were detected:");
             _errorMessage.AppendLine();
@@ -67,8 +69,7 @@ namespace Virtual_Data_Warehouse
             richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
-            checkBoxDisableSatZeroRecords.Checked = false;
-            checkBoxDisableLsatZeroRecords.Checked = false;
+
 
             InitialiseDocumentation();
 
@@ -92,6 +93,8 @@ namespace Virtual_Data_Warehouse
                 SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a "+GlobalParameters.LoadPatternListFile+" in the "+VedwConfigurationSettings.LoadPatternListPath+" directory, and if the file contains patterns.");
             }
 
+
+
             // Populate the data grid
             populateLoadPatternDataGrid();
 
@@ -100,6 +103,16 @@ namespace Virtual_Data_Warehouse
             // Load the patterns into the tool based on the available list
 
             LoadAllLoadPatternComboBoxes();
+
+            CreateTabPages();
+
+            foreach (CustomTabpage localTabPage in localCustomTabPageList)
+            {
+                localTabPage.setDisplayJsonFlag(false);
+                localTabPage.setGenerateInDatabaseFlag(false);
+                localTabPage.setSaveOutputFileFlag(true);
+            }
+
             startUpIndicator = false;
         }
 
@@ -3598,11 +3611,11 @@ namespace Virtual_Data_Warehouse
 
                 var input = row["Type"].ToString();
 
-                CustomTabpage localCustomTabPage = new CustomTabpage(input);
-                localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
-                localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);
+                var inputItemList = databaseHandling.GetItemList(input);
 
-          
+                CustomTabpage localCustomTabPage = new CustomTabpage(input, inputItemList);
+                localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
+                localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);          
 
                 localCustomTabPageList.Add(localCustomTabPage);
 
@@ -3614,20 +3627,64 @@ namespace Virtual_Data_Warehouse
 
                 tabControlMain.TabPages.Add(localCustomTabPage);
             }
-        }
-
-
-        private void buttonTabGenerationTest_Click(object sender, EventArgs e)
-        {
-            CreateTabPages();
-        }
+        }        
 
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
         {
-          //  localCustomTabPage.Set
-          foreach (CustomTabpage bla in localCustomTabPageList)
+            foreach (CustomTabpage localTabPage in localCustomTabPageList)
             {
-                bla.setDisplayJson(checkBoxGenerateJsonSchema.Checked);
+                if (checkBoxGenerateInDatabase.Checked)
+                {
+                    localTabPage.setGenerateInDatabaseFlag(true);
+                }
+                else
+                {
+                    localTabPage.setGenerateInDatabaseFlag(false);
+                }
+            }
+        }
+
+        private void checkBoxGenerateJsonSchema_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach (CustomTabpage localTabPage in localCustomTabPageList)
+            {
+                if (checkBoxGenerateJsonSchema.Checked)
+                {
+                    localTabPage.setDisplayJsonFlag(true);
+                }
+                else
+                {
+                    localTabPage.setDisplayJsonFlag(false);
+                }
+            }
+        }
+
+        private void checkBoxSaveToFile_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach (CustomTabpage localTabPage in localCustomTabPageList)
+            {
+                if (checkBoxSaveToFile.Checked)
+                {
+                    localTabPage.setSaveOutputFileFlag(true);
+                }
+                else
+                {
+                    localTabPage.setSaveOutputFileFlag(false);
+                }
+            }
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            string tabName = tabControlMain.SelectedTab.Name;
+            var inputItemList = databaseHandling.GetItemList(tabName);
+
+            foreach (CustomTabpage bla in localCustomTabPageList)
+            {
+                if (bla.Name == tabName)
+                {
+                    bla.SetItemList(inputItemList);
+                }
             }
         }
     }

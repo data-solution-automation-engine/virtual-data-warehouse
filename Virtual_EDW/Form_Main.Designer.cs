@@ -33,7 +33,6 @@
             this.buttonGenerateHubs = new System.Windows.Forms.Button();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageHome = new System.Windows.Forms.TabPage();
-            this.buttonTabGenerationTest = new System.Windows.Forms.Button();
             this.linkLabelWebLog = new System.Windows.Forms.LinkLabel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
@@ -204,6 +203,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
+            this.button12 = new System.Windows.Forms.Button();
             this.tabControlMain.SuspendLayout();
             this.tabPageHome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -279,7 +279,6 @@
             // 
             // tabPageHome
             // 
-            this.tabPageHome.Controls.Add(this.buttonTabGenerationTest);
             this.tabPageHome.Controls.Add(this.linkLabelWebLog);
             this.tabPageHome.Controls.Add(this.pictureBox2);
             this.tabPageHome.Controls.Add(this.richTextBoxMainScreen);
@@ -289,17 +288,6 @@
             this.tabPageHome.TabIndex = 12;
             this.tabPageHome.Text = "Home";
             this.tabPageHome.UseVisualStyleBackColor = true;
-            // 
-            // buttonTabGenerationTest
-            // 
-            this.buttonTabGenerationTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonTabGenerationTest.Location = new System.Drawing.Point(840, 119);
-            this.buttonTabGenerationTest.Name = "buttonTabGenerationTest";
-            this.buttonTabGenerationTest.Size = new System.Drawing.Size(109, 40);
-            this.buttonTabGenerationTest.TabIndex = 30;
-            this.buttonTabGenerationTest.Text = "TEST ";
-            this.buttonTabGenerationTest.UseVisualStyleBackColor = true;
-            this.buttonTabGenerationTest.Click += new System.EventHandler(this.buttonTabGenerationTest_Click);
             // 
             // linkLabelWebLog
             // 
@@ -2123,6 +2111,7 @@
             this.checkBoxSaveToFile.TabIndex = 9;
             this.checkBoxSaveToFile.Text = "Save generation output to file";
             this.checkBoxSaveToFile.UseVisualStyleBackColor = true;
+            this.checkBoxSaveToFile.CheckedChanged += new System.EventHandler(this.checkBoxSaveToFile_CheckedChanged);
             // 
             // checkBoxGenerateJsonSchema
             // 
@@ -2133,6 +2122,7 @@
             this.checkBoxGenerateJsonSchema.TabIndex = 8;
             this.checkBoxGenerateJsonSchema.Text = "Generate JSON metadata schema";
             this.checkBoxGenerateJsonSchema.UseVisualStyleBackColor = true;
+            this.checkBoxGenerateJsonSchema.CheckedChanged += new System.EventHandler(this.checkBoxGenerateJsonSchema_CheckedChanged);
             // 
             // backgroundWorkerActivateMetadata
             // 
@@ -2158,9 +2148,9 @@
             this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox9.Controls.Add(this.richTextBoxInformationMain);
-            this.groupBox9.Location = new System.Drawing.Point(222, 677);
+            this.groupBox9.Location = new System.Drawing.Point(337, 677);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(1009, 106);
+            this.groupBox9.Size = new System.Drawing.Size(894, 106);
             this.groupBox9.TabIndex = 12;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Information";
@@ -2173,10 +2163,22 @@
             this.richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 17);
             this.richTextBoxInformationMain.Name = "richTextBoxInformationMain";
-            this.richTextBoxInformationMain.Size = new System.Drawing.Size(997, 82);
+            this.richTextBoxInformationMain.Size = new System.Drawing.Size(882, 82);
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
             this.richTextBoxInformationMain.TextChanged += new System.EventHandler(this.richTextBoxInformationMain_TextChanged);
+            // 
+            // button12
+            // 
+            this.button12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button12.Location = new System.Drawing.Point(222, 683);
+            this.button12.MinimumSize = new System.Drawing.Size(109, 40);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(109, 40);
+            this.button12.TabIndex = 23;
+            this.button12.Text = "Repopulate Metadata Selection";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
             // FormMain
             // 
@@ -2184,6 +2186,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1362, 797);
+            this.Controls.Add(this.button12);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.SQLGenerationGroupBox);
@@ -2191,6 +2194,7 @@
             this.Controls.Add(this.menuStripMainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMainMenu;
+            this.MaximumSize = new System.Drawing.Size(1378, 835);
             this.MinimumSize = new System.Drawing.Size(1378, 835);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -2442,7 +2446,7 @@
         private System.Windows.Forms.Label labelStagingAreaProcessing;
         private System.Windows.Forms.RichTextBox richTextBoxStaging;
         private System.Windows.Forms.Button buttonGenerateStagingArea;
-        private System.Windows.Forms.Button buttonTabGenerationTest;
+        private System.Windows.Forms.Button button12;
     }
 }
 

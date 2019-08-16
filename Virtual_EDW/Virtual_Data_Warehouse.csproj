@@ -202,6 +202,7 @@
     <Compile Include="Classes\CustomDataGridViewAttribute.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Classes\DatabaseHandling.cs" />
     <Compile Include="FormBase.cs">
       <SubType>Form</SubType>
     </Compile>
