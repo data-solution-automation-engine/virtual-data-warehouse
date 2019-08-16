@@ -192,17 +192,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ClassUtility.cs" />
+    <Compile Include="Classes\CustomDataGridViewAttribute.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes\CustomDataGridViewTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Classes\CustomTabPage.cs" />
     <Compile Include="Classes\ClassInterfaceHandling.cs" />
     <Compile Include="Classes\ClassJsonHandling.cs" />
     <Compile Include="Classes\ClassTextHandling.cs" />
     <Compile Include="Classes\ClassEnvironmentConfiguration.cs" />
-    <Compile Include="Classes\ClassLoadPattern.cs" />
+    <Compile Include="Classes\ClassLoadPatternHandling.cs" />
     <Compile Include="Classes\ClassExtensionMethods.cs" />
-    <Compile Include="Classes\CustomDataGridViewAttribute.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Classes\DatabaseHandling.cs" />
+    <Compile Include="Classes\ClassDatabaseHandling.cs" />
     <Compile Include="FormBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -253,9 +256,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\CustomDataGridViewTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <EmbeddedResource Include="Form_About.resx">
       <DependentUpon>Form_About.cs</DependentUpon>
     </EmbeddedResource>

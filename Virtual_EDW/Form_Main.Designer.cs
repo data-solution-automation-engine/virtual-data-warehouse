@@ -29,6 +29,9 @@
         /// 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.buttonGenerateHubs = new System.Windows.Forms.Button();
             this.tabControlMain = new System.Windows.Forms.TabControl();
@@ -37,14 +40,20 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
-            this.button7 = new System.Windows.Forms.Button();
+            this.tabControlSettings = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dataGridViewLoadPatternCollection = new System.Windows.Forms.DataGridView();
+            this.buttonUpdateLoadPatternCollection = new System.Windows.Forms.Button();
+            this.buttonSaveAsLoadPatternCollection = new System.Windows.Forms.Button();
+            this.buttonOpenLoadPatternCollection = new System.Windows.Forms.Button();
+            this.tabPage11 = new System.Windows.Forms.TabPage();
+            this.dataGridViewLoadPatternDefinition = new System.Windows.Forms.DataGridView();
+            this.buttonUpdateLoadPatternDefinition = new System.Windows.Forms.Button();
+            this.buttonSaveAsLoadPatternDefinition = new System.Windows.Forms.Button();
+            this.buttonOpenLoadPatternDefinition = new System.Windows.Forms.Button();
             this.checkBoxBackupFiles = new System.Windows.Forms.CheckBox();
-            this.buttonOpenLoadPatternList = new System.Windows.Forms.Button();
-            this.buttonSaveLoadPatternList = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.dataGridViewLoadPatternMetadata = new System.Windows.Forms.DataGridView();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.textBoxSchemaName = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -208,7 +217,11 @@
             this.tabPageHome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPageSettings.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternMetadata)).BeginInit();
+            this.tabControlSettings.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternCollection)).BeginInit();
+            this.tabPage11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternDefinition)).BeginInit();
             this.groupBox8.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPageStagingArea.SuspendLayout();
@@ -321,14 +334,10 @@
             // 
             // tabPageSettings
             // 
-            this.tabPageSettings.Controls.Add(this.button7);
+            this.tabPageSettings.Controls.Add(this.tabControlSettings);
             this.tabPageSettings.Controls.Add(this.checkBoxBackupFiles);
-            this.tabPageSettings.Controls.Add(this.buttonOpenLoadPatternList);
-            this.tabPageSettings.Controls.Add(this.buttonSaveLoadPatternList);
             this.tabPageSettings.Controls.Add(this.label10);
             this.tabPageSettings.Controls.Add(this.textBoxLoadPatternPath);
-            this.tabPageSettings.Controls.Add(this.label7);
-            this.tabPageSettings.Controls.Add(this.dataGridViewLoadPatternMetadata);
             this.tabPageSettings.Controls.Add(this.groupBox8);
             this.tabPageSettings.Controls.Add(this.groupBox1);
             this.tabPageSettings.Controls.Add(this.label6);
@@ -343,51 +352,166 @@
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
             // 
-            // button7
+            // tabControlSettings
             // 
-            this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button7.Location = new System.Drawing.Point(759, 530);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(109, 40);
-            this.button7.TabIndex = 98;
-            this.button7.Text = "Save In Place (Update)";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.tabControlSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControlSettings.Controls.Add(this.tabPage1);
+            this.tabControlSettings.Controls.Add(this.tabPage11);
+            this.tabControlSettings.Location = new System.Drawing.Point(516, 9);
+            this.tabControlSettings.Name = "tabControlSettings";
+            this.tabControlSettings.SelectedIndex = 0;
+            this.tabControlSettings.Size = new System.Drawing.Size(796, 515);
+            this.tabControlSettings.TabIndex = 99;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.dataGridViewLoadPatternCollection);
+            this.tabPage1.Controls.Add(this.buttonUpdateLoadPatternCollection);
+            this.tabPage1.Controls.Add(this.buttonSaveAsLoadPatternCollection);
+            this.tabPage1.Controls.Add(this.buttonOpenLoadPatternCollection);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(788, 489);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Load Pattern Collection";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewLoadPatternCollection
+            // 
+            this.dataGridViewLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewLoadPatternCollection.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataGridViewLoadPatternCollection.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridViewLoadPatternCollection.Location = new System.Drawing.Point(3, 3);
+            this.dataGridViewLoadPatternCollection.Name = "dataGridViewLoadPatternCollection";
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(782, 427);
+            this.dataGridViewLoadPatternCollection.TabIndex = 99;
+            // 
+            // buttonUpdateLoadPatternCollection
+            // 
+            this.buttonUpdateLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonUpdateLoadPatternCollection.Location = new System.Drawing.Point(237, 438);
+            this.buttonUpdateLoadPatternCollection.Name = "buttonUpdateLoadPatternCollection";
+            this.buttonUpdateLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
+            this.buttonUpdateLoadPatternCollection.TabIndex = 102;
+            this.buttonUpdateLoadPatternCollection.Text = "Save In Place (Update)";
+            this.buttonUpdateLoadPatternCollection.UseVisualStyleBackColor = true;
+            this.buttonUpdateLoadPatternCollection.Click += new System.EventHandler(this.buttonUpdateLoadPatternCollection_Click);
+            // 
+            // buttonSaveAsLoadPatternCollection
+            // 
+            this.buttonSaveAsLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSaveAsLoadPatternCollection.Location = new System.Drawing.Point(122, 438);
+            this.buttonSaveAsLoadPatternCollection.Name = "buttonSaveAsLoadPatternCollection";
+            this.buttonSaveAsLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
+            this.buttonSaveAsLoadPatternCollection.TabIndex = 100;
+            this.buttonSaveAsLoadPatternCollection.Text = "Save As";
+            this.buttonSaveAsLoadPatternCollection.UseVisualStyleBackColor = true;
+            this.buttonSaveAsLoadPatternCollection.Click += new System.EventHandler(this.buttonSaveAsLoadPatternCollection_Click);
+            // 
+            // buttonOpenLoadPatternCollection
+            // 
+            this.buttonOpenLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonOpenLoadPatternCollection.Location = new System.Drawing.Point(7, 438);
+            this.buttonOpenLoadPatternCollection.Name = "buttonOpenLoadPatternCollection";
+            this.buttonOpenLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
+            this.buttonOpenLoadPatternCollection.TabIndex = 101;
+            this.buttonOpenLoadPatternCollection.Text = "Open Load Pattern Collection";
+            this.buttonOpenLoadPatternCollection.UseVisualStyleBackColor = true;
+            this.buttonOpenLoadPatternCollection.Click += new System.EventHandler(this.buttonOpenLoadPatternCollection_Click);
+            // 
+            // tabPage11
+            // 
+            this.tabPage11.Controls.Add(this.dataGridViewLoadPatternDefinition);
+            this.tabPage11.Controls.Add(this.buttonUpdateLoadPatternDefinition);
+            this.tabPage11.Controls.Add(this.buttonSaveAsLoadPatternDefinition);
+            this.tabPage11.Controls.Add(this.buttonOpenLoadPatternDefinition);
+            this.tabPage11.Location = new System.Drawing.Point(4, 22);
+            this.tabPage11.Name = "tabPage11";
+            this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage11.Size = new System.Drawing.Size(788, 489);
+            this.tabPage11.TabIndex = 1;
+            this.tabPage11.Text = "Load Pattern Types";
+            this.tabPage11.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewLoadPatternDefinition
+            // 
+            this.dataGridViewLoadPatternDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewLoadPatternDefinition.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewLoadPatternDefinition.Location = new System.Drawing.Point(3, 3);
+            this.dataGridViewLoadPatternDefinition.Name = "dataGridViewLoadPatternDefinition";
+            this.dataGridViewLoadPatternDefinition.Size = new System.Drawing.Size(782, 427);
+            this.dataGridViewLoadPatternDefinition.TabIndex = 92;
+            // 
+            // buttonUpdateLoadPatternDefinition
+            // 
+            this.buttonUpdateLoadPatternDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonUpdateLoadPatternDefinition.Location = new System.Drawing.Point(237, 438);
+            this.buttonUpdateLoadPatternDefinition.Name = "buttonUpdateLoadPatternDefinition";
+            this.buttonUpdateLoadPatternDefinition.Size = new System.Drawing.Size(109, 40);
+            this.buttonUpdateLoadPatternDefinition.TabIndex = 98;
+            this.buttonUpdateLoadPatternDefinition.Text = "Save In Place (Update)";
+            this.buttonUpdateLoadPatternDefinition.UseVisualStyleBackColor = true;
+            this.buttonUpdateLoadPatternDefinition.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // buttonSaveAsLoadPatternDefinition
+            // 
+            this.buttonSaveAsLoadPatternDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonSaveAsLoadPatternDefinition.Location = new System.Drawing.Point(122, 438);
+            this.buttonSaveAsLoadPatternDefinition.Name = "buttonSaveAsLoadPatternDefinition";
+            this.buttonSaveAsLoadPatternDefinition.Size = new System.Drawing.Size(109, 40);
+            this.buttonSaveAsLoadPatternDefinition.TabIndex = 95;
+            this.buttonSaveAsLoadPatternDefinition.Text = "Save As";
+            this.buttonSaveAsLoadPatternDefinition.UseVisualStyleBackColor = true;
+            this.buttonSaveAsLoadPatternDefinition.Click += new System.EventHandler(this.ButtonSaveLoadPatternList_Click);
+            // 
+            // buttonOpenLoadPatternDefinition
+            // 
+            this.buttonOpenLoadPatternDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonOpenLoadPatternDefinition.Location = new System.Drawing.Point(7, 438);
+            this.buttonOpenLoadPatternDefinition.Name = "buttonOpenLoadPatternDefinition";
+            this.buttonOpenLoadPatternDefinition.Size = new System.Drawing.Size(109, 40);
+            this.buttonOpenLoadPatternDefinition.TabIndex = 96;
+            this.buttonOpenLoadPatternDefinition.Text = "Open Load Pattern Definition";
+            this.buttonOpenLoadPatternDefinition.UseVisualStyleBackColor = true;
+            this.buttonOpenLoadPatternDefinition.Click += new System.EventHandler(this.ButtonOpenLoadPatternList);
             // 
             // checkBoxBackupFiles
             // 
-            this.checkBoxBackupFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBoxBackupFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxBackupFiles.AutoSize = true;
             this.checkBoxBackupFiles.Checked = true;
             this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxBackupFiles.Location = new System.Drawing.Point(933, 530);
+            this.checkBoxBackupFiles.Location = new System.Drawing.Point(1131, 526);
             this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
             this.checkBoxBackupFiles.Size = new System.Drawing.Size(181, 17);
             this.checkBoxBackupFiles.TabIndex = 97;
             this.checkBoxBackupFiles.Text = "Automatically create file backups";
             this.checkBoxBackupFiles.UseVisualStyleBackColor = true;
-            // 
-            // buttonOpenLoadPatternList
-            // 
-            this.buttonOpenLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonOpenLoadPatternList.Location = new System.Drawing.Point(529, 530);
-            this.buttonOpenLoadPatternList.Name = "buttonOpenLoadPatternList";
-            this.buttonOpenLoadPatternList.Size = new System.Drawing.Size(109, 40);
-            this.buttonOpenLoadPatternList.TabIndex = 96;
-            this.buttonOpenLoadPatternList.Text = "Open Load Pattern Overview File";
-            this.buttonOpenLoadPatternList.UseVisualStyleBackColor = true;
-            this.buttonOpenLoadPatternList.Click += new System.EventHandler(this.ButtonOpenLoadPatternList);
-            // 
-            // buttonSaveLoadPatternList
-            // 
-            this.buttonSaveLoadPatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSaveLoadPatternList.Location = new System.Drawing.Point(644, 530);
-            this.buttonSaveLoadPatternList.Name = "buttonSaveLoadPatternList";
-            this.buttonSaveLoadPatternList.Size = new System.Drawing.Size(109, 40);
-            this.buttonSaveLoadPatternList.TabIndex = 95;
-            this.buttonSaveLoadPatternList.Text = "Save As";
-            this.buttonSaveLoadPatternList.UseVisualStyleBackColor = true;
-            this.buttonSaveLoadPatternList.Click += new System.EventHandler(this.ButtonSaveLoadPatternList_Click);
             // 
             // label10
             // 
@@ -406,26 +530,6 @@
             this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
             this.textBoxLoadPatternPath.Size = new System.Drawing.Size(493, 27);
             this.textBoxLoadPatternPath.TabIndex = 93;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(526, 43);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(72, 13);
-            this.label7.TabIndex = 92;
-            this.label7.Text = "Load patterns";
-            // 
-            // dataGridViewLoadPatternMetadata
-            // 
-            this.dataGridViewLoadPatternMetadata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridViewLoadPatternMetadata.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewLoadPatternMetadata.Location = new System.Drawing.Point(529, 61);
-            this.dataGridViewLoadPatternMetadata.Name = "dataGridViewLoadPatternMetadata";
-            this.dataGridViewLoadPatternMetadata.Size = new System.Drawing.Size(782, 463);
-            this.dataGridViewLoadPatternMetadata.TabIndex = 91;
             // 
             // groupBox8
             // 
@@ -2026,14 +2130,14 @@
             this.generateTestDataToolStripMenuItem,
             this.generateRIValidationToolStripMenuItem});
             this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.testingToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.testingToolStripMenuItem.Text = "Testing";
             // 
             // generateTestDataToolStripMenuItem
             // 
             this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
             this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
             this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
             // 
@@ -2041,7 +2145,7 @@
             // 
             this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
             this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
             this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
             // 
@@ -2185,7 +2289,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1362, 797);
+            this.ClientSize = new System.Drawing.Size(1362, 796);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.pictureBox1);
@@ -2194,7 +2298,6 @@
             this.Controls.Add(this.menuStripMainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMainMenu;
-            this.MaximumSize = new System.Drawing.Size(1378, 835);
             this.MinimumSize = new System.Drawing.Size(1378, 835);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -2207,7 +2310,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPageSettings.ResumeLayout(false);
             this.tabPageSettings.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternMetadata)).EndInit();
+            this.tabControlSettings.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternCollection)).EndInit();
+            this.tabPage11.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternDefinition)).EndInit();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -2413,14 +2520,12 @@
         private System.Windows.Forms.RichTextBox richTextBoxLsatPattern;
         private System.Windows.Forms.CheckBox checkBoxGenerateJsonSchema;
         private System.Windows.Forms.CheckBox checkBoxSaveToFile;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.DataGridView dataGridViewLoadPatternMetadata;
         private System.Windows.Forms.Label label10;
         internal System.Windows.Forms.TextBox textBoxLoadPatternPath;
-        private System.Windows.Forms.Button buttonSaveLoadPatternList;
-        private System.Windows.Forms.Button buttonOpenLoadPatternList;
+        private System.Windows.Forms.Button buttonSaveAsLoadPatternDefinition;
+        private System.Windows.Forms.Button buttonOpenLoadPatternDefinition;
         private System.Windows.Forms.CheckBox checkBoxBackupFiles;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button buttonUpdateLoadPatternDefinition;
         private System.Windows.Forms.ToolStripMenuItem openVEDWConfigurationSettingsFileToolStripMenuItem;
         private System.Windows.Forms.TabPage tabPageHome;
         private System.Windows.Forms.RichTextBox richTextBoxMainScreen;
@@ -2447,6 +2552,14 @@
         private System.Windows.Forms.RichTextBox richTextBoxStaging;
         private System.Windows.Forms.Button buttonGenerateStagingArea;
         private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.TabControl tabControlSettings;
+        private System.Windows.Forms.TabPage tabPage11;
+        private System.Windows.Forms.DataGridView dataGridViewLoadPatternDefinition;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.DataGridView dataGridViewLoadPatternCollection;
+        private System.Windows.Forms.Button buttonUpdateLoadPatternCollection;
+        private System.Windows.Forms.Button buttonSaveAsLoadPatternCollection;
+        private System.Windows.Forms.Button buttonOpenLoadPatternCollection;
     }
 }
 

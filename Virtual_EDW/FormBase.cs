@@ -34,6 +34,7 @@ namespace Virtual_Data_Warehouse
             public static string VedwConfigurationfileName { get; } = "VEDW_configuration";
             public static string VedwFileExtension { get; } = ".txt";
             public static string LoadPatternListFile { get; } = "loadPatternCollection.json";
+            public static string LoadPatternDefinitionFile { get; } = "loadPatternDefinition.json";
 
             // TEAM core file names, not meant to be updated
             public static string TeamConfigurationfileName { get; } = "TEAM_configuration";
@@ -60,6 +61,8 @@ namespace Virtual_Data_Warehouse
             public static string hashingZeroKey { get; set; }
 
             public static List<LoadPattern> patternList { get; set; }
+            public static List<LoadPatternDefinition> patternDefinitionList { get; set; }
+
             public static string activeLoadPatternStg { get; set; }
             public static string activeLoadPatternPsa { get; set; }
             public static string activeLoadPatternHub { get; set; }

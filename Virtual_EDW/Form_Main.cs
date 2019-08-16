@@ -26,7 +26,8 @@ namespace Virtual_Data_Warehouse
 
         private List<CustomTabpage> localCustomTabPageList = new List<CustomTabpage>();
 
-        private BindingSource _bindingSourceLoadPatternMetadata = new BindingSource();
+        private BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
+        private BindingSource _bindingSourceLoadPatternDefinition = new BindingSource();
 
         private DatabaseHandling databaseHandling;
 
@@ -85,7 +86,7 @@ namespace Virtual_Data_Warehouse
 
 
             // Load Pattern metadata & update in memory
-            var patternCollection = new LoadPatternHandling();
+            var patternCollection = new LoadPatternCollectionFileHandling();
             VedwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
 
             if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
@@ -93,10 +94,21 @@ namespace Virtual_Data_Warehouse
                 SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a "+GlobalParameters.LoadPatternListFile+" in the "+VedwConfigurationSettings.LoadPatternListPath+" directory, and if the file contains patterns.");
             }
 
+            // Load Pattern definition in memory
+            var patternDefinition = new LoadPatternDefinitionFileHandling();
+            VedwConfigurationSettings.patternDefinitionList = patternDefinition.DeserializeLoadPatternDefinition();
+                
+
+            if ((VedwConfigurationSettings.patternDefinitionList != null) && (!VedwConfigurationSettings.patternDefinitionList.Any()))
+            {
+                SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFile + " in the " + VedwConfigurationSettings.LoadPatternListPath + " directory, and if the file contains pattern types.");
+            }
+
 
 
             // Populate the data grid
-            populateLoadPatternDataGrid();
+            populateLoadPatternCollectionDataGrid();
+            populateLoadPatternDefinitionDataGrid();
 
 
 
@@ -126,7 +138,7 @@ namespace Virtual_Data_Warehouse
             LoadLsatPatternCombobox();
         }
 
-        public void populateLoadPatternDataGrid()
+        public void populateLoadPatternCollectionDataGrid()
         {
             // Create a datatable 
             DataTable dt = VedwConfigurationSettings.patternList.ToDataTable();
@@ -136,38 +148,120 @@ namespace Virtual_Data_Warehouse
             dt.Columns[1].ColumnName = "Type";
             dt.Columns[2].ColumnName = "Path";
             dt.Columns[3].ColumnName = "Notes";
-            _bindingSourceLoadPatternMetadata.DataSource = dt;
+            _bindingSourceLoadPatternCollection.DataSource = dt;
 
             if (VedwConfigurationSettings.patternList != null)
             {
                 // Set the column header names.
-                dataGridViewLoadPatternMetadata.DataSource = _bindingSourceLoadPatternMetadata;
-                dataGridViewLoadPatternMetadata.ColumnHeadersVisible = true;
-                dataGridViewLoadPatternMetadata.Columns[0].HeaderText = "Name";
-                dataGridViewLoadPatternMetadata.Columns[1].HeaderText = "Type";
-                dataGridViewLoadPatternMetadata.Columns[2].HeaderText = "Path";
-                dataGridViewLoadPatternMetadata.Columns[3].HeaderText = "Notes";
+                dataGridViewLoadPatternCollection.DataSource = _bindingSourceLoadPatternCollection;
+                dataGridViewLoadPatternCollection.ColumnHeadersVisible = true;
+                dataGridViewLoadPatternCollection.Columns[0].HeaderText = "Name";
+                dataGridViewLoadPatternCollection.Columns[0].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternCollection.Columns[1].HeaderText = "Type";
+                dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternCollection.Columns[2].HeaderText = "Path";
+                dataGridViewLoadPatternCollection.Columns[2].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternCollection.Columns[3].HeaderText = "Notes";
+                dataGridViewLoadPatternCollection.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dataGridViewLoadPatternCollection.Columns[3].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
             }
-            GridAutoLayoutLoadPatternMetadata();
+            GridAutoLayoutLoadPatternCollection();
         }
 
-        private void GridAutoLayoutLoadPatternMetadata()
+        public void populateLoadPatternDefinitionDataGrid()
+        {
+            // Create a datatable 
+            DataTable dt = VedwConfigurationSettings.patternDefinitionList.ToDataTable();
+
+            dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
+            dt.Columns[0].ColumnName = "Key";
+            dt.Columns[1].ColumnName = "Type";
+            dt.Columns[2].ColumnName = "BaseQuery";
+            dt.Columns[3].ColumnName = "AttributeQuery";
+            dt.Columns[4].ColumnName = "Notes";
+
+            _bindingSourceLoadPatternDefinition.DataSource = dt;
+
+            if (VedwConfigurationSettings.patternList != null)
+            {
+                // Set the column header names.
+                dataGridViewLoadPatternDefinition.DataSource = _bindingSourceLoadPatternDefinition;
+                dataGridViewLoadPatternDefinition.ColumnHeadersVisible = true;
+                dataGridViewLoadPatternDefinition.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                dataGridViewLoadPatternDefinition.Columns[0].HeaderText = "Key";
+                dataGridViewLoadPatternCollection.Columns[0].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternDefinition.Columns[1].HeaderText = "Type";
+                dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternDefinition.Columns[2].HeaderText = "Base Query";
+                dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternDefinition.Columns[3].HeaderText = "Attribute Query";
+                dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternDefinition.Columns[4].HeaderText = "Notes";
+                dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+            }
+
+            GridAutoLayoutLoadPatternDefinition();
+        }
+
+        private void GridAutoLayoutLoadPatternDefinition()
         {
             //Table Mapping metadata grid - set the autosize based on all cells for each column
-            for (var i = 0; i < dataGridViewLoadPatternMetadata.Columns.Count - 1; i++)
+            for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
             {
-                dataGridViewLoadPatternMetadata.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
-            if (dataGridViewLoadPatternMetadata.Columns.Count > 0)
+            if (dataGridViewLoadPatternDefinition.Columns.Count > 0)
             {
-                dataGridViewLoadPatternMetadata.Columns[dataGridViewLoadPatternMetadata.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridViewLoadPatternDefinition.Columns[dataGridViewLoadPatternDefinition.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
-            for (var i = 0; i < dataGridViewLoadPatternMetadata.Columns.Count - 1; i++)
+            for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
             {
-                int columnWidth = dataGridViewLoadPatternMetadata.Columns[i].Width;
-                dataGridViewLoadPatternMetadata.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dataGridViewLoadPatternMetadata.Columns[i].Width = columnWidth;
+                int columnWidth = dataGridViewLoadPatternDefinition.Columns[i].Width;
+                dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                dataGridViewLoadPatternDefinition.Columns[i].Width = columnWidth;
+            }
+        }
+
+
+
+        private void GridAutoLayoutLoadPatternCollection()
+        {
+            //Table Mapping metadata grid - set the autosize based on all cells for each column
+            for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
+            {
+                dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
+            if (dataGridViewLoadPatternCollection.Columns.Count > 0)
+            {
+                dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+            // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
+            for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
+            {
+                int columnWidth = dataGridViewLoadPatternCollection.Columns[i].Width;
+                dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                dataGridViewLoadPatternCollection.Columns[i].Width = columnWidth;
             }
         }
 
@@ -3395,12 +3489,14 @@ namespace Virtual_Data_Warehouse
 
         private void FormMain_SizeChanged(object sender, EventArgs e)
         {
-            GridAutoLayoutLoadPatternMetadata();
+            GridAutoLayoutLoadPatternCollection();
+            GridAutoLayoutLoadPatternDefinition();
         }
 
         private void FormMain_Shown(object sender, EventArgs e)
         {
-            GridAutoLayoutLoadPatternMetadata();
+            GridAutoLayoutLoadPatternCollection();
+            GridAutoLayoutLoadPatternDefinition();
         }
 
         private DialogResult STAShowDialog(FileDialog dialog)
@@ -3429,8 +3525,8 @@ namespace Virtual_Data_Warehouse
         {
             var theDialog = new OpenFileDialog
             {
-                Title = @"Open Load Pattern List File",
-                Filter = @"Load Pattern List|*.json",
+                Title = @"Open Load Pattern Definition File",
+                Filter = @"Load Pattern Definition|*.json",
                 InitialDirectory = VedwConfigurationSettings.LoadPatternListPath
             };
 
@@ -3446,14 +3542,14 @@ namespace Virtual_Data_Warehouse
                     string fileExtension = Path.GetExtension(theDialog.FileName);
 
                     // Save the list to memory
-                    VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+                    VedwConfigurationSettings.patternDefinitionList = JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(File.ReadAllText(chosenFile));
 
                     // ... and populate the data grid
-                    LoadAllLoadPatternComboBoxes();
-                    populateLoadPatternDataGrid();
+                    //LoadAllLoadPatternComboBoxes();
+                    populateLoadPatternDefinitionDataGrid();
 
                     SetTextMain("The file " + chosenFile + " was loaded.\r\n");
-                    GridAutoLayoutLoadPatternMetadata();
+                    GridAutoLayoutLoadPatternDefinition();
                 }
                 catch (Exception ex)
                 {
@@ -3468,8 +3564,8 @@ namespace Virtual_Data_Warehouse
             {
                 var theDialog = new SaveFileDialog
                 {
-                    Title = @"Save Load Pattern List File",
-                    Filter = @"Load Pattern List|*.json",
+                    Title = @"Save Load Pattern Definition File",
+                    Filter = @"Load Pattern Definition|*.json",
                     InitialDirectory = textBoxLoadPatternPath.Text
                 };
 
@@ -3481,22 +3577,23 @@ namespace Virtual_Data_Warehouse
                     {
                         var chosenFile = theDialog.FileName;
 
-                        DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternMetadata.DataSource;
+                        DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternDefinition.DataSource;
 
                         // Make sure the output is sorted
-                        gridDataTable.DefaultView.Sort = "[NAME] ASC";
+                        gridDataTable.DefaultView.Sort = "[KEY] ASC";
 
-                        gridDataTable.TableName = "LoadPatternList";
+                        gridDataTable.TableName = "LoadPatternDefinition";
 
                         JArray outputFileArray = new JArray();
                         foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
                         {
                             JObject individualRow = JObject.FromObject(new
                             {
-                                loadPatternName = singleRow[0].ToString(),
+                                loadPatternKey = singleRow[0].ToString(),
                                 loadPatternType = singleRow[1].ToString(),
-                                loadPatternFilePath = singleRow[2].ToString(),
-                                loadPatternNotes = singleRow[3].ToString()
+                                loadPatternBaseQuery = singleRow[2].ToString(),
+                                loadPatternAttributeQuery = singleRow[3].ToString(),
+                                loadPatternNotes = singleRow[4].ToString()
                             });
                             outputFileArray.Add(individualRow);
                         }
@@ -3523,25 +3620,28 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
+                richTextBoxInformationMain.Clear();
 
-                var chosenFile = textBoxLoadPatternPath.Text;
+                var chosenFile = textBoxLoadPatternPath.Text + GlobalParameters.LoadPatternDefinitionFile;
 
-                DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternMetadata.DataSource;
+
+                DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternDefinition.DataSource;
 
                 // Make sure the output is sorted
-                gridDataTable.DefaultView.Sort = "[NAME] ASC";
+                gridDataTable.DefaultView.Sort = "[KEY] ASC";
 
-                gridDataTable.TableName = "LoadPatternList";
+                gridDataTable.TableName = "LoadPatternDefinition";
 
                 JArray outputFileArray = new JArray();
                 foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
                 {
                     JObject individualRow = JObject.FromObject(new
                     {
-                        loadPatternName = singleRow[0].ToString(),
+                        loadPatternKey = singleRow[0].ToString(),
                         loadPatternType = singleRow[1].ToString(),
-                        loadPatternFilePath = singleRow[2].ToString(),
-                        loadPatternNotes = singleRow[3].ToString()
+                        loadPatternBaseQuery = singleRow[2].ToString(),
+                        loadPatternAttributeQuery = singleRow[3].ToString(),
+                        loadPatternNotes = singleRow[4].ToString()
                     });
                     outputFileArray.Add(individualRow);
                 }
@@ -3601,7 +3701,7 @@ namespace Virtual_Data_Warehouse
 
         internal void CreateTabPages()
         {
-            var inputTableMetadata = (DataTable)_bindingSourceLoadPatternMetadata.DataSource;
+            var inputTableMetadata = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
             DataView view = new DataView(inputTableMetadata);
             DataTable distinctValues = view.ToTable(true, "Type");
 
@@ -3685,6 +3785,155 @@ namespace Virtual_Data_Warehouse
                 {
                     bla.SetItemList(inputItemList);
                 }
+            }
+        }
+
+        private void buttonOpenLoadPatternCollection_Click(object sender, EventArgs e)
+        {
+            var theDialog = new OpenFileDialog
+            {
+                Title = @"Open Load Pattern Collection File",
+                Filter = @"Load Pattern Collection|*.json",
+                InitialDirectory = VedwConfigurationSettings.LoadPatternListPath
+            };
+
+            var ret = STAShowDialog(theDialog);
+
+            if (ret == DialogResult.OK)
+            {
+                try
+                {
+                    var chosenFile = theDialog.FileName;
+                    var dataSet = new DataSet();
+
+                    string fileExtension = Path.GetExtension(theDialog.FileName);
+
+                    // Save the list to memory
+                    VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+
+                    // ... and populate the data grid
+                    LoadAllLoadPatternComboBoxes();
+                    populateLoadPatternCollectionDataGrid();
+
+                    SetTextMain("The file " + chosenFile + " was loaded.\r\n");
+                    GridAutoLayoutLoadPatternCollection();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error has been encountered! The reported error is: " + ex);
+                }
+            }
+        }
+
+        private void buttonSaveAsLoadPatternCollection_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var theDialog = new SaveFileDialog
+                {
+                    Title = @"Save Load Pattern Collection File",
+                    Filter = @"Load Pattern Collection|*.json",
+                    InitialDirectory = textBoxLoadPatternPath.Text
+                };
+
+                var ret = STAShowDialog(theDialog);
+
+                if (ret == DialogResult.OK)
+                {
+                    try
+                    {
+                        var chosenFile = theDialog.FileName;
+
+                        DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
+
+                        // Make sure the output is sorted
+                        gridDataTable.DefaultView.Sort = "[NAME] ASC";
+
+                        gridDataTable.TableName = "LoadPatternList";
+
+                        JArray outputFileArray = new JArray();
+                        foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
+                        {
+                            JObject individualRow = JObject.FromObject(new
+                            {
+                                loadPatternName = singleRow[0].ToString(),
+                                loadPatternType = singleRow[1].ToString(),
+                                loadPatternFilePath = singleRow[2].ToString(),
+                                loadPatternNotes = singleRow[3].ToString()
+                            });
+                            outputFileArray.Add(individualRow);
+                        }
+
+                        string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
+
+                        File.WriteAllText(chosenFile, json);
+
+                        SetTextMain("The file " + chosenFile + " was loaded.\r\n");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has been encountered! The reported error is: " + ex);
+            }
+        }
+
+        private void buttonUpdateLoadPatternCollection_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                richTextBoxInformationMain.Clear();
+
+                var chosenFile = textBoxLoadPatternPath.Text+GlobalParameters.LoadPatternListFile;
+
+                DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
+
+                // Make sure the output is sorted
+                gridDataTable.DefaultView.Sort = "[NAME] ASC";
+
+                gridDataTable.TableName = "LoadPatternCollection";
+
+                JArray outputFileArray = new JArray();
+                foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
+                {
+                    JObject individualRow = JObject.FromObject(new
+                    {
+                        loadPatternName = singleRow[0].ToString(),
+                        loadPatternType = singleRow[1].ToString(),
+                        loadPatternFilePath = singleRow[2].ToString(),
+                        loadPatternNotes = singleRow[3].ToString()
+                    });
+                    outputFileArray.Add(individualRow);
+                }
+
+                string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
+
+                // Create a backup file, if enabled
+                if (checkBoxBackupFiles.Checked)
+                {
+                    try
+                    {
+                        var backupFile = new ClassJsonHandling();
+                        var targetFileName = backupFile.BackupJsonFile(chosenFile);
+                        SetTextMain("A backup of the in-use JSON file was created as " + targetFileName + ".\r\n\r\n");
+                    }
+                    catch (Exception exception)
+                    {
+                        SetTextMain("An issue occured when trying to make a backup of the in-use JSON file. The error message was " + exception + ".");
+                    }
+                }
+
+                File.WriteAllText(chosenFile, json);
+
+                SetTextMain("The file " + chosenFile + " was updated.\r\n");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }
