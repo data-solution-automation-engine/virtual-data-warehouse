@@ -451,7 +451,7 @@ namespace Virtual_Data_Warehouse
         }
 
         /// <summary>
-        ///   Create Staging Area SQL using Handlebars as templating engine
+        ///   Create output using Handlebars as templating engine
         /// </summary>
         private void GenerateFromPattern()
         {
@@ -464,35 +464,29 @@ namespace Virtual_Data_Warehouse
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
 
+            // Populate the main list of source-to-target mappings (base query)
+            var metadataQuery = input.LoadPatternBaseQuery;
+            var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+
+            // Populate the attribute mappings
+            // Create the column-to-column mapping
+            var columnMetadataQuery = input.LoadPatternAttributeQuery;
+            var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
+
+            // Loop through the checked items, select the right mapping and generate the pattern
             if (localCheckedListBox.CheckedItems.Count != 0)
             {
                 for (int x = 0; x <= localCheckedListBox.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = localCheckedListBox.CheckedItems[x].ToString();
                     localRichTextBox.AppendText(@"Processing generation for " + targetTableName + ".\r\n");
-
-                    // Retrieve metadata and store in a data table object
-                    var metadataQuery = @"SELECT 
-                                             [SOURCE_SCHEMA_NAME]
-                                            ,[SOURCE_NAME]
-                                            ,[SOURCE_BUSINESS_KEY_DEFINITION]
-                                            ,[TARGET_SCHEMA_NAME]
-                                            ,[TARGET_NAME]
-                                            ,[TARGET_BUSINESS_KEY_DEFINITION]
-                                            ,[TARGET_TYPE]
-                                            ,[SURROGATE_KEY]
-                                            ,[FILTER_CRITERIA]
-                                            ,[LOAD_VECTOR]
-                                          FROM interface.INTERFACE_SOURCE_STAGING_XREF 
-                                          WHERE TARGET_TYPE = 'StagingArea' 
-                                          AND TARGET_NAME = '" + targetTableName + "'";
-
-                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+                  
+                    DataRow[] mappingRows = metadataDataTable.Select("[TARGET_NAME] = '"+targetTableName+"'");
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in metadataDataTable.Rows)
+                    foreach (DataRow row in mappingRows)
                     {
                         // Creating the Business Key definition, using the available components (see above)
                         List<BusinessKey> businessKeyList = new List<BusinessKey>();
@@ -505,16 +499,10 @@ namespace Virtual_Data_Warehouse
                         businessKeyList.Add(businessKey);
 
                         // Create the column-to-column mapping
-                        var columnMetadataQuery = @"SELECT 
-                                                      [SOURCE_ATTRIBUTE_NAME]
-                                                     ,[TARGET_ATTRIBUTE_NAME]
-                                                   FROM [interface].[INTERFACE_SOURCE_STAGING_ATTRIBUTE_XREF]
-                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" + (string)row["SOURCE_NAME"] + "'";
-
-                        var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
+                        DataRow[] columnRows = columnMetadataDataTable.Select("[TARGET_NAME] = '" + targetTableName + "' AND [SOURCE_NAME] = '"+(string)row["SOURCE_NAME"]+"'");
 
                         List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
-                        foreach (DataRow column in columnMetadataDataTable.Rows)
+                        foreach (DataRow column in columnRows)
                         {
                             ColumnMapping columnMapping = new ColumnMapping();
                             Column sourceColumn = new Column();
@@ -533,13 +521,11 @@ namespace Virtual_Data_Warehouse
                         if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
                         {
                             int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-
                             lookupTable = lookupTable.Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length).Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
                         }
                         else
                         {
                             int prefixLocation = lookupTable.LastIndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-
                             lookupTable = lookupTable.Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length).Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
                         }
 
@@ -568,8 +554,6 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata
-                        //var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
-
                         var template = Handlebars.Compile(localRichTextBoxGenerationPattern.Text);
                         var result = template(sourceTargetMappingList);
 
@@ -618,7 +602,6 @@ namespace Virtual_Data_Warehouse
 
                         eventLog.Add(localEvent);
                     }
-               
                 }
             }
             else
