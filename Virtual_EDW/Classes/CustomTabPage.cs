@@ -238,7 +238,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationPattern.Location = new Point(3, 59);
             localRichTextBoxGenerationPattern.Size = new Size(882, 485);
             localRichTextBoxGenerationPattern.BorderStyle = BorderStyle.None;
-            localRichTextBoxGenerationPattern.TextChanged += new EventHandler(CommitPatternTextChange);
+            //localRichTextBoxGenerationPattern.TextChanged += new EventHandler(CommitPatternTextChange);
 
             // Add 'Pattern ComboBox' to Pattern tab
             localComboBoxGenerationPattern = new ComboBox();
@@ -328,12 +328,6 @@ namespace Virtual_Data_Warehouse
             TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text.TrimEnd());
         }
 
-        public void CommitPatternTextChange(object sender, EventArgs e)
-        {
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(localRichTextBoxGenerationPattern.Text.TrimEnd(), input.LoadPatternType);
-        }
-
         public void FilterItemList(object o, EventArgs e)
         {
 
@@ -389,9 +383,6 @@ namespace Virtual_Data_Warehouse
 
             // Display the pattern in the text box on the screen
             localRichTextBoxGenerationPattern.Text = loadPatternTemplate;
-
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Syntax highlight for Handlebars
             if (startUpIndicator == false)
@@ -574,7 +565,9 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata
-                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
+                        //var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
+
+                        var template = Handlebars.Compile(localRichTextBoxGenerationPattern.Text);
                         var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed

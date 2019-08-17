@@ -503,8 +503,8 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata
-                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternHub);
-                        var result = template(sourceTargetMappingList);
+                       // var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternHub);
+                       // var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed also
                         //DisplayJsonMetadata(sourceTargetMappingList, "Hub");
@@ -640,8 +640,8 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata
-                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternSat);
-                        var result = template(sourceTargetMappingList);
+                       // var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternSat);
+                       // var result = template(sourceTargetMappingList);
 
                         // Display the output of the template to the user
                       //  SetTextSatOutput(result);
@@ -848,8 +848,8 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata
-                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLnk);
-                        var result = template(sourceTargetMappingList);
+                     //   var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLnk);
+                      //  var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed also
                         //DisplayJsonMetadata(sourceTargetMappingList,"Link");
@@ -976,8 +976,8 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata
-                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLsat);
-                        var result = template(sourceTargetMappingList);
+                    //    var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLsat);
+                     //   var result = template(sourceTargetMappingList);
 
                         // Display the output of the template to the user
                         //SetTextLsatOutput(result);
@@ -1148,8 +1148,8 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata
-                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternPsa);
-                        var result = template(sourceTargetMappingList);
+                    //    var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternPsa);
+                    //    var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed also
                         //DisplayJsonMetadata(sourceTargetMappingList, "PersistentStagingArea");
@@ -1298,8 +1298,8 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata
-                        var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
-                        var result = template(sourceTargetMappingList);
+                        //var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
+                        //var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed also
                         //DisplayJsonMetadata(sourceTargetMappingList, "StagingArea");
