@@ -10,6 +10,7 @@ namespace Virtual_Data_Warehouse
     {
         public int LoadPatternKey { get; set; }
         public string LoadPatternType { get; set; }
+        public string LoadPatternSelectionQuery { get; set; }
         public string LoadPatternBaseQuery { get; set; }
         public string LoadPatternAttributeQuery { get; set; }
         public string LoadPatternNotes { get; set; }

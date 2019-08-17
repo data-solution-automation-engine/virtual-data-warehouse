@@ -11,22 +11,13 @@ namespace Virtual_Data_Warehouse
 {
     class DatabaseHandling
     {
-        public List<string> GetItemList(string inputType)
+        public List<string> GetItemList(string inputType, string inputQuery, SqlConnection conn)
         {
             List<string> returnList = new List<string>();
 
-
-            var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-
-            StringBuilder inputMetadataQuery = new StringBuilder();
-
-            inputMetadataQuery.AppendLine("SELECT");
-            inputMetadataQuery.AppendLine("  [TARGET_NAME]");
-            inputMetadataQuery.AppendLine("FROM [interface].[INTERFACE_SOURCE_STAGING_XREF]");
-
             try
             {
-                var tables = Utility.GetDataTable(ref conn, inputMetadataQuery.ToString());
+                var tables = Utility.GetDataTable(ref conn, inputQuery);
 
                 //if (tables.Rows.Count == 0)
                 //{

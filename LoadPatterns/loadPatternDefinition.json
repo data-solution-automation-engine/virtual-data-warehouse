@@ -2,6 +2,7 @@
   {
     "loadPatternKey": "1",
     "loadPatternType": "StagingArea",
+    "LoadPatternSelectionQuery": "SELECT \r\n  [TARGET_NAME] \r\nFROM [interface].[INTERFACE_SOURCE_STAGING_XREF]",
     "loadPatternBaseQuery": "SELECT \r\n   [SOURCE_SCHEMA_NAME]  \r\n  ,[SOURCE_NAME]\r\n  ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n  ,[TARGET_SCHEMA_NAME]\r\n  ,[TARGET_NAME]\r\n  ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n  ,[TARGET_TYPE]\r\n  ,[SURROGATE_KEY]\r\n  ,[FILTER_CRITERIA]\r\n  ,[LOAD_VECTOR]\r\nFROM interface.INTERFACE_SOURCE_STAGING_XREF \r\nWHERE TARGET_TYPE = 'StagingArea'",
     "loadPatternAttributeQuery": "SELECT \r\n  [SOURCE_ATTRIBUTE_NAME]\r\n ,[TARGET_ATTRIBUTE_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_STAGING_ATTRIBUTE_XREF]",
     "loadPatternNotes": "The mappings from source to the landing (staging) area."
@@ -9,8 +10,9 @@
   {
     "loadPatternKey": "2",
     "loadPatternType": "Hub",
-    "loadPatternBaseQuery": "SELECT \r\n   [SOURCE_SCHEMA_NAME]  \r\n  ,[SOURCE_NAME]\r\n  ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n  ,[TARGET_SCHEMA_NAME]\r\n  ,[TARGET_NAME]\r\n  ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n  ,[TARGET_TYPE]\r\n  ,[SURROGATE_KEY]\r\n  ,[FILTER_CRITERIA]\r\n  ,[LOAD_VECTOR]\r\nFROM interface.INTERFACE_SOURCE_STAGING_XREF \r\nWHERE TARGET_TYPE = 'StagingArea'",
-    "loadPatternAttributeQuery": "SELECT \r\n  [SOURCE_SCHEMA_NAME]\r\n  ,[SOURCE_NAME]\r\n  ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n  ,[TARGET_SCHEMA_NAME]\r\n  ,[TARGET_NAME]\r\n  ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n  ,[TARGET_TYPE]\r\n  ,[SURROGATE_KEY]\r\n  ,[FILTER_CRITERIA]\r\n  ,[LOAD_VECTOR]\r\nFROM interface.INTERFACE_SOURCE_STAGING_XREF \r\nWHERE TARGET_TYPE = 'StagingArea'",
-    "loadPatternNotes": "Use the Hub view to load into a physical table."
+    "LoadPatternSelectionQuery": "SELECT\r\n  DISTINCT [TARGET_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
+    "loadPatternBaseQuery": "SELECT \r\n  [SOURCE_NAME]\r\n ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n ,[TARGET_NAME]\r\n ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n ,[FILTER_CRITERIA]\r\n ,[SURROGATE_KEY]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
+    "loadPatternAttributeQuery": "",
+    "loadPatternNotes": "The source-to-target mappings for a Hub entity type."
   }
 ]

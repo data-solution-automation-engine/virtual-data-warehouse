@@ -14,6 +14,7 @@ using static Virtual_Data_Warehouse.FormBase;
 
 namespace Virtual_Data_Warehouse
 {
+    // Delegate to control main form text box (append text)
     public class MyEventArgs : EventArgs
     {
         public string Value { get; set; }
@@ -24,22 +25,21 @@ namespace Virtual_Data_Warehouse
         }
     }
 
+    // Delegate to control main form text box (clear)
     public class MyClearArgs : EventArgs
     {
         public MyClearArgs()
         {
         }
     }
-
-
-
+    
     class CustomTabPage : TabPage
     {
         string inputNiceName;
-        //SqlConnection conn = new SqlConnection();
         StringBuilder inputMetadataQuery = new StringBuilder();
 
-        List<string> itemList;
+        internal LoadPatternDefinition input;
+        internal List<string> itemList;
 
         // Objects on main Tab Page
         Panel localPanel;
@@ -71,6 +71,9 @@ namespace Virtual_Data_Warehouse
         public bool generateInDatabaseFlag { get; set; }
         public bool saveOutputFileFlag { get; set; }
 
+        internal bool startUpIndicator = true;
+
+
         public void setDisplayJsonFlag(bool value)
         {
             displayJsonFlag = value;
@@ -91,18 +94,20 @@ namespace Virtual_Data_Warehouse
         /// Constructor to instantiate a new Custom Tab Page
         /// </summary>
         /// <param name="input"></param>
-        public CustomTabPage(string input, List<string> itemList)
+        public CustomTabPage(LoadPatternDefinition input, List<string> itemList)
         {
-            inputNiceName = Regex.Replace(input, "(\\B[A-Z])", " $1");
+            this.input = input;
             this.itemList = itemList;
+            inputNiceName = Regex.Replace(input.LoadPatternType, "(\\B[A-Z])", " $1");
 
             displayJsonFlag = true;
             generateInDatabaseFlag = true;
             saveOutputFileFlag = true;
 
             #region Main Tab Page
+
             // Base properties of the custom tab page
-            Name = $"tabPage{input}";
+            Name = $"tabPage{input.LoadPatternType}";
             Text = inputNiceName;
             BackColor = Color.Transparent;
             BorderStyle = BorderStyle.None;
@@ -122,7 +127,7 @@ namespace Virtual_Data_Warehouse
             localPanel.Controls.Add(localButtonGenerate);
             localButtonGenerate.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             localButtonGenerate.Location = new Point(17, 542);
-            localButtonGenerate.Name = $"Generate{input}";
+            localButtonGenerate.Name = $"enerate{input.LoadPatternType}";
             localButtonGenerate.Size = new Size(109, 40);
             localButtonGenerate.Text = $"Generate {inputNiceName}";
             localButtonGenerate.Click += new EventHandler(Generate);
@@ -133,7 +138,7 @@ namespace Virtual_Data_Warehouse
             localLabelProcessing.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelProcessing.Location = new Point(14, 12);
             localLabelProcessing.Size = new Size(123, 13);
-            localLabelProcessing.Name = $"label{input}Processing";
+            localLabelProcessing.Name = $"label{input.LoadPatternType}Processing";
             localLabelProcessing.Text = $"{inputNiceName} Processing";
 
 
@@ -148,7 +153,6 @@ namespace Virtual_Data_Warehouse
             localCheckBoxSelectAll.Text = "Select all";
             localCheckBoxSelectAll.CheckedChanged += new EventHandler(SelectAllCheckBoxItems);
 
-
             // Add Checked List Box
             localCheckedListBox = new CheckedListBox();
             localPanel.Controls.Add(localCheckedListBox);
@@ -157,137 +161,154 @@ namespace Virtual_Data_Warehouse
             localCheckedListBox.Size = new Size(393, 377);
             localCheckedListBox.BorderStyle = BorderStyle.FixedSingle;
             localCheckedListBox.CheckOnClick = true;
-            localCheckedListBox.Name = $"checkedListBox{input}";
-
-
+            localCheckedListBox.Name = $"checkedListBox{input.LoadPatternType}";
 
             // Add User feedback RichTextBox (left hand side of form)
             localRichTextBox = new RichTextBox();
+            localPanel.Controls.Add(localRichTextBox);
+            localRichTextBox.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
             localRichTextBox.Location = new Point(17, 418);
             localRichTextBox.Size = new Size(393, 115);
             localRichTextBox.BorderStyle = BorderStyle.None;
             localRichTextBox.BackColor = SystemColors.Window;
-            localRichTextBox.Text = $"The {inputNiceName} pattern type.";
-            //localRichTextBox.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-            Controls.Add(localRichTextBox);
-
-
-
-
-
-
-
-
+            localRichTextBox.Text = $"{input.LoadPatternNotes}";
 
             // Add 'Filter' Group Box
             localGroupBoxFilter = new GroupBox();
+            localPanel.Controls.Add(localGroupBoxFilter);
+            localGroupBoxFilter.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             localGroupBoxFilter.Location = new Point(247, 539);
             localGroupBoxFilter.Size = new Size(163, 43);
             localGroupBoxFilter.Text = "Filter Criterion";
             localGroupBoxFilter.Name = $"groupBoxFilter{inputNiceName}";
-            //localGroupBoxFilter.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-            Controls.Add(localGroupBoxFilter);
 
             // Add 'Filter' Text Box
             localTextBoxFilter = new TextBox();
+            localGroupBoxFilter.Controls.Add(localTextBoxFilter);
+            localTextBoxFilter.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             localTextBoxFilter.Location = new Point(6, 15);
             localTextBoxFilter.Size = new Size(151, 20);
             localTextBoxFilter.Name = $"textBoxFilterCriterion{inputNiceName}";
             localTextBoxFilter.TextChanged += new EventHandler(FilterItemList);
-            localGroupBoxFilter.Controls.Add(localTextBoxFilter);
+
             #endregion
 
-
-
-
             #region Sub Tab Pages
+
             // Add Sub Tab Control
             localTabControl = new TabControl();
+            localPanel.Controls.Add(localTabControl);
+            localTabControl.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
             localTabControl.Location = new Point(416, 9);
             localTabControl.Size = new Size(896, 573);
-            localTabControl.Name = $"tabControl{input}";
+            localTabControl.Name = $"tabControl{input.LoadPatternType}";
             localTabControl.BackColor = Color.White;
-            //localTabControl.Anchor = (AnchorStyles.Top| AnchorStyles.Bottom |AnchorStyles.Left | AnchorStyles.Right);
-            Controls.Add(localTabControl);
+            localTabControl.SelectedIndexChanged += new EventHandler(SyntaxHighlightsHandlebars);
 
             // Add 'Generation Output' Tab Page on Sub Tab
             tabPageGenerationOutput = new TabPage($"{inputNiceName} Generation Output");
+            localTabControl.TabPages.Add(tabPageGenerationOutput);
             tabPageGenerationOutput.BackColor = Color.Transparent;
             tabPageGenerationOutput.BorderStyle = BorderStyle.None;
             tabPageGenerationOutput.UseVisualStyleBackColor = true;
-            localTabControl.TabPages.Add(tabPageGenerationOutput);
 
             // Add 'Generation Output' RichTextBox to Generation Output tab
             localRichTextBoxGenerationOutput = new RichTextBox();
+            tabPageGenerationOutput.Controls.Add(localRichTextBoxGenerationOutput);
+            localRichTextBoxGenerationOutput.Dock = DockStyle.Fill;
             localRichTextBoxGenerationOutput.Text = $"No {inputNiceName} logic has been generated at the moment.";
             localRichTextBoxGenerationOutput.Location = new Point(3, 6);
             localRichTextBoxGenerationOutput.Size = new Size(882, 535);
             localRichTextBoxGenerationOutput.BorderStyle = BorderStyle.None;
-            tabPageGenerationOutput.Controls.Add(localRichTextBoxGenerationOutput);
 
             // Add 'Pattern' Tab Page to on Sub Tab
             tabPageGenerationPattern = new TabPage($"{inputNiceName} Pattern");
+            localTabControl.TabPages.Add(tabPageGenerationPattern);
             tabPageGenerationPattern.BackColor = Color.Transparent;
             tabPageGenerationPattern.BorderStyle = BorderStyle.None;
             tabPageGenerationPattern.UseVisualStyleBackColor = true;
-            localTabControl.TabPages.Add(tabPageGenerationPattern);
 
             // Add 'Generation Pattern' RichTextBox to Pattern tab
             localRichTextBoxGenerationPattern = new RichTextBox();
+            tabPageGenerationPattern.Controls.Add(localRichTextBoxGenerationPattern);
+            localRichTextBoxGenerationPattern.Anchor =
+                (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
             localRichTextBoxGenerationPattern.Location = new Point(3, 59);
             localRichTextBoxGenerationPattern.Size = new Size(882, 485);
             localRichTextBoxGenerationPattern.BorderStyle = BorderStyle.None;
-            tabPageGenerationPattern.Controls.Add(localRichTextBoxGenerationPattern);
+            localRichTextBoxGenerationPattern.TextChanged += new EventHandler(CommitPatternTextChange);
 
             // Add 'Pattern ComboBox' to Pattern tab
             localComboBoxGenerationPattern = new ComboBox();
+            tabPageGenerationPattern.Controls.Add(localComboBoxGenerationPattern);
+            localComboBoxGenerationPattern.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localComboBoxGenerationPattern.Location = new Point(108, 8);
             localComboBoxGenerationPattern.Size = new Size(496, 21);
-            localComboBoxGenerationPattern.Name = $"comboBox{input}Pattern";
+            localComboBoxGenerationPattern.Name = $"comboBox{input.LoadPatternType}Pattern";
             localComboBoxGenerationPattern.SelectedIndexChanged += new EventHandler(DisplayPattern);
-            tabPageGenerationPattern.Controls.Add(localComboBoxGenerationPattern);
 
             // Add 'Active Pattern' Label
             localLabelActivePattern = new Label();
+            tabPageGenerationPattern.Controls.Add(localLabelActivePattern);
+            localLabelActivePattern.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelActivePattern.Location = new Point(2, 11);
             localLabelActivePattern.Size = new Size(77, 13);
-            localLabelActivePattern.Name = $"label{input}ActivePattern";
+            localLabelActivePattern.Name = $"label{input.LoadPatternType}ActivePattern";
             localLabelActivePattern.Text = "Active Pattern:";
-            tabPageGenerationPattern.Controls.Add(localLabelActivePattern);
 
             // Add 'File Path' Label
             localLabelFilePath = new Label();
+            tabPageGenerationPattern.Controls.Add(localLabelFilePath);
+            localLabelFilePath.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelFilePath.Location = new Point(2, 34);
             localLabelFilePath.Size = new Size(60, 13);
-            localLabelFilePath.Name = $"label{input}FilePath";
+            localLabelFilePath.Name = $"label{input.LoadPatternType}FilePath";
             localLabelFilePath.Text = @"File Path:";
-            tabPageGenerationPattern.Controls.Add(localLabelFilePath);
 
             // Add 'Full Path' Label
             localLabelFullFilePath = new Label();
-            localLabelFullFilePath.Location = new Point(105, 34);
-            localLabelFullFilePath.Size = new Size(496, 13);
-            localLabelFullFilePath.Name = $"label{input}FullFilePath";
-            localLabelFullFilePath.Text = @"<path>";
             tabPageGenerationPattern.Controls.Add(localLabelFullFilePath);
+            localLabelFullFilePath.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            localLabelFullFilePath.Location = new Point(105, 34);
+            localLabelFullFilePath.Size = new Size(650, 13);
+            localLabelFullFilePath.Name = $"label{input.LoadPatternType}FullFilePath";
+            localLabelFullFilePath.Text = @"<path>";
 
             // Add 'Save Pattern' Button
             localSavePattern = new Button();
+            tabPageGenerationPattern.Controls.Add(localSavePattern);
+            localSavePattern.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localSavePattern.Location = new Point(610, 7);
             localSavePattern.Size = new Size(101, 23);
             localSavePattern.Text = $"Save updates";
-            localSavePattern.Name = $"Generate{input}";
+            localSavePattern.Name = $"Generate{input.LoadPatternType}";
             localSavePattern.Click += new EventHandler(SavePattern);
-            tabPageGenerationPattern.Controls.Add(localSavePattern);
+
             #endregion
 
             #region Constructor Methods
+
             // Populate the Combo Box
-            LoadTabPageComboBox(input);
+            LoadTabPageComboBox(input.LoadPatternType);
 
             // Populate the Checked List Box
             SetItemList(itemList);
+
+            startUpIndicator = false;
+
             #endregion
+        }
+
+
+        public void SyntaxHighlightsHandlebars(object sender, EventArgs e)
+        {
+            TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text.TrimEnd());
+        }
+
+        public void CommitPatternTextChange(object sender, EventArgs e)
+        {
+            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
+            LoadPattern.ActivateLoadPattern(localRichTextBoxGenerationPattern.Text.TrimEnd(), input.LoadPatternType);
         }
 
         public void FilterItemList(object o, EventArgs e)
@@ -337,11 +358,15 @@ namespace Virtual_Data_Warehouse
             // Display the pattern in the text box on the screen
             localRichTextBoxGenerationPattern.Text = loadPatternTemplate;
 
-            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
+            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
             LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
 
             // Syntax highlight for Handlebars
-            TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text);
+            if (startUpIndicator == false)
+            {
+                TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern,
+                    localRichTextBoxGenerationPattern.Text);
+            }
         }
 
         private void SelectAllCheckBoxItems(object o, EventArgs e)
@@ -404,11 +429,11 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         private void GenerateFromPattern()
         {
+            EventLog eventLog = new EventLog();
+
             localRichTextBoxGenerationOutput.Clear();
             RaiseOnClearMainText();
             localTabControl.SelectedIndex = 0;
-
-            int errorCounter = 0;
 
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
@@ -418,7 +443,7 @@ namespace Virtual_Data_Warehouse
                 for (int x = 0; x <= localCheckedListBox.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = localCheckedListBox.CheckedItems[x].ToString();
-                    //SetTextStg(@"Processing generation for " + targetTableName + "\r\n");
+                    localRichTextBox.AppendText(@"Processing generation for " + targetTableName + "\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = @"SELECT 
@@ -498,7 +523,7 @@ namespace Virtual_Data_Warehouse
                         sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
                         sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
                         sourceToTargetMapping.lookupTable = lookupTable;
-                        //sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+
                         sourceToTargetMapping.businessKey = businessKeyList;
                         sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
                         sourceToTargetMapping.columnMapping = columnMappingList;
@@ -520,11 +545,8 @@ namespace Virtual_Data_Warehouse
                         var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
                         var result = template(sourceTargetMappingList);
 
-                        // Check if the metadata needs to be displayed also
-
-                        //DisplayJsonMetadata(sourceTargetMappingList, "StagingArea");
-
-                        if (displayJsonFlag == true)
+                        // Check if the metadata needs to be displayed
+                        if (displayJsonFlag)
                         {
                             try
                             {
@@ -537,22 +559,38 @@ namespace Virtual_Data_Warehouse
                             }
                         }
 
-
                         // Display the output of the template to the user
                         localRichTextBoxGenerationOutput.AppendText(result);
 
                         // Spool the output to disk
-                        errorCounter = Utility.SaveOutputToDisk(saveOutputFileFlag, localRichTextBoxGenerationOutput.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        EventLog fileSaveEventLog = new EventLog();
+                        if (saveOutputFileFlag)
+                        {
+                            fileSaveEventLog = Utility.SaveOutputToDisk(VedwConfigurationSettings.VedwOutputPath + @"\Output_" + targetTableName + ".sql", result);
+                        }
 
                         //Generate in database
-                        errorCounter = Utility.ExecuteOutputInDatabase(generateInDatabaseFlag, connPsa, result, errorCounter);
+                        EventLog databaseEventLog = new EventLog();
+                        if (generateInDatabaseFlag)
+                        {
+                            databaseEventLog = Utility.ExecuteOutputInDatabase(connPsa, result);
+                        }
+
+                        eventLog.AddRange(fileSaveEventLog);
+                        eventLog.AddRange(databaseEventLog);
+
                     }
                     catch (Exception ex)
                     {
-                        errorCounter++;
-                        RaiseOnChangeMainText("The template could not be compiled, the error message is " + ex);
-                        //SetTextMain("The template could not be compiled, the error message is " + ex);
+                        var localEvent = new Event
+                        {
+                            eventCode = 1,
+                            eventDescription = "The template could not be compiled, the error message is " + ex +"."
+                        };
+
+                        eventLog.Add(localEvent);
                     }
+               
                 }
             }
             else
@@ -563,7 +601,19 @@ namespace Virtual_Data_Warehouse
             connOmd.Close();
             connOmd.Dispose();
 
-            RaiseOnChangeMainText($"\r\n{errorCounter} errors have been found.\r\n");
+            // Report back to the user
+            int errorCounter = 0;
+            foreach (Event individualEvent in eventLog)
+            {
+                if (individualEvent.eventCode == 1)
+                {
+                    errorCounter++;
+                }
+
+                RaiseOnChangeMainText(individualEvent.eventDescription);
+            }
+
+            RaiseOnChangeMainText($"\r\n\r\n{errorCounter} errors have been found.\r\n");
             RaiseOnChangeMainText($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Apply syntax highlighting
@@ -624,6 +674,8 @@ namespace Virtual_Data_Warehouse
             // Clear the existing checkboxes
             localCheckedListBox.Items.Clear();
 
+
+            //var listItems = GetItemList(patternNiceName, input.LoadPatternBaseQuery, conn);
             //try
             //{
             //    var tables = Utility.GetDataTable(ref conn, inputQuery.ToString());

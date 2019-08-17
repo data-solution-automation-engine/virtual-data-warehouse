@@ -1,6 +1,7 @@
 ﻿using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -9,14 +10,16 @@ using static Virtual_Data_Warehouse.FormBase;
 
 namespace Virtual_Data_Warehouse
 {
+    public class EventLog : List<Event> { }
+
+    public class Event
+    {
+        public int eventCode { get; set; }
+        public string eventDescription { get; set; }
+    }
+
     public class Utility
     {
-        public event EventHandler<MyEventArgs> OnChangeMainText = delegate { };
-
-        public void RaiseOnChangeMainText(string inputText)
-        {
-            OnChangeMainText(this, new MyEventArgs(inputText));
-        }
         /// <summary>
         /// Load a data set into an in-memory datatable
         /// </summary>
@@ -78,9 +81,10 @@ namespace Virtual_Data_Warehouse
             return returnMessage;
         }
 
-        public static int ExecuteOutputInDatabase(bool generateFlag, SqlConnection sqlConnection, string result, int errorCounter)
+        public static EventLog ExecuteOutputInDatabase(SqlConnection sqlConnection, string query)
         {
-            if (generateFlag == true)
+            EventLog eventLog = new EventLog();
+
             {
                 try
                 {
@@ -90,48 +94,73 @@ namespace Virtual_Data_Warehouse
                         var server = new Server(new ServerConnection(connection));
                         try
                         {
-                            server.ConnectionContext.ExecuteNonQuery(result);
-                         //   SetTextMain("The statement was executed successfully.\r\n");
+                            server.ConnectionContext.ExecuteNonQuery(query);
+
+                            var localEvent = new Event
+                            {
+                                eventCode = 0,
+                                eventDescription = "The statement was executed successfully.\r\n"
+                            };
+
+                            eventLog.Add(localEvent);
+
                         }
                         catch (Exception ex)
                         {
-                          //  SetTextMain("Issues occurred executing the SQL statement.\r\n");
-                         //   SetTextMain(@"SQL error: " + exception.Message + "\r\n\r\n");
-                            errorCounter++;
+                            var localEvent = new Event
+                            {
+                                eventCode = 1,
+                                eventDescription = "Issues occurred executing the SQL statement.\r\n. SQL error: " +
+                                                   ex.Message + "\r\n\r\n"
+                            };
+
+                            eventLog.Add(localEvent);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    errorCounter++;
-                    //SetTextMain("There was an issue executing the code against the database. The message is: " +                        ex);
-                }
-            }
+                    var localEvent = new Event
+                    {
+                        eventCode = 1,
+                        eventDescription =
+                            @"There was an issue executing the code against the database. The message is: " + ex
+                    };
 
-            return errorCounter;
+                    eventLog.Add(localEvent);
+
+                }
+
+                return eventLog;
+            }
         }
 
-        public static int SaveOutputToDisk(bool saveFlag, string targetFile, string textContent, int errorCounter)
+        public static EventLog SaveOutputToDisk(string targetFile, string textContent)
         {
-            if (saveFlag==true)
+            EventLog eventLog = new EventLog();
+
+            try
             {
-                try
+                //Output to file
+                using (var outfile = new StreamWriter(targetFile))
                 {
-                    //Output to file
-                    using (var outfile = new StreamWriter(targetFile))
-                    {
-                        outfile.Write(textContent);
-                        outfile.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    errorCounter++;
-                    //SetTextMain("There was an issue in saving the output to disk. The message is: " + ex);
+                    outfile.Write(textContent);
+                    outfile.Close();
                 }
             }
+            catch (Exception ex)
+            {
+                var localEvent = new Event
+                {
+                    eventCode = 1,
+                    eventDescription =
+                        @"There was an issue saving the output to disk. The message is: " + ex
+                };
 
-            return errorCounter;
+                eventLog.Add(localEvent);
+            }
+
+            return eventLog;
         }
     }
 }

@@ -104,25 +104,20 @@ namespace Virtual_Data_Warehouse
                 SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFile + " in the " + VedwConfigurationSettings.LoadPatternListPath + " directory, and if the file contains pattern types.");
             }
 
-
-
             // Populate the data grid
             populateLoadPatternCollectionDataGrid();
             populateLoadPatternDefinitionDataGrid();
 
-
-
             // Load the patterns into the tool based on the available list
-
             LoadAllLoadPatternComboBoxes();
 
-            CreateTabPages();
+            CreateCustomTabPages();
 
-            foreach (CustomTabPage localTabPage in localCustomTabPageList)
+            foreach (CustomTabPage localCustomTabPage in localCustomTabPageList)
             {
-                localTabPage.setDisplayJsonFlag(false);
-                localTabPage.setGenerateInDatabaseFlag(false);
-                localTabPage.setSaveOutputFileFlag(true);
+                localCustomTabPage.setDisplayJsonFlag(false);
+                localCustomTabPage.setGenerateInDatabaseFlag(false);
+                localCustomTabPage.setSaveOutputFileFlag(true);
             }
 
             startUpIndicator = false;
@@ -184,9 +179,10 @@ namespace Virtual_Data_Warehouse
             dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
             dt.Columns[0].ColumnName = "Key";
             dt.Columns[1].ColumnName = "Type";
-            dt.Columns[2].ColumnName = "BaseQuery";
-            dt.Columns[3].ColumnName = "AttributeQuery";
-            dt.Columns[4].ColumnName = "Notes";
+            dt.Columns[2].ColumnName = "SelectionQuery";
+            dt.Columns[3].ColumnName = "BaseQuery";
+            dt.Columns[4].ColumnName = "AttributeQuery";
+            dt.Columns[5].ColumnName = "Notes";
 
             _bindingSourceLoadPatternDefinition.DataSource = dt;
 
@@ -204,19 +200,24 @@ namespace Virtual_Data_Warehouse
                 dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[2].HeaderText = "Base Query";
+                dataGridViewLoadPatternDefinition.Columns[2].HeaderText = "Selection Query";
                 dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[3].HeaderText = "Attribute Query";
+                dataGridViewLoadPatternDefinition.Columns[3].HeaderText = "Base Query";
                 dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[4].HeaderText = "Notes";
+                dataGridViewLoadPatternDefinition.Columns[4].HeaderText = "Attribute Query";
                 dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternDefinition.Columns[5].HeaderText = "Notes";
+                dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.TopLeft;
             }
 
@@ -737,10 +738,10 @@ namespace Virtual_Data_Warehouse
                         SetTextHubOutput(result);
 
                         // Spool the output to disk
-                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         // Generate in database
-                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                       // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -918,10 +919,10 @@ namespace Virtual_Data_Warehouse
                         DisplayJsonMetadata(sourceTargetMappingList, "Satellite");
 
                         // Spool the output to disk
-                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         //Generate in database
-                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                        //errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -1169,10 +1170,10 @@ namespace Virtual_Data_Warehouse
                         SetTextLinkOutput(result);
 
                         // Spool the output to disk
-                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         // Generate in database
-                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                       // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -1325,10 +1326,10 @@ namespace Virtual_Data_Warehouse
                         DisplayJsonMetadata(sourceTargetMappingList,"LinkSatellite");
 
                         // Spool the output to disk
-                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                        //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         //Generate in database
-                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                       // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -1384,24 +1385,12 @@ namespace Virtual_Data_Warehouse
             t.Start();
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var t = new Thread(ThreadProcAbout);
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
-        }
-
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK,
                 MessageBoxIcon.Exclamation);
         }
 
-        private void linksToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK,
-                MessageBoxIcon.Exclamation);
-        }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -1543,10 +1532,10 @@ namespace Virtual_Data_Warehouse
                         SetTextPsaOutput(result);
 
                         // Spool the output to disk
-                        errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                       // errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         //Generate in database
-                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                       // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -1716,10 +1705,10 @@ namespace Virtual_Data_Warehouse
                         SetTextStgOutput(result);
 
                         // Spool the output to disk
-                        errorCounter = Utility.SaveOutputToDisk(true,textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                       // errorCounter = Utility.SaveOutputToDisk(true,textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
                         //Generate in database
-                        errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                      //  errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
                     }
                     catch (Exception ex)
                     {
@@ -3553,7 +3542,16 @@ namespace Virtual_Data_Warehouse
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("An error has been encountered! The reported error is: " + ex);
+                    richTextBoxInformationMain.AppendText("An error has been encountered! The reported error is: " + ex);
+                }
+
+                try
+                {
+                    CreateCustomTabPages();
+                }
+                catch (Exception ex)
+                {
+                    richTextBoxInformationMain.AppendText("An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
                 }
             }
         }
@@ -3591,9 +3589,10 @@ namespace Virtual_Data_Warehouse
                             {
                                 loadPatternKey = singleRow[0].ToString(),
                                 loadPatternType = singleRow[1].ToString(),
-                                loadPatternBaseQuery = singleRow[2].ToString(),
-                                loadPatternAttributeQuery = singleRow[3].ToString(),
-                                loadPatternNotes = singleRow[4].ToString()
+                                LoadPatternSelectionQuery = singleRow[2].ToString(),
+                                loadPatternBaseQuery = singleRow[3].ToString(),
+                                loadPatternAttributeQuery = singleRow[4].ToString(),
+                                loadPatternNotes = singleRow[5].ToString()
                             });
                             outputFileArray.Add(individualRow);
                         }
@@ -3639,9 +3638,10 @@ namespace Virtual_Data_Warehouse
                     {
                         loadPatternKey = singleRow[0].ToString(),
                         loadPatternType = singleRow[1].ToString(),
-                        loadPatternBaseQuery = singleRow[2].ToString(),
-                        loadPatternAttributeQuery = singleRow[3].ToString(),
-                        loadPatternNotes = singleRow[4].ToString()
+                        LoadPatternSelectionQuery = singleRow[2].ToString(),
+                        loadPatternBaseQuery = singleRow[3].ToString(),
+                        loadPatternAttributeQuery = singleRow[4].ToString(),
+                        loadPatternNotes = singleRow[5].ToString()
                     });
                     outputFileArray.Add(individualRow);
                 }
@@ -3666,6 +3666,18 @@ namespace Virtual_Data_Warehouse
                 File.WriteAllText(chosenFile, json);
 
                 SetTextMain("The file " + chosenFile + " was updated.\r\n");
+
+                try
+                {
+                    // Quick fix, in the file again to commit changes to memory.
+                    VedwConfigurationSettings.patternDefinitionList = JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(File.ReadAllText(chosenFile));
+                    CreateCustomTabPages();
+                }
+                catch (Exception ex)
+                {
+                    richTextBoxInformationMain.AppendText(
+                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                }
             }
             catch (Exception ex)
             {
@@ -3699,32 +3711,36 @@ namespace Virtual_Data_Warehouse
             richTextBoxInformationMain.Clear();
         }
 
-        internal void CreateTabPages()
+        /// <summary>
+        /// Generates the Custom Tab Pages using the pattern metadata. This method will remove any non-standard Tab Pages and create these using the Load Pattern Definition metadata.
+        /// </summary>
+        internal void CreateCustomTabPages()
         {
-            var inputTableMetadata = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
-            DataView view = new DataView(inputTableMetadata);
-            DataTable distinctValues = view.ToTable(true, "Type");
-
-            foreach (DataRow row in distinctValues.Rows)
+            // Remove any existing Custom Tab Pages
+            localCustomTabPageList.Clear();
+            foreach (TabPage customTabPage in tabControlMain.TabPages)
             {
-                //var input = "StagingArea";
+                if ((customTabPage.Name == "tabPageHome") || (customTabPage.Name == "tabPageSettings"))
+                {
+                    // Do nothing, as only the two standard Tab Pages exist.
+                }
+                else
+                {
+                    // Remove the Tab Page from the Tab Control
+                    tabControlMain.Controls.Remove((customTabPage));
+                }
+            }
 
-                var input = row["Type"].ToString();
+            foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
+            {
+                var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+                var inputItemList = databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
 
-                var inputItemList = databaseHandling.GetItemList(input);
-
-                CustomTabPage localCustomTabPage = new CustomTabPage(input, inputItemList);
+                CustomTabPage localCustomTabPage = new CustomTabPage(pattern, inputItemList);
                 localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
-                localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);          
+                localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);
 
                 localCustomTabPageList.Add(localCustomTabPage);
-
-                //if (tabControlMain.Contains(localCustomTabPage) == true)
-                //    return; 
-                //foreach(CustomTabpage t in localCustomTabPageList)
-                //    if(t.Name == localCustomTabPage.Name)
-                //        return;
-
                 tabControlMain.TabPages.Add(localCustomTabPage);
             }
         }        
@@ -3774,20 +3790,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void button12_Click(object sender, EventArgs e)
-        {
-            string tabName = tabControlMain.SelectedTab.Name;
-            var inputItemList = databaseHandling.GetItemList(tabName);
-
-            foreach (CustomTabPage bla in localCustomTabPageList)
-            {
-                if (bla.Name == tabName)
-                {
-                    bla.SetItemList(inputItemList);
-                }
-            }
-        }
-
         private void buttonOpenLoadPatternCollection_Click(object sender, EventArgs e)
         {
             var theDialog = new OpenFileDialog
@@ -3821,6 +3823,16 @@ namespace Virtual_Data_Warehouse
                 catch (Exception ex)
                 {
                     MessageBox.Show("An error has been encountered! The reported error is: " + ex);
+                }
+
+                try
+                {
+                    // Quick fix, in the file again to commit changes to memory.
+                    CreateCustomTabPages();
+                }
+                catch (Exception ex)
+                {
+                    richTextBoxInformationMain.AppendText("An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
                 }
             }
         }
@@ -3930,11 +3942,49 @@ namespace Virtual_Data_Warehouse
                 File.WriteAllText(chosenFile, json);
 
                 SetTextMain("The file " + chosenFile + " was updated.\r\n");
+
+                try
+                {
+                    // Quick fix, in the file again to commit changes to memory.
+                    VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+                    CreateCustomTabPages();
+                }
+                catch (Exception ex)
+                {
+                    richTextBoxInformationMain.AppendText("An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            // Get the name of the active tab so this can be refreshed
+            string tabName = tabControlMain.SelectedTab.Name;
+
+            //foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
+            //{
+            //    if (pattern.LoadPatternType == tabName)
+            //    {
+                    foreach (CustomTabPage customTabPage in localCustomTabPageList)
+                        //      foreach (LoadPatternDefinition in l)
+                    {
+
+                        if (customTabPage.Name == tabName)
+                        {
+                            var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+                            var inputItemList = databaseHandling.GetItemList(customTabPage.input.LoadPatternType, customTabPage.input.LoadPatternSelectionQuery, conn);
+                            customTabPage.SetItemList(inputItemList);
+                        }
+                    }
+
+                //}
+
+            //}
+
         }
     }
 }

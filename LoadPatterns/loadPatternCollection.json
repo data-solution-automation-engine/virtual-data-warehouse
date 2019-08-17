@@ -1,21 +1,21 @@
 [
   {
-    "loadPatternName": "Hub Delta Select From Pattern",
+    "loadPatternName": "Hub 001 View Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubDeltaSelect.handlebars",
-    "loadPatternNotes": "This pattern simulates a delta detection from the Staging Layer to the Data Vault."
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubView.handlebars",
+    "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "Hub Insert Into Pattern",
+    "loadPatternName": "Hub 002 Insert Into Pattern",
     "loadPatternType": "Hub",
     "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubInsertInto.handlebars",
     "loadPatternNotes": "Use the Hub view to load into a physical table."
   },
   {
-    "loadPatternName": "Hub View Pattern",
+    "loadPatternName": "Hub 003 Delta Select From Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubView.handlebars",
-    "loadPatternNotes": ""
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternHubDeltaSelect.handlebars",
+    "loadPatternNotes": "This pattern simulates a delta detection from the Staging Layer to the Data Vault."
   },
   {
     "loadPatternName": "Link Insert Into Pattern",
@@ -66,15 +66,15 @@
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "Staging Area Insert Into Pattern",
-    "loadPatternType": "StagingArea",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternStagingInsertInto.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Staging Area View Pattern",
+    "loadPatternName": "Staging Area 001 View Pattern",
     "loadPatternType": "StagingArea",
     "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternStagingView.handlebars",
     "loadPatternNotes": "This Staging Area pattern is an example of delta detection using a Full Outer Join (FOJ) type interface.In most cases the data delta from the source into the Staging Area is handled by a dedicated ETL tool, or at the very least using different techniques (of which this is only one example)."
+  },
+  {
+    "loadPatternName": "Staging Area 002 Insert Into Pattern",
+    "loadPatternType": "StagingArea",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternStagingInsertInto.handlebars",
+    "loadPatternNotes": ""
   }
 ]

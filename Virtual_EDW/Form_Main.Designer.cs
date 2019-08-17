@@ -36,6 +36,7 @@
             this.buttonGenerateHubs = new System.Windows.Forms.Button();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageHome = new System.Windows.Forms.TabPage();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabelWebLog = new System.Windows.Forms.LinkLabel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
@@ -292,6 +293,7 @@
             // 
             // tabPageHome
             // 
+            this.tabPageHome.Controls.Add(this.linkLabel1);
             this.tabPageHome.Controls.Add(this.linkLabelWebLog);
             this.tabPageHome.Controls.Add(this.pictureBox2);
             this.tabPageHome.Controls.Add(this.richTextBoxMainScreen);
@@ -302,10 +304,20 @@
             this.tabPageHome.Text = "Home";
             this.tabPageHome.UseVisualStyleBackColor = true;
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(200, 71);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(273, 13);
+            this.linkLabel1.TabIndex = 20;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "https://github.com/RoelantVos/Virtual-Data-Warehouse";
+            // 
             // linkLabelWebLog
             // 
             this.linkLabelWebLog.AutoSize = true;
-            this.linkLabelWebLog.Location = new System.Drawing.Point(149, 49);
+            this.linkLabelWebLog.Location = new System.Drawing.Point(200, 50);
             this.linkLabelWebLog.Name = "linkLabelWebLog";
             this.linkLabelWebLog.Size = new System.Drawing.Size(137, 13);
             this.linkLabelWebLog.TabIndex = 19;
@@ -317,7 +329,7 @@
             this.pictureBox2.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
             this.pictureBox2.Location = new System.Drawing.Point(34, 31);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(109, 100);
+            this.pictureBox2.Size = new System.Drawing.Size(160, 152);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 18;
             this.pictureBox2.TabStop = false;
@@ -326,7 +338,7 @@
             // 
             this.richTextBoxMainScreen.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxMainScreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxMainScreen.Location = new System.Drawing.Point(149, 31);
+            this.richTextBoxMainScreen.Location = new System.Drawing.Point(200, 31);
             this.richTextBoxMainScreen.Name = "richTextBoxMainScreen";
             this.richTextBoxMainScreen.Size = new System.Drawing.Size(393, 115);
             this.richTextBoxMainScreen.TabIndex = 17;
@@ -2560,6 +2572,7 @@
         private System.Windows.Forms.Button buttonUpdateLoadPatternCollection;
         private System.Windows.Forms.Button buttonSaveAsLoadPatternCollection;
         private System.Windows.Forms.Button buttonOpenLoadPatternCollection;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
 
