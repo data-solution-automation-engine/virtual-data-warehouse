@@ -6,13 +6,53 @@
     "loadPatternBaseQuery": "SELECT \r\n   [SOURCE_SCHEMA_NAME]  \r\n  ,[SOURCE_NAME]\r\n  ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n  ,[TARGET_SCHEMA_NAME]\r\n  ,[TARGET_NAME]\r\n  ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n  ,[TARGET_TYPE]\r\n  ,[SURROGATE_KEY]\r\n  ,[FILTER_CRITERIA]\r\n  ,[LOAD_VECTOR]\r\nFROM interface.INTERFACE_SOURCE_STAGING_XREF \r\nWHERE TARGET_TYPE = 'StagingArea'",
     "loadPatternAttributeQuery": "SELECT \r\n  [SOURCE_ATTRIBUTE_NAME]\r\n ,[TARGET_ATTRIBUTE_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_STAGING_ATTRIBUTE_XREF]",
     "loadPatternNotes": "The mappings from source to the landing (staging) area."
-  },
+  },  
   {
     "loadPatternKey": "2",
+    "loadPatternType": "PersistentStagingArea",
+    "LoadPatternSelectionQuery": "SELECT\r\n  DISTINCT [TARGET_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_PERSISTENT_STAGING_XREF]",
+    "loadPatternBaseQuery": "SELECT \r\n  [SOURCE_NAME]\r\n ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n ,[TARGET_NAME]\r\n ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n ,[FILTER_CRITERIA]\r\n ,[SURROGATE_KEY]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
+    "loadPatternAttributeQuery": "",
+    "loadPatternNotes": "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts. Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area."
+  },
+  {
+    "loadPatternKey": "3",
     "loadPatternType": "Hub",
     "LoadPatternSelectionQuery": "SELECT\r\n  DISTINCT [TARGET_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
     "loadPatternBaseQuery": "SELECT \r\n  [SOURCE_NAME]\r\n ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n ,[TARGET_NAME]\r\n ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n ,[FILTER_CRITERIA]\r\n ,[SURROGATE_KEY]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
     "loadPatternAttributeQuery": "",
-    "loadPatternNotes": "The source-to-target mappings for a Hub entity type."
+    "loadPatternNotes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+  },
+  {
+    "loadPatternKey": "4",
+    "loadPatternType": "Satellite",
+    "LoadPatternSelectionQuery": "SELECT\r\n  DISTINCT [TARGET_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_SATELLITE_XREF]",
+    "loadPatternBaseQuery": "SELECT \r\n  [SOURCE_NAME]\r\n ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n ,[TARGET_NAME]\r\n ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n ,[FILTER_CRITERIA]\r\n ,[SURROGATE_KEY]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
+    "loadPatternAttributeQuery": "",
+    "loadPatternNotes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+  },
+  {
+    "loadPatternKey": "5",
+    "loadPatternType": "Link",
+    "LoadPatternSelectionQuery": "SELECT\r\n  DISTINCT [TARGET_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_LINK_XREF]",
+    "loadPatternBaseQuery": "SELECT \r\n  [SOURCE_NAME]\r\n ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n ,[TARGET_NAME]\r\n ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n ,[FILTER_CRITERIA]\r\n ,[SURROGATE_KEY]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
+    "loadPatternAttributeQuery": "",
+    "loadPatternNotes": "The Link type entities record the relationships between the Business Entities (Hubs). Similar to Hubs they are subject to potentially being populated from multiple Staging Area tables. The Link views therefore present an integrated view of all relationships across these tables."
+  },
+  {
+    "loadPatternKey": "5",
+    "loadPatternType": "LinkSatellite",
+    "LoadPatternSelectionQuery": "SELECT\r\n  DISTINCT [TARGET_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_SATELLITE_XREF]",
+    "loadPatternBaseQuery": "SELECT \r\n  [SOURCE_NAME]\r\n ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n ,[TARGET_NAME]\r\n ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n ,[FILTER_CRITERIA]\r\n ,[SURROGATE_KEY]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
+    "loadPatternAttributeQuery": "",
+    "loadPatternNotes": "The Link Satellites describe the changes over time for the relationships (Links). There are two types of Link Satellites supported - normal (historical) Link Satellites and Driving Key Link Satellites."
+  },
+  {
+    "loadPatternKey": "5",
+    "loadPatternType": "LinkSatellite",
+    "LoadPatternSelectionQuery": "SELECT\r\n  DISTINCT [TARGET_NAME]\r\nFROM [interface].[INTERFACE_SOURCE_LINK_SATELLITE_XREF]",
+    "loadPatternBaseQuery": "SELECT \r\n  [SOURCE_NAME]\r\n ,[SOURCE_BUSINESS_KEY_DEFINITION]\r\n ,[TARGET_NAME]\r\n ,[TARGET_BUSINESS_KEY_DEFINITION]\r\n ,[FILTER_CRITERIA]\r\n ,[SURROGATE_KEY]\r\nFROM [interface].[INTERFACE_SOURCE_HUB_XREF]",
+    "loadPatternAttributeQuery": "",
+    "loadPatternNotes": "The Link Satellites describe the changes over time for the relationships (Links). There are two types of Link Satellites supported - normal (historical) Link Satellites and Driving Key Link Satellites."
   }
 ]

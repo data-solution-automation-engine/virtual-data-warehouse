@@ -72,17 +72,8 @@ namespace Virtual_Data_Warehouse
             checkBoxGenerateInDatabase.Checked = false;
 
 
-            InitialiseDocumentation();
 
             SetDatabaseConnections();
-
-            // Set all the checkboxes to 'yes'
-            CheckAllStgValues();
-            CheckAllPsaValues();
-            CheckAllHubValues();
-            CheckAllSatValues();
-            CheckAllLinkValues();
-            CheckAllLsatValues();
 
 
             // Load Pattern metadata & update in memory
@@ -226,7 +217,7 @@ namespace Virtual_Data_Warehouse
 
         private void GridAutoLayoutLoadPatternDefinition()
         {
-            //Table Mapping metadata grid - set the autosize based on all cells for each column
+            //Table Mapping metadata grid - set the auto size based on all cells for each column
             for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
             {
                 dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -497,32 +488,7 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        ///// <summary>
-        ///// Updating the SQL statements used for either Binary or Character hash value calculation.
-        ///// </summary>
-        //private void UpdateHashSnippets()
-        //{
-        //    if (VedwConfigurationSettings.HashKeyOutputType == "Binary")
-        //    {
-        //        VedwConfigurationSettings.hashingStartSnippet = "HASHBYTES('MD5',";
-        //        VedwConfigurationSettings.hashingEndSnippet = ")";
-        //        VedwConfigurationSettings.hashingCollation = "";
-        //        VedwConfigurationSettings.hashingZeroKey = "0x00000000000000000000000000000000";
-        //    }
-        //    else if (VedwConfigurationSettings.HashKeyOutputType == "Character")
-        //    {
-        //        VedwConfigurationSettings.hashingStartSnippet = "CONVERT(CHAR(32),HASHBYTES('MD5',";
-        //        VedwConfigurationSettings.hashingEndSnippet = "),2)";
-        //        VedwConfigurationSettings.hashingCollation = "COLLATE DATABASE_DEFAULT";
-        //        VedwConfigurationSettings.hashingZeroKey = "'00000000000000000000000000000000'";
-        //    }
-        //    else
-        //    {
-        //        richTextBoxInformationMain.AppendText("An issue was encountered updating the Hash output setting on the application - please verify.");
-        //    }
-        //}
-
-        /// <summary>
+       /// <summary>
         /// This is the local updates on the VEDW specific configuration.
         /// </summary>
         private void UpdateVedwConfigurationSettingsOnForm()
@@ -594,48 +560,6 @@ namespace Virtual_Data_Warehouse
 
 
 
-        private void CheckKeyword(string word, Color color, int startIndex)
-        {
-            if (richTextBoxInformationMain.Text.Contains(word))
-            {
-                int index = -1;
-                int selectStart = richTextBoxInformationMain.SelectionStart;
-
-                while ((index = richTextBoxInformationMain.Text.IndexOf(word, (index + 1), StringComparison.Ordinal)) != -1)
-                {
-                    richTextBoxInformationMain.Select((index + startIndex), word.Length);
-                    richTextBoxInformationMain.SelectionColor = color;
-                    richTextBoxInformationMain.Select(selectStart, 0);
-                    richTextBoxInformationMain.SelectionColor = Color.Black;
-                }
-            }
-        }
-
-        private void InitialiseDocumentation()
-        {
-            richTextBoxPSA.Text =
-                "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). " +
-                "The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts." +
-                "\n\r" +
-                "Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area.";
-
-            richTextBoxStaging.Text =
-                "The Staging Area component is a simple example of delta detection using a Full Outer Join (FJO) type interface." +
-                "In most cases the data delta from the source into the Staging Area is handled by a dedicated ETL tool, or at the very least using different techniques (of which this is only one example). This step is mainly used for demonstration purposes.";
-
-            richTextBoxHub.Text =
-                "The Hub type entities define the business concept and integration point for the model. The generated views combine the metadata from the various source to target mappings to create a single integrated Hub query.";
-
-            richTextBoxSat.Text =
-                "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table.";
-
-            richTextBoxLink.Text =
-                "The Link type entities record the relationships between the Business Entities (Hubs). Similar to Hubs they are subject to potentially being populated from multiple Staging Area tables. The Link views therefore present an integrated view of all relationships across these tables.";
-
-            richTextBoxLsat.Text =
-                "The Link Satellites describe the changes over time for the relationships (Links). There are two types of Link Satellites supported - normal (historical) Link Satellites and Driving Key Link Satellites.";
-
-        }
 
         private void HubButtonClick(object sender, EventArgs e)
         {
@@ -1392,10 +1316,6 @@ namespace Virtual_Data_Warehouse
         }
 
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            InitialiseDocumentation();
-        }
 
         private void buttonGeneratePSA_Click(object sender, EventArgs e)
         {
@@ -2348,58 +2268,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void CheckAllHubValues()
-        {
-            //MessageBox.Show(checkBoxSelectAll.Checked.ToString());
-            for (int x = 0; x <= checkedListBoxHubMetadata.Items.Count - 1; x++)
-            {
-                checkedListBoxHubMetadata.SetItemChecked(x, checkBoxSelectAllHubs.Checked);
-            }
-        }
-
-        private void CheckAllSatValues()
-        {
-            //MessageBox.Show(checkBoxSelectAll.Checked.ToString());
-            for (int x = 0; x <= checkedListBoxSatMetadata.Items.Count - 1; x++)
-            {
-                checkedListBoxSatMetadata.SetItemChecked(x, checkBoxSelectAllSats.Checked);
-            }
-        }
-
-        private void CheckAllLinkValues()
-        {
-            //MessageBox.Show(checkBoxSelectAll.Checked.ToString());
-            for (int x = 0; x <= checkedListBoxLinkMetadata.Items.Count - 1; x++)
-            {
-                checkedListBoxLinkMetadata.SetItemChecked(x, checkBoxSelectAllLinks.Checked);
-            }
-        }
-
-        private void CheckAllLsatValues()
-        {
-            //MessageBox.Show(checkBoxSelectAll.Checked.ToString());
-            for (int x = 0; x <= checkedListBoxLsatMetadata.Items.Count - 1; x++)
-            {
-                checkedListBoxLsatMetadata.SetItemChecked(x, checkBoxSelectAllLsats.Checked);
-            }
-        }
-
-        private void CheckAllStgValues()
-        {
-            for (int x = 0; x <= checkedListBoxStagingArea.Items.Count - 1; x++)
-            {
-                checkedListBoxStagingArea.SetItemChecked(x, checkBoxStagingAreaSelectAll.Checked);
-            }
-        }
-
-        private void CheckAllPsaValues()
-        {
-            //MessageBox.Show(checkBoxSelectAll.Checked.ToString());
-            for (int x = 0; x <= checkedListBoxPsaMetadata.Items.Count - 1; x++)
-            {
-                checkedListBoxPsaMetadata.SetItemChecked(x, checkBoxSelectAllPsa.Checked);
-            }
-        }
 
         private void button_Repopulate_Hub(object sender, EventArgs e)
         {
@@ -2640,15 +2508,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void checkBoxSelectAll_CheckedChanged_1(object sender, EventArgs e)
-        {
-            CheckAllHubValues();
-        }
-
-        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
-        {
-            CheckAllStgValues();
-        }
 
         private void button_Repopulate_STG(object sender, EventArgs e)
         {           
@@ -2717,26 +2576,6 @@ namespace Virtual_Data_Warehouse
                 richTextBoxInformationMain.Clear();
                 richTextBoxInformationMain.Text = _errorMessage.ToString();
             }
-        }
-
-        private void checkBoxSelectAllPsa_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckAllPsaValues();
-        }
-
-        private void checkBoxSelectAllSats_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckAllSatValues();
-        }
-
-        private void checkBoxSelectAllLinks_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckAllLinkValues();
-        }
-
-        private void checkBoxSelectAllLsats_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckAllLsatValues();
         }
 
 
@@ -3985,6 +3824,12 @@ namespace Virtual_Data_Warehouse
 
             //}
 
+        }
+
+        private void tabControlSettings_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GridAutoLayoutLoadPatternCollection();
+            GridAutoLayoutLoadPatternDefinition();
         }
     }
 }

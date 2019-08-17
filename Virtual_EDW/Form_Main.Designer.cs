@@ -376,6 +376,7 @@
             this.tabControlSettings.SelectedIndex = 0;
             this.tabControlSettings.Size = new System.Drawing.Size(796, 515);
             this.tabControlSettings.TabIndex = 99;
+            this.tabControlSettings.SelectedIndexChanged += new System.EventHandler(this.tabControlSettings_SelectedIndexChanged);
             // 
             // tabPage1
             // 
@@ -831,7 +832,6 @@
             this.checkBoxStagingAreaSelectAll.TabIndex = 21;
             this.checkBoxStagingAreaSelectAll.Text = "Select all";
             this.checkBoxStagingAreaSelectAll.UseVisualStyleBackColor = true;
-            this.checkBoxStagingAreaSelectAll.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
             // 
             // checkedListBoxStagingArea
             // 
@@ -1050,7 +1050,6 @@
             this.checkBoxSelectAllPsa.TabIndex = 21;
             this.checkBoxSelectAllPsa.Text = "Select all";
             this.checkBoxSelectAllPsa.UseVisualStyleBackColor = true;
-            this.checkBoxSelectAllPsa.CheckedChanged += new System.EventHandler(this.checkBoxSelectAllPsa_CheckedChanged);
             // 
             // checkedListBoxPsaMetadata
             // 
@@ -1258,7 +1257,6 @@
             this.checkBoxSelectAllHubs.TabIndex = 20;
             this.checkBoxSelectAllHubs.Text = "Select all";
             this.checkBoxSelectAllHubs.UseVisualStyleBackColor = true;
-            this.checkBoxSelectAllHubs.CheckedChanged += new System.EventHandler(this.checkBoxSelectAll_CheckedChanged_1);
             // 
             // buttonRepopulateHubs
             // 
@@ -1492,7 +1490,6 @@
             this.checkBoxSelectAllSats.TabIndex = 21;
             this.checkBoxSelectAllSats.Text = "Select all";
             this.checkBoxSelectAllSats.UseVisualStyleBackColor = true;
-            this.checkBoxSelectAllSats.CheckedChanged += new System.EventHandler(this.checkBoxSelectAllSats_CheckedChanged);
             // 
             // checkedListBoxSatMetadata
             // 
@@ -1722,7 +1719,6 @@
             this.checkBoxSelectAllLinks.TabIndex = 21;
             this.checkBoxSelectAllLinks.Text = "Select all";
             this.checkBoxSelectAllLinks.UseVisualStyleBackColor = true;
-            this.checkBoxSelectAllLinks.CheckedChanged += new System.EventHandler(this.checkBoxSelectAllLinks_CheckedChanged);
             // 
             // checkedListBoxLinkMetadata
             // 
@@ -1967,7 +1963,6 @@
             this.checkBoxSelectAllLsats.TabIndex = 21;
             this.checkBoxSelectAllLsats.Text = "Select all";
             this.checkBoxSelectAllLsats.UseVisualStyleBackColor = true;
-            this.checkBoxSelectAllLsats.CheckedChanged += new System.EventHandler(this.checkBoxSelectAllLsats_CheckedChanged);
             // 
             // checkedListBoxLsatMetadata
             // 
@@ -2185,7 +2180,6 @@
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(188, 22);
             this.toolStripMenuItem1.Text = "Reset Documentation";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripSeparator1
             // 

@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using static Virtual_Data_Warehouse.FormBase;
 
@@ -412,7 +413,7 @@ namespace Virtual_Data_Warehouse
         {
             //var newThread = new Thread(DoWork);
             //newThread.Start();
-            // localTabControl.SelectedIndex = 0;
+            localTabControl.SelectedIndex = 0;
             DoWork();
         }
 
@@ -443,7 +444,7 @@ namespace Virtual_Data_Warehouse
                 for (int x = 0; x <= localCheckedListBox.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = localCheckedListBox.CheckedItems[x].ToString();
-                    localRichTextBox.AppendText(@"Processing generation for " + targetTableName + "\r\n");
+                    localRichTextBox.AppendText(@"Processing generation for " + targetTableName + ".\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = @"SELECT 
@@ -675,26 +676,7 @@ namespace Virtual_Data_Warehouse
             localCheckedListBox.Items.Clear();
 
 
-            //var listItems = GetItemList(patternNiceName, input.LoadPatternBaseQuery, conn);
-            //try
-            //{
-            //    var tables = Utility.GetDataTable(ref conn, inputQuery.ToString());
-
-            //    if (tables.Rows.Count == 0)
-            //    {
-            //        localRichTextBox.AppendText($"There was no metadata available to display {patternNiceName} content. Please check the metadata schema (are there any {patternNiceName} tables available?) or the database connection.");
-            //    }
-
-            //    foreach (DataRow row in tables.Rows)
-            //    {
-            //        localCheckedListBox.Items.Add(row["TARGET_NAME"]);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    returnDetails.AppendLine($"Unable to populate the {patternNiceName} selection, there is no database connection.");
-            //    returnDetails.AppendLine("Error logging details: " + ex);
-            //}
+ 
 
             for (int x = 0; x <= localCheckedListBox.Items.Count - 1; x++)
             {
