@@ -18,51 +18,63 @@
     "loadPatternNotes": "This pattern simulates a delta detection from the Staging Layer to the Data Vault."
   },
   {
-    "loadPatternName": "Link Insert Into Pattern",
-    "loadPatternType": "Link",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkInsertInto.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Link Satellite Insert Into Pattern",
-    "loadPatternType": "LinkSatellite",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteInsertInto.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Link Satellite View Pattern",
-    "loadPatternType": "LinkSatellite",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteView.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Link View Pattern",
+    "loadPatternName": "Link 001 View Pattern",
     "loadPatternType": "Link",
     "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkView.handlebars",
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "Persistent Staging Area Insert Into Pattern",
-    "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternPersistentStagingInsertInto.handlebars",
+    "loadPatternName": "Link 002 Insert Into Pattern",
+    "loadPatternType": "Link",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "Persistent Staging Area View Pattern",
+    "loadPatternName": "Link Satellite 001 View Pattern",
+    "loadPatternType": "LinkSatellite",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteView.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "LinkSatellite 002 Insert Into Pattern",
+    "loadPatternType": "LinkSatellite",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteInsertInto.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "LinkSatellite Driving Key 001 View Pattern",
+    "loadPatternType": "LinkSatelliteDrivingKey",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteDrivingKeyView.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "LinkSatellite Driving Key 002 Insert Into Pattern",
+    "loadPatternType": "LinkSatelliteDrivingKey",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternLinkSatelliteDrivingKeyInsertInto.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Persistent Staging Area 001 View Pattern",
     "loadPatternType": "PersistentStagingArea",
     "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternPersistentStagingView.handlebars",
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "Satellite Insert Into Pattern",
-    "loadPatternType": "Satellite",
-    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternSatelliteInsertInto.handlebars",
+    "loadPatternName": "Persistent Staging Area 002 Insert Into Pattern",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternPersistentStagingInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "Satellite View Pattern",
+    "loadPatternName": "Satellite 001 View Pattern",
     "loadPatternType": "Satellite",
     "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternSatelliteView.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Satellite 002 Insert Into Pattern",
+    "loadPatternType": "Satellite",
+    "loadPatternFilePath": "D:\\Git_Repositories\\Virtual_Enterprise_Data_Warehouse\\LoadPatterns\\loadPatternSatelliteInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {

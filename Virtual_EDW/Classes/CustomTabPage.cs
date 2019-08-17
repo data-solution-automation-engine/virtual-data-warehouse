@@ -172,7 +172,8 @@ namespace Virtual_Data_Warehouse
             localRichTextBox.Size = new Size(393, 115);
             localRichTextBox.BorderStyle = BorderStyle.None;
             localRichTextBox.BackColor = SystemColors.Window;
-            localRichTextBox.Text = $"{input.LoadPatternNotes}";
+            //localRichTextBox.Text = $"{input.LoadPatternNotes}";
+            localRichTextBox.TextChanged += new EventHandler(ScrollToCaret);
 
             // Add 'Filter' Group Box
             localGroupBoxFilter = new GroupBox();
@@ -295,11 +296,32 @@ namespace Virtual_Data_Warehouse
             // Populate the Checked List Box
             SetItemList(itemList);
 
+            // Report back to the user if there is not metadata available
+            if (itemList.Count == 0)
+            {
+                localRichTextBox.Text =
+                    $"There was no metadata available to display {inputNiceName} content. Please check the associated metadata schema (are there any {inputNiceName} records available?) or the database connection.\r\n\r\n";
+            }
+
+            // Initial documentation as per the definition notes
+            localRichTextBox.AppendText(input.LoadPatternNotes);
+
+            // Prevention of double hitting of some event handlers
             startUpIndicator = false;
 
             #endregion
         }
 
+        /// <summary>
+        /// Automatically scroll to the end of the text
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void ScrollToCaret(object sender, EventArgs e)
+        {
+            localRichTextBox.SelectionStart = localRichTextBox.Text.Length;
+            localRichTextBox.ScrollToCaret();
+        }
 
         public void SyntaxHighlightsHandlebars(object sender, EventArgs e)
         {
@@ -319,11 +341,20 @@ namespace Virtual_Data_Warehouse
 
         public void SetItemList(List<string> itemList)
         {
+            // Copy the input variable to the local item list
             this.itemList = itemList;
 
             // Clear the existing checkboxes
             localCheckedListBox.Items.Clear();
 
+            // Report back to the user if there is not metadata available
+            if (itemList.Count == 0)
+            {
+                localRichTextBox.Text =
+                    $"There was no metadata available to display {inputNiceName} content. Please check the associated metadata schema (are there any {inputNiceName} records available?) or the database connection.";
+            }
+
+            // Add items to the Checked List Box
             foreach (string item in itemList)
             {
                 localCheckedListBox.Items.Add(item);

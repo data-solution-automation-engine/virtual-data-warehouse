@@ -99,9 +99,6 @@ namespace Virtual_Data_Warehouse
             populateLoadPatternCollectionDataGrid();
             populateLoadPatternDefinitionDataGrid();
 
-            // Load the patterns into the tool based on the available list
-            LoadAllLoadPatternComboBoxes();
-
             CreateCustomTabPages();
 
             foreach (CustomTabPage localCustomTabPage in localCustomTabPageList)
@@ -112,16 +109,6 @@ namespace Virtual_Data_Warehouse
             }
 
             startUpIndicator = false;
-        }
-
-        public void LoadAllLoadPatternComboBoxes()
-        {
-            LoadStgPatternCombobox();
-            LoadPsaPatternCombobox();
-            LoadHubPatternCombobox();
-            LoadSatPatternCombobox();
-            LoadLinkPatternCombobox();
-            LoadLsatPatternCombobox();
         }
 
         public void populateLoadPatternCollectionDataGrid()
@@ -259,14 +246,6 @@ namespace Virtual_Data_Warehouse
 
         private void SetDatabaseConnections()
         {
-            // Make sure nothing is checked in the various CheckboxLists
-            ClearStgCheckBoxList();
-            ClearPsaCheckBoxList();
-            ClearHubCheckBoxList();
-            ClearLinkCheckBoxList();
-            ClearSatCheckBoxList();
-            ClearLsatCheckBoxList();
-
             #region Database connections
             var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
             var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
@@ -340,10 +319,8 @@ namespace Virtual_Data_Warehouse
                 connOmd.Open();
 
                 InitialiseVersion();
-                PopulateHubCheckboxList(connOmd);
-                PopulateLnkCheckboxList(connOmd);
-                PopulateSatCheckboxList(connOmd);
-                PopulateLsatCheckboxList(connOmd);
+
+
             }
             catch (Exception ex)
             {
@@ -357,116 +334,10 @@ namespace Virtual_Data_Warehouse
 
 
 
-            try
-            {
-                connStg.Open();
-                PopulateStgCheckboxList(connStg);
-            }
-            catch
-            {
-                SetTextMain("The Staging Area objects could not be retrieved from metadata.");
-            }
-            finally
-            {
-                connStg.Close();
-                connStg.Dispose();
-            }
 
-
-
-            try
-            {
-                connPsa.Open();
-                PopulatePsaCheckboxList(connPsa);
-            }
-            catch
-            {
-                SetTextMain("The Persistent Staging Area objects could not be retrieved from metadata.");
-            }
-            finally
-            {
-                connPsa.Close();
-                connPsa.Dispose();
-            }
         }
 
-        private void ClearStgCheckBoxList()
-        {
-            int count = checkedListBoxStagingArea.Items.Count;
-            for (int index = count; index > 0; index--)
-
-            {
-                if (checkedListBoxStagingArea.CheckedItems.Contains(checkedListBoxStagingArea.Items[index - 1]))
-                {
-                    checkedListBoxStagingArea.Items.RemoveAt(index - 1);
-                }
-            }
-        }
-
-        private void ClearPsaCheckBoxList()
-        {
-            int count = checkedListBoxPsaMetadata.Items.Count;
-            for (int index = count; index > 0; index--)
-
-            {
-                if (checkedListBoxPsaMetadata.CheckedItems.Contains(checkedListBoxPsaMetadata.Items[index - 1]))
-                {
-                    checkedListBoxPsaMetadata.Items.RemoveAt(index - 1);
-                }
-            }
-        }
-
-        private void ClearHubCheckBoxList()
-        {
-            int count = checkedListBoxHubMetadata.Items.Count;
-            for (int index = count; index > 0; index--)
-
-            {
-                if (checkedListBoxHubMetadata.CheckedItems.Contains(checkedListBoxHubMetadata.Items[index - 1]))
-                {
-                    checkedListBoxHubMetadata.Items.RemoveAt(index - 1);
-                }
-            }
-        }
-
-        private void ClearLinkCheckBoxList()
-        {
-            int count = checkedListBoxLinkMetadata.Items.Count;
-            for (int index = count; index > 0; index--)
-
-            {
-                if (checkedListBoxLinkMetadata.CheckedItems.Contains(checkedListBoxLinkMetadata.Items[index - 1]))
-                {
-                    checkedListBoxLinkMetadata.Items.RemoveAt(index - 1);
-                }
-            }
-        }
-
-        private void ClearSatCheckBoxList()
-        {
-            int count = checkedListBoxSatMetadata.Items.Count;
-            for (int index = count; index > 0; index--)
-
-            {
-                if (checkedListBoxSatMetadata.CheckedItems.Contains(checkedListBoxSatMetadata.Items[index - 1]))
-                {
-                    checkedListBoxSatMetadata.Items.RemoveAt(index - 1);
-                }
-            }
-        }
-
-        private void ClearLsatCheckBoxList()
-        {
-            int count = checkedListBoxLsatMetadata.Items.Count;
-            for (int index = count; index > 0; index--)
-
-            {
-                if (checkedListBoxLsatMetadata.CheckedItems.Contains(checkedListBoxLsatMetadata.Items[index - 1]))
-                {
-                    checkedListBoxLsatMetadata.Items.RemoveAt(index - 1);
-                }
-            }
-        }
+    
 
         private void LoadTeamConfigurationFile()
         {
@@ -561,25 +432,6 @@ namespace Virtual_Data_Warehouse
 
 
 
-        private void HubButtonClick(object sender, EventArgs e)
-        {
-            richTextBoxHub.Clear();
-            richTextBoxHubOutput.Clear();
-            richTextBoxInformationMain.Clear();
-
-            var newThread = new Thread(BackgroundDoHub);
-            newThread.Start();
-
-            tabControlHub.SelectedIndex = 0;
-        }
-
-        private void BackgroundDoHub()
-        {
-            // Check if the schema needs to be created
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
-
-            GenerateHubFromPattern();
-        }
 
 
         /// <summary>
@@ -592,12 +444,11 @@ namespace Virtual_Data_Warehouse
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
 
-            if (checkedListBoxHubMetadata.CheckedItems.Count != 0)
+            if (true)
             {
-                for (int x = 0; x <= checkedListBoxHubMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var targetTableName = checkedListBoxHubMetadata.CheckedItems[x].ToString();
-                    SetTextHub($"Processing generation for {targetTableName}\r\n");
+
+                var targetTableName = "";//checkedListBoxHubMetadata.CheckedItems[x].ToString();
+                 //   SetTextHub($"Processing generation for {targetTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = 
@@ -656,10 +507,10 @@ namespace Virtual_Data_Warehouse
                         var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed also
-                        DisplayJsonMetadata(sourceTargetMappingList, "Hub");
+                        //DisplayJsonMetadata(sourceTargetMappingList, "Hub");
 
                         // Display the output of the template to the user
-                        SetTextHubOutput(result);
+                       // SetTextHubOutput(result);
 
                         // Spool the output to disk
                         //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
@@ -672,11 +523,11 @@ namespace Virtual_Data_Warehouse
                         errorCounter++;
                         SetTextMain("The template could not be compiled, the error message is " + ex);
                     }
-                }
+                
             }
             else
             {
-                SetTextHub("There was no metadata selected to create Hub code. Please check the metadata schema - are there any Hubs selected?");
+                //SetTextHub("There was no metadata selected to create Hub code. Please check the metadata schema - are there any Hubs selected?");
             }
  
             connOmd.Close();
@@ -686,52 +537,9 @@ namespace Virtual_Data_Warehouse
             SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
-            SetTextHubOutputSyntax(richTextBoxHubOutput);
+           // SetTextHubOutputSyntax(richTextBoxHubOutput);
         }
-
-
-
-
-
-        private void DisplayJsonMetadata(SourceToTargetMappingList sourceTargetMappingList, string output)
-        {
-            if (checkBoxGenerateJsonSchema.Checked)
-            {
-                try
-                {
-                    var json = JsonConvert.SerializeObject(sourceTargetMappingList, Formatting.Indented);
-
-                    if (output == "Hub")
-                    {
-                        SetTextHubOutput(json + "\r\n\r\n");
-                    }
-                    else if (output == "Link")
-                    {
-                        SetTextLinkOutput(json + "\r\n\r\n");
-                    }
-                    else if (output == "Satellite")
-                    {
-                        SetTextSatOutput(json + "\r\n\r\n");
-                    }
-                    else if (output == "LinkSatellite")
-                    {
-                        SetTextLsatOutput(json + "\r\n\r\n");
-                    }
-                    else if (output == "StagingArea")
-                    {
-                        SetTextStgOutput(json + "\r\n\r\n");
-                    }
-                    else if (output == "PersistentStagingArea")
-                    {
-                        SetTextPsaOutput(json + "\r\n\r\n");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    SetTextMain("An error was encountered while generating the JSON metadata. The error message is: " + ex);
-                }
-            }
-        }
+        
 
         /// <summary>
         ///   Create Satellite code using Handlebars as templating
@@ -743,12 +551,11 @@ namespace Virtual_Data_Warehouse
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
 
-            if (checkedListBoxSatMetadata.CheckedItems.Count != 0)
+            if (true)
             {
-                for (int x = 0; x <= checkedListBoxSatMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var targetTableName = checkedListBoxSatMetadata.CheckedItems[x].ToString();
-                    SetTextSat(@"Processing generation for " + targetTableName + "\r\n");
+
+                var targetTableName = "";//checkedListBoxSatMetadata.CheckedItems[x].ToString();
+                    //SetTextSat(@"Processing generation for " + targetTableName + "\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = @"SELECT 
@@ -837,10 +644,10 @@ namespace Virtual_Data_Warehouse
                         var result = template(sourceTargetMappingList);
 
                         // Display the output of the template to the user
-                        SetTextSatOutput(result);
+                      //  SetTextSatOutput(result);
 
                         // Check if the metadata needs to be displayed also
-                        DisplayJsonMetadata(sourceTargetMappingList, "Satellite");
+                       // DisplayJsonMetadata(sourceTargetMappingList, "Satellite");
 
                         // Spool the output to disk
                         //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
@@ -853,11 +660,11 @@ namespace Virtual_Data_Warehouse
                         errorCounter++;
                         SetTextMain("The template could not be compiled, the error message is " + ex);
                     }
-                }
+                
             }
             else
             {
-                SetTextSat("There was no metadata selected to create Satellite code. Please check the metadata schema - are there any Satellites selected?");
+               // SetTextSat("There was no metadata selected to create Satellite code. Please check the metadata schema - are there any Satellites selected?");
             }
  
             connOmd.Close();
@@ -867,7 +674,7 @@ namespace Virtual_Data_Warehouse
             SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
-            SetTextSatOutputSyntax(richTextBoxSatOutput);
+          //  SetTextSatOutputSyntax(richTextBoxSatOutput);
         }
 
         public DataTable GetBusinessKeyComponentList(string stagingTableName, string hubTableName, string businessKeyDefinition)
@@ -932,51 +739,9 @@ namespace Virtual_Data_Warehouse
             Application.Exit();
         }
 
-        private void SatelliteButtonClick (object sender, EventArgs e)
-        {
-            richTextBoxSat.Clear();
-            richTextBoxSatOutput.Clear();
-            richTextBoxInformationMain.Clear();
 
-            var newThread = new Thread(BackgroundDoSat);
-            newThread.Start();
 
-            tabControlSat.SelectedIndex = 0;
-        }
 
-        private void BackgroundDoSat(Object obj)
-        {
-            // Check if the schema needs to be created
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
-
-            //if (radiobuttonViews.Checked)
-            //{
-              //  GenerateSatViews();
-                GenerateSatFromPattern();
-                //}
-                //else if (radioButtonIntoStatement.Checked)
-                //{
-                //    GenerateSatInsertInto();
-                //}
-        }
-
-        private void LinkButtonClick (object sender, EventArgs e)
-        {
-            richTextBoxLink.Clear();
-            richTextBoxLinkOutput.Clear();
-            richTextBoxInformationMain.Clear();
-
-            var newThread = new Thread(BackgroundDoLink);
-            newThread.Start();
-            tabControlLink.SelectedIndex = 0;
-        }
-
-        private void BackgroundDoLink(Object obj)
-        {
-            // Check if the schema needs to be created
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
-            GenerateLinkFromPattern();
-        }
 
         /// <summary>
         ///   Create Link SQL using Handlebars as templating engine
@@ -988,12 +753,11 @@ namespace Virtual_Data_Warehouse
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
 
-            if (checkedListBoxLinkMetadata.CheckedItems.Count != 0)
+            if (true)
             {
-                for (int x = 0; x <= checkedListBoxLinkMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var targetTableName = checkedListBoxLinkMetadata.CheckedItems[x].ToString();
-                    SetTextLink($"Processing generation for {targetTableName}\r\n");
+
+                var targetTableName = "";//checkedListBoxLinkMetadata.CheckedItems[x].ToString();
+                  //  SetTextLink($"Processing generation for {targetTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = @"
@@ -1088,10 +852,10 @@ namespace Virtual_Data_Warehouse
                         var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed also
-                        DisplayJsonMetadata(sourceTargetMappingList,"Link");
+                        //DisplayJsonMetadata(sourceTargetMappingList,"Link");
 
                         // Display the output of the template to the user
-                        SetTextLinkOutput(result);
+                       // SetTextLinkOutput(result);
 
                         // Spool the output to disk
                         //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
@@ -1104,11 +868,11 @@ namespace Virtual_Data_Warehouse
                         errorCounter++;
                         SetTextMain("The template could not be compiled, the error message is " + ex);
                     }
-                }
+                
             }
             else
             {
-                SetTextLink("There was no metadata selected to create Link views. Please check the metadata schema - are there any Links selected?");
+                //SetTextLink("There was no metadata selected to create Link views. Please check the metadata schema - are there any Links selected?");
             }
 
             connOmd.Close();
@@ -1121,7 +885,7 @@ namespace Virtual_Data_Warehouse
             }
 
             // Call a delegate to handle multi-threading for syntax highlighting
-            SetTextLnkOutputSyntax(richTextBoxLinkOutput);
+            //SetTextLnkOutputSyntax(richTextBoxLinkOutput);
         }
 
         internal DataTable GetBusinessKeyElements(string stagingAreaTableName,string hubTableName, string businessKeyDefinition, int businessKeyComponentId)
@@ -1142,34 +906,7 @@ namespace Virtual_Data_Warehouse
             return elementList;
         }
 
-        private void LinkSatelliteButtonClick (object sender, EventArgs e)
-        {
-            // Check if the schema needs to be created
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
 
-            richTextBoxLsat.Clear();
-            richTextBoxLsatOutput.Clear();
-            richTextBoxInformationMain.Clear();
-
-            var newThread = new Thread(BackgroundDoLsat);
-            newThread.Start();
-            tabControlLsat.SelectedIndex = 0;
-        }
-
-        private void BackgroundDoLsat(Object obj)
-        {
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringInt);
-            GenerateLinkSatelliteFromPattern();
-            //if (radiobuttonViews.Checked)
-            //{
-           //     GenerateLsatHistoryViews();
-            //    GenerateLsatDrivingKeyViews();
-            //}
-            //else if (radioButtonIntoStatement.Checked)
-            //{
-            //    GenerateLsatInsertInto();
-            //}
-        }
 
         /// <summary>
         ///   Create Link-Satellite SQL using Handlebars as templating engine
@@ -1181,12 +918,11 @@ namespace Virtual_Data_Warehouse
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
 
-            if (checkedListBoxLsatMetadata.CheckedItems.Count != 0)
+            if (true)
             {
-                for (int x = 0; x <= checkedListBoxLsatMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var targetTableName = checkedListBoxLsatMetadata.CheckedItems[x].ToString();
-                    SetTextLsat($"Processing Link Satellite generation for {targetTableName}\r\n");
+
+                var targetTableName = "";//checkedListBoxLsatMetadata.CheckedItems[x].ToString();
+                   // SetTextLsat($"Processing Link Satellite generation for {targetTableName}\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery =
@@ -1244,10 +980,10 @@ namespace Virtual_Data_Warehouse
                         var result = template(sourceTargetMappingList);
 
                         // Display the output of the template to the user
-                        SetTextLsatOutput(result);
+                        //SetTextLsatOutput(result);
 
                         // Check if the metadata needs to be displayed also
-                        DisplayJsonMetadata(sourceTargetMappingList,"LinkSatellite");
+                        //DisplayJsonMetadata(sourceTargetMappingList,"LinkSatellite");
 
                         // Spool the output to disk
                         //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
@@ -1260,20 +996,20 @@ namespace Virtual_Data_Warehouse
                         errorCounter++;
                         SetTextMain("The template could not be compiled, the error message is " + ex);
                     }
-                }
+                
             }
             else
             {
-                SetTextLsat("There was no metadata selected to create LInk Satellite code. Please check the metadata schema - are there any Link Satellites selected?");
+                //SetTextLsat("There was no metadata selected to create LInk Satellite code. Please check the metadata schema - are there any Link Satellites selected?");
             }
 
             connOmd.Close();
             connOmd.Dispose();
 
-            SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
+            //SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
-            SetTextLsatOutputSyntax(richTextBoxLsatOutput);
+           // SetTextLsatOutputSyntax(richTextBoxLsatOutput);
         }
 
         private void CloseTestRiForm(object sender, FormClosedEventArgs e)
@@ -1311,36 +1047,7 @@ namespace Virtual_Data_Warehouse
 
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This feature is yet to be implemented.", "Upcoming!", MessageBoxButtons.OK,
-                MessageBoxIcon.Exclamation);
-        }
-
-
-
-        private void buttonGeneratePSA_Click(object sender, EventArgs e)
-        {
-            richTextBoxPSA.Clear();
-            richTextBoxPsaOutput.Clear();
-            richTextBoxInformationMain.Clear();
-
-            var newThread = new Thread(BackgroundDoPsa);
-            newThread.Start();
-            tabControlPsa.SelectedIndex = 0;
-        }
-
-        private void BackgroundDoPsa(Object obj)
-        {
-            // Check if the schema needs to be created
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringHstg);
-            GeneratePersistentStagingAreaFromPattern();
-            //if (radiobuttonViews.Checked)
-            //{
-            // PsaGenerateViews();
-            //}
-            //else if (radioButtonIntoStatement.Checked)
-            //{
-            //    PsaGenerateInsertInto();
-            //}
+            Process.Start(ExtensionMethod.GetDefaultBrowserPath(), "http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
         }
 
         /// <summary>
@@ -1353,12 +1060,11 @@ namespace Virtual_Data_Warehouse
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
 
-            if (checkedListBoxPsaMetadata.CheckedItems.Count != 0)
+            if (true)
             {
-                for (int x = 0; x <= checkedListBoxPsaMetadata.CheckedItems.Count - 1; x++)
-                {
-                    var targetTableName = checkedListBoxPsaMetadata.CheckedItems[x].ToString();
-                    SetTextPsa(@"Processing generation for " + targetTableName + "\r\n");
+
+                var targetTableName = "";//checkedListBoxPsaMetadata.CheckedItems[x].ToString();
+                   // SetTextPsa(@"Processing generation for " + targetTableName + "\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = @"SELECT 
@@ -1446,10 +1152,10 @@ namespace Virtual_Data_Warehouse
                         var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed also
-                        DisplayJsonMetadata(sourceTargetMappingList, "PersistentStagingArea");
+                        //DisplayJsonMetadata(sourceTargetMappingList, "PersistentStagingArea");
 
                         // Display the output of the template to the user
-                        SetTextPsaOutput(result);
+                       // SetTextPsaOutput(result);
 
                         // Spool the output to disk
                        // errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
@@ -1462,11 +1168,11 @@ namespace Virtual_Data_Warehouse
                         errorCounter++;
                         SetTextMain("The template could not be compiled, the error message is " + ex);
                     }
-                }
+                
             }
             else
             {
-                SetTextPsa("There was no metadata selected to create Persistent Staging Area code. Please check the metadata schema - are there any Persistent Staging Area tables selected?");
+               // SetTextPsa("There was no metadata selected to create Persistent Staging Area code. Please check the metadata schema - are there any Persistent Staging Area tables selected?");
             }
 
             connOmd.Close();
@@ -1477,28 +1183,7 @@ namespace Virtual_Data_Warehouse
 
 
             // Call a delegate to handle multi-threading for syntax highlighting
-            SetTextPsaOutputSyntax(richTextBoxPsaOutput);
-        }
-
-
-
-        private void buttonGenerateStaging_Click(object sender, EventArgs e)
-        {
-            // Clear out  main screen
-            richTextBoxStaging.Clear();
-            richTextBoxStgOutput.Clear();
-            richTextBoxInformationMain.Clear();
-
-            var newThread = new Thread(BackgroundDoStaging);
-            newThread.Start();
-            tabControlStagingArea.SelectedIndex = 0;
-        }
-
-        private void BackgroundDoStaging(Object obj)
-        {
-            // Check if the schema needs to be created
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringStg);
-            GenerateStagingAreaFromPattern();
+            //SetTextPsaOutputSyntax(richTextBoxPsaOutput);
         }
 
         /// <summary>
@@ -1511,12 +1196,10 @@ namespace Virtual_Data_Warehouse
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
             var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
 
-            if (checkedListBoxStagingArea.CheckedItems.Count != 0)
+            if (true)
             {
-                for (int x = 0; x <= checkedListBoxStagingArea.CheckedItems.Count - 1; x++)
-                {
-                    var targetTableName = checkedListBoxStagingArea.CheckedItems[x].ToString();
-                    SetTextStg(@"Processing generation for " + targetTableName + "\r\n");
+                    var targetTableName = "";//checkedListBoxStagingArea.CheckedItems[x].ToString();
+                    //SetTextStg(@"Processing generation for " + targetTableName + "\r\n");
 
                     // Retrieve metadata and store in a data table object
                     var metadataQuery = @"SELECT 
@@ -1619,10 +1302,10 @@ namespace Virtual_Data_Warehouse
                         var result = template(sourceTargetMappingList);
 
                         // Check if the metadata needs to be displayed also
-                        DisplayJsonMetadata(sourceTargetMappingList, "StagingArea");
+                        //DisplayJsonMetadata(sourceTargetMappingList, "StagingArea");
 
                         // Display the output of the template to the user
-                        SetTextStgOutput(result);
+                        //SetTextStgOutput(result);
 
                         // Spool the output to disk
                        // errorCounter = Utility.SaveOutputToDisk(true,textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
@@ -1635,11 +1318,11 @@ namespace Virtual_Data_Warehouse
                         errorCounter++;
                         SetTextMain("The template could not be compiled, the error message is " + ex);
                     }
-                }
+                
             }
             else
             {
-                SetTextStg("There was no metadata selected to generate Staging Area code. Please check the metadata schema - are there any Staging Area tables selected?");
+                //SetTextStg("There was no metadata selected to generate Staging Area code. Please check the metadata schema - are there any Staging Area tables selected?");
             }
 
             connOmd.Close();
@@ -1649,7 +1332,7 @@ namespace Virtual_Data_Warehouse
             SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
-            SetTextStgOutputSyntax(richTextBoxStgOutput);
+          
         }
         
         // Threads starting for other (sub) forms
@@ -1873,344 +1556,6 @@ namespace Virtual_Data_Warehouse
                 richTextBoxInformationMain.AppendText(text);
             }
         }
-
-
-
-        /// <summary>
-        /// Delegate to update Staging Area generation feedback to the main STG informational textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackStg(string text);
-        private void SetTextStg(string text)
-        {
-            if (richTextBoxStaging.InvokeRequired)
-            {
-                var d = new SetTextCallBackStg(SetTextStg);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxStaging.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to update the Staging Area SQL output textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackStgOutput(string text);
-        private void SetTextStgOutput(string text)
-        {
-            if (richTextBoxStgOutput.InvokeRequired)
-            {
-                var d = new SetTextCallBackStgOutput(SetTextStgOutput);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxStgOutput.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to apply syntax highlighting on the Staging Area SQL output textbox.
-        /// </summary>
-        /// <param name="textBox"></param>
-        delegate void SetSyntaxCallbackStgSyntax(RichTextBox textBox);
-        private void SetTextStgOutputSyntax(RichTextBox textBox)
-        {
-            if (richTextBoxStgOutput.InvokeRequired)
-            {
-                var d = new SetSyntaxCallbackStgSyntax(SetTextStgOutputSyntax);
-                Invoke(d, textBox);
-            }
-            else
-            {
-                TextHandling.SyntaxHighlightSql(richTextBoxStgOutput, richTextBoxStgOutput.Text);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Delegate to update Persistent Staging Area generation feedback to the main PSA informational textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackPsa(string text);
-        private void SetTextPsa(string text)
-        {
-            if (richTextBoxPSA.InvokeRequired)
-            {
-                var d = new SetTextCallBackPsa(SetTextPsa);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxPSA.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to update the Persistent Staging Area SQL output textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackPsaOutput(string text);
-        private void SetTextPsaOutput(string text)
-        {
-            if (richTextBoxPsaOutput.InvokeRequired)
-            {
-                var d = new SetTextCallBackPsaOutput(SetTextPsaOutput);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxPsaOutput.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to apply syntax highlighting on the Persistent Staging Area SQL output textbox.
-        /// </summary>
-        /// <param name="textBox"></param>
-        delegate void SetSyntaxCallbackPsaSyntax(RichTextBox textBox);
-        private void SetTextPsaOutputSyntax(RichTextBox textBox)
-        {
-            if (richTextBoxPsaOutput.InvokeRequired)
-            {
-                var d = new SetSyntaxCallbackPsaSyntax(SetTextPsaOutputSyntax);
-                Invoke(d, textBox);
-            }
-            else
-            {
-                TextHandling.SyntaxHighlightSql(richTextBoxPsaOutput, richTextBoxPsaOutput.Text);
-            }
-        }
-
-
-
-
-        /// <summary>
-        /// Delegate to update Hub generation feedback to the main Hub informational textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackHub(string text);
-        private void SetTextHub(string text)
-        {
-            if (richTextBoxHub.InvokeRequired)
-            {
-                var d = new SetTextCallBackHub(SetTextHub);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxHub.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to update the Hub SQL output textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackHubOutput(string text);
-        private void SetTextHubOutput(string text)
-        {
-            if (richTextBoxHubOutput.InvokeRequired)
-            {
-                var d = new SetTextCallBackHubOutput(SetTextHubOutput);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxHubOutput.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to apply syntax highlighting on the Hub SQL output textbox.
-        /// </summary>
-        /// <param name="textBox"></param>
-        delegate void SetSyntaxCallbackHubSyntax(RichTextBox textBox);
-        private void SetTextHubOutputSyntax(RichTextBox textBox)
-        {
-            if (richTextBoxHubOutput.InvokeRequired)
-            {
-                var d = new SetSyntaxCallbackHubSyntax(SetTextHubOutputSyntax);
-                Invoke(d, textBox);
-            }
-            else
-            {
-                TextHandling.SyntaxHighlightSql(richTextBoxHubOutput, richTextBoxHubOutput.Text);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Delegate to update Satellite generation feedback to the main Satellite informational textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackSat(string text);
-        private void SetTextSat(string text)
-        {
-            if (richTextBoxSat.InvokeRequired)
-            {
-                var d = new SetTextCallBackSat(SetTextSat);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxSat.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to update the Satellite SQL output textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackSatOutput(string text);
-        private void SetTextSatOutput(string text)
-        {
-            if (richTextBoxSatOutput.InvokeRequired)
-            {
-                var d = new SetTextCallBackSatOutput(SetTextSatOutput);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxSatOutput.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to apply syntax highlighting on the Satellite SQL output textbox.
-        /// </summary>
-        /// <param name="textBox"></param>
-        delegate void SetSyntaxCallbackSatSyntax(RichTextBox textBox);
-        private void SetTextSatOutputSyntax(RichTextBox textBox)
-        {
-            if (richTextBoxSatOutput.InvokeRequired)
-            {
-                var d = new SetSyntaxCallbackSatSyntax(SetTextSatOutputSyntax);
-                Invoke(d, textBox);
-            }
-            else
-            {
-                TextHandling.SyntaxHighlightSql(richTextBoxSatOutput, richTextBoxSatOutput.Text);
-            }
-        }
-        
-
-
-        /// <summary>
-        /// Delegate to update Link generation feedback to the main LInk informational textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackLink(string text);
-        private void SetTextLink(string text)
-        {
-            if (richTextBoxLink.InvokeRequired)
-            {
-                var d = new SetTextCallBackLink(SetTextLink);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxLink.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to update the Link SQL output textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackLinkOutput(string text);
-        private void SetTextLinkOutput(string text)
-        {
-            if (richTextBoxLinkOutput.InvokeRequired)
-            {
-                var d = new SetTextCallBackLinkOutput(SetTextLinkOutput);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxLinkOutput.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to apply syntax highlighting on the Link SQL output textbox.
-        /// </summary>
-        /// <param name="textBox"></param>
-        delegate void SetSyntaxCallbackLinkSyntax(RichTextBox textBox);
-        private void SetTextLnkOutputSyntax(RichTextBox textBox)
-        {
-            if (richTextBoxLinkOutput.InvokeRequired)
-            {
-                var d = new SetSyntaxCallbackLinkSyntax(SetTextLnkOutputSyntax);
-                Invoke(d, textBox);
-            }
-            else
-            {
-                TextHandling.SyntaxHighlightSql(richTextBoxLinkOutput, richTextBoxLinkOutput.Text);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Delegate to update Link Satellite generation feedback to the main LSAT informational textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackLsat(string text);
-        private void SetTextLsat(string text)
-        {
-            if (richTextBoxLsat.InvokeRequired)
-            {
-                var d = new SetTextCallBackLsat(SetTextLsat);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxLsat.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to update the Link-Satellite SQL output textbox.
-        /// </summary>
-        /// <param name="text"></param>
-        delegate void SetTextCallBackLsatOutput(string text);
-        private void SetTextLsatOutput(string text)
-        {
-            if (richTextBoxLsatOutput.InvokeRequired)
-            {
-                var d = new SetTextCallBackLsatOutput(SetTextLsatOutput);
-                Invoke(d, text);
-            }
-            else
-            {
-                richTextBoxLsatOutput.AppendText(text);
-            }
-        }
-
-        /// <summary>
-        /// Delegate to apply syntax highlighting on the Link-Satellite SQL output textbox.
-        /// </summary>
-        /// <param name="textBox"></param>
-        delegate void SetSyntaxCallbackLsatSyntax(RichTextBox textBox);
-        private void SetTextLsatOutputSyntax(RichTextBox textBox)
-        {
-            if (richTextBoxLsatOutput.InvokeRequired)
-            {
-                var d = new SetSyntaxCallbackLsatSyntax(SetTextLsatOutputSyntax);
-                Invoke(d, textBox);
-            }
-            else
-            {
-                TextHandling.SyntaxHighlightSql(richTextBoxLsatOutput, richTextBoxLsatOutput.Text);
-            }
-        }
-
         #endregion 
 
 
@@ -2269,319 +1614,7 @@ namespace Virtual_Data_Warehouse
         }
 
 
-        private void button_Repopulate_Hub(object sender, EventArgs e)
-        {
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            PopulateHubCheckboxList(connOmd);
-        }
-
-        private void PopulateStgCheckboxList(SqlConnection connStg)
-        {
-            // Clear the existing checkboxes
-            checkedListBoxStagingArea.Items.Clear();
-
-            try
-            {
-                // Query the metadata for the STG and HSTG tables
-                var queryMetadata = new StringBuilder();
-
-                queryMetadata.AppendLine("SELECT TABLE_NAME");
-                queryMetadata.AppendLine("FROM INFORMATION_SCHEMA.TABLES ");
-                queryMetadata.AppendLine("WHERE TABLE_TYPE='BASE TABLE' ");
-                queryMetadata.AppendLine("  AND TABLE_NAME LIKE '%"+textBoxFilterCriterionStagingArea.Text+"%'");
-                queryMetadata.AppendLine("  AND TABLE_NAME NOT LIKE '%USERMANAGED%'");
-                if (checkBoxExcludeLanding.Checked)
-                {
-                    queryMetadata.AppendLine("  AND TABLE_NAME NOT LIKE '%_LANDING'");
-                }
-                queryMetadata.AppendLine("  AND TABLE_NAME LIKE '"+TeamConfigurationSettings.StgTablePrefixValue+"_%'");
-                queryMetadata.AppendLine("ORDER BY TABLE_NAME");
-
-                var tables = Utility.GetDataTable(ref connStg, queryMetadata.ToString());
-
-                if (tables.Rows.Count == 0)
-                {
-                    SetTextStg("There was no metadata available to display Staging Area content. Please check the metadata schema (are there any Staging Area tables available?) or the database connection.");
-                }
-
-                foreach (DataRow row in tables.Rows)
-                {
-                    checkedListBoxStagingArea.Items.Add(row["TABLE_NAME"]);
-                }
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show("There is no database connection! Please check the details in the information pane.","An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _errorCounter++;
-                //MessageBox.Show("There is no database connection! Please check the details in the information pane.","An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _errorMessage.AppendLine("Unable to populate the Staging Area selection, there is no database connection.");
-                _errorDetails.AppendLine("Error logging details: " + ex);
-            }
-        }
-
-        private void PopulatePsaCheckboxList(SqlConnection connPsa)
-        {
-            // Clear the existing checkboxes
-            checkedListBoxPsaMetadata.Items.Clear();
-
-            try
-            {
-
-                // Query the metadata for the STG and HSTG tables
-                var queryMetadata = new StringBuilder();
-
-                queryMetadata.AppendLine(@"SELECT TABLE_SCHEMA,TABLE_NAME " +
-                                         "FROM INFORMATION_SCHEMA.TABLES " +
-                                         "WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME LIKE '%"+textBoxFilterCriterionPsa.Text+"%'" +
-                                         "  AND TABLE_NAME LIKE '" + TeamConfigurationSettings.PsaTablePrefixValue + "_%'");
-
-
-                var tables = Utility.GetDataTable(ref connPsa, queryMetadata.ToString());
-
-                if (tables.Rows.Count == 0)
-                {
-                    SetTextPsa("There was no metadata available display Persisten Staging Area content. Please check the metadata schema (are there any PSA tables available?) or the database connection.");
-                }
-
-                foreach (DataRow row in tables.Rows)
-                {
-                    checkedListBoxPsaMetadata.Items.Add(row["TABLE_NAME"]);
-                }
-            }
-            catch (Exception ex)
-            {
-                _errorCounter++;
-                //MessageBox.Show("There is no database connection! Please check the details in the information pane.","An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _errorMessage.AppendLine("Unable to populate the Persistent Staging Area selection, there is no database connection.");
-                _errorDetails.AppendLine("Error logging details: " + ex);
-            }
-        }
-
-        private void PopulateHubCheckboxList(SqlConnection connOmd)
-        {
-            // Clear the existing checkboxes
-            checkedListBoxHubMetadata.Items.Clear();
-
-            try
-            {
-                // Query the metadata for the STG and HSTG tables
-                var queryMetadata = new StringBuilder();
-
-                queryMetadata.AppendLine("SELECT DISTINCT HUB_NAME AS TABLE_NAME ");
-                queryMetadata.AppendLine("FROM MD_HUB ");
-                queryMetadata.AppendLine("WHERE HUB_NAME LIKE '%"+textBoxFilterCriterionHub.Text+"%'");
-                queryMetadata.AppendLine("AND HUB_NAME != 'Not applicable'");
-                queryMetadata.AppendLine("ORDER BY HUB_NAME");
-
-                var tables = Utility.GetDataTable(ref connOmd, queryMetadata.ToString());
-
-                if (tables.Rows.Count == 0)
-                {
-                    SetTextHub("There was no metadata available to display Hub content. Please check the metadata schema (are there any Hubs available?) or the database connection.");
-                }
-
-                foreach (DataRow row in tables.Rows)
-                {
-                    checkedListBoxHubMetadata.Items.Add(row["TABLE_NAME"]);
-                }
-            }
-            catch (Exception ex)
-            {
-                _errorCounter++;
-               // MessageBox.Show("There is no database connection! Please check the details in the information pane.","An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _errorMessage.AppendLine("Unable to populate the Hub selection, there is no database connection.");
-                _errorDetails.AppendLine("Error logging details: " + ex);
-            }
-        }
-
-        private void PopulateSatCheckboxList(SqlConnection connOmd)
-        {
-            // Clear the existing checkboxes
-            checkedListBoxSatMetadata.Items.Clear();
-
-            try
-            {
-
-                // Query the metadata for the STG and HSTG tables
-                var queryMetadata = new StringBuilder();
-
-                queryMetadata.AppendLine("SELECT DISTINCT SATELLITE_NAME AS TABLE_NAME ");
-                queryMetadata.AppendLine("FROM MD_SATELLITE ");
-                queryMetadata.AppendLine("WHERE SATELLITE_TYPE='Normal' AND SATELLITE_NAME LIKE '%"+textBoxFilterCriterionSat.Text+"%'");
-                queryMetadata.AppendLine("ORDER BY SATELLITE_NAME");
-
-                var tables = Utility.GetDataTable(ref connOmd, queryMetadata.ToString());
-
-                if (tables.Rows.Count == 0)
-                {
-                    SetTextSatOutput(
-                        "There was no metadata available to display Satellite content. Please check the metadata schema (are there any Hubs available?) or the database connection.");
-                }
-
-                foreach (DataRow row in tables.Rows)
-                {
-                    checkedListBoxSatMetadata.Items.Add(row["TABLE_NAME"]);
-                }
-            }
-            catch (Exception ex)
-            {
-                _errorCounter++;
-                //MessageBox.Show("There is no database connection! Please check the details in the information pane.",
-                // "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _errorMessage.AppendLine("Unable to populate the Satellite selection, there is no database connection.");
-                _errorDetails.AppendLine("Error logging details: " + ex);
-            }
-        }
-
-        private void PopulateLnkCheckboxList(SqlConnection connOmd)
-        {
-            // Clear the existing checkboxes
-            checkedListBoxLinkMetadata.Items.Clear();
-
-            try
-            {
-                // Query the metadata for the STG and HSTG tables
-                var queryMetadata = new StringBuilder();
-
-                queryMetadata.AppendLine("SELECT DISTINCT LINK_NAME AS TABLE_NAME ");
-                queryMetadata.AppendLine("FROM MD_LINK ");
-                queryMetadata.AppendLine("WHERE LINK_NAME LIKE '%"+textBoxFilterCriterionLnk.Text+"%'");
-                queryMetadata.AppendLine("AND LINK_NAME != 'Not applicable'");
-                queryMetadata.AppendLine("ORDER BY LINK_NAME");
-
-                var tables = Utility.GetDataTable(ref connOmd, queryMetadata.ToString());
-
-                if (tables.Rows.Count == 0)
-                {
-                    SetTextLink("There was no metadata available to display Link content. Please check the metadata schema (are there any Hubs available?) or the database connection.");
-                }
-
-                foreach (DataRow row in tables.Rows)
-                {
-                    checkedListBoxLinkMetadata.Items.Add(row["TABLE_NAME"]);
-                }
-            }
-            catch (Exception ex)
-            {
-                _errorCounter++;
-                // MessageBox.Show("There is no database connection! Please check the details in the information pane.",
-                //  "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _errorMessage.AppendLine("Unable to populate the Link selection cannot be populated, there is no database connection.");
-                _errorDetails.AppendLine("Error logging details: " + ex);
-            }
-        }
-
-        private void PopulateLsatCheckboxList(SqlConnection connOmd)
-        {
-            // Clear the existing checkboxes
-            checkedListBoxLsatMetadata.Items.Clear();
-
-            try
-            {
-                // Query the metadata for the Link Satellite tables
-                var queryMetadata = new StringBuilder();
-
-                queryMetadata.AppendLine("SELECT DISTINCT SATELLITE_NAME AS TABLE_NAME ");
-                queryMetadata.AppendLine("FROM MD_SATELLITE ");
-                queryMetadata.AppendLine("WHERE SATELLITE_TYPE !='Normal' AND SATELLITE_NAME LIKE '%"+textBoxFilterCriterionLsat.Text+"%'");
-                queryMetadata.AppendLine(" ORDER BY SATELLITE_NAME");
-                
-                var tables = Utility.GetDataTable(ref connOmd, queryMetadata.ToString());
-
-                if (tables.Rows.Count == 0)
-                {
-                    SetTextLsat("There was no metadata available to display Link Satellite content. Please check the metadata schema (are there any Link Satellites available?) or the database connection.");
-                }
-
-                foreach (DataRow row in tables.Rows)
-                {
-                    checkedListBoxLsatMetadata.Items.Add(row["TABLE_NAME"]);
-                }
-            }
-            catch (Exception exception)
-            {
-                _errorCounter++;
-                //MessageBox.Show("There is no database connection! Please check the details in the information pane.",
-                   // "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                _errorMessage.AppendLine("Unable to populate the Link Satellite selection, there is not database connection.");
-                _errorDetails.AppendLine("Error logging details: " + exception);
-            }
-        }
-
-
-        private void button_Repopulate_STG(object sender, EventArgs e)
-        {           
-
-            var connStg = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringStg };
-            _errorMessage.Clear();
-            PopulateStgCheckboxList(connStg);
-            if (_errorCounter > 0)
-            {
-                richTextBoxInformationMain.Clear();
-                richTextBoxInformationMain.Text = _errorMessage.ToString();
-            }
-        }
-
-        private void button_Repopulate_PSA(object sender, EventArgs e)
-        {
-            
-
-            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
-            _errorMessage.Clear();
-            PopulatePsaCheckboxList(connPsa);
-            if (_errorCounter > 0)
-            {
-                richTextBoxInformationMain.Clear();
-                richTextBoxInformationMain.Text = _errorMessage.ToString();
-            }
-        }
-
-        private void button_Repopulate_Sat(object sender, EventArgs e)
-        {
-            
-
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            _errorMessage.Clear();
-            PopulateSatCheckboxList(connOmd);
-            if (_errorCounter > 0)
-            {
-                richTextBoxInformationMain.Clear();
-                richTextBoxInformationMain.Text = _errorMessage.ToString();
-            }
-        }
-
-        private void button_Repopulate_Lnk(object sender, EventArgs e)
-        {
-            
-
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            _errorMessage.Clear();
-            PopulateLnkCheckboxList(connOmd);
-            if (_errorCounter > 0)
-            {
-                richTextBoxInformationMain.Clear();
-                richTextBoxInformationMain.Text = _errorMessage.ToString();
-            }
-        }
-
-        private void button_Repopulate_LSAT(object sender, EventArgs e)
-        {
-            
-
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            _errorMessage.Clear();
-            PopulateLsatCheckboxList(connOmd);
-            if (_errorCounter > 0)
-            {
-                richTextBoxInformationMain.Clear();
-                richTextBoxInformationMain.Text = _errorMessage.ToString();
-            }
-        }
-
-
-
-
-
+  
 
         /// <summary>
         /// Save VEDW settings in the from to memory & disk
@@ -2676,641 +1709,11 @@ namespace Virtual_Data_Warehouse
                 richTextBoxInformationMain.Text = "An error has occured while attempting to open the TEAM configuration file. The error message is: " + ex;
             }
         }
-
-        private void richTextBoxStaging_TextChanged(object sender, EventArgs e)
-        {
-            // Set the current caret position to the end
-            richTextBoxStaging.SelectionStart = richTextBoxStaging.Text.Length;
-            // Scroll automatically
-            richTextBoxStaging.ScrollToCaret();
-        }
-
-        private void richTextBoxPSA_TextChanged(object sender, EventArgs e)
-        {
-            // Set the current caret position to the end
-            richTextBoxPSA.SelectionStart = richTextBoxPSA.Text.Length;
-            // Scroll automatically
-            richTextBoxPSA.ScrollToCaret();
-        }
-
-        private void richTextBoxHub_TextChanged(object sender, EventArgs e)
-        {
-            // Set the current caret position to the end
-            richTextBoxHub.SelectionStart = richTextBoxHub.Text.Length;
-            // Scroll automatically
-            richTextBoxHub.ScrollToCaret();
-        }
-
-        private void richTextBoxSat_TextChanged(object sender, EventArgs e)
-        {
-            // Set the current caret position to the end
-            richTextBoxSat.SelectionStart = richTextBoxSat.Text.Length;
-            // Scroll automatically
-            richTextBoxSat.ScrollToCaret();
-        }
-
-        private void richTextBoxLink_TextChanged(object sender, EventArgs e)
-        {
-            // Set the current caret position to the end
-            richTextBoxLink.SelectionStart = richTextBoxLink.Text.Length;
-            // Scroll automatically
-            richTextBoxLink.ScrollToCaret();
-        }
-
-        private void richTextBoxLsat_TextChanged(object sender, EventArgs e)
-        {
-            // Set the current caret position to the end
-            richTextBoxLsat.SelectionStart = richTextBoxLsat.Text.Length;
-            // Scroll automatically
-            richTextBoxLsat.ScrollToCaret();
-        }
-
-        private void runEverythingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //Select everything
-            checkBoxStagingAreaSelectAll.Checked = true;
-            checkBoxSelectAllPsa.Checked = true;
-            checkBoxSelectAllHubs.Checked = true;
-            checkBoxSelectAllSats.Checked = true;
-            checkBoxSelectAllLsats.Checked = true;
-            checkBoxSelectAllLinks.Checked = true;
-
-            //Run Staging to Integration
-            tabControlMain.SelectTab(0);
-            buttonGenerateStagingArea.PerformClick();
-            tabControlMain.SelectTab(1);
-            buttonGeneratePSA.PerformClick();
-            tabControlMain.SelectTab(2);
-            buttonGenerateHubs.PerformClick();
-            tabControlMain.SelectTab(3);
-            buttonGenerateSats.PerformClick();
-            tabControlMain.SelectTab(4);
-            buttonGenerateLinks.PerformClick();
-            tabControlMain.SelectTab(5);
-            buttonGenerateLsats.PerformClick();
-        }
-
-        #region Load Combo Box events
-
-
-
-        private void LoadStgPatternCombobox()
-        {
-            bool available = false;
-            try
-            {
-                var patternList = VedwConfigurationSettings.patternList;
-                comboBoxStagingAreaPattern.Items.Clear();
-                richTextBoxStgPattern.Clear();
-                labelLoadPatternStgPath.Text = "";
-
-                foreach (var patternDetail in patternList)
-                {
-                    if (patternDetail.LoadPatternType == "StagingArea")
-                    {
-                        comboBoxStagingAreaPattern.Items.Add(patternDetail.LoadPatternName);
-                        available = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(ex.ToString());
-            }
-
-            if (available == true)
-            {
-                comboBoxStagingAreaPattern.SelectedItem = comboBoxStagingAreaPattern.Items[0];
-            }
-            else
-            {
-                comboBoxStagingAreaPattern.ResetText();
-                comboBoxStagingAreaPattern.SelectedIndex = -1;
-            }
-        }
-
-        private void LoadPsaPatternCombobox()
-        {
-            bool available = false;
-            try
-            {
-                var patternList = VedwConfigurationSettings.patternList;
-                comboBoxPsaPattern.Items.Clear();
-                richTextBoxPsaPattern.Clear();
-                labelLoadPatternPsaPath.Text = "";
-
-                foreach (var patternDetail in patternList)
-                {
-                    if (patternDetail.LoadPatternType == "PersistentStagingArea")
-                    {
-                        comboBoxPsaPattern.Items.Add(patternDetail.LoadPatternName);
-                        available = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(ex.ToString());
-            }
-
-            if (available == true)
-            {
-                comboBoxPsaPattern.SelectedItem = comboBoxPsaPattern.Items[0];
-            }
-            else
-            {
-                comboBoxPsaPattern.ResetText();
-                comboBoxPsaPattern.SelectedIndex = -1;
-            }
-        }
-
-        private void LoadHubPatternCombobox()
-        {
-            bool available = false;
-            try
-            {
-                var patternList = VedwConfigurationSettings.patternList;
-                comboBoxHubPattern.Items.Clear();
-                richTextBoxHubPattern.Clear();
-                labelLoadPatternHubPath.Text = "";
-
-                foreach (var patternDetail in patternList)
-                {
-                    if (patternDetail.LoadPatternType == "Hub")
-                    {
-                        comboBoxHubPattern.Items.Add(patternDetail.LoadPatternName);
-                        available = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(ex.ToString());
-            }
-
-            if (available == true)
-            {
-                comboBoxHubPattern.SelectedItem = comboBoxHubPattern.Items[0];
-            }
-            else
-            {
-                comboBoxHubPattern.ResetText();
-                comboBoxHubPattern.SelectedIndex = -1;
-            }
-        }
-
-        private void LoadSatPatternCombobox()
-        {
-            bool available = false;
-            try
-            {
-                var patternList = VedwConfigurationSettings.patternList;
-                comboBoxSatPattern.Items.Clear();
-                richTextBoxSatPattern.Clear();
-                labelLoadPatternSatPath.Text = "";
-
-                foreach (var patternDetail in patternList)
-                {
-                    if (patternDetail.LoadPatternType == "Satellite")
-                    {
-                        comboBoxSatPattern.Items.Add(patternDetail.LoadPatternName);
-                        available = true;
-                    }                    
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(ex.ToString());
-            }
-
-            if (available == true)
-            {
-                comboBoxSatPattern.SelectedItem = comboBoxSatPattern.Items[0];
-            }
-            else
-            {
-                comboBoxSatPattern.ResetText();
-                comboBoxSatPattern.SelectedIndex = -1;
-            }
-        }
-
-        private void LoadLinkPatternCombobox()
-        {
-            bool available = false;
-            try
-            {
-                var patternList = VedwConfigurationSettings.patternList;
-                comboBoxLinkPattern.Items.Clear();
-                richTextBoxLinkPattern.Clear();
-                labelLoadPatternLinkPath.Text = "";
-
-                foreach (var patternDetail in patternList)
-                {
-                    if (patternDetail.LoadPatternType == "Link")
-                    {
-                        comboBoxLinkPattern.Items.Add(patternDetail.LoadPatternName);
-                        available = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(ex.ToString());
-            }
-
-            if (available == true)
-            {
-                comboBoxLinkPattern.SelectedItem = comboBoxLinkPattern.Items[0];
-            }
-            else
-            {
-                comboBoxLinkPattern.ResetText();
-                comboBoxLinkPattern.SelectedIndex = -1;
-            }
-        }
-
-        private void LoadLsatPatternCombobox()
-        {
-            bool available = false;
-            try
-            {
-                var patternList = VedwConfigurationSettings.patternList;
-                comboBoxLsatPattern.Items.Clear();
-                richTextBoxLsatPattern.Clear();
-                labelLoadPatternLsatPath.Text = "";
-
-                foreach (var patternDetail in patternList)
-                {
-                    if (patternDetail.LoadPatternType == "LinkSatellite")
-                    {
-                        comboBoxLsatPattern.Items.Add(patternDetail.LoadPatternName);
-                        available = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(ex.ToString());
-            }
-
-            if (available == true)
-            {
-                comboBoxLsatPattern.SelectedItem = comboBoxLsatPattern.Items[0];
-            }
-            else
-            {
-                comboBoxLsatPattern.ResetText();
-                comboBoxLsatPattern.SelectedIndex = -1;
-            }
-        }
-        #endregion
-
-
-        #region Tab Selected Index Changed events
-        private void tabControlHub_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text.TrimEnd());
-        }
-
-        private void tabControlSat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TextHandling.SyntaxHighlightHandlebars(richTextBoxSatPattern, richTextBoxSatPattern.Text.TrimEnd());
-        }
-
-        private void tabControlLink_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TextHandling.SyntaxHighlightHandlebars(richTextBoxLinkPattern, richTextBoxLinkPattern.Text.TrimEnd());
-        }
-
-        private void tabControlLsat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TextHandling.SyntaxHighlightHandlebars(richTextBoxLsatPattern, richTextBoxLsatPattern.Text.TrimEnd());
-        }
-
-        private void tabControlPsa_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TextHandling.SyntaxHighlightHandlebars(richTextBoxPsaPattern, richTextBoxPsaPattern.Text.TrimEnd());
-        }
-
-        private void tabControlStg_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TextHandling.SyntaxHighlightHandlebars(richTextBoxStgPattern, richTextBoxStgPattern.Text.TrimEnd());
-        }
-        #endregion
-
-
-        #region Combobox Selected Index Changed events
-        private void comboBoxHubPattern_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxHubPattern.Text);
-
-            // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternHubPath.Text = loadPattern.LoadPatternFilePath;
-
-            // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath).TrimEnd();
-
-            // Display the pattern in the text box on the screen
-            richTextBoxHubPattern.Text = loadPatternTemplate;
-
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
-
-            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
-            if (startUpIndicator == false)
-            {
-                // Syntax highlight for Handlebars
-                TextHandling.SyntaxHighlightHandlebars(richTextBoxHubPattern, richTextBoxHubPattern.Text);
-            }
-        }
-
-        private void comboBoxSatPattern_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxSatPattern.Text);
-
-            // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternSatPath.Text = loadPattern.LoadPatternFilePath;
-
-            // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
-
-            // Display the pattern in the text box on the screen
-            richTextBoxSatPattern.Text = loadPatternTemplate;
-
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
-
-            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
-            if (startUpIndicator == false)
-            {
-                // Syntax highlight for Handlebars
-                TextHandling.SyntaxHighlightHandlebars(richTextBoxSatPattern, richTextBoxSatPattern.Text);
-            }
-        }
-
-        private void comboBoxLsatPattern_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxLsatPattern.Text);
-
-            // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternLsatPath.Text = loadPattern.LoadPatternFilePath;
-
-            // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
-
-            // Display the pattern in the text box on the screen
-            richTextBoxLsatPattern.Text = loadPatternTemplate;
-
-            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
-
-            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
-            if (startUpIndicator == false)
-            {
-                // Syntax highlight for Handlebars
-                TextHandling.SyntaxHighlightHandlebars(richTextBoxLsatPattern, richTextBoxLsatPattern.Text);
-            }
-        }
-
-        private void comboBoxLinkPattern_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxLinkPattern.Text);
-
-            // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternLinkPath.Text = loadPattern.LoadPatternFilePath;
-
-            // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
-
-            // Display the pattern in the text box on the screen
-            richTextBoxLinkPattern.Text = loadPatternTemplate;
-
-            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
-
-            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
-            if (startUpIndicator == false)
-            {
-                // Syntax highlight for Handlebars
-                TextHandling.SyntaxHighlightHandlebars(richTextBoxLinkPattern, richTextBoxLinkPattern.Text);
-            }
-        }
-
-        private void comboBoxPsaPattern_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxPsaPattern.Text);
-
-            // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternPsaPath.Text = loadPattern.LoadPatternFilePath;
-
-            // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
-
-            // Display the pattern in the text box on the screen
-            richTextBoxPsaPattern.Text = loadPatternTemplate;
-
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
-
-            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
-            if (startUpIndicator == false)
-            {
-                // Syntax highlight for Handlebars
-                TextHandling.SyntaxHighlightHandlebars(richTextBoxPsaPattern, richTextBoxPsaPattern.Text);
-            }
-        }
-
-        private void comboBoxStgPattern_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(o => o.LoadPatternName == comboBoxStagingAreaPattern.Text);
-
-            // Set the label with the path so it's visible to the user where the file is located
-            labelLoadPatternStgPath.Text = loadPattern.LoadPatternFilePath;
-
-            // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
-
-            // Display the pattern in the text box on the screen
-            richTextBoxStgPattern.Text = loadPatternTemplate;
-
-            // Make sure the pattern is stored in a global variable (memory) to overcome multithreading issues
-            LoadPattern.ActivateLoadPattern(loadPatternTemplate, loadPattern.LoadPatternType);
-
-            // Only trigger changes when not in startup mode, otherwise the text will not load properly from file (too many changes)
-            if (startUpIndicator == false)
-            {
-                // Syntax highlight for Handlebars
-                TextHandling.SyntaxHighlightHandlebars(richTextBoxStgPattern, richTextBoxStgPattern.Text);
-            }
-        }
-        #endregion
-
-
-        #region SaveButtons
-        private void buttonHubSavePattern_Click(object sender, EventArgs e)
-        {
-            richTextBoxInformationMain.Clear();
-            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternHubPath.Text);
-            string saveResponse = "";
-
-            if (backupResponse.StartsWith("A backup was created"))
-            {
-                SetTextMain(backupResponse);
-                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternHubPath.Text, richTextBoxHubPattern.Text);
-                SetTextMain("\r\n\r\n" + saveResponse);
-            }
-            else
-            {
-                SetTextMain(backupResponse);
-                SetTextMain(saveResponse);
-            }
-        }
-
-        private void buttonSatSavePattern_Click(object sender, EventArgs e)
-        {
-            richTextBoxInformationMain.Clear();
-            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternSatPath.Text);
-            string saveResponse = "";
-
-            if (backupResponse.StartsWith("A backup was created"))
-            {
-                SetTextMain(backupResponse);
-                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternSatPath.Text, richTextBoxSatPattern.Text);
-                SetTextMain("\r\n\r\n" + saveResponse);
-            }
-            else
-            {
-                SetTextMain(backupResponse);
-                SetTextMain(saveResponse);
-            }
-        }
-
-        private void ButtonStgSavePattern_Click(object sender, EventArgs e)
-        {
-            richTextBoxInformationMain.Clear();
-            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternStgPath.Text);
-            string saveResponse = "";
-
-            if (backupResponse.StartsWith("A backup was created"))
-            {
-                SetTextMain(backupResponse);
-                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternStgPath.Text, richTextBoxStgPattern.Text);
-                SetTextMain("\r\n\r\n" + saveResponse);
-            }
-            else
-            {
-                SetTextMain(backupResponse);
-                SetTextMain(saveResponse);
-            }
-        }
-
-        private void buttonPsaSavePattern_Click(object sender, EventArgs e)
-        {
-            richTextBoxInformationMain.Clear();
-            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternPsaPath.Text);
-            string saveResponse = "";
-
-            if (backupResponse.StartsWith("A backup was created"))
-            {
-                SetTextMain(backupResponse);
-                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternPsaPath.Text, richTextBoxPsaPattern.Text);
-                SetTextMain("\r\n\r\n" + saveResponse);
-            }
-            else
-            {
-                SetTextMain(backupResponse);
-                SetTextMain(saveResponse);
-            }
-        }
-
-        private void buttonLnkSavePattern_Click(object sender, EventArgs e)
-        {
-            richTextBoxInformationMain.Clear();
-            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternLinkPath.Text);
-            string saveResponse = "";
-
-            if (backupResponse.StartsWith("A backup was created"))
-            {
-                SetTextMain(backupResponse);
-                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternLinkPath.Text, richTextBoxLinkPattern.Text);
-                SetTextMain("\r\n\r\n" + saveResponse);
-            }
-            else
-            {
-                SetTextMain(backupResponse);
-                SetTextMain(saveResponse);
-            }
-        }
-
-        private void buttonLsatSavePattern_Click(object sender, EventArgs e)
-        {
-            richTextBoxInformationMain.Clear();
-            string backupResponse = LoadPattern.BackupLoadPattern(labelLoadPatternLsatPath.Text);
-            string saveResponse = "";
-
-            if (backupResponse.StartsWith("A backup was created"))
-            {
-                SetTextMain(backupResponse);
-                saveResponse = LoadPattern.SaveLoadPattern(labelLoadPatternLsatPath.Text, richTextBoxLsatPattern.Text);
-                SetTextMain("\r\n\r\n" + saveResponse);
-            }
-            else
-            {
-                SetTextMain(backupResponse);
-                SetTextMain(saveResponse);
-            }
-        }
-        #endregion
         
-
-        #region TextChanged event
-        private void richTextBoxHubPattern_TextChanged(object sender, EventArgs e)
-        {
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(richTextBoxHubPattern.Text.TrimEnd(), "Hub");
-        }
-
-        private void richTextBoxSatPattern_TextChanged(object sender, EventArgs e)
-        {
-            LoadPattern.ActivateLoadPattern(richTextBoxSatPattern.Text.TrimEnd(), "Satellite");
-        }
-
-        private void richTextBoxLinkPattern_TextChanged(object sender, EventArgs e)
-        {
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(richTextBoxLinkPattern.Text.TrimEnd(), "Link");
-        }
-
-        private void RichTextBoxStgPattern_TextChanged(object sender, EventArgs e)
-        {
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(richTextBoxStgPattern.Text.TrimEnd(), "StagingArea");
-        }
-
-        private void RichTextBoxPsaPattern_TextChanged(object sender, EventArgs e)
-        {
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(richTextBoxPsaPattern.Text.TrimEnd(), "PersistentStagingArea");
-        }
-
-        private void RichTextBoxLsatPattern_TextChanged(object sender, EventArgs e)
-        {
-            // Make sure the pattern is stored in a global variable (memory) to overcome multi-threading issues
-            LoadPattern.ActivateLoadPattern(richTextBoxLsatPattern.Text.TrimEnd(), "LinkSatellite");
-        }
-        #endregion
-
         private void richTextBoxInformationMain_TextChanged(object sender, EventArgs e)
         {
             // Set the current caret position to the end
-            richTextBoxInformationMain.SelectionStart = richTextBoxStaging.Text.Length;
+            richTextBoxInformationMain.SelectionStart = richTextBoxInformationMain.Text.Length;
             // Scroll automatically
             richTextBoxInformationMain.ScrollToCaret();
         }
@@ -3570,6 +1973,7 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
+            // Add the Custom Tab Pages
             foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
             {
                 var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
@@ -3653,7 +2057,6 @@ namespace Virtual_Data_Warehouse
                     VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
 
                     // ... and populate the data grid
-                    LoadAllLoadPatternComboBoxes();
                     populateLoadPatternCollectionDataGrid();
 
                     SetTextMain("The file " + chosenFile + " was loaded.\r\n");

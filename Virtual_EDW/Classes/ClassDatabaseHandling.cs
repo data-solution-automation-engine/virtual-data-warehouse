@@ -19,15 +19,9 @@ namespace Virtual_Data_Warehouse
             {
                 var tables = Utility.GetDataTable(ref conn, inputQuery);
 
-                //if (tables.Rows.Count == 0)
-                //{
-                //    localRichTextBox.AppendText($"There was no metadata available to display {patternNiceName} content. Please check the metadata schema (are there any {patternNiceName} tables available?) or the database connection.");
-                //}
-
                 foreach (DataRow row in tables.Rows)
                 {
                     returnList.Add(row["TARGET_NAME"].ToString());
-                    //localCheckedListBox.Items.Add(row["TARGET_NAME"]);
                 }
             }
             catch (Exception ex)
