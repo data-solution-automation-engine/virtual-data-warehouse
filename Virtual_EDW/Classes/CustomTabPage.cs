@@ -330,7 +330,7 @@ namespace Virtual_Data_Warehouse
 
         public void FilterItemList(object o, EventArgs e)
         {
-
+            SetItemList(itemList);
         }
 
         public void SetItemList(List<string> itemList)
@@ -341,17 +341,20 @@ namespace Virtual_Data_Warehouse
             // Clear the existing checkboxes
             localCheckedListBox.Items.Clear();
 
+            // Add items to the Checked List Box, if it satisfies the filter criterion
+            foreach (string item in itemList)
+            {
+                if (item.Contains(localTextBoxFilter.Text))
+                {
+                    localCheckedListBox.Items.Add(item);
+                }
+            }
+
             // Report back to the user if there is not metadata available
-            if (itemList.Count == 0)
+            if (localCheckedListBox.Items.Count == 0)
             {
                 localRichTextBox.Text =
                     $"There was no metadata available to display {inputNiceName} content. Please check the associated metadata schema (are there any {inputNiceName} records available?) or the database connection.";
-            }
-
-            // Add items to the Checked List Box
-            foreach (string item in itemList)
-            {
-                localCheckedListBox.Items.Add(item);
             }
 
             // Set all the Check Boxes to 'checked'
