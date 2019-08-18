@@ -20,7 +20,6 @@ namespace Virtual_Data_Warehouse
     {
         private StringBuilder _errorMessage;
         private StringBuilder _errorDetails;
-        private int _errorCounter;
         internal bool startUpIndicator = true;
 
         private List<CustomTabPage> localCustomTabPageList = new List<CustomTabPage>();
@@ -40,7 +39,7 @@ namespace Virtual_Data_Warehouse
            
             _errorDetails = new StringBuilder();
             _errorDetails.AppendLine();
-            _errorCounter = 0;
+
 
             localCustomTabPageList = new List<CustomTabPage>();
 
@@ -79,10 +78,10 @@ namespace Virtual_Data_Warehouse
             var patternCollection = new LoadPatternCollectionFileHandling();
             VedwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
 
-            if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
-            {
-                SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a "+GlobalParameters.LoadPatternListFile+" in the "+VedwConfigurationSettings.LoadPatternListPath+" directory, and if the file contains patterns.");
-            }
+            //if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
+            //{
+            //    SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a "+GlobalParameters.LoadPatternListFile+" in the "+VedwConfigurationSettings.LoadPatternListPath+" directory, and if the file contains patterns.");
+            //}
 
             // Load Pattern definition in memory
             var patternDefinition = new LoadPatternDefinitionFileHandling();

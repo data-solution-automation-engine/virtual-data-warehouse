@@ -24,10 +24,9 @@ namespace Virtual_Data_Warehouse
                     returnList.Add(row["TARGET_NAME"].ToString());
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //returnDetails.AppendLine($"Unable to populate the {patternNiceName} selection, there is no database connection.");
-                //returnDetails.AppendLine("Error logging details: " + ex);
+                // IGNORE FOR NOW
             }
 
             return returnList;

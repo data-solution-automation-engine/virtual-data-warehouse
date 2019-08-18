@@ -85,7 +85,7 @@ namespace Virtual_Data_Warehouse
                     return browserPath;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return "";
             }
