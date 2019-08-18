@@ -717,18 +717,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_ED0F55A497A461047991B2E0C81FF503"
-        "OwnerKey" = "8:_AD9451799B9D389CF4222FCEF9FB815A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_ED0F55A497A461047991B2E0C81FF503"
-        "OwnerKey" = "8:_BF47AF852FBD4D1CA10FDB0AF334CC84"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_ED2691982CF4EB8D484F66E7613C19AC"
         "OwnerKey" = "8:_BF47AF852FBD4D1CA10FDB0AF334CC84"
         "MsmSig" = "8:_UNDEFINED"
@@ -946,12 +934,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_ED0F55A497A461047991B2E0C81FF503"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_1CB708D7E5B5BDABA5E40C150A74D9D0"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1079,7 +1061,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternCollection.json"
             "TargetName" = "8:loadPatternCollection.json"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1347,7 +1329,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternHubDeltaSelect.Handlebars"
             "TargetName" = "8:loadPatternHubDeltaSelect.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1460,7 +1442,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternLinkSatelliteView.Handlebars"
             "TargetName" = "8:loadPatternLinkSatelliteView.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1573,7 +1555,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternSatelliteView.Handlebars"
             "TargetName" = "8:loadPatternSatelliteView.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1593,7 +1575,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternPersistentStagingView.Handlebars"
             "TargetName" = "8:loadPatternPersistentStagingView.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1819,7 +1801,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternLinkInsertInto.Handlebars"
             "TargetName" = "8:loadPatternLinkInsertInto.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1963,7 +1945,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternDefinition.json"
             "TargetName" = "8:loadPatternDefinition.json"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2014,7 +1996,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternPersistentStagingInsertInto.Handlebars"
             "TargetName" = "8:loadPatternPersistentStagingInsertInto.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2034,7 +2016,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternLinkSatelliteInsertInto.Handlebars"
             "TargetName" = "8:loadPatternLinkSatelliteInsertInto.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2085,7 +2067,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternHubInsertInto.Handlebars"
             "TargetName" = "8:loadPatternHubInsertInto.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2198,7 +2180,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternStagingInsertInto.Handlebars"
             "TargetName" = "8:loadPatternStagingInsertInto.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2218,7 +2200,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternHubView.Handlebars"
             "TargetName" = "8:loadPatternHubView.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2269,7 +2251,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternLinkView.Handlebars"
             "TargetName" = "8:loadPatternLinkView.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2289,7 +2271,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternStagingView.Handlebars"
             "TargetName" = "8:loadPatternStagingView.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2318,37 +2300,6 @@
                     }
                 }
             "SourcePath" = "8:Microsoft.SqlServer.PolicyEnum.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_ED0F55A497A461047991B2E0C81FF503"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.SqlServer.BatchParser, Version=15.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=x86"
-                "ScatterAssemblies"
-                {
-                    "_ED0F55A497A461047991B2E0C81FF503"
-                    {
-                    "Name" = "8:Microsoft.SqlServer.BatchParser.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Microsoft.SqlServer.BatchParser.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
@@ -2433,7 +2384,7 @@
             "SourcePath" = "8:..\\LoadPatterns\\loadPatternSatelliteInsertInto.Handlebars"
             "TargetName" = "8:loadPatternSatelliteInsertInto.Handlebars"
             "Tag" = "8:"
-            "Folder" = "8:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
+            "Folder" = "8:_9CA8C78693B7479F9F8541A82F8105AE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2475,6 +2426,17 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_9CA8C78693B7479F9F8541A82F8105AE"
+                    {
+                    "Name" = "8:LoadPatterns"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_37722AE3E50541C58A5A2410D95AA181"
+                        "Folders"
+                        {
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_E3E31680BE1D49A593E4BCB9638217D7"
                     {
                     "Name" = "8:Virtual Data Warehouse"
@@ -2484,17 +2446,6 @@
                     "Property" = "8:_5D5466DAC5EA45DDBE22FE86074B23B9"
                         "Folders"
                         {
-                            "{9EF0B969-E518-4E46-987F-47570745A589}:_24D9FC20B4B74C12BFA3B114C9F7AA8C"
-                            {
-                            "Name" = "8:LoadPatterns"
-                            "AlwaysCreate" = "11:FALSE"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "Property" = "8:_37722AE3E50541C58A5A2410D95AA181"
-                                "Folders"
-                                {
-                                }
-                            }
                         }
                     }
                 }
@@ -3087,7 +3038,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_BF47AF852FBD4D1CA10FDB0AF334CC84"
             {
-            "SourcePath" = "8:..\\Virtual_EDW\\obj\\Debug\\Virtual_Data_Warehouse.exe"
+            "SourcePath" = "8:..\\Virtual_EDW\\obj\\Release\\Virtual_Data_Warehouse.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
