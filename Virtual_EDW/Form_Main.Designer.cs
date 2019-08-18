@@ -93,6 +93,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -267,7 +268,7 @@
             // 
             this.helpToolStripMenuItem1.Image = global::Virtual_Data_Warehouse.Properties.Resources.HelpIconSmall;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -680,6 +681,7 @@
             // 
             // tabPageHome
             // 
+            this.tabPageHome.Controls.Add(this.richTextBox1);
             this.tabPageHome.Controls.Add(this.linkLabel1);
             this.tabPageHome.Controls.Add(this.linkLabelWebLog);
             this.tabPageHome.Controls.Add(this.pictureBox2);
@@ -743,6 +745,18 @@
             this.tabControlMain.SelectedIndex = 0;
             this.tabControlMain.Size = new System.Drawing.Size(1338, 627);
             this.tabControlMain.TabIndex = 3;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.Location = new System.Drawing.Point(34, 236);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(393, 115);
+            this.richTextBox1.TabIndex = 21;
+            this.richTextBox1.Text = "This is a pre-release. v1.6 is still being finalised, however since the updated T" +
+    "EAM version is already available this version was placed online to at least use " +
+    "some (most) of the new functionality.";
             // 
             // FormMain
             // 
@@ -851,6 +865,7 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.RichTextBox richTextBoxMainScreen;
         private System.Windows.Forms.TabControl tabControlMain;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 
