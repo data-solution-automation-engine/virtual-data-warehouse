@@ -462,8 +462,6 @@ namespace Virtual_Data_Warehouse
             localTabControl.SelectedIndex = 0;
 
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
-
             // Populate the main list of source-to-target mappings (base query)
             var metadataQuery = input.LoadPatternBaseQuery;
             var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
@@ -493,7 +491,7 @@ namespace Virtual_Data_Warehouse
                         BusinessKey businessKey =
                             new BusinessKey
                             {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "")
+                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"])
                             };
 
                         businessKeyList.Add(businessKey);
@@ -521,12 +519,22 @@ namespace Virtual_Data_Warehouse
                         if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
                         {
                             int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-                            lookupTable = lookupTable.Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length).Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                            if (prefixLocation != -1)
+                            {
+                                lookupTable = lookupTable
+                                    .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
+                                    .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                            }
                         }
                         else
                         {
                             int prefixLocation = lookupTable.LastIndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-                            lookupTable = lookupTable.Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length).Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                            if (prefixLocation != -1)
+                            {
+                                lookupTable = lookupTable
+                                    .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
+                                    .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                            }
                         }
 
                         // Add the created Business Key to the source-to-target mapping
@@ -585,7 +593,10 @@ namespace Virtual_Data_Warehouse
                         EventLog databaseEventLog = new EventLog();
                         if (generateInDatabaseFlag)
                         {
-                            databaseEventLog = Utility.ExecuteOutputInDatabase(connPsa, result);
+                            var localConn = input.MatchConnectionKey();
+                            var conn = new SqlConnection { ConnectionString = localConn[input.LoadPatternConnectionKey] };
+
+                            databaseEventLog = Utility.ExecuteOutputInDatabase(conn, result);
                         }
 
                         eventLog.AddRange(fileSaveEventLog);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Newtonsoft.Json;
 using static Virtual_Data_Warehouse.FormBase;
 
@@ -45,6 +46,36 @@ namespace Virtual_Data_Warehouse
 
             return returnMessage;
         }
+
+        internal Dictionary<String, String> MatchConnectionKey()
+        {
+            Dictionary<string, string> returnValue = new Dictionary<string,string>();
+
+            if (LoadPatternConnectionKey == "SourceDatabase")
+            {
+                returnValue.Add(LoadPatternConnectionKey,TeamConfigurationSettings.ConnectionStringSource);
+            }
+            else if (LoadPatternConnectionKey == "StagingDatabase")
+            {
+                returnValue.Add(LoadPatternConnectionKey, TeamConfigurationSettings.ConnectionStringStg);
+            }
+            else if (LoadPatternConnectionKey == "PersistentStagingDatabase")
+            {
+                returnValue.Add(LoadPatternConnectionKey, TeamConfigurationSettings.ConnectionStringHstg);
+            }
+            else if (LoadPatternConnectionKey == "IntegrationDatabase")
+            {
+                returnValue.Add(LoadPatternConnectionKey, TeamConfigurationSettings.ConnectionStringInt);
+            }
+            else if (LoadPatternConnectionKey == "PresentationDatabase")
+            {
+                returnValue.Add(LoadPatternConnectionKey, TeamConfigurationSettings.ConnectionStringPres);
+            }
+
+            return returnValue;
+        }
+        
+    
 
         /// <summary>
         /// The method that backs-up and saves a specific pattern (based on its path) with whatever is passed as contents.
