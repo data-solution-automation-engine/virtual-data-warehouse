@@ -30,9 +30,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,7 +46,6 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dimensionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pointInTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.runEverythingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateTestDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateRIValidationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,14 +85,14 @@
             this.radioButtonDevelopment = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.OutputPathLabel = new System.Windows.Forms.Label();
-            this.label31 = new System.Windows.Forms.Label();
             this.tabPageHome = new System.Windows.Forms.TabPage();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.linkLabelWebLog = new System.Windows.Forms.LinkLabel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -109,6 +108,7 @@
             this.tabPageHome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabControlMain.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStripMainMenu
@@ -210,8 +210,7 @@
             // dimensionalToolStripMenuItem
             // 
             this.dimensionalToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pointInTimeToolStripMenuItem,
-            this.runEverythingToolStripMenuItem});
+            this.pointInTimeToolStripMenuItem});
             this.dimensionalToolStripMenuItem.Name = "dimensionalToolStripMenuItem";
             this.dimensionalToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.dimensionalToolStripMenuItem.Text = "Delivery";
@@ -220,16 +219,9 @@
             // 
             this.pointInTimeToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.Time;
             this.pointInTimeToolStripMenuItem.Name = "pointInTimeToolStripMenuItem";
-            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.pointInTimeToolStripMenuItem.Text = "Point In Time";
             this.pointInTimeToolStripMenuItem.Click += new System.EventHandler(this.pointInTimeToolStripMenuItem_Click);
-            // 
-            // runEverythingToolStripMenuItem
-            // 
-            this.runEverythingToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.CogIcon;
-            this.runEverythingToolStripMenuItem.Name = "runEverythingToolStripMenuItem";
-            this.runEverythingToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.runEverythingToolStripMenuItem.Text = "Run Everything";
             // 
             // testingToolStripMenuItem
             // 
@@ -378,17 +370,10 @@
             // 
             // tabPageSettings
             // 
-            this.tabPageSettings.Controls.Add(this.checkBoxBackupFiles);
-            this.tabPageSettings.Controls.Add(this.label10);
+            this.tabPageSettings.Controls.Add(this.groupBox2);
             this.tabPageSettings.Controls.Add(this.tabControlSettings);
-            this.tabPageSettings.Controls.Add(this.textBoxLoadPatternPath);
-            this.tabPageSettings.Controls.Add(this.textBoxConfigurationPath);
-            this.tabPageSettings.Controls.Add(this.textBoxOutputPath);
             this.tabPageSettings.Controls.Add(this.groupBox8);
             this.tabPageSettings.Controls.Add(this.groupBox1);
-            this.tabPageSettings.Controls.Add(this.label6);
-            this.tabPageSettings.Controls.Add(this.OutputPathLabel);
-            this.tabPageSettings.Controls.Add(this.label31);
             this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
             this.tabPageSettings.Name = "tabPageSettings";
             this.tabPageSettings.Size = new System.Drawing.Size(1330, 601);
@@ -402,7 +387,7 @@
             this.checkBoxBackupFiles.AutoSize = true;
             this.checkBoxBackupFiles.Checked = true;
             this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxBackupFiles.Location = new System.Drawing.Point(1131, 526);
+            this.checkBoxBackupFiles.Location = new System.Drawing.Point(347, 394);
             this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
             this.checkBoxBackupFiles.Size = new System.Drawing.Size(181, 17);
             this.checkBoxBackupFiles.TabIndex = 97;
@@ -412,7 +397,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(14, 139);
+            this.label10.Location = new System.Drawing.Point(6, 49);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(91, 13);
             this.label10.TabIndex = 94;
@@ -425,23 +410,24 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlSettings.Controls.Add(this.tabPage1);
             this.tabControlSettings.Controls.Add(this.tabPage11);
-            this.tabControlSettings.Location = new System.Drawing.Point(516, 9);
+            this.tabControlSettings.Location = new System.Drawing.Point(10, 120);
             this.tabControlSettings.Name = "tabControlSettings";
             this.tabControlSettings.SelectedIndex = 0;
-            this.tabControlSettings.Size = new System.Drawing.Size(796, 515);
+            this.tabControlSettings.Size = new System.Drawing.Size(1309, 471);
             this.tabControlSettings.TabIndex = 99;
             this.tabControlSettings.SelectedIndexChanged += new System.EventHandler(this.tabControlSettings_SelectedIndexChanged);
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.dataGridViewLoadPatternCollection);
+            this.tabPage1.Controls.Add(this.checkBoxBackupFiles);
             this.tabPage1.Controls.Add(this.buttonUpdateLoadPatternCollection);
             this.tabPage1.Controls.Add(this.buttonSaveAsLoadPatternCollection);
             this.tabPage1.Controls.Add(this.buttonOpenLoadPatternCollection);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(788, 489);
+            this.tabPage1.Size = new System.Drawing.Size(1301, 445);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Load Pattern Collection";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -452,34 +438,34 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLoadPatternCollection.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewLoadPatternCollection.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridViewLoadPatternCollection.Location = new System.Drawing.Point(3, 3);
             this.dataGridViewLoadPatternCollection.Name = "dataGridViewLoadPatternCollection";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(782, 427);
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(1295, 383);
             this.dataGridViewLoadPatternCollection.TabIndex = 99;
             // 
             // buttonUpdateLoadPatternCollection
             // 
             this.buttonUpdateLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonUpdateLoadPatternCollection.Location = new System.Drawing.Point(237, 438);
+            this.buttonUpdateLoadPatternCollection.Location = new System.Drawing.Point(232, 394);
             this.buttonUpdateLoadPatternCollection.Name = "buttonUpdateLoadPatternCollection";
             this.buttonUpdateLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
             this.buttonUpdateLoadPatternCollection.TabIndex = 102;
@@ -490,7 +476,7 @@
             // buttonSaveAsLoadPatternCollection
             // 
             this.buttonSaveAsLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSaveAsLoadPatternCollection.Location = new System.Drawing.Point(122, 438);
+            this.buttonSaveAsLoadPatternCollection.Location = new System.Drawing.Point(117, 394);
             this.buttonSaveAsLoadPatternCollection.Name = "buttonSaveAsLoadPatternCollection";
             this.buttonSaveAsLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
             this.buttonSaveAsLoadPatternCollection.TabIndex = 100;
@@ -501,7 +487,7 @@
             // buttonOpenLoadPatternCollection
             // 
             this.buttonOpenLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonOpenLoadPatternCollection.Location = new System.Drawing.Point(7, 438);
+            this.buttonOpenLoadPatternCollection.Location = new System.Drawing.Point(2, 394);
             this.buttonOpenLoadPatternCollection.Name = "buttonOpenLoadPatternCollection";
             this.buttonOpenLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
             this.buttonOpenLoadPatternCollection.TabIndex = 101;
@@ -570,52 +556,54 @@
             // textBoxLoadPatternPath
             // 
             this.textBoxLoadPatternPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxLoadPatternPath.Location = new System.Drawing.Point(17, 157);
+            this.textBoxLoadPatternPath.Location = new System.Drawing.Point(137, 46);
             this.textBoxLoadPatternPath.Multiline = true;
             this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
-            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(493, 27);
+            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(420, 20);
             this.textBoxLoadPatternPath.TabIndex = 93;
             // 
             // textBoxConfigurationPath
             // 
             this.textBoxConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxConfigurationPath.Location = new System.Drawing.Point(17, 109);
+            this.textBoxConfigurationPath.Location = new System.Drawing.Point(137, 20);
             this.textBoxConfigurationPath.Multiline = true;
             this.textBoxConfigurationPath.Name = "textBoxConfigurationPath";
-            this.textBoxConfigurationPath.Size = new System.Drawing.Size(493, 27);
+            this.textBoxConfigurationPath.Size = new System.Drawing.Size(420, 20);
             this.textBoxConfigurationPath.TabIndex = 83;
             // 
             // textBoxOutputPath
             // 
             this.textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxOutputPath.Location = new System.Drawing.Point(17, 61);
+            this.textBoxOutputPath.Location = new System.Drawing.Point(87, 47);
             this.textBoxOutputPath.Multiline = true;
             this.textBoxOutputPath.Name = "textBoxOutputPath";
-            this.textBoxOutputPath.Size = new System.Drawing.Size(493, 27);
+            this.textBoxOutputPath.Size = new System.Drawing.Size(420, 20);
             this.textBoxOutputPath.TabIndex = 81;
             // 
             // groupBox8
             // 
             this.groupBox8.Controls.Add(this.textBoxSchemaName);
             this.groupBox8.Controls.Add(this.label12);
-            this.groupBox8.Location = new System.Drawing.Point(142, 204);
+            this.groupBox8.Controls.Add(this.OutputPathLabel);
+            this.groupBox8.Controls.Add(this.textBoxOutputPath);
+            this.groupBox8.Location = new System.Drawing.Point(585, 18);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(366, 70);
+            this.groupBox8.Size = new System.Drawing.Size(519, 86);
             this.groupBox8.TabIndex = 89;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "ETL output options";
             // 
             // textBoxSchemaName
             // 
-            this.textBoxSchemaName.Location = new System.Drawing.Point(87, 20);
+            this.textBoxSchemaName.Location = new System.Drawing.Point(87, 21);
             this.textBoxSchemaName.Name = "textBoxSchemaName";
-            this.textBoxSchemaName.Size = new System.Drawing.Size(273, 20);
+            this.textBoxSchemaName.Size = new System.Drawing.Size(420, 20);
             this.textBoxSchemaName.TabIndex = 91;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 23);
+            this.label12.Location = new System.Drawing.Point(6, 24);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(75, 13);
             this.label12.TabIndex = 92;
@@ -625,9 +613,9 @@
             // 
             this.groupBox1.Controls.Add(this.radioButtonProduction);
             this.groupBox1.Controls.Add(this.radioButtonDevelopment);
-            this.groupBox1.Location = new System.Drawing.Point(17, 204);
+            this.groupBox1.Location = new System.Drawing.Point(1110, 18);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(119, 70);
+            this.groupBox1.Size = new System.Drawing.Size(116, 85);
             this.groupBox1.TabIndex = 90;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Target environment";
@@ -635,7 +623,7 @@
             // radioButtonProduction
             // 
             this.radioButtonProduction.AutoSize = true;
-            this.radioButtonProduction.Location = new System.Drawing.Point(6, 42);
+            this.radioButtonProduction.Location = new System.Drawing.Point(6, 45);
             this.radioButtonProduction.Name = "radioButtonProduction";
             this.radioButtonProduction.Size = new System.Drawing.Size(76, 17);
             this.radioButtonProduction.TabIndex = 39;
@@ -645,7 +633,7 @@
             // radioButtonDevelopment
             // 
             this.radioButtonDevelopment.AutoSize = true;
-            this.radioButtonDevelopment.Location = new System.Drawing.Point(6, 19);
+            this.radioButtonDevelopment.Location = new System.Drawing.Point(6, 22);
             this.radioButtonDevelopment.Name = "radioButtonDevelopment";
             this.radioButtonDevelopment.Size = new System.Drawing.Size(88, 17);
             this.radioButtonDevelopment.TabIndex = 38;
@@ -655,29 +643,20 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(14, 91);
+            this.label6.Location = new System.Drawing.Point(6, 23);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(306, 13);
+            this.label6.Size = new System.Drawing.Size(125, 13);
             this.label6.TabIndex = 84;
-            this.label6.Text = "TEAM configuration path (TEAM metadata settings file location)";
+            this.label6.Text = "TEAM configuration path";
             // 
             // OutputPathLabel
             // 
             this.OutputPathLabel.AutoSize = true;
-            this.OutputPathLabel.Location = new System.Drawing.Point(14, 43);
+            this.OutputPathLabel.Location = new System.Drawing.Point(6, 50);
             this.OutputPathLabel.Name = "OutputPathLabel";
-            this.OutputPathLabel.Size = new System.Drawing.Size(288, 13);
+            this.OutputPathLabel.Size = new System.Drawing.Size(63, 13);
             this.OutputPathLabel.TabIndex = 82;
-            this.OutputPathLabel.Text = "VEDW output path (location of the ETL output from VEDW)";
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(14, 12);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(199, 13);
-            this.label31.TabIndex = 53;
-            this.label31.Text = "Configuration settings for ETL generation";
+            this.OutputPathLabel.Text = "Output path";
             // 
             // tabPageHome
             // 
@@ -692,6 +671,18 @@
             this.tabPageHome.TabIndex = 12;
             this.tabPageHome.Text = "Home";
             this.tabPageHome.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.Location = new System.Drawing.Point(34, 236);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(393, 115);
+            this.richTextBox1.TabIndex = 21;
+            this.richTextBox1.Text = "This is a pre-release. v1.6 is still being finalised, however since the updated T" +
+    "EAM version is already available this version was placed online to at least use " +
+    "some (most) of the new functionality.";
             // 
             // linkLabel1
             // 
@@ -746,17 +737,18 @@
             this.tabControlMain.Size = new System.Drawing.Size(1338, 627);
             this.tabControlMain.TabIndex = 3;
             // 
-            // richTextBox1
+            // groupBox2
             // 
-            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox1.Location = new System.Drawing.Point(34, 236);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(393, 115);
-            this.richTextBox1.TabIndex = 21;
-            this.richTextBox1.Text = "This is a pre-release. v1.6 is still being finalised, however since the updated T" +
-    "EAM version is already available this version was placed online to at least use " +
-    "some (most) of the new functionality.";
+            this.groupBox2.Controls.Add(this.textBoxConfigurationPath);
+            this.groupBox2.Controls.Add(this.textBoxLoadPatternPath);
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Location = new System.Drawing.Point(10, 18);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(569, 85);
+            this.groupBox2.TabIndex = 100;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Configuration paths";
             // 
             // FormMain
             // 
@@ -785,9 +777,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox9.ResumeLayout(false);
             this.tabPageSettings.ResumeLayout(false);
-            this.tabPageSettings.PerformLayout();
             this.tabControlSettings.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternCollection)).EndInit();
             this.tabPage11.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternDefinition)).EndInit();
@@ -799,6 +791,8 @@
             this.tabPageHome.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabControlMain.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -826,7 +820,6 @@
         private System.Windows.Forms.ToolStripMenuItem openTEAMToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem openTEAMConfigurationSettingsFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem runEverythingToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.RichTextBox richTextBoxInformationMain;
         private System.Windows.Forms.CheckBox checkBoxGenerateJsonSchema;
@@ -858,7 +851,6 @@
         internal System.Windows.Forms.RadioButton radioButtonDevelopment;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label OutputPathLabel;
-        private System.Windows.Forms.Label label31;
         private System.Windows.Forms.TabPage tabPageHome;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.LinkLabel linkLabelWebLog;
@@ -866,6 +858,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxMainScreen;
         private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 

@@ -73,25 +73,27 @@ namespace Virtual_Data_Warehouse
 
             SetDatabaseConnections();
 
+            var patternDefinition = new LoadPatternDefinitionFileHandling();
+            VedwConfigurationSettings.patternDefinitionList = patternDefinition.DeserializeLoadPatternDefinition();
+
+            // Load Pattern definition in memory
+            if ((VedwConfigurationSettings.patternDefinitionList != null) && (!VedwConfigurationSettings.patternDefinitionList.Any()))
+            {
+                SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFile + " in the " + VedwConfigurationSettings.LoadPatternListPath + " directory, and if the file contains pattern types.");
+            }
 
             // Load Pattern metadata & update in memory
             var patternCollection = new LoadPatternCollectionFileHandling();
             VedwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
 
-            //if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
-            //{
-            //    SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a "+GlobalParameters.LoadPatternListFile+" in the "+VedwConfigurationSettings.LoadPatternListPath+" directory, and if the file contains patterns.");
-            //}
-
-            // Load Pattern definition in memory
-            var patternDefinition = new LoadPatternDefinitionFileHandling();
-            VedwConfigurationSettings.patternDefinitionList = patternDefinition.DeserializeLoadPatternDefinition();
-                
-
-            if ((VedwConfigurationSettings.patternDefinitionList != null) && (!VedwConfigurationSettings.patternDefinitionList.Any()))
+            if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
             {
-                SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFile + " in the " + VedwConfigurationSettings.LoadPatternListPath + " directory, and if the file contains pattern types.");
+                SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.LoadPatternListPath + " directory, and if the file contains patterns.");
             }
+    
+
+            
+
 
             // Populate the data grid
             populateLoadPatternCollectionDataGrid();
@@ -159,6 +161,7 @@ namespace Virtual_Data_Warehouse
             dt.Columns[3].ColumnName = "BaseQuery";
             dt.Columns[4].ColumnName = "AttributeQuery";
             dt.Columns[5].ColumnName = "Notes";
+            dt.Columns[6].ColumnName = "ConnectionKey";
 
             _bindingSourceLoadPatternDefinition.DataSource = dt;
 
@@ -194,6 +197,11 @@ namespace Virtual_Data_Warehouse
                 dataGridViewLoadPatternDefinition.Columns[5].HeaderText = "Notes";
                 dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternDefinition.Columns[6].HeaderText = "ConnectionKey";
+                dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.TopLeft;
             }
 
@@ -1621,7 +1629,23 @@ namespace Virtual_Data_Warehouse
         /// <param name="e"></param>
         private void saveConfigurationFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Paths
+            // Make sure the paths contain a backslash
+            if (!textBoxOutputPath.Text.EndsWith(@"\"))
+            {
+                textBoxOutputPath.Text = textBoxOutputPath.Text + @"\";
+            }
+
+            if (!textBoxLoadPatternPath.Text.EndsWith(@"\"))
+            {
+                textBoxLoadPatternPath.Text = textBoxLoadPatternPath.Text + @"\";
+            }
+
+            if (!textBoxConfigurationPath.Text.EndsWith(@"\"))
+            {
+                textBoxConfigurationPath.Text = textBoxConfigurationPath.Text + @"\";
+            }
+
+            // Make the paths accessible from anywhere in the app (global parameters)
             VedwConfigurationSettings.TeamConfigurationPath = textBoxConfigurationPath.Text;
             VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
             VedwConfigurationSettings.LoadPatternListPath = textBoxLoadPatternPath.Text;
@@ -1638,12 +1662,12 @@ namespace Virtual_Data_Warehouse
             }
             else
             {
-                richTextBoxInformationMain.AppendText("An issue was encountered saving the Hash Disabling checkbox, can you verify the settings file in the Configuration directory?");
+                richTextBoxInformationMain.AppendText("An issue was encountered saving the environment selection, can you verify the selection of the Development / Production radio button?");
             }
 
             // Update the root path file (from memory)
             var rootPathConfigurationFile = new StringBuilder();
-            rootPathConfigurationFile.AppendLine("/* Virtual Enterprise Data Warehouse (VEDW) Core Settings */");
+            rootPathConfigurationFile.AppendLine("/* Virtual Data Warehouse Core Settings */");
             rootPathConfigurationFile.AppendLine("/* Saved at " + DateTime.Now + " */");
             rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VedwConfigurationSettings.TeamConfigurationPath + "");
             rootPathConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath + "");
@@ -1832,7 +1856,8 @@ namespace Virtual_Data_Warehouse
                                 LoadPatternSelectionQuery = singleRow[2].ToString(),
                                 loadPatternBaseQuery = singleRow[3].ToString(),
                                 loadPatternAttributeQuery = singleRow[4].ToString(),
-                                loadPatternNotes = singleRow[5].ToString()
+                                loadPatternNotes = singleRow[5].ToString(),
+                                LoadPatternConnectionKey = singleRow[6].ToString()
                             });
                             outputFileArray.Add(individualRow);
                         }
@@ -1881,7 +1906,8 @@ namespace Virtual_Data_Warehouse
                         LoadPatternSelectionQuery = singleRow[2].ToString(),
                         loadPatternBaseQuery = singleRow[3].ToString(),
                         loadPatternAttributeQuery = singleRow[4].ToString(),
-                        loadPatternNotes = singleRow[5].ToString()
+                        loadPatternNotes = singleRow[5].ToString(),
+                        LoadPatternConnectionKey = singleRow[6].ToString()
                     });
                     outputFileArray.Add(individualRow);
                 }

@@ -88,7 +88,7 @@ namespace Virtual_Data_Warehouse
             {
                 try
                 {
-                    sqlConnection.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                    //sqlConnection.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
                     using (var connection = sqlConnection)
                     {
                         var server = new Server(new ServerConnection(connection));
@@ -99,7 +99,7 @@ namespace Virtual_Data_Warehouse
                             var localEvent = new Event
                             {
                                 eventCode = 0,
-                                eventDescription = "The statement was executed successfully.\r\n"
+                                eventDescription = "The SQL statement was executed successfully.\r\n"
                             };
 
                             eventLog.Add(localEvent);

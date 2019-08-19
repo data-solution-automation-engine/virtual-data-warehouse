@@ -14,6 +14,7 @@ namespace Virtual_Data_Warehouse
         public string LoadPatternBaseQuery { get; set; }
         public string LoadPatternAttributeQuery { get; set; }
         public string LoadPatternNotes { get; set; }
+        public string LoadPatternConnectionKey { get; set; }
 
         /// <summary>
         /// Create a file backup for the configuration file at the provided location and return notice of success or failure as a string.
@@ -250,11 +251,16 @@ namespace Virtual_Data_Warehouse
     {
         // Databases
         public string sourceDatabaseName { get; } = FormBase.TeamConfigurationSettings.SourceDatabaseName;
+        public string sourceDatabaseConnection { get; } = FormBase.TeamConfigurationSettings.ConnectionStringSource;
         public string stagingAreaDatabaseName { get; } = FormBase.TeamConfigurationSettings.StagingDatabaseName;
+        public string stagingAreaDatabaseConnection { get; } = FormBase.TeamConfigurationSettings.ConnectionStringSource;
         public string persistentStagingDatabaseName { get; } = FormBase.TeamConfigurationSettings.PsaDatabaseName;
+        public string persistentStagingDatabaseConnection { get; } = FormBase.TeamConfigurationSettings.ConnectionStringSource;
         public string persistentStagingSchemaName { get;} = FormBase.TeamConfigurationSettings.SchemaName;
         public string integrationDatabaseName { get; } = FormBase.TeamConfigurationSettings.IntegrationDatabaseName;
+        public string integrationDatabaseConnection { get; } = FormBase.TeamConfigurationSettings.ConnectionStringSource;
         public string presentationDatabaseName { get; } = FormBase.TeamConfigurationSettings.PresentationDatabaseName;
+        public string presentationDatabaseConnection { get; } = FormBase.TeamConfigurationSettings.ConnectionStringSource;
         public string vedwSchemaName { get; } = FormBase.VedwConfigurationSettings.VedwSchema;
         // Attributes
         public string changeDataCaptureAttribute { get; set; } = FormBase.TeamConfigurationSettings.ChangeDataCaptureAttribute;

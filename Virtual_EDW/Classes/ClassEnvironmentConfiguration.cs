@@ -68,7 +68,7 @@ namespace Virtual_Data_Warehouse
                     initialConfigurationFile.AppendLine("VedwOutputPath|" + FormBase.VedwConfigurationSettings.VedwOutputPath);
                     initialConfigurationFile.AppendLine("LoadPatternListPath|" + FormBase.VedwConfigurationSettings.LoadPatternListPath);
                     initialConfigurationFile.AppendLine("WorkingEnvironment|Development");
-                    initialConfigurationFile.AppendLine("VedwSchema|dbo");
+                    initialConfigurationFile.AppendLine("VedwSchema|vedw");
                     initialConfigurationFile.AppendLine("/* End of file */");
 
                     using (var outfile = new StreamWriter(FormBase.GlobalParameters.VedwConfigurationPath + FormBase.GlobalParameters.VedwConfigurationfileName + FormBase.GlobalParameters.VedwFileExtension))
