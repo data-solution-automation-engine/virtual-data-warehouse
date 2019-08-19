@@ -1,0 +1,30 @@
+{{#each individualSourceToTargetMapping}}{{#if @first}}
+--
+-- Link Insert Into statement for {{targetTable}}
+-- Generated at {{../generationDateTime}}
+--
+USE [{{../metadataConfiguration.integrationDatabaseName}}]
+GO
+
+INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}]
+(  {{#each businessKey}}
+   [{{surrogateKey}}],{{/each}}
+   {{#each columnMapping}}
+   [{{targetColumn.columnName}}],{{/each}}
+   [{{../metadataConfiguration.etlProcessAttribute}}],
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}]
+)
+SELECT {{#each businessKey}}
+   link_view.[{{surrogateKey}}],{{/each}}
+   {{#each columnMapping}}
+   link_view.[{{targetColumn.columnName}}],{{/each}}
+   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
+   link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
+   link_view.[{{../metadataConfiguration.recordSourceAttribute}}]
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] link_view
+LEFT OUTER JOIN
+   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}] link_table
+   ON link_view.[{{targetTableHashKey}}] = link_table.[{{targetTableHashKey}}]
+WHERE link_table.[{{targetTableHashKey}}] IS NULL
+{{/if}}{{/each}}

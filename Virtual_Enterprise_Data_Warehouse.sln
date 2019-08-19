@@ -3,31 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual_EDW", "Virtual_EDW\Virtual_EDW.csproj", "{73971441-2782-43CF-862C-1F636528858A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual_Data_Warehouse", "Virtual_EDW\Virtual_Data_Warehouse.csproj", "{73971441-2782-43CF-862C-1F636528858A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{8221AA80-A2A2-4CE4-BD5D-9270307C36C2}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Virtual_Data_Warehouse_Installer", "Virtual_EDW_Installer\Virtual_EDW_Installer.vdproj", "{FFFAA8D4-DD12-4659-A020-1B76795C6491}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoadPatterns", "LoadPatterns", "{E3AF448B-08FD-4B47-8D9A-7107CEBE0FD8}"
 	ProjectSection(SolutionItems) = preProject
-		Files\Examples\ETL Automation Metadata v1.2 _OMD.xlsm = Files\Examples\ETL Automation Metadata v1.2 _OMD.xlsm
-		Files\ETL Automation Metadata v1.2.xlsm = Files\ETL Automation Metadata v1.2.xlsm
-		Files\Examples\Metadata_Upload.sql = Files\Examples\Metadata_Upload.sql
-		Files\Examples\Sample_EDW_1_Source_DML.sql = Files\Examples\Sample_EDW_1_Source_DML.sql
-		Files\Examples\Sample_EDW_2_Staging_User_Managed_DML.sql = Files\Examples\Sample_EDW_2_Staging_User_Managed_DML.sql
-		Files\Examples\Sample_EDW_2_Staging_User_Managed_OMD_DML.sql = Files\Examples\Sample_EDW_2_Staging_User_Managed_OMD_DML.sql
-		Files\SP_MD_DV_METADATA.sql = Files\SP_MD_DV_METADATA.sql
-		Files\Examples\SQL_Create_STG_and_HSTG.sql = Files\Examples\SQL_Create_STG_and_HSTG.sql
-		Files\Examples\SQL_Reset_Data.sql = Files\Examples\SQL_Reset_Data.sql
-		Files\Examples\Virtual_EDW_1_Source_v1.1.erwin = Files\Examples\Virtual_EDW_1_Source_v1.1.erwin
-		Files\Examples\Virtual_EDW_2_Staging_v1.0.erwin = Files\Examples\Virtual_EDW_2_Staging_v1.0.erwin
-		Files\Examples\Virtual_EDW_2_Staging_v1.0_OMD.erwin = Files\Examples\Virtual_EDW_2_Staging_v1.0_OMD.erwin
-		Files\Examples\Virtual_EDW_3_PSA_v1.0.erwin = Files\Examples\Virtual_EDW_3_PSA_v1.0.erwin
-		Files\Examples\Virtual_EDW_3_PSA_v1.0_OMD.erwin = Files\Examples\Virtual_EDW_3_PSA_v1.0_OMD.erwin
-		Files\Examples\Virtual_EDW_4_Integration_v1.2.1.erwin = Files\Examples\Virtual_EDW_4_Integration_v1.2.1.erwin
-		Files\Examples\Virtual_EDW_4_Integration_v1.2.1_OMD.erwin = Files\Examples\Virtual_EDW_4_Integration_v1.2.1_OMD.erwin
-		Files\Examples\Virtual_EDW_5_Presentation_v1.0.erwin = Files\Examples\Virtual_EDW_5_Presentation_v1.0.erwin
-		Files\Virtualisation_Metadata_v1.3.erwin = Files\Virtualisation_Metadata_v1.3.erwin
+		LoadPatterns\loadPatternCollection.json = LoadPatterns\loadPatternCollection.json
+		LoadPatterns\loadPatternHubDeltaSelect.Handlebars = LoadPatterns\loadPatternHubDeltaSelect.Handlebars
+		LoadPatterns\loadPatternHubInsertInto.Handlebars = LoadPatterns\loadPatternHubInsertInto.Handlebars
+		LoadPatterns\loadPatternHubView.Handlebars = LoadPatterns\loadPatternHubView.Handlebars
+		LoadPatterns\loadPatternLinkInsertInto.Handlebars = LoadPatterns\loadPatternLinkInsertInto.Handlebars
+		LoadPatterns\loadPatternLinkSatelliteInsertInto.Handlebars = LoadPatterns\loadPatternLinkSatelliteInsertInto.Handlebars
+		LoadPatterns\loadPatternLinkSatelliteView.Handlebars = LoadPatterns\loadPatternLinkSatelliteView.Handlebars
+		LoadPatterns\loadPatternLinkView.Handlebars = LoadPatterns\loadPatternLinkView.Handlebars
+		LoadPatterns\loadPatternPersistentStagingInsertInto.Handlebars = LoadPatterns\loadPatternPersistentStagingInsertInto.Handlebars
+		LoadPatterns\loadPatternPersistentStagingView.Handlebars = LoadPatterns\loadPatternPersistentStagingView.Handlebars
+		LoadPatterns\loadPatternSatelliteInsertInto.Handlebars = LoadPatterns\loadPatternSatelliteInsertInto.Handlebars
+		LoadPatterns\loadPatternSatelliteView.Handlebars = LoadPatterns\loadPatternSatelliteView.Handlebars
+		LoadPatterns\loadPatternStagingInsertInto.Handlebars = LoadPatterns\loadPatternStagingInsertInto.Handlebars
+		LoadPatterns\loadPatternStagingView.Handlebars = LoadPatterns\loadPatternStagingView.Handlebars
 	EndProjectSection
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Virtual_EDW_Installer", "Virtual_EDW_Installer\Virtual_EDW_Installer.vdproj", "{FFFAA8D4-DD12-4659-A020-1B76795C6491}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

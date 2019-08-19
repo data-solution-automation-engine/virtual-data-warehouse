@@ -1,0 +1,63 @@
+--
+-- Hub View definition for {{mainTable}}
+-- Generated at {{generationDateTime}}
+--
+GO
+USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
+GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]
+GO
+
+CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}] AS
+SELECT hub.*
+FROM (
+{{#each individualSourceToTargetMapping}}{{#if @first}}
+SELECT
+    HASHBYTES('MD5', {{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
+    {{#each businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
+    {{/each}}
+    ) AS {{surrogateKey}},{{/if}}{{/each}}
+    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
+    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}} {{!-- The Hub business key --}}
+    {{#each businessKeyComponentMapping}}
+    {{targetColumn.columnName}},{{/each}}{{/each}}
+    ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+       {{targetColumn.columnName}}{{#unless @last}},{{/unless}}{{/each}}
+    {{/each}}
+    ORDER BY 
+       MIN({{../metadataConfiguration.loadDateTimeAttribute}})
+    ) AS ROW_NR
+FROM 
+( {{/if}}{{/each}}
+    {{#each individualSourceToTargetMapping }}
+    SELECT {{#each businessKey}}{{#each businessKeyComponentMapping}}
+        CAST({{sourceColumn.columnName}} AS NVARCHAR(100)) AS {{targetColumn.columnName}},{{/each}}{{/each}}
+        {{../metadataConfiguration.recordSourceAttribute}},
+        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
+    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}]
+    WHERE {{#each businessKey}}{{#each businessKeyComponentMapping}}
+        {{sourceColumn.columnName}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
+        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
+    GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
+        {{#unless sourceColumn.columnType}}{{sourceColumn.columnName}},{{/unless}}{{/each}}{{/each}}
+        {{../metadataConfiguration.recordSourceAttribute}}
+    {{#unless @last}}UNION{{/unless}}
+    {{/each}}
+) HUB_selection {{#each individualSourceToTargetMapping}}{{#if @first}}
+GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
+    {{targetColumn.columnName}},{{/each}}{{/each}}
+    {{../metadataConfiguration.recordSourceAttribute}} {{/if}}{{/each}}
+) hub
+WHERE ROW_NR = 1
+UNION
+SELECT 
+  0x00000000000000000000000000000000,
+  - 1,
+  '1900-01-01',
+  'Data Warehouse',{{#each individualSourceToTargetMapping}}{{#if @first}}{{#each businessKey}}{{#each businessKeyComponentMapping}}
+  'Unknown',{{/each}}{{/each}}{{/if}}{{/each}}
+  1 AS ROW_NR

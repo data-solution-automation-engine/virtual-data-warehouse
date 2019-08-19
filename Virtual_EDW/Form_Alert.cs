@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class Form_Alert : FormBase
     {

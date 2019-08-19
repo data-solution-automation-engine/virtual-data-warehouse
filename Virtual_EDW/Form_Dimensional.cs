@@ -5,8 +5,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Virtual_Data_Warehouse;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class FormDimensional : FormBase
     {
@@ -132,7 +133,7 @@ namespace Virtual_EDW
                 MessageBox.Show("Something is not right - a prefix / suffix for the key attribute should always be checked.","Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
-            // Retrieve the prefix/suffix settings for the tables (Hubs, Links, Sats)
+            // Retrieve the prefix/suffix settings for the tables (Hubs, Links, Satellites)
             var linkIdentifier = TeamConfigurationSettings.LinkTablePrefixValue;
             var linkSatIdentifier = TeamConfigurationSettings.LinkTablePrefixValue;
             var satIdentifier = TeamConfigurationSettings.SatTablePrefixValue;
@@ -291,7 +292,7 @@ namespace Virtual_EDW
                 queryMetadata.AppendLine("WHERE HUB_TABLE_SOURCE IN ("+hubList+")");
                 queryMetadata.AppendLine("ORDER BY 1");
 
-                var pathWaytables = GetDataTable(ref conn, queryMetadata.ToString());
+                var pathWaytables = Utility.GetDataTable(ref conn, queryMetadata.ToString());
 
                 if (pathWaytables.Rows.Count == 0)
                 {

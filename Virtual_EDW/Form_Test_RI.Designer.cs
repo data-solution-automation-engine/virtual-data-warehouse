@@ -1,4 +1,4 @@
-﻿namespace Virtual_EDW
+﻿namespace Virtual_Data_Warehouse
 {
     partial class FormTestRi
     {
@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormTestRi));
             this.buttonGenerateTestcases = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.DebuggingTextbox = new System.Windows.Forms.RichTextBox();
+            this.richTextBoxOutput = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,42 +41,44 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButtonFullValidation = new System.Windows.Forms.RadioButton();
             this.radioButtonDeltaValidation = new System.Windows.Forms.RadioButton();
-            this.label2 = new System.Windows.Forms.Label();
-            this.richTextBoxOutput = new System.Windows.Forms.RichTextBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             this.TargetPlatformGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonGenerateTestcases
             // 
-            this.buttonGenerateTestcases.Location = new System.Drawing.Point(25, 210);
+            this.buttonGenerateTestcases.Location = new System.Drawing.Point(25, 467);
             this.buttonGenerateTestcases.Name = "buttonGenerateTestcases";
             this.buttonGenerateTestcases.Size = new System.Drawing.Size(109, 40);
             this.buttonGenerateTestcases.TabIndex = 19;
             this.buttonGenerateTestcases.Text = "Generate Referential Integrity Test";
             this.buttonGenerateTestcases.UseVisualStyleBackColor = true;
-            this.buttonGenerateTestcases.Click += new System.EventHandler(this.buttonGenerateTestcases_Click);
+            this.buttonGenerateTestcases.Click += new System.EventHandler(this.ButtonGenerateTestcases_Click);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(266, 18);
+            this.label4.Location = new System.Drawing.Point(211, 18);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(39, 13);
             this.label4.TabIndex = 18;
             this.label4.Text = "Output";
             // 
-            // DebuggingTextbox
+            // richTextBoxOutput
             // 
-            this.DebuggingTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.richTextBoxOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.DebuggingTextbox.Location = new System.Drawing.Point(269, 34);
-            this.DebuggingTextbox.Name = "DebuggingTextbox";
-            this.DebuggingTextbox.Size = new System.Drawing.Size(560, 405);
-            this.DebuggingTextbox.TabIndex = 17;
-            this.DebuggingTextbox.Text = "";
+            this.richTextBoxOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxOutput.Location = new System.Drawing.Point(214, 34);
+            this.richTextBoxOutput.Name = "richTextBoxOutput";
+            this.richTextBoxOutput.Size = new System.Drawing.Size(615, 357);
+            this.richTextBoxOutput.TabIndex = 17;
+            this.richTextBoxOutput.Text = "";
             // 
             // menuStrip1
             // 
@@ -98,11 +100,11 @@
             // 
             // closeToolStripMenuItem
             // 
-            this.closeToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ExitApplication;
+            this.closeToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.ExitApplication;
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem.Text = "Close";
-            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
             // TargetPlatformGroupBox
             // 
@@ -110,7 +112,7 @@
             this.TargetPlatformGroupBox.Controls.Add(this.radioButtonIntegrationLayer);
             this.TargetPlatformGroupBox.Location = new System.Drawing.Point(25, 28);
             this.TargetPlatformGroupBox.Name = "TargetPlatformGroupBox";
-            this.TargetPlatformGroupBox.Size = new System.Drawing.Size(224, 74);
+            this.TargetPlatformGroupBox.Size = new System.Drawing.Size(171, 74);
             this.TargetPlatformGroupBox.TabIndex = 21;
             this.TargetPlatformGroupBox.TabStop = false;
             this.TargetPlatformGroupBox.Text = "Target Area";
@@ -118,22 +120,22 @@
             // radioButtonPSA
             // 
             this.radioButtonPSA.AutoSize = true;
-            this.radioButtonPSA.Checked = true;
             this.radioButtonPSA.Location = new System.Drawing.Point(6, 19);
             this.radioButtonPSA.Name = "radioButtonPSA";
-            this.radioButtonPSA.Size = new System.Drawing.Size(172, 17);
+            this.radioButtonPSA.Size = new System.Drawing.Size(147, 17);
             this.radioButtonPSA.TabIndex = 3;
-            this.radioButtonPSA.TabStop = true;
-            this.radioButtonPSA.Text = "Persistent Staging Area (virtual)";
+            this.radioButtonPSA.Text = "Persistent Staging (virtual)";
             this.radioButtonPSA.UseVisualStyleBackColor = true;
             // 
             // radioButtonIntegrationLayer
             // 
             this.radioButtonIntegrationLayer.AutoSize = true;
+            this.radioButtonIntegrationLayer.Checked = true;
             this.radioButtonIntegrationLayer.Location = new System.Drawing.Point(6, 42);
             this.radioButtonIntegrationLayer.Name = "radioButtonIntegrationLayer";
             this.radioButtonIntegrationLayer.Size = new System.Drawing.Size(151, 17);
             this.radioButtonIntegrationLayer.TabIndex = 1;
+            this.radioButtonIntegrationLayer.TabStop = true;
             this.radioButtonIntegrationLayer.Text = "Integration Layer (physical)";
             this.radioButtonIntegrationLayer.UseVisualStyleBackColor = true;
             // 
@@ -143,7 +145,7 @@
             this.groupBox1.Controls.Add(this.radioButtonDeltaValidation);
             this.groupBox1.Location = new System.Drawing.Point(25, 119);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(224, 74);
+            this.groupBox1.Size = new System.Drawing.Size(171, 74);
             this.groupBox1.TabIndex = 23;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Validation Scope";
@@ -151,58 +153,59 @@
             // radioButtonFullValidation
             // 
             this.radioButtonFullValidation.AutoSize = true;
-            this.radioButtonFullValidation.Checked = true;
             this.radioButtonFullValidation.Location = new System.Drawing.Point(6, 19);
             this.radioButtonFullValidation.Name = "radioButtonFullValidation";
-            this.radioButtonFullValidation.Size = new System.Drawing.Size(206, 17);
+            this.radioButtonFullValidation.Size = new System.Drawing.Size(128, 17);
             this.radioButtonFullValidation.TabIndex = 3;
-            this.radioButtonFullValidation.TabStop = true;
-            this.radioButtonFullValidation.Text = "Validate against Data Warehouse (full)";
+            this.radioButtonFullValidation.Text = "Data Warehouse (full)";
             this.radioButtonFullValidation.UseVisualStyleBackColor = true;
             // 
             // radioButtonDeltaValidation
             // 
             this.radioButtonDeltaValidation.AutoSize = true;
+            this.radioButtonDeltaValidation.Checked = true;
             this.radioButtonDeltaValidation.Location = new System.Drawing.Point(6, 42);
             this.radioButtonDeltaValidation.Name = "radioButtonDeltaValidation";
-            this.radioButtonDeltaValidation.Size = new System.Drawing.Size(196, 17);
+            this.radioButtonDeltaValidation.Size = new System.Drawing.Size(118, 17);
             this.radioButtonDeltaValidation.TabIndex = 1;
-            this.radioButtonDeltaValidation.Text = "Validate against Staging Area (delta)";
+            this.radioButtonDeltaValidation.TabStop = true;
+            this.radioButtonDeltaValidation.Text = "Staging Area (delta)";
             this.radioButtonDeltaValidation.UseVisualStyleBackColor = true;
             // 
-            // label2
+            // groupBox9
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(266, 451);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 13);
-            this.label2.TabIndex = 25;
-            this.label2.Text = "Information";
+            this.groupBox9.Controls.Add(this.richTextBoxInformationMain);
+            this.groupBox9.Location = new System.Drawing.Point(214, 409);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(615, 106);
+            this.groupBox9.TabIndex = 92;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Information";
             // 
-            // richTextBoxOutput
+            // richTextBoxInformationMain
             // 
-            this.richTextBoxOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBoxOutput.Location = new System.Drawing.Point(269, 467);
-            this.richTextBoxOutput.Name = "richTextBoxOutput";
-            this.richTextBoxOutput.Size = new System.Drawing.Size(560, 48);
-            this.richTextBoxOutput.TabIndex = 24;
-            this.richTextBoxOutput.Text = "";
+            this.richTextBoxInformationMain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.richTextBoxInformationMain.BackColor = System.Drawing.SystemColors.Control;
+            this.richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 17);
+            this.richTextBoxInformationMain.Name = "richTextBoxInformationMain";
+            this.richTextBoxInformationMain.Size = new System.Drawing.Size(603, 82);
+            this.richTextBoxInformationMain.TabIndex = 29;
+            this.richTextBoxInformationMain.Text = "";
             // 
-            // FormTestRI
+            // FormTestRi
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(841, 527);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.richTextBoxOutput);
+            this.ClientSize = new System.Drawing.Size(841, 528);
+            this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.TargetPlatformGroupBox);
             this.Controls.Add(this.buttonGenerateTestcases);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.DebuggingTextbox);
+            this.Controls.Add(this.richTextBoxOutput);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -216,6 +219,7 @@
             this.TargetPlatformGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -225,7 +229,7 @@
 
         private System.Windows.Forms.Button buttonGenerateTestcases;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.RichTextBox DebuggingTextbox;
+        private System.Windows.Forms.RichTextBox richTextBoxOutput;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
@@ -235,7 +239,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton radioButtonFullValidation;
         private System.Windows.Forms.RadioButton radioButtonDeltaValidation;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.RichTextBox richTextBoxOutput;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.RichTextBox richTextBoxInformationMain;
     }
 }

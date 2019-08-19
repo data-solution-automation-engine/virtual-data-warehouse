@@ -4,8 +4,9 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
+using Virtual_Data_Warehouse;
 
-namespace Virtual_EDW
+namespace Virtual_Data_Warehouse
 {
     public partial class FormAbout : FormBase
     {
@@ -61,7 +62,7 @@ namespace Virtual_EDW
                 sqlForWorkCountDown.AppendLine(") as sub");
 
                 //  MessageBox.Show(sqlForWorkCountdDown.ToString());
-                var workCountDownDatatable = GetDataTable(ref connHstg, sqlForWorkCountDown.ToString());
+                var workCountDownDatatable = Utility.GetDataTable(ref connHstg, sqlForWorkCountDown.ToString());
 
                 //var workCountDownDatatable = _myParent.Invoke((MethodInvoker)delegate() { _myParent.GetDataTable(ref connHstg, sqlForWorkCountdDown.ToString()); });
 

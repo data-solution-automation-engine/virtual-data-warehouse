@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows.Forms;
-
-namespace Virtual_EDW
+﻿namespace Virtual_Data_Warehouse
 {
     partial class FormAbout
     {
@@ -81,16 +78,16 @@ namespace Virtual_EDW
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(100, 55);
             this.textBox2.TabIndex = 3;
-            this.textBox2.Text = "Roelant Vos\r\n2015-2018\r\nv1.4";
+            this.textBox2.Text = "Roelant Vos\r\n2015-2019";
             // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(189, 9);
+            this.pictureBox1.Location = new System.Drawing.Point(178, 9);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 56);
+            this.pictureBox1.Size = new System.Drawing.Size(111, 78);
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             // 
@@ -112,7 +109,7 @@ namespace Virtual_EDW
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(289, 276);
+            this.ClientSize = new System.Drawing.Size(289, 275);
             this.ControlBox = false;
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.textBox1);

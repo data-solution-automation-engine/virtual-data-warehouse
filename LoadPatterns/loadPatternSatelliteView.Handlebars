@@ -1,0 +1,27 @@
+{{#each individualSourceToTargetMapping}}
+--
+-- Satellite View definition for {{../mainTable}}
+-- Generated at {{../generationDateTime}}
+--
+GO
+USE [{{../metadataConfiguration.persistentStagingdatabaseName}}]
+GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{../mainTable}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{../mainTable}}]
+GO
+
+CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
+SELECT 
+    HASHBYTES('MD5',
+    {{#each businessKey.businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{sourceComponentName}})), 'N/A') + '#~!' {{#unless @last}}+{{/unless}}
+    {{/each}}
+    ) AS {{targetTableHashKey}},
+    DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
+    {{#each columnMapping}}
+    {{sourceColumn.columnName}} AS {{targetColumn.columnName}}{{#unless @last}},{{/unless}}
+    {{/each}}
+FROM {{sourceTable}}
+
+{{/each}}

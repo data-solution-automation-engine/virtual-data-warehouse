@@ -1,4 +1,4 @@
-﻿namespace Virtual_EDW
+﻿namespace Virtual_Data_Warehouse
 {
     partial class FormPit
     {
@@ -227,7 +227,7 @@
             // 
             // exitToolStripMenuItem
             // 
-            this.exitToolStripMenuItem.Image = global::Virtual_EDW.Properties.Resources.ExitApplication;
+            this.exitToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.ExitApplication;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.exitToolStripMenuItem.Text = "Close Window";
@@ -368,7 +368,7 @@
             // pictureBoxCheck
             // 
             this.pictureBoxCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBoxCheck.Image = global::Virtual_EDW.Properties.Resources.transparent_green_checkmark_hi;
+            this.pictureBoxCheck.Image = global::Virtual_Data_Warehouse.Properties.Resources.transparent_green_checkmark_hi;
             this.pictureBoxCheck.Location = new System.Drawing.Point(18, 668);
             this.pictureBoxCheck.Name = "pictureBoxCheck";
             this.pictureBoxCheck.Size = new System.Drawing.Size(20, 24);
@@ -789,7 +789,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Image = global::Virtual_EDW.Properties.Resources.RavosLogo;
+            this.pictureBox1.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
             this.pictureBox1.Location = new System.Drawing.Point(1513, 729);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(109, 100);
