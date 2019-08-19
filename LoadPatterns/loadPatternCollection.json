@@ -2,91 +2,91 @@
   {
     "loadPatternName": "Hub 001 View Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubView.handlebars",
+    "loadPatternFilePath": "loadPatternHubView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Hub 002 Insert Into Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubInsertInto.handlebars",
+    "loadPatternFilePath": "loadPatternHubInsertInto.handlebars",
     "loadPatternNotes": "Use the Hub view to load into a physical table."
   },
   {
     "loadPatternName": "Hub 003 Delta Select From Pattern",
     "loadPatternType": "Hub",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternHubDeltaSelect.handlebars",
+    "loadPatternFilePath": "loadPatternHubDeltaSelect.handlebars",
     "loadPatternNotes": "This pattern simulates a delta detection from the Staging Layer to the Data Vault."
   },
   {
     "loadPatternName": "Link 001 View Pattern",
     "loadPatternType": "Link",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkView.handlebars",
+    "loadPatternFilePath": "loadPatternLinkView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Link 002 Insert Into Pattern",
     "loadPatternType": "Link",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkInsertInto.handlebars",
+    "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Link Satellite 001 View Pattern",
     "loadPatternType": "LinkSatellite",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkSatelliteView.handlebars",
+    "loadPatternFilePath": "loadPatternLinkSatelliteView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "LinkSatellite 002 Insert Into Pattern",
     "loadPatternType": "LinkSatellite",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkSatelliteInsertInto.handlebars",
+    "loadPatternFilePath": "loadPatternLinkSatelliteInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "LinkSatellite Driving Key 001 View Pattern",
     "loadPatternType": "LinkSatelliteDrivingKey",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkSatelliteDrivingKeyView.handlebars",
+    "loadPatternFilePath": "loadPatternLinkSatelliteDrivingKeyView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "LinkSatellite Driving Key 002 Insert Into Pattern",
     "loadPatternType": "LinkSatelliteDrivingKey",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternLinkSatelliteDrivingKeyInsertInto.handlebars",
+    "loadPatternFilePath": "loadPatternLinkSatelliteDrivingKeyInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Persistent Staging Area 001 View Pattern",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternPersistentStagingView.handlebars",
+    "loadPatternFilePath": "loadPatternPersistentStagingView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Persistent Staging Area 002 Insert Into Pattern",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternPersistentStagingInsertInto.handlebars",
+    "loadPatternFilePath": "loadPatternPersistentStagingInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Satellite 001 View Pattern",
     "loadPatternType": "Satellite",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternSatelliteView.handlebars",
+    "loadPatternFilePath": "loadPatternSatelliteView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Satellite 002 Insert Into Pattern",
     "loadPatternType": "Satellite",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternSatelliteInsertInto.handlebars",
+    "loadPatternFilePath": "loadPatternSatelliteInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Staging Area 001 View Pattern",
     "loadPatternType": "StagingArea",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternStagingView.handlebars",
+    "loadPatternFilePath": "loadPatternStagingView.handlebars",
     "loadPatternNotes": "This Staging Area pattern is an example of delta detection using a Full Outer Join (FOJ) type interface.In most cases the data delta from the source into the Staging Area is handled by a dedicated ETL tool, or at the very least using different techniques (of which this is only one example)."
   },
   {
     "loadPatternName": "Staging Area 002 Insert Into Pattern",
     "loadPatternType": "StagingArea",
-    "loadPatternFilePath": "C:\\Files\\VEDW\\LoadPatterns\\loadPatternStagingInsertInto.handlebars",
+    "loadPatternFilePath": "loadPatternStagingInsertInto.handlebars",
     "loadPatternNotes": ""
   }
 ]

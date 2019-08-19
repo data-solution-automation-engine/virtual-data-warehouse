@@ -377,15 +377,19 @@ namespace Virtual_Data_Warehouse
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
             var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
-
+            
             // Set the label with the path so it's visible to the user where the file is located
-            localLabelFullFilePath.Text = loadPattern.LoadPatternFilePath;
+            string localFullPath = Path.Combine(VedwConfigurationSettings.LoadPatternListPath, loadPattern.LoadPatternFilePath);
+
+            localLabelFullFilePath.Text = localFullPath;
+
+            //Path.Combine(Environment.CurrentDirectory, "Some\\Path.txt"));
 
             // Read the file from the path
-            string loadPatternTemplate="";
+            string loadPatternTemplate ="";
             try
             {
-                loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
+                loadPatternTemplate = File.ReadAllText(localFullPath);
             }
             catch
             {
