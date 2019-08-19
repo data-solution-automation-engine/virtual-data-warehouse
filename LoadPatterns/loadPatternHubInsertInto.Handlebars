@@ -6,8 +6,6 @@
 USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
 GO
 
-TRUNCATE TABLE [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}]
-
 INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}]
 (
    [{{targetTableHashKey}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
@@ -28,3 +26,4 @@ LEFT OUTER JOIN
    ON hub_view.[{{targetTableHashKey}}] = hub_table.[{{targetTableHashKey}}]
 WHERE hub_table.[{{targetTableHashKey}}] IS NULL
 {{/if}}{{/each}}
+

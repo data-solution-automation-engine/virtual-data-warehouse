@@ -6,27 +6,25 @@
 USE [{{../metadataConfiguration.integrationDatabaseName}}]
 GO
 
-TRUNCATE TABLE [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}]
-
 INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}]
-(
-   [{{targetTableHashKey}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
-   [{{targetColumn.columnName}}],{{/each}}{{/if}}{{/each}}
+(  {{#each businessKey}}
+   [{{surrogateKey}}],{{/each}}
+   {{#each columnMapping}}
+   [{{targetColumn.columnName}}],{{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.recordSourceAttribute}}]
 )
-SELECT
-   hub_view.[{{targetTableHashKey}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
-   hub_view.[{{targetColumn.columnName}}],{{/each}}{{/if}}{{/each}}
+SELECT {{#each businessKey}}
+   link_view.[{{surrogateKey}}],{{/each}}
+   {{#each columnMapping}}
+   link_view.[{{targetColumn.columnName}}],{{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
-   hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-   hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] hub_view
+   link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
+   link_view.[{{../metadataConfiguration.recordSourceAttribute}}]
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] link_view
 LEFT OUTER JOIN
-   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}] hub_table
-   ON hub_view.[{{targetTableHashKey}}] = hub_table.[{{targetTableHashKey}}]
-WHERE hub_table.[{{targetTableHashKey}}] IS NULL
+   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}] link_table
+   ON link_view.[{{targetTableHashKey}}] = link_table.[{{targetTableHashKey}}]
+WHERE link_table.[{{targetTableHashKey}}] IS NULL
 {{/if}}{{/each}}
-
-

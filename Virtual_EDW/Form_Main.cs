@@ -160,8 +160,9 @@ namespace Virtual_Data_Warehouse
             dt.Columns[2].ColumnName = "SelectionQuery";
             dt.Columns[3].ColumnName = "BaseQuery";
             dt.Columns[4].ColumnName = "AttributeQuery";
-            dt.Columns[5].ColumnName = "Notes";
-            dt.Columns[6].ColumnName = "ConnectionKey";
+            dt.Columns[5].ColumnName = "AdditionalBusinessKeyQuery";
+            dt.Columns[6].ColumnName = "Notes";
+            dt.Columns[7].ColumnName = "ConnectionKey";
 
             _bindingSourceLoadPatternDefinition.DataSource = dt;
 
@@ -194,14 +195,19 @@ namespace Virtual_Data_Warehouse
                 dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[5].HeaderText = "Notes";
+                dataGridViewLoadPatternDefinition.Columns[5].HeaderText = "Add. Business Key Query";
                 dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[6].HeaderText = "ConnectionKey";
+                dataGridViewLoadPatternDefinition.Columns[6].HeaderText = "Notes";
                 dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.TopLeft;
+
+                dataGridViewLoadPatternDefinition.Columns[7].HeaderText = "ConnectionKey";
+                dataGridViewLoadPatternDefinition.Columns[7].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dataGridViewLoadPatternDefinition.Columns[7].DefaultCellStyle.Alignment =
                     DataGridViewContentAlignment.TopLeft;
             }
 
@@ -761,7 +767,6 @@ namespace Virtual_Data_Warehouse
 
             if (true)
             {
-
                 var targetTableName = "";//checkedListBoxLinkMetadata.CheckedItems[x].ToString();
                   //  SetTextLink($"Processing generation for {targetTableName}\r\n");
 
@@ -1856,8 +1861,9 @@ namespace Virtual_Data_Warehouse
                                 LoadPatternSelectionQuery = singleRow[2].ToString(),
                                 loadPatternBaseQuery = singleRow[3].ToString(),
                                 loadPatternAttributeQuery = singleRow[4].ToString(),
-                                loadPatternNotes = singleRow[5].ToString(),
-                                LoadPatternConnectionKey = singleRow[6].ToString()
+                                loadPatternAdditionalBusinessKeyQuery = singleRow[5].ToString(),
+                                loadPatternNotes = singleRow[6].ToString(),
+                                LoadPatternConnectionKey = singleRow[7].ToString()
                             });
                             outputFileArray.Add(individualRow);
                         }
@@ -1906,8 +1912,9 @@ namespace Virtual_Data_Warehouse
                         LoadPatternSelectionQuery = singleRow[2].ToString(),
                         loadPatternBaseQuery = singleRow[3].ToString(),
                         loadPatternAttributeQuery = singleRow[4].ToString(),
-                        loadPatternNotes = singleRow[5].ToString(),
-                        LoadPatternConnectionKey = singleRow[6].ToString()
+                        loadPatternAdditionalBusinessKeyQuery = singleRow[5].ToString(),
+                        loadPatternNotes = singleRow[6].ToString(),
+                        LoadPatternConnectionKey = singleRow[7].ToString()
                     });
                     outputFileArray.Add(individualRow);
                 }

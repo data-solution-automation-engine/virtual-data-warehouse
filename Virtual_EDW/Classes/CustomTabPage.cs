@@ -230,16 +230,6 @@ namespace Virtual_Data_Warehouse
             tabPageGenerationPattern.BorderStyle = BorderStyle.None;
             tabPageGenerationPattern.UseVisualStyleBackColor = true;
 
-            // Add 'Generation Pattern' RichTextBox to Pattern tab
-            localRichTextBoxGenerationPattern = new RichTextBox();
-            tabPageGenerationPattern.Controls.Add(localRichTextBoxGenerationPattern);
-            localRichTextBoxGenerationPattern.Anchor =
-                (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
-            localRichTextBoxGenerationPattern.Location = new Point(3, 59);
-            localRichTextBoxGenerationPattern.Size = new Size(882, 485);
-            localRichTextBoxGenerationPattern.BorderStyle = BorderStyle.None;
-            //localRichTextBoxGenerationPattern.TextChanged += new EventHandler(CommitPatternTextChange);
-
             // Add 'Pattern ComboBox' to Pattern tab
             localComboBoxGenerationPattern = new ComboBox();
             tabPageGenerationPattern.Controls.Add(localComboBoxGenerationPattern);
@@ -286,6 +276,16 @@ namespace Virtual_Data_Warehouse
             localSavePattern.Name = $"Generate{input.LoadPatternType}";
             localSavePattern.Click += new EventHandler(SavePattern);
 
+            // Add 'Generation Pattern' RichTextBox to Pattern tab
+            localRichTextBoxGenerationPattern = new RichTextBox();
+            tabPageGenerationPattern.Controls.Add(localRichTextBoxGenerationPattern);
+            //localRichTextBoxGenerationPattern.Size = new Size(1, 1);
+            localRichTextBoxGenerationPattern.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            localRichTextBoxGenerationPattern.Location = new Point(3, 59);
+            //localRichTextBoxGenerationPattern.Size = new Size(882, 485);
+            localRichTextBoxGenerationPattern.Size = new Size(195, 35);
+            localRichTextBoxGenerationPattern.BorderStyle = BorderStyle.None;
+            //localRichTextBoxGenerationPattern.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             #endregion
 
             #region Constructor Methods
@@ -382,7 +382,15 @@ namespace Virtual_Data_Warehouse
             localLabelFullFilePath.Text = loadPattern.LoadPatternFilePath;
 
             // Read the file from the path
-            var loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
+            string loadPatternTemplate="";
+            try
+            {
+                loadPatternTemplate = File.ReadAllText(loadPattern.LoadPatternFilePath);
+            }
+            catch
+            {
+                loadPatternTemplate = $"There was an error loading the pattern specified in the load pattern collection file.\r\n\r\nDoes '{loadPattern.LoadPatternFilePath}' exist and is the path correct?\r\n\r\nIf this is not the case please update the load pattern collection information in the 'settings' tab.";
+            }
 
             // Display the pattern in the text box on the screen
             localRichTextBoxGenerationPattern.Text = loadPatternTemplate;
@@ -471,6 +479,10 @@ namespace Virtual_Data_Warehouse
             var columnMetadataQuery = input.LoadPatternAttributeQuery;
             var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
 
+            // Populate the additional business key information (i.e. links)
+            var additionalBusinessKeyQuery = input.LoadPatternAdditionalBusinessKeyQuery;
+            var additionalBusinessKeyDataTable = Utility.GetDataTable(ref connOmd, additionalBusinessKeyQuery);
+
             // Loop through the checked items, select the right mapping and generate the pattern
             if (localCheckedListBox.CheckedItems.Count != 0)
             {
@@ -478,78 +490,119 @@ namespace Virtual_Data_Warehouse
                 {
                     var targetTableName = localCheckedListBox.CheckedItems[x].ToString();
                     localRichTextBox.AppendText(@"Processing generation for " + targetTableName + ".\r\n");
-                  
-                    DataRow[] mappingRows = metadataDataTable.Select("[TARGET_NAME] = '"+targetTableName+"'");
+
+                    DataRow[] mappingRows = null;
+                    try
+                    {
+                        mappingRows = metadataDataTable.Select("[TARGET_NAME] = '" + targetTableName + "'");
+                    }
+                    catch (Exception ex)
+                    {
+                        RaiseOnChangeMainText("There was an error generating the output, this happened when interpreting the source-to-mapping rows. " +
+                            "\r\n\r\nThe query used was:" + input.LoadPatternBaseQuery + ".\r\n\r\nThe error message was:" + ex);
+                    }
 
                     // Move the data table to the class instance
                     List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in mappingRows)
+                    if (mappingRows != null)
                     {
-                        // Creating the Business Key definition, using the available components (see above)
-                        List<BusinessKey> businessKeyList = new List<BusinessKey>();
-                        BusinessKey businessKey =
-                            new BusinessKey
-                            {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"])
-                            };
-
-                        businessKeyList.Add(businessKey);
-
-                        // Create the column-to-column mapping
-                        DataRow[] columnRows = columnMetadataDataTable.Select("[TARGET_NAME] = '" + targetTableName + "' AND [SOURCE_NAME] = '"+(string)row["SOURCE_NAME"]+"'");
-
-                        List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
-                        foreach (DataRow column in columnRows)
+                        foreach (DataRow row in mappingRows)
                         {
-                            ColumnMapping columnMapping = new ColumnMapping();
-                            Column sourceColumn = new Column();
-                            Column targetColumn = new Column();
 
-                            sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
-                            targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
+                            #region Business Key
+                            // Creating the Business Key definition, using the available components (see above)
+                            List<BusinessKey> businessKeyList = new List<BusinessKey>();
+                            BusinessKey businessKey =
+                                new BusinessKey
+                                {
+                                    businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]),
+                                    surrogateKey = (string)row["SURROGATE_KEY"]
+                                };
+                            businessKeyList.Add(businessKey);
+                            #endregion
 
-                            columnMapping.sourceColumn = sourceColumn;
-                            columnMapping.targetColumn = targetColumn;
-
-                            columnMappingList.Add(columnMapping);
-                        }
-
-                        var lookupTable = (string)row["TARGET_NAME"];
-                        if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
-                        {
-                            int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-                            if (prefixLocation != -1)
+                            #region Column Mapping
+                            // Create the column-to-column mapping
+                            List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
+                            if (columnMetadataDataTable != null && columnMetadataDataTable.Rows.Count > 0)
                             {
-                                lookupTable = lookupTable
-                                    .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
-                                    .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                                DataRow[] columnRows = columnMetadataDataTable.Select("[TARGET_NAME] = '" + targetTableName + "' AND [SOURCE_NAME] = '" + (string)row["SOURCE_NAME"] + "'");
+
+                                foreach (DataRow column in columnRows)
+                                {
+                                    ColumnMapping columnMapping = new ColumnMapping();
+                                    Column sourceColumn = new Column();
+                                    Column targetColumn = new Column();
+
+                                    sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
+                                    targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
+
+                                    columnMapping.sourceColumn = sourceColumn;
+                                    columnMapping.targetColumn = targetColumn;
+
+                                    columnMappingList.Add(columnMapping);
+                                }
                             }
-                        }
-                        else
-                        {
-                            int prefixLocation = lookupTable.LastIndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-                            if (prefixLocation != -1)
+                            #endregion
+
+                            #region Additional Business Keys
+                            if (additionalBusinessKeyDataTable != null && additionalBusinessKeyDataTable.Rows.Count > 0)
                             {
-                                lookupTable = lookupTable
-                                    .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
-                                    .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                                DataRow[] additionalBusinessKeyRows = additionalBusinessKeyDataTable.Select("[LINK_NAME] = '" + targetTableName + "'");
+
+                                foreach (DataRow additionalKeyRow in additionalBusinessKeyRows)
+                                {
+                                    var hubBusinessKey = new BusinessKey();
+
+                                    hubBusinessKey.businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)additionalKeyRow["HUB_SOURCE_BUSINESS_KEY_DEFINITION"], (string)additionalKeyRow["HUB_TARGET_BUSINESS_KEY_DEFINITION"]);
+                                    hubBusinessKey.surrogateKey = (string)additionalKeyRow["HUB_TARGET_KEY_NAME_IN_LINK"];
+
+                                    businessKeyList.Add(hubBusinessKey); // Adding the Link Business Key
+                                }
                             }
+                            #endregion
+
+
+                            #region Lookup Table
+                            // Define a lookup table, in case there is a desire to do key lookups.
+                            var lookupTable = (string)row["TARGET_NAME"];
+                            if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
+                            {
+                                int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
+                                if (prefixLocation != -1)
+                                {
+                                    lookupTable = lookupTable
+                                        .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
+                                        .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                                }
+                            }
+                            else
+                            {
+                                int prefixLocation = lookupTable.LastIndexOf(TeamConfigurationSettings.StgTablePrefixValue);
+                                if (prefixLocation != -1)
+                                {
+                                    lookupTable = lookupTable
+                                        .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
+                                        .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                                }
+                            }
+                            #endregion
+
+                            // Add the created Business Key to the source-to-target mapping
+                            var sourceToTargetMapping = new SourceToTargetMapping();
+
+                            sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];  // Source table
+                            sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];  // Target table
+                            sourceToTargetMapping.lookupTable = lookupTable; // Lookup Table
+                            sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"]; // Surrogate Key
+                            sourceToTargetMapping.businessKey = businessKeyList; // Business Key
+                            sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"]; // Filter criterion
+                            sourceToTargetMapping.columnMapping = columnMappingList; // Column to column mapping
+
+                            // Add the source-to-target mapping to the mapping list
+                            sourceToTargetMappingList.Add(sourceToTargetMapping);
                         }
-
-                        // Add the created Business Key to the source-to-target mapping
-                        var sourceToTargetMapping = new SourceToTargetMapping();
-
-                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
-                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.lookupTable = lookupTable;
-
-                        sourceToTargetMapping.businessKey = businessKeyList;
-                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
-                        sourceToTargetMapping.columnMapping = columnMappingList;
-
-                        // Add the source-to-target mapping to the mapping list
-                        sourceToTargetMappingList.Add(sourceToTargetMapping);
                     }
 
                     // Create an instance of the 'MappingList' class / object model 

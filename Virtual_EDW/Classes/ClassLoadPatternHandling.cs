@@ -14,6 +14,7 @@ namespace Virtual_Data_Warehouse
         public string LoadPatternSelectionQuery { get; set; }
         public string LoadPatternBaseQuery { get; set; }
         public string LoadPatternAttributeQuery { get; set; }
+        public string LoadPatternAdditionalBusinessKeyQuery { get; set; }
         public string LoadPatternNotes { get; set; }
         public string LoadPatternConnectionKey { get; set; }
 
@@ -158,7 +159,7 @@ namespace Virtual_Data_Warehouse
                 }
                 else
                 {
-                    returnMessage = "VEDW couldn't locate a configuration file! Can you check the paths and existence of directories?";
+                    returnMessage = "A pattern file could not be located to backup. Can you check the paths and existence of directories?";
                 }
             }
             catch (Exception ex)
@@ -193,7 +194,6 @@ namespace Virtual_Data_Warehouse
             {
                 returnMessage = ("An error has occured while creating saving the file. The error message is " + ex);
             }
-
 
             return returnMessage;
         }

@@ -1,14 +1,14 @@
+{{#each individualSourceToTargetMapping}}
 --
--- Satellite View definition for {{mainTable}}
--- Generated at {{generationDateTime}}
+-- Satellite View definition for {{../mainTable}}
+-- Generated at {{../generationDateTime}}
 --
-
-USE [{{metadataConfiguration.psaDatabaseName}}]
+GO
+USE [{{../metadataConfiguration.persistentStagingdatabaseName}}]
 GO
 
-{{#each individualSourceToTargetMapping}}
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{../mainTable}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{../mainTable}}]
 GO
 
 CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
