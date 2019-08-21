@@ -36,7 +36,7 @@ namespace Virtual_Data_Warehouse
             _errorMessage = new StringBuilder();
             _errorMessage.AppendLine("Error were detected:");
             _errorMessage.AppendLine();
-           
+
             _errorDetails = new StringBuilder();
             _errorDetails.AppendLine();
 
@@ -50,9 +50,10 @@ namespace Virtual_Data_Warehouse
             EnvironmentConfiguration.InitialiseVedwRootPath();
 
             // Load the VEDW settings information, to be able to locate the TEAM configuration file and load it
-            string loadVedwConfigurationResult = EnvironmentConfiguration.LoadVedwSettingsFile(GlobalParameters.VedwConfigurationPath +
-                                                          GlobalParameters.VedwConfigurationfileName +
-                                                          GlobalParameters.VedwFileExtension);
+            string loadVedwConfigurationResult = EnvironmentConfiguration.LoadVedwSettingsFile(
+                GlobalParameters.VedwConfigurationPath +
+                GlobalParameters.VedwConfigurationfileName +
+                GlobalParameters.VedwFileExtension);
 
             richTextBoxInformationMain.AppendText(loadVedwConfigurationResult + "\r\n\r\n");
 
@@ -65,7 +66,8 @@ namespace Virtual_Data_Warehouse
             // Start monitoring the configuration directories for file changes
             // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
 
-            richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
+            richTextBoxInformationMain.AppendText(
+                "Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
 
@@ -77,9 +79,14 @@ namespace Virtual_Data_Warehouse
             VedwConfigurationSettings.patternDefinitionList = patternDefinition.DeserializeLoadPatternDefinition();
 
             // Load Pattern definition in memory
-            if ((VedwConfigurationSettings.patternDefinitionList != null) && (!VedwConfigurationSettings.patternDefinitionList.Any()))
+            if ((VedwConfigurationSettings.patternDefinitionList != null) &&
+                (!VedwConfigurationSettings.patternDefinitionList.Any()))
             {
-                SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFile + " in the " + VedwConfigurationSettings.LoadPatternListPath + " directory, and if the file contains pattern types.");
+                SetTextMain(
+                    "There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " +
+                    GlobalParameters.LoadPatternDefinitionFile + " in the " +
+                    VedwConfigurationSettings.LoadPatternListPath +
+                    " directory, and if the file contains pattern types.");
             }
 
             // Load Pattern metadata & update in memory
@@ -88,11 +95,14 @@ namespace Virtual_Data_Warehouse
 
             if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
             {
-                SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.LoadPatternListPath + " directory, and if the file contains patterns.");
+                SetTextMain(
+                    "There are no patterns found in the designated load pattern directory. Please verify if there is a " +
+                    GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.LoadPatternListPath +
+                    " directory, and if the file contains patterns.");
             }
-    
 
-            
+
+
 
 
             // Populate the data grid
@@ -146,6 +156,7 @@ namespace Virtual_Data_Warehouse
                     DataGridViewContentAlignment.TopLeft;
 
             }
+
             GridAutoLayoutLoadPatternCollection();
         }
 
@@ -221,10 +232,13 @@ namespace Virtual_Data_Warehouse
             {
                 dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
+
             if (dataGridViewLoadPatternDefinition.Columns.Count > 0)
             {
-                dataGridViewLoadPatternDefinition.Columns[dataGridViewLoadPatternDefinition.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridViewLoadPatternDefinition.Columns[dataGridViewLoadPatternDefinition.Columns.Count - 1]
+                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
+
             // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
             for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
             {
@@ -243,10 +257,13 @@ namespace Virtual_Data_Warehouse
             {
                 dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
+
             if (dataGridViewLoadPatternCollection.Columns.Count > 0)
             {
-                dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.Columns.Count - 1]
+                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
+
             // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
             for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
             {
@@ -259,6 +276,7 @@ namespace Virtual_Data_Warehouse
         private void SetDatabaseConnections()
         {
             #region Database connections
+
             var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
             var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
             var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
@@ -269,22 +287,25 @@ namespace Virtual_Data_Warehouse
                 {
                     connOmd.Open();
                     connOmd.Close();
-                   // connOmd.Dispose();
+                    // connOmd.Dispose();
                 }
                 catch
                 {
-                    SetTextMain("There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-                                 TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+                    SetTextMain(
+                        "There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+                        TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
                     return;
                 }
             else
             {
-                SetTextMain("Metadata Repository Connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+                SetTextMain(
+                    "Metadata Repository Connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
                 return;
             }
 
 
-            if (connPsa.ConnectionString != "Server=<>;Initial Catalog=<Persistent_Staging_Area>;user id = sa;password =<> ")
+            if (connPsa.ConnectionString !=
+                "Server=<>;Initial Catalog=<Persistent_Staging_Area>;user id = sa;password =<> ")
                 try
                 {
                     connPsa.Open();
@@ -293,13 +314,15 @@ namespace Virtual_Data_Warehouse
                 }
                 catch
                 {
-                    SetTextMain("There was an issue establishing a database connection to the Persistent Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+                    SetTextMain(
+                        "There was an issue establishing a database connection to the Persistent Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
                         TeamConfigurationSettings.ConnectionStringHstg + "'.\r\n");
                     return;
                 }
             else
             {
-                SetTextMain("The Persistent Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+                SetTextMain(
+                    "The Persistent Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
                 return;
             }
 
@@ -313,15 +336,18 @@ namespace Virtual_Data_Warehouse
                 }
                 catch
                 {
-                    SetTextMain("There was an issue establishing a database connection to the Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-                                 TeamConfigurationSettings.ConnectionStringStg + "'.\r\n");
+                    SetTextMain(
+                        "There was an issue establishing a database connection to the Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+                        TeamConfigurationSettings.ConnectionStringStg + "'.\r\n");
                     return;
                 }
             else
             {
-                SetTextMain("The Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+                SetTextMain(
+                    "The Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
                 return;
             }
+
             #endregion
 
 
@@ -336,7 +362,9 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                SetTextMain("An issue was encountered while populating the available metadata for the selected version. The error message is: " + ex);
+                SetTextMain(
+                    "An issue was encountered while populating the available metadata for the selected version. The error message is: " +
+                    ex);
             }
             finally
             {
@@ -349,7 +377,7 @@ namespace Virtual_Data_Warehouse
 
         }
 
-    
+
 
         private void LoadTeamConfigurationFile()
         {
@@ -359,7 +387,8 @@ namespace Virtual_Data_Warehouse
                                             VedwConfigurationSettings.WorkingEnvironment +
                                             GlobalParameters.VedwFileExtension;
 
-            richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n");
+            richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" +
+                                                  teamConfigurationFileName + "'. \r\n\r\n");
 
             var teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
 
@@ -371,7 +400,7 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-       /// <summary>
+        /// <summary>
         /// This is the local updates on the VEDW specific configuration.
         /// </summary>
         private void UpdateVedwConfigurationSettingsOnForm()
@@ -393,7 +422,8 @@ namespace Virtual_Data_Warehouse
             }
             else
             {
-                richTextBoxInformationMain.AppendText("An issue was encountered updating the environment setting on the application - please verify.");
+                richTextBoxInformationMain.AppendText(
+                    "An issue was encountered updating the environment setting on the application - please verify.");
             }
         }
 
@@ -415,8 +445,8 @@ namespace Virtual_Data_Warehouse
 
             // Add event handlers.
             watcher.Changed += OnChanged;
-          //  watcher.Created += new FileSystemEventHandler(OnChanged);
-          //  watcher.Deleted += new FileSystemEventHandler(OnChanged);
+            //  watcher.Created += new FileSystemEventHandler(OnChanged);
+            //  watcher.Deleted += new FileSystemEventHandler(OnChanged);
 
             // Begin watching.
             watcher.EnableRaisingEvents = true;
@@ -453,18 +483,18 @@ namespace Virtual_Data_Warehouse
         {
             int errorCounter = 0;
 
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
 
             if (true)
             {
 
-                var targetTableName = "";//checkedListBoxHubMetadata.CheckedItems[x].ToString();
-                 //   SetTextHub($"Processing generation for {targetTableName}\r\n");
+                var targetTableName = ""; //checkedListBoxHubMetadata.CheckedItems[x].ToString();
+                //   SetTextHub($"Processing generation for {targetTableName}\r\n");
 
-                    // Retrieve metadata and store in a data table object
-                    var metadataQuery = 
-                               @"SELECT 
+                // Retrieve metadata and store in a data table object
+                var metadataQuery =
+                    @"SELECT 
                                    [SOURCE_NAME]
                                   ,[SOURCE_BUSINESS_KEY_DEFINITION]
                                   ,[TARGET_NAME]
@@ -472,76 +502,78 @@ namespace Virtual_Data_Warehouse
                                   ,[FILTER_CRITERIA]
                                   ,[SURROGATE_KEY]
                                 FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
-                                WHERE [TARGET_NAME] = '"+targetTableName+"'";
+                                WHERE [TARGET_NAME] = '" + targetTableName + "'";
 
-                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+                var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
-                    // Move the data table to the class instance
-                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+                // Move the data table to the class instance
+                List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in metadataDataTable.Rows)
-                    {
-                        // Creating the Business Key, using the available components (see above)
-                        List<BusinessKey> businessKeyList = new List<BusinessKey>();
-                        BusinessKey businessKey =
-                            new BusinessKey
-                            {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]),
-                                surrogateKey = (string)row["SURROGATE_KEY"]
-                            };
+                foreach (DataRow row in metadataDataTable.Rows)
+                {
+                    // Creating the Business Key, using the available components (see above)
+                    List<BusinessKey> businessKeyList = new List<BusinessKey>();
+                    BusinessKey businessKey =
+                        new BusinessKey
+                        {
+                            businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList(
+                                (string) row["SOURCE_BUSINESS_KEY_DEFINITION"],
+                                (string) row["TARGET_BUSINESS_KEY_DEFINITION"]),
+                            surrogateKey = (string) row["SURROGATE_KEY"]
+                        };
 
-                        businessKeyList.Add(businessKey);
+                    businessKeyList.Add(businessKey);
 
-                        // Add the created Business Key to the source-to-target mapping
-                        var sourceToTargetMapping = new SourceToTargetMapping();
+                    // Add the created Business Key to the source-to-target mapping
+                    var sourceToTargetMapping = new SourceToTargetMapping();
 
-                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
-                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
-                        sourceToTargetMapping.businessKey = businessKeyList;
-                        sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
+                    sourceToTargetMapping.sourceTable = (string) row["SOURCE_NAME"];
+                    sourceToTargetMapping.targetTable = (string) row["TARGET_NAME"];
+                    sourceToTargetMapping.targetTableHashKey = (string) row["SURROGATE_KEY"];
+                    sourceToTargetMapping.businessKey = businessKeyList;
+                    sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
 
-                        // Add the source-to-target mapping to the mapping list
-                        sourceToTargetMappingList.Add(sourceToTargetMapping);
-                    }
+                    // Add the source-to-target mapping to the mapping list
+                    sourceToTargetMappingList.Add(sourceToTargetMapping);
+                }
 
-                    // Create an instance of the 'MappingList' class / object model 
-                    SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
-                    sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
-                    sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.mainTable = targetTableName;
+                // Create an instance of the 'MappingList' class / object model 
+                SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
+                sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
+                sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
+                sourceTargetMappingList.mainTable = targetTableName;
 
-                    // Return the result to the user
-                    try
-                    {
-                        // Compile the template, and merge it with the metadata
-                       // var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternHub);
-                       // var result = template(sourceTargetMappingList);
+                // Return the result to the user
+                try
+                {
+                    // Compile the template, and merge it with the metadata
+                    // var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternHub);
+                    // var result = template(sourceTargetMappingList);
 
-                        // Check if the metadata needs to be displayed also
-                        //DisplayJsonMetadata(sourceTargetMappingList, "Hub");
+                    // Check if the metadata needs to be displayed also
+                    //DisplayJsonMetadata(sourceTargetMappingList, "Hub");
 
-                        // Display the output of the template to the user
-                       // SetTextHubOutput(result);
+                    // Display the output of the template to the user
+                    // SetTextHubOutput(result);
 
-                        // Spool the output to disk
-                        //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                    // Spool the output to disk
+                    //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
-                        // Generate in database
-                       // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
-                    }
-                    catch (Exception ex)
-                    {
-                        errorCounter++;
-                        SetTextMain("The template could not be compiled, the error message is " + ex);
-                    }
-                
+                    // Generate in database
+                    // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                }
+                catch (Exception ex)
+                {
+                    errorCounter++;
+                    SetTextMain("The template could not be compiled, the error message is " + ex);
+                }
+
             }
             else
             {
                 //SetTextHub("There was no metadata selected to create Hub code. Please check the metadata schema - are there any Hubs selected?");
             }
- 
+
             connOmd.Close();
             connOmd.Dispose();
 
@@ -549,9 +581,9 @@ namespace Virtual_Data_Warehouse
             SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
-           // SetTextHubOutputSyntax(richTextBoxHubOutput);
+            // SetTextHubOutputSyntax(richTextBoxHubOutput);
         }
-        
+
 
         /// <summary>
         ///   Create Satellite code using Handlebars as templating
@@ -560,17 +592,17 @@ namespace Virtual_Data_Warehouse
         {
             int errorCounter = 0;
 
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
 
             if (true)
             {
 
-                var targetTableName = "";//checkedListBoxSatMetadata.CheckedItems[x].ToString();
-                    //SetTextSat(@"Processing generation for " + targetTableName + "\r\n");
+                var targetTableName = ""; //checkedListBoxSatMetadata.CheckedItems[x].ToString();
+                //SetTextSat(@"Processing generation for " + targetTableName + "\r\n");
 
-                    // Retrieve metadata and store in a data table object
-                    var metadataQuery = @"SELECT 
+                // Retrieve metadata and store in a data table object
+                var metadataQuery = @"SELECT 
                                              [SOURCE_SCHEMA_NAME]
                                             ,[SOURCE_NAME]
                                             ,[SOURCE_BUSINESS_KEY_DEFINITION]
@@ -585,100 +617,103 @@ namespace Virtual_Data_Warehouse
                                           WHERE TARGET_TYPE = 'Normal' 
                                           AND TARGET_NAME = '" + targetTableName + "'";
 
-                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+                var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
-                    // Move the data table to the class instance
-                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+                // Move the data table to the class instance
+                List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in metadataDataTable.Rows)
-                    {
-                        // Creating the Business Key definition, using the available components (see above)
-                        List<BusinessKey> businessKeyList = new List<BusinessKey>();
-                        BusinessKey businessKey =
-                            new BusinessKey
-                            {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "")
-                            };
+                foreach (DataRow row in metadataDataTable.Rows)
+                {
+                    // Creating the Business Key definition, using the available components (see above)
+                    List<BusinessKey> businessKeyList = new List<BusinessKey>();
+                    BusinessKey businessKey =
+                        new BusinessKey
+                        {
+                            businessKeyComponentMapping =
+                                InterfaceHandling.BusinessKeyComponentMappingList(
+                                    (string) row["SOURCE_BUSINESS_KEY_DEFINITION"], "")
+                        };
 
-                        businessKeyList.Add(businessKey);
+                    businessKeyList.Add(businessKey);
 
-                        // Create the column-to-column mapping
-                        var columnMetadataQuery = @"SELECT 
+                    // Create the column-to-column mapping
+                    var columnMetadataQuery = @"SELECT 
                                                       [SOURCE_ATTRIBUTE_NAME]
                                                      ,[TARGET_ATTRIBUTE_NAME]
                                                      ,[MULTI_ACTIVE_KEY_INDICATOR]
                                                    FROM [interface].[INTERFACE_SOURCE_SATELLITE_ATTRIBUTE_XREF]
-                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='"+(string)row["SOURCE_NAME"]+"'";
+                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" +
+                                              (string) row["SOURCE_NAME"] + "'";
 
-                        var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
+                    var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
 
-                        List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
-                        foreach (DataRow column in columnMetadataDataTable.Rows)
-                        {
-                            ColumnMapping columnMapping = new ColumnMapping();
-                            Column sourceColumn = new Column();
-                            Column targetColumn = new Column();
-
-                            sourceColumn.columnName = (string) column["SOURCE_ATTRIBUTE_NAME"];
-                            targetColumn.columnName = (string) column["TARGET_ATTRIBUTE_NAME"];
-
-                            columnMapping.sourceColumn = sourceColumn;
-                            columnMapping.targetColumn = targetColumn;
-
-                            columnMappingList.Add(columnMapping);
-                        }
-
-                        // Add the created Business Key to the source-to-target mapping
-                        var sourceToTargetMapping = new SourceToTargetMapping();
-
-                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
-                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
-                        sourceToTargetMapping.businessKey = businessKeyList;
-                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
-                        sourceToTargetMapping.columnMapping = columnMappingList;
-
-                        // Add the source-to-target mapping to the mapping list
-                        sourceToTargetMappingList.Add(sourceToTargetMapping);
-                    }
-
-                    // Create an instance of the 'MappingList' class / object model 
-                    SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
-                    sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
-                    sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.mainTable = targetTableName;
-
-                    // Return the result to the user
-                    try
+                    List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
+                    foreach (DataRow column in columnMetadataDataTable.Rows)
                     {
-                        // Compile the template, and merge it with the metadata
-                       // var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternSat);
-                       // var result = template(sourceTargetMappingList);
+                        ColumnMapping columnMapping = new ColumnMapping();
+                        Column sourceColumn = new Column();
+                        Column targetColumn = new Column();
 
-                        // Display the output of the template to the user
-                      //  SetTextSatOutput(result);
+                        sourceColumn.columnName = (string) column["SOURCE_ATTRIBUTE_NAME"];
+                        targetColumn.columnName = (string) column["TARGET_ATTRIBUTE_NAME"];
 
-                        // Check if the metadata needs to be displayed also
-                       // DisplayJsonMetadata(sourceTargetMappingList, "Satellite");
+                        columnMapping.sourceColumn = sourceColumn;
+                        columnMapping.targetColumn = targetColumn;
 
-                        // Spool the output to disk
-                        //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
-
-                        //Generate in database
-                        //errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                        columnMappingList.Add(columnMapping);
                     }
-                    catch (Exception ex)
-                    {
-                        errorCounter++;
-                        SetTextMain("The template could not be compiled, the error message is " + ex);
-                    }
-                
+
+                    // Add the created Business Key to the source-to-target mapping
+                    var sourceToTargetMapping = new SourceToTargetMapping();
+
+                    sourceToTargetMapping.sourceTable = (string) row["SOURCE_NAME"];
+                    sourceToTargetMapping.targetTable = (string) row["TARGET_NAME"];
+                    sourceToTargetMapping.targetTableHashKey = (string) row["SURROGATE_KEY"];
+                    sourceToTargetMapping.businessKey = businessKeyList;
+                    sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
+                    sourceToTargetMapping.columnMapping = columnMappingList;
+
+                    // Add the source-to-target mapping to the mapping list
+                    sourceToTargetMappingList.Add(sourceToTargetMapping);
+                }
+
+                // Create an instance of the 'MappingList' class / object model 
+                SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
+                sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
+                sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
+                sourceTargetMappingList.mainTable = targetTableName;
+
+                // Return the result to the user
+                try
+                {
+                    // Compile the template, and merge it with the metadata
+                    // var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternSat);
+                    // var result = template(sourceTargetMappingList);
+
+                    // Display the output of the template to the user
+                    //  SetTextSatOutput(result);
+
+                    // Check if the metadata needs to be displayed also
+                    // DisplayJsonMetadata(sourceTargetMappingList, "Satellite");
+
+                    // Spool the output to disk
+                    //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+
+                    //Generate in database
+                    //errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                }
+                catch (Exception ex)
+                {
+                    errorCounter++;
+                    SetTextMain("The template could not be compiled, the error message is " + ex);
+                }
+
             }
             else
             {
-               // SetTextSat("There was no metadata selected to create Satellite code. Please check the metadata schema - are there any Satellites selected?");
+                // SetTextSat("There was no metadata selected to create Satellite code. Please check the metadata schema - are there any Satellites selected?");
             }
- 
+
             connOmd.Close();
             connOmd.Dispose();
 
@@ -686,11 +721,12 @@ namespace Virtual_Data_Warehouse
             SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
-          //  SetTextSatOutputSyntax(richTextBoxSatOutput);
+            //  SetTextSatOutputSyntax(richTextBoxSatOutput);
         }
 
-        public DataTable GetBusinessKeyComponentList(string stagingTableName, string hubTableName, string businessKeyDefinition)
-        {            
+        public DataTable GetBusinessKeyComponentList(string stagingTableName, string hubTableName,
+            string businessKeyDefinition)
+        {
 
             // Retrieving the top level component to evaluate composite, concat or pivot 
             var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
@@ -701,8 +737,10 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception exception)
             {
-                SetTextMain("An error has occurred interpreting the components of the Business Key for "+ hubTableName + " due to connectivity issues (connection string " + conn.ConnectionString + "). The associated message is " + exception.Message);
-   
+                SetTextMain("An error has occurred interpreting the components of the Business Key for " +
+                            hubTableName + " due to connectivity issues (connection string " + conn.ConnectionString +
+                            "). The associated message is " + exception.Message);
+
             }
 
             businessKeyDefinition = businessKeyDefinition.Replace("'", "''");
@@ -711,7 +749,7 @@ namespace Virtual_Data_Warehouse
 
             sqlStatementForComponent.AppendLine("SELECT");
             sqlStatementForComponent.AppendLine("  [SOURCE_ID]");
-            sqlStatementForComponent.AppendLine(" ,[SOURCE_NAME]"); 
+            sqlStatementForComponent.AppendLine(" ,[SOURCE_NAME]");
             sqlStatementForComponent.AppendLine(" ,[SOURCE_SCHEMA_NAME]");
             sqlStatementForComponent.AppendLine(" ,[HUB_ID]");
             sqlStatementForComponent.AppendLine(" ,[HUB_NAME]");
@@ -728,21 +766,23 @@ namespace Virtual_Data_Warehouse
 
             if (componentList == null)
             {
-                SetTextMain("An error has occurred interpreting the Hub Business Key (components) in the model for " + hubTableName + ". The Business Key was not found when querying the underlying metadata.");
+                SetTextMain("An error has occurred interpreting the Hub Business Key (components) in the model for " +
+                            hubTableName + ". The Business Key was not found when querying the underlying metadata.");
             }
 
             return componentList;
         }
-        
+
         private void openOutputDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {            
+        {
             try
             {
                 Process.Start(VedwConfigurationSettings.VedwOutputPath);
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occured while attempting to open the output directory. The error message is: "+ex;
+                richTextBoxInformationMain.Text =
+                    "An error has occured while attempting to open the output directory. The error message is: " + ex;
             }
         }
 
@@ -762,16 +802,16 @@ namespace Virtual_Data_Warehouse
         {
             int errorCounter = 0;
 
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
 
             if (true)
             {
-                var targetTableName = "";//checkedListBoxLinkMetadata.CheckedItems[x].ToString();
-                  //  SetTextLink($"Processing generation for {targetTableName}\r\n");
+                var targetTableName = ""; //checkedListBoxLinkMetadata.CheckedItems[x].ToString();
+                //  SetTextLink($"Processing generation for {targetTableName}\r\n");
 
-                    // Retrieve metadata and store in a data table object
-                    var metadataQuery = @"
+                // Retrieve metadata and store in a data table object
+                var metadataQuery = @"
                     SELECT 
                        [SOURCE_NAME]
                       ,[SOURCE_BUSINESS_KEY_DEFINITION]
@@ -782,31 +822,33 @@ namespace Virtual_Data_Warehouse
                     FROM [interface].[INTERFACE_SOURCE_LINK_XREF]
                     WHERE [TARGET_NAME] = '" + targetTableName + "'";
 
-                    DataTable metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+                DataTable metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
 
-                    // Move the data table to the class instance
-                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+                // Move the data table to the class instance
+                List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in metadataDataTable.Rows)
-                    {
-                        // Commence creating the list of Business Keys. A Link entity has multiple Business Keys. One for the Link and a few for the Hubs.
-                        List<BusinessKey> businessKeyList = new List<BusinessKey>();
+                foreach (DataRow row in metadataDataTable.Rows)
+                {
+                    // Commence creating the list of Business Keys. A Link entity has multiple Business Keys. One for the Link and a few for the Hubs.
+                    List<BusinessKey> businessKeyList = new List<BusinessKey>();
 
-                        // Creating the Link Business Key definition, using the available components (see above)
-                        BusinessKey businessKey =
-                            new BusinessKey
-                            {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]),
-                                surrogateKey = (string)row["SURROGATE_KEY"]
-                            };
+                    // Creating the Link Business Key definition, using the available components (see above)
+                    BusinessKey businessKey =
+                        new BusinessKey
+                        {
+                            businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList(
+                                (string) row["SOURCE_BUSINESS_KEY_DEFINITION"],
+                                (string) row["TARGET_BUSINESS_KEY_DEFINITION"]),
+                            surrogateKey = (string) row["SURROGATE_KEY"]
+                        };
 
-                        businessKeyList.Add(businessKey); // Adding the Link Business Key
+                    businessKeyList.Add(businessKey); // Adding the Link Business Key
 
 
-                        // Creating the various Hub Business Keys for the Link
-                        // Retrieve metadata and store in a data table object
-                        var hubLinkQuery = @"
+                    // Creating the various Hub Business Keys for the Link
+                    // Retrieve metadata and store in a data table object
+                    var hubLinkQuery = @"
                             SELECT 
                                [SOURCE_SCHEMA_NAME]
                               ,[SOURCE_NAME]
@@ -819,67 +861,68 @@ namespace Virtual_Data_Warehouse
                               ,[HUB_TARGET_BUSINESS_KEY_DEFINITION]
                               ,[HUB_ORDER]
                             FROM [interface].[INTERFACE_HUB_LINK_XREF]
-                            WHERE [LINK_NAME] = '" + targetTableName + "'" + 
-                            "ORDER BY [HUB_ORDER]";
+                            WHERE [LINK_NAME] = '" + targetTableName + "'" +
+                                       "ORDER BY [HUB_ORDER]";
 
-                        var hubDataTable = Utility.GetDataTable(ref connOmd, hubLinkQuery);
+                    var hubDataTable = Utility.GetDataTable(ref connOmd, hubLinkQuery);
 
-                        foreach (DataRow hubRow in hubDataTable.Rows)
-                        {
-                            var hubBusinessKey = new BusinessKey();
-
-                            hubBusinessKey.businessKeyComponentMapping =
-                                InterfaceHandling.BusinessKeyComponentMappingList(
-                                    (string)hubRow["HUB_SOURCE_BUSINESS_KEY_DEFINITION"], (string)hubRow["HUB_TARGET_BUSINESS_KEY_DEFINITION"]);
-                            hubBusinessKey.surrogateKey = (string)hubRow["HUB_SURROGATE_KEY"];
-
-                            businessKeyList.Add(hubBusinessKey); // Adding the Link Business Key
-                        }
-
-                        // Defining the source-to-target mapping
-                        var sourceToTargetMapping = new SourceToTargetMapping
-                        {
-                            sourceTable = (string) row["SOURCE_NAME"],
-                            targetTable = (string) row["TARGET_NAME"],
-                            targetTableHashKey = (string) row["SURROGATE_KEY"],
-                            businessKey = businessKeyList,
-                            filterCriterion = (string) row["FILTER_CRITERIA"]
-                        };
-
-                        sourceToTargetMappingList.Add(sourceToTargetMapping);
-                    }
-
-                    // Create an instance of the 'MappingList' class / object 
-                    SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
-                    sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
-                    sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.mainTable = targetTableName;
-
-                    // Return the result to the user
-                    try
+                    foreach (DataRow hubRow in hubDataTable.Rows)
                     {
-                        // Compile the template, and merge it with the metadata
-                     //   var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLnk);
-                      //  var result = template(sourceTargetMappingList);
+                        var hubBusinessKey = new BusinessKey();
 
-                        // Check if the metadata needs to be displayed also
-                        //DisplayJsonMetadata(sourceTargetMappingList,"Link");
+                        hubBusinessKey.businessKeyComponentMapping =
+                            InterfaceHandling.BusinessKeyComponentMappingList(
+                                (string) hubRow["HUB_SOURCE_BUSINESS_KEY_DEFINITION"],
+                                (string) hubRow["HUB_TARGET_BUSINESS_KEY_DEFINITION"]);
+                        hubBusinessKey.surrogateKey = (string) hubRow["HUB_SURROGATE_KEY"];
 
-                        // Display the output of the template to the user
-                       // SetTextLinkOutput(result);
-
-                        // Spool the output to disk
-                        //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
-
-                        // Generate in database
-                       // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                        businessKeyList.Add(hubBusinessKey); // Adding the Link Business Key
                     }
-                    catch (Exception ex)
+
+                    // Defining the source-to-target mapping
+                    var sourceToTargetMapping = new SourceToTargetMapping
                     {
-                        errorCounter++;
-                        SetTextMain("The template could not be compiled, the error message is " + ex);
-                    }
-                
+                        sourceTable = (string) row["SOURCE_NAME"],
+                        targetTable = (string) row["TARGET_NAME"],
+                        targetTableHashKey = (string) row["SURROGATE_KEY"],
+                        businessKey = businessKeyList,
+                        filterCriterion = (string) row["FILTER_CRITERIA"]
+                    };
+
+                    sourceToTargetMappingList.Add(sourceToTargetMapping);
+                }
+
+                // Create an instance of the 'MappingList' class / object 
+                SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
+                sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
+                sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
+                sourceTargetMappingList.mainTable = targetTableName;
+
+                // Return the result to the user
+                try
+                {
+                    // Compile the template, and merge it with the metadata
+                    //   var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLnk);
+                    //  var result = template(sourceTargetMappingList);
+
+                    // Check if the metadata needs to be displayed also
+                    //DisplayJsonMetadata(sourceTargetMappingList,"Link");
+
+                    // Display the output of the template to the user
+                    // SetTextLinkOutput(result);
+
+                    // Spool the output to disk
+                    //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+
+                    // Generate in database
+                    // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                }
+                catch (Exception ex)
+                {
+                    errorCounter++;
+                    SetTextMain("The template could not be compiled, the error message is " + ex);
+                }
+
             }
             else
             {
@@ -899,19 +942,24 @@ namespace Virtual_Data_Warehouse
             //SetTextLnkOutputSyntax(richTextBoxLinkOutput);
         }
 
-        internal DataTable GetBusinessKeyElements(string stagingAreaTableName,string hubTableName, string businessKeyDefinition, int businessKeyComponentId)
+        internal DataTable GetBusinessKeyElements(string stagingAreaTableName, string hubTableName,
+            string businessKeyDefinition, int businessKeyComponentId)
         {
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
             var sqlStatementForSourceBusinessKey = new StringBuilder();
 
             businessKeyDefinition = businessKeyDefinition.Replace("'", "''");
 
-            sqlStatementForSourceBusinessKey.AppendLine("SELECT * FROM interface.INTERFACE_BUSINESS_KEY_COMPONENT_PART");
+            sqlStatementForSourceBusinessKey.AppendLine(
+                "SELECT * FROM interface.INTERFACE_BUSINESS_KEY_COMPONENT_PART");
             sqlStatementForSourceBusinessKey.AppendLine("WHERE SOURCE_NAME= '" + stagingAreaTableName + "'");
             sqlStatementForSourceBusinessKey.AppendLine("  AND HUB_NAME= '" + hubTableName + "'");
-            sqlStatementForSourceBusinessKey.AppendLine("  AND BUSINESS_KEY_DEFINITION = '" + businessKeyDefinition + "'");
-            sqlStatementForSourceBusinessKey.AppendLine("  AND BUSINESS_KEY_COMPONENT_ID = '" + businessKeyComponentId + "'");
-            sqlStatementForSourceBusinessKey.AppendLine("ORDER BY BUSINESS_KEY_COMPONENT_ORDER, BUSINESS_KEY_COMPONENT_ELEMENT_ORDER");
+            sqlStatementForSourceBusinessKey.AppendLine("  AND BUSINESS_KEY_DEFINITION = '" + businessKeyDefinition +
+                                                        "'");
+            sqlStatementForSourceBusinessKey.AppendLine("  AND BUSINESS_KEY_COMPONENT_ID = '" + businessKeyComponentId +
+                                                        "'");
+            sqlStatementForSourceBusinessKey.AppendLine(
+                "ORDER BY BUSINESS_KEY_COMPONENT_ORDER, BUSINESS_KEY_COMPONENT_ELEMENT_ORDER");
 
             var elementList = Utility.GetDataTable(ref connOmd, sqlStatementForSourceBusinessKey.ToString());
             return elementList;
@@ -926,18 +974,18 @@ namespace Virtual_Data_Warehouse
         {
             int errorCounter = 0;
 
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
 
             if (true)
             {
 
-                var targetTableName = "";//checkedListBoxLsatMetadata.CheckedItems[x].ToString();
-                   // SetTextLsat($"Processing Link Satellite generation for {targetTableName}\r\n");
+                var targetTableName = ""; //checkedListBoxLsatMetadata.CheckedItems[x].ToString();
+                // SetTextLsat($"Processing Link Satellite generation for {targetTableName}\r\n");
 
-                    // Retrieve metadata and store in a data table object
-                    var metadataQuery =
-                               @"SELECT 
+                // Retrieve metadata and store in a data table object
+                var metadataQuery =
+                    @"SELECT 
                                    [SOURCE_NAME]
                                   ,[SOURCE_BUSINESS_KEY_DEFINITION]
                                   ,[TARGET_NAME]
@@ -947,67 +995,69 @@ namespace Virtual_Data_Warehouse
                                 FROM [interface].[INTERFACE_SOURCE_HUB_XREF]
                                 WHERE [TARGET_NAME] = '" + targetTableName + "'";
 
-                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+                var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
-                    // Move the data table to the class instance
-                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+                // Move the data table to the class instance
+                List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in metadataDataTable.Rows)
-                    {
-                        // Creating the Business Key, using the available components (see above)
-                        List<BusinessKey> businessKeyList = new List<BusinessKey>();
-                        BusinessKey businessKey =
-                            new BusinessKey
-                            {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"])
-                            };
+                foreach (DataRow row in metadataDataTable.Rows)
+                {
+                    // Creating the Business Key, using the available components (see above)
+                    List<BusinessKey> businessKeyList = new List<BusinessKey>();
+                    BusinessKey businessKey =
+                        new BusinessKey
+                        {
+                            businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList(
+                                (string) row["SOURCE_BUSINESS_KEY_DEFINITION"],
+                                (string) row["TARGET_BUSINESS_KEY_DEFINITION"])
+                        };
 
-                        businessKeyList.Add(businessKey);
+                    businessKeyList.Add(businessKey);
 
-                        // Add the created Business Key to the source-to-target mapping
-                        var sourceToTargetMapping = new SourceToTargetMapping();
+                    // Add the created Business Key to the source-to-target mapping
+                    var sourceToTargetMapping = new SourceToTargetMapping();
 
-                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
-                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
-                        sourceToTargetMapping.businessKey = businessKeyList;
-                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
+                    sourceToTargetMapping.sourceTable = (string) row["SOURCE_NAME"];
+                    sourceToTargetMapping.targetTable = (string) row["TARGET_NAME"];
+                    sourceToTargetMapping.targetTableHashKey = (string) row["SURROGATE_KEY"];
+                    sourceToTargetMapping.businessKey = businessKeyList;
+                    sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
 
-                        // Add the source-to-target mapping to the mapping list
-                        sourceToTargetMappingList.Add(sourceToTargetMapping);
-                    }
+                    // Add the source-to-target mapping to the mapping list
+                    sourceToTargetMappingList.Add(sourceToTargetMapping);
+                }
 
-                    // Create an instance of the 'MappingList' class / object model 
-                    SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
-                    sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
-                    sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.mainTable = targetTableName;
+                // Create an instance of the 'MappingList' class / object model 
+                SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
+                sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
+                sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
+                sourceTargetMappingList.mainTable = targetTableName;
 
-                    // Return the result to the user
-                    try
-                    {
-                        // Compile the template, and merge it with the metadata
+                // Return the result to the user
+                try
+                {
+                    // Compile the template, and merge it with the metadata
                     //    var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternLsat);
-                     //   var result = template(sourceTargetMappingList);
+                    //   var result = template(sourceTargetMappingList);
 
-                        // Display the output of the template to the user
-                        //SetTextLsatOutput(result);
+                    // Display the output of the template to the user
+                    //SetTextLsatOutput(result);
 
-                        // Check if the metadata needs to be displayed also
-                        //DisplayJsonMetadata(sourceTargetMappingList,"LinkSatellite");
+                    // Check if the metadata needs to be displayed also
+                    //DisplayJsonMetadata(sourceTargetMappingList,"LinkSatellite");
 
-                        // Spool the output to disk
-                        //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                    // Spool the output to disk
+                    //errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
-                        //Generate in database
-                       // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
-                    }
-                    catch (Exception ex)
-                    {
-                        errorCounter++;
-                        SetTextMain("The template could not be compiled, the error message is " + ex);
-                    }
-                
+                    //Generate in database
+                    // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                }
+                catch (Exception ex)
+                {
+                    errorCounter++;
+                    SetTextMain("The template could not be compiled, the error message is " + ex);
+                }
+
             }
             else
             {
@@ -1020,13 +1070,13 @@ namespace Virtual_Data_Warehouse
             //SetTextLsat($"\r\n{errorCounter} errors have been found.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
-           // SetTextLsatOutputSyntax(richTextBoxLsatOutput);
+            // SetTextLsatOutputSyntax(richTextBoxLsatOutput);
         }
 
         private void CloseTestRiForm(object sender, FormClosedEventArgs e)
         {
             _myTestRiForm = null;
-        } 
+        }
 
         private void CloseTestDataForm(object sender, FormClosedEventArgs e)
         {
@@ -1050,7 +1100,7 @@ namespace Virtual_Data_Warehouse
 
         private void pointInTimeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
             var t = new Thread(ThreadProcPit);
             t.SetApartmentState(ApartmentState.STA);
             t.Start();
@@ -1058,7 +1108,8 @@ namespace Virtual_Data_Warehouse
 
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Process.Start(ExtensionMethod.GetDefaultBrowserPath(), "http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
+            Process.Start(ExtensionMethod.GetDefaultBrowserPath(),
+                "http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
         }
 
         /// <summary>
@@ -1068,17 +1119,17 @@ namespace Virtual_Data_Warehouse
         {
             int errorCounter = 0;
 
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
 
             if (true)
             {
 
-                var targetTableName = "";//checkedListBoxPsaMetadata.CheckedItems[x].ToString();
-                   // SetTextPsa(@"Processing generation for " + targetTableName + "\r\n");
+                var targetTableName = ""; //checkedListBoxPsaMetadata.CheckedItems[x].ToString();
+                // SetTextPsa(@"Processing generation for " + targetTableName + "\r\n");
 
-                    // Retrieve metadata and store in a data table object
-                    var metadataQuery = @"SELECT 
+                // Retrieve metadata and store in a data table object
+                var metadataQuery = @"SELECT 
                                              [SOURCE_SCHEMA_NAME]
                                             ,[SOURCE_NAME]
                                             ,[SOURCE_BUSINESS_KEY_DEFINITION]
@@ -1093,97 +1144,100 @@ namespace Virtual_Data_Warehouse
                                           WHERE TARGET_TYPE = 'PersistentStagingArea' 
                                           AND TARGET_NAME = '" + targetTableName + "'";
 
-                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+                var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
-                    // Move the data table to the class instance
-                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+                // Move the data table to the class instance
+                List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in metadataDataTable.Rows)
-                    {
-                        // Creating the Business Key definition, using the available components (see above)
-                        List<BusinessKey> businessKeyList = new List<BusinessKey>();
-                        BusinessKey businessKey =
-                            new BusinessKey
-                            {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["SOURCE_BUSINESS_KEY_DEFINITION"])
-                            };
+                foreach (DataRow row in metadataDataTable.Rows)
+                {
+                    // Creating the Business Key definition, using the available components (see above)
+                    List<BusinessKey> businessKeyList = new List<BusinessKey>();
+                    BusinessKey businessKey =
+                        new BusinessKey
+                        {
+                            businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList(
+                                (string) row["SOURCE_BUSINESS_KEY_DEFINITION"],
+                                (string) row["SOURCE_BUSINESS_KEY_DEFINITION"])
+                        };
 
-                        businessKeyList.Add(businessKey);
+                    businessKeyList.Add(businessKey);
 
-  
-                        // Create the column-to-column mapping
-                        var columnMetadataQuery = @"SELECT 
+
+                    // Create the column-to-column mapping
+                    var columnMetadataQuery = @"SELECT 
                                                       [SOURCE_ATTRIBUTE_NAME]
                                                      ,[TARGET_ATTRIBUTE_NAME]
                                                    FROM [interface].[INTERFACE_SOURCE_PERSISTENT_STAGING_ATTRIBUTE_XREF]
-                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" + (string)row["SOURCE_NAME"] + "'";
+                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" +
+                                              (string) row["SOURCE_NAME"] + "'";
 
-                        var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
+                    var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
 
-                        List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
-                        foreach (DataRow column in columnMetadataDataTable.Rows)
-                        {
-                            ColumnMapping columnMapping = new ColumnMapping();
-                            Column sourceColumn = new Column();
-                            Column targetColumn = new Column();
+                    List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
+                    foreach (DataRow column in columnMetadataDataTable.Rows)
+                    {
+                        ColumnMapping columnMapping = new ColumnMapping();
+                        Column sourceColumn = new Column();
+                        Column targetColumn = new Column();
 
-                            sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
-                            targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
+                        sourceColumn.columnName = (string) column["SOURCE_ATTRIBUTE_NAME"];
+                        targetColumn.columnName = (string) column["TARGET_ATTRIBUTE_NAME"];
 
-                            columnMapping.sourceColumn = sourceColumn;
-                            columnMapping.targetColumn = targetColumn;
-                            columnMappingList.Add(columnMapping);
-                        }
-
-                        // Add the created Business Key to the source-to-target mapping
-                        var sourceToTargetMapping = new SourceToTargetMapping();
-
-                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
-                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        //sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
-                        sourceToTargetMapping.businessKey = businessKeyList;
-                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
-                        sourceToTargetMapping.columnMapping = columnMappingList;
-
-                        // Add the source-to-target mapping to the mapping list
-                        sourceToTargetMappingList.Add(sourceToTargetMapping);
+                        columnMapping.sourceColumn = sourceColumn;
+                        columnMapping.targetColumn = targetColumn;
+                        columnMappingList.Add(columnMapping);
                     }
 
-                    // Create an instance of the 'MappingList' class / object model 
-                    SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
-                    sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
-                    sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.mainTable = targetTableName;
+                    // Add the created Business Key to the source-to-target mapping
+                    var sourceToTargetMapping = new SourceToTargetMapping();
 
-                    // Return the result to the user
-                    try
-                    {
-                        // Compile the template, and merge it with the metadata
+                    sourceToTargetMapping.sourceTable = (string) row["SOURCE_NAME"];
+                    sourceToTargetMapping.targetTable = (string) row["TARGET_NAME"];
+                    //sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+                    sourceToTargetMapping.businessKey = businessKeyList;
+                    sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
+                    sourceToTargetMapping.columnMapping = columnMappingList;
+
+                    // Add the source-to-target mapping to the mapping list
+                    sourceToTargetMappingList.Add(sourceToTargetMapping);
+                }
+
+                // Create an instance of the 'MappingList' class / object model 
+                SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
+                sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
+                sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
+                sourceTargetMappingList.mainTable = targetTableName;
+
+                // Return the result to the user
+                try
+                {
+                    // Compile the template, and merge it with the metadata
                     //    var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternPsa);
                     //    var result = template(sourceTargetMappingList);
 
-                        // Check if the metadata needs to be displayed also
-                        //DisplayJsonMetadata(sourceTargetMappingList, "PersistentStagingArea");
+                    // Check if the metadata needs to be displayed also
+                    //DisplayJsonMetadata(sourceTargetMappingList, "PersistentStagingArea");
 
-                        // Display the output of the template to the user
-                       // SetTextPsaOutput(result);
+                    // Display the output of the template to the user
+                    // SetTextPsaOutput(result);
 
-                        // Spool the output to disk
-                       // errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+                    // Spool the output to disk
+                    // errorCounter = Utility.SaveOutputToDisk(true, textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
 
-                        //Generate in database
-                       // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
-                    }
-                    catch (Exception ex)
-                    {
-                        errorCounter++;
-                        SetTextMain("The template could not be compiled, the error message is " + ex);
-                    }
-                
+                    //Generate in database
+                    // errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                }
+                catch (Exception ex)
+                {
+                    errorCounter++;
+                    SetTextMain("The template could not be compiled, the error message is " + ex);
+                }
+
             }
             else
             {
-               // SetTextPsa("There was no metadata selected to create Persistent Staging Area code. Please check the metadata schema - are there any Persistent Staging Area tables selected?");
+                // SetTextPsa("There was no metadata selected to create Persistent Staging Area code. Please check the metadata schema - are there any Persistent Staging Area tables selected?");
             }
 
             connOmd.Close();
@@ -1204,16 +1258,16 @@ namespace Virtual_Data_Warehouse
         {
             int errorCounter = 0;
 
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            var connPsa = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringHstg };
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
 
             if (true)
             {
-                    var targetTableName = "";//checkedListBoxStagingArea.CheckedItems[x].ToString();
-                    //SetTextStg(@"Processing generation for " + targetTableName + "\r\n");
+                var targetTableName = ""; //checkedListBoxStagingArea.CheckedItems[x].ToString();
+                //SetTextStg(@"Processing generation for " + targetTableName + "\r\n");
 
-                    // Retrieve metadata and store in a data table object
-                    var metadataQuery = @"SELECT 
+                // Retrieve metadata and store in a data table object
+                var metadataQuery = @"SELECT 
                                              [SOURCE_SCHEMA_NAME]
                                             ,[SOURCE_NAME]
                                             ,[SOURCE_BUSINESS_KEY_DEFINITION]
@@ -1228,108 +1282,115 @@ namespace Virtual_Data_Warehouse
                                           WHERE TARGET_TYPE = 'StagingArea' 
                                           AND TARGET_NAME = '" + targetTableName + "'";
 
-                    var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
+                var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
 
-                    // Move the data table to the class instance
-                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+                // Move the data table to the class instance
+                List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
 
-                    foreach (DataRow row in metadataDataTable.Rows)
-                    {
-                        // Creating the Business Key definition, using the available components (see above)
-                        List<BusinessKey> businessKeyList = new List<BusinessKey>();
-                        BusinessKey businessKey =
-                            new BusinessKey
-                            {
-                                businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], "")
-                            };
+                foreach (DataRow row in metadataDataTable.Rows)
+                {
+                    // Creating the Business Key definition, using the available components (see above)
+                    List<BusinessKey> businessKeyList = new List<BusinessKey>();
+                    BusinessKey businessKey =
+                        new BusinessKey
+                        {
+                            businessKeyComponentMapping =
+                                InterfaceHandling.BusinessKeyComponentMappingList(
+                                    (string) row["SOURCE_BUSINESS_KEY_DEFINITION"], "")
+                        };
 
-                        businessKeyList.Add(businessKey);
+                    businessKeyList.Add(businessKey);
 
-                        // Create the column-to-column mapping
-                        var columnMetadataQuery = @"SELECT 
+                    // Create the column-to-column mapping
+                    var columnMetadataQuery = @"SELECT 
                                                       [SOURCE_ATTRIBUTE_NAME]
                                                      ,[TARGET_ATTRIBUTE_NAME]
                                                    FROM [interface].[INTERFACE_SOURCE_STAGING_ATTRIBUTE_XREF]
-                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" + (string)row["SOURCE_NAME"] + "'";
+                                                   WHERE TARGET_NAME = '" + targetTableName + "' AND [SOURCE_NAME]='" +
+                                              (string) row["SOURCE_NAME"] + "'";
 
-                        var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
+                    var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
 
-                        List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
-                        foreach (DataRow column in columnMetadataDataTable.Rows)
-                        {
-                            ColumnMapping columnMapping = new ColumnMapping();
-                            Column sourceColumn = new Column();
-                            Column targetColumn = new Column();
-
-                            sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
-                            targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
-
-                            columnMapping.sourceColumn = sourceColumn;
-                            columnMapping.targetColumn = targetColumn;
-
-                            columnMappingList.Add(columnMapping);
-                        }
-
-                        var lookupTable = (string) row["TARGET_NAME"];
-                        if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
-                        {
-                            int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-
-                            lookupTable = lookupTable.Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length).Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
-                        }
-                        else
-                        {
-                            int prefixLocation = lookupTable.LastIndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-
-                            lookupTable = lookupTable.Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length).Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
-                        }
-
-                        // Add the created Business Key to the source-to-target mapping
-                        var sourceToTargetMapping = new SourceToTargetMapping();
-
-                        sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];
-                        sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];
-                        sourceToTargetMapping.lookupTable = lookupTable;
-                        //sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
-                        sourceToTargetMapping.businessKey = businessKeyList;
-                        sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"];
-                        sourceToTargetMapping.columnMapping = columnMappingList;
-
-                        // Add the source-to-target mapping to the mapping list
-                        sourceToTargetMappingList.Add(sourceToTargetMapping);
-                    }
-
-                    // Create an instance of the 'MappingList' class / object model 
-                    SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
-                    sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
-                    sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.mainTable = targetTableName;
-
-                    // Return the result to the user
-                    try
+                    List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
+                    foreach (DataRow column in columnMetadataDataTable.Rows)
                     {
-                        // Compile the template, and merge it with the metadata
-                        //var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
-                        //var result = template(sourceTargetMappingList);
+                        ColumnMapping columnMapping = new ColumnMapping();
+                        Column sourceColumn = new Column();
+                        Column targetColumn = new Column();
 
-                        // Check if the metadata needs to be displayed also
-                        //DisplayJsonMetadata(sourceTargetMappingList, "StagingArea");
+                        sourceColumn.columnName = (string) column["SOURCE_ATTRIBUTE_NAME"];
+                        targetColumn.columnName = (string) column["TARGET_ATTRIBUTE_NAME"];
 
-                        // Display the output of the template to the user
-                        //SetTextStgOutput(result);
+                        columnMapping.sourceColumn = sourceColumn;
+                        columnMapping.targetColumn = targetColumn;
 
-                        // Spool the output to disk
-                       // errorCounter = Utility.SaveOutputToDisk(true,textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
-
-                        //Generate in database
-                      //  errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                        columnMappingList.Add(columnMapping);
                     }
-                    catch (Exception ex)
+
+                    var lookupTable = (string) row["TARGET_NAME"];
+                    if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
                     {
-                        errorCounter++;
-                        SetTextMain("The template could not be compiled, the error message is " + ex);
+                        int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
+
+                        lookupTable = lookupTable
+                            .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
+                            .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
                     }
-                
+                    else
+                    {
+                        int prefixLocation = lookupTable.LastIndexOf(TeamConfigurationSettings.StgTablePrefixValue);
+
+                        lookupTable = lookupTable
+                            .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
+                            .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
+                    }
+
+                    // Add the created Business Key to the source-to-target mapping
+                    var sourceToTargetMapping = new SourceToTargetMapping();
+
+                    sourceToTargetMapping.sourceTable = (string) row["SOURCE_NAME"];
+                    sourceToTargetMapping.targetTable = (string) row["TARGET_NAME"];
+                    sourceToTargetMapping.lookupTable = lookupTable;
+                    //sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"];
+                    sourceToTargetMapping.businessKey = businessKeyList;
+                    sourceToTargetMapping.filterCriterion = (string) row["FILTER_CRITERIA"];
+                    sourceToTargetMapping.columnMapping = columnMappingList;
+
+                    // Add the source-to-target mapping to the mapping list
+                    sourceToTargetMappingList.Add(sourceToTargetMapping);
+                }
+
+                // Create an instance of the 'MappingList' class / object model 
+                SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
+                sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
+                sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
+                sourceTargetMappingList.mainTable = targetTableName;
+
+                // Return the result to the user
+                try
+                {
+                    // Compile the template, and merge it with the metadata
+                    //var template = Handlebars.Compile(VedwConfigurationSettings.activeLoadPatternStg);
+                    //var result = template(sourceTargetMappingList);
+
+                    // Check if the metadata needs to be displayed also
+                    //DisplayJsonMetadata(sourceTargetMappingList, "StagingArea");
+
+                    // Display the output of the template to the user
+                    //SetTextStgOutput(result);
+
+                    // Spool the output to disk
+                    // errorCounter = Utility.SaveOutputToDisk(true,textBoxOutputPath.Text + @"\Output_" + targetTableName + ".sql", result, errorCounter);
+
+                    //Generate in database
+                    //  errorCounter = Utility.ExecuteOutputInDatabase(true, connPsa, result, errorCounter);
+                }
+                catch (Exception ex)
+                {
+                    errorCounter++;
+                    SetTextMain("The template could not be compiled, the error message is " + ex);
+                }
+
             }
             else
             {
@@ -1343,11 +1404,12 @@ namespace Virtual_Data_Warehouse
             SetTextMain($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Call a delegate to handle multi-threading for syntax highlighting
-          
+
         }
-        
+
         // Threads starting for other (sub) forms
         private FormTestRi _myTestRiForm;
+
         public void ThreadProcTestRi()
         {
             if (_myTestRiForm == null)
@@ -1363,7 +1425,7 @@ namespace Virtual_Data_Warehouse
                 if (_myTestRiForm.InvokeRequired)
                 {
                     // Thread Error
-                    _myTestRiForm.Invoke((MethodInvoker)delegate { _myTestRiForm.Close(); });
+                    _myTestRiForm.Invoke((MethodInvoker) delegate { _myTestRiForm.Close(); });
                     _myTestRiForm.FormClosed += CloseTestRiForm;
 
                     _myTestRiForm = new FormTestRi(this);
@@ -1383,6 +1445,7 @@ namespace Virtual_Data_Warehouse
         }
 
         private FormTestData _myTestDataForm;
+
         public void ThreadProcTestData()
         {
             if (_myTestDataForm == null)
@@ -1398,7 +1461,7 @@ namespace Virtual_Data_Warehouse
                 if (_myTestDataForm.InvokeRequired)
                 {
                     // Thread Error
-                    _myTestDataForm.Invoke((MethodInvoker)delegate { _myTestDataForm.Close(); });
+                    _myTestDataForm.Invoke((MethodInvoker) delegate { _myTestDataForm.Close(); });
                     _myTestDataForm.FormClosed += CloseTestDataForm;
 
                     _myTestDataForm = new FormTestData(this);
@@ -1418,9 +1481,10 @@ namespace Virtual_Data_Warehouse
             }
         }
 
- 
+
 
         private FormDimensional _myDimensionalForm;
+
         public void ThreadProcDimensional()
         {
             if (_myDimensionalForm == null)
@@ -1436,7 +1500,7 @@ namespace Virtual_Data_Warehouse
                 if (_myDimensionalForm.InvokeRequired)
                 {
                     // Thread Error
-                    _myDimensionalForm.Invoke((MethodInvoker)delegate { _myDimensionalForm.Close(); });
+                    _myDimensionalForm.Invoke((MethodInvoker) delegate { _myDimensionalForm.Close(); });
                     _myDimensionalForm.FormClosed += CloseDimensionalForm;
 
                     _myDimensionalForm = new FormDimensional(this);
@@ -1457,6 +1521,7 @@ namespace Virtual_Data_Warehouse
         }
 
         private FormPit _myPitForm;
+
         public void ThreadProcPit()
         {
             if (_myPitForm == null)
@@ -1472,7 +1537,7 @@ namespace Virtual_Data_Warehouse
                 if (_myPitForm.InvokeRequired)
                 {
                     // Thread Error
-                    _myPitForm.Invoke((MethodInvoker)delegate { _myPitForm.Close(); });
+                    _myPitForm.Invoke((MethodInvoker) delegate { _myPitForm.Close(); });
                     _myPitForm.FormClosed += ClosePitForm;
 
                     _myPitForm = new FormPit(this);
@@ -1490,13 +1555,14 @@ namespace Virtual_Data_Warehouse
                 }
             }
         }
- 
+
 
 
 
 
 
         private FormAbout _myAboutForm;
+
         public void ThreadProcAbout()
         {
             if (_myAboutForm == null)
@@ -1512,7 +1578,7 @@ namespace Virtual_Data_Warehouse
                 if (_myAboutForm.InvokeRequired)
                 {
                     // Thread Error
-                    _myAboutForm.Invoke((MethodInvoker)delegate { _myAboutForm.Close(); });
+                    _myAboutForm.Invoke((MethodInvoker) delegate { _myAboutForm.Close(); });
                     _myAboutForm.FormClosed += CloseAboutForm;
 
                     _myAboutForm = new FormAbout(this);
@@ -1555,6 +1621,7 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         /// <param name="text"></param>
         delegate void SetTextCallBackDebug(string text);
+
         private void SetTextMain(string text)
         {
             if (richTextBoxInformationMain.InvokeRequired)
@@ -1567,7 +1634,8 @@ namespace Virtual_Data_Warehouse
                 richTextBoxInformationMain.AppendText(text);
             }
         }
-        #endregion 
+
+        #endregion
 
 
 
@@ -1581,7 +1649,7 @@ namespace Virtual_Data_Warehouse
         {
             if (e.Cancelled)
             {
-               // labelResult.Text = "Cancelled!";
+                // labelResult.Text = "Cancelled!";
                 richTextBoxInformationMain.AppendText("Cancelled!");
             }
             else if (e.Error != null)
@@ -1593,6 +1661,7 @@ namespace Virtual_Data_Warehouse
                 richTextBoxInformationMain.AppendText("Done. The metadata was processed succesfully!\r\n");
                 //SetVersion(trackBarVersioning.Value);
             }
+
             // Close the AlertForm
             //alert.Close();
         }
@@ -1616,7 +1685,7 @@ namespace Virtual_Data_Warehouse
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            
+
             // Handling multithreading
             if (worker != null && worker.CancellationPending)
             {
@@ -1625,7 +1694,7 @@ namespace Virtual_Data_Warehouse
         }
 
 
-  
+
 
         /// <summary>
         /// Save VEDW settings in the from to memory & disk
@@ -1667,22 +1736,28 @@ namespace Virtual_Data_Warehouse
             }
             else
             {
-                richTextBoxInformationMain.AppendText("An issue was encountered saving the environment selection, can you verify the selection of the Development / Production radio button?");
+                richTextBoxInformationMain.AppendText(
+                    "An issue was encountered saving the environment selection, can you verify the selection of the Development / Production radio button?");
             }
 
             // Update the root path file (from memory)
             var rootPathConfigurationFile = new StringBuilder();
             rootPathConfigurationFile.AppendLine("/* Virtual Data Warehouse Core Settings */");
             rootPathConfigurationFile.AppendLine("/* Saved at " + DateTime.Now + " */");
-            rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VedwConfigurationSettings.TeamConfigurationPath + "");
+            rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" +
+                                                 VedwConfigurationSettings.TeamConfigurationPath + "");
             rootPathConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath + "");
-            rootPathConfigurationFile.AppendLine("LoadPatternListPath|" + VedwConfigurationSettings.LoadPatternListPath + "");
-            rootPathConfigurationFile.AppendLine("WorkingEnvironment|" + VedwConfigurationSettings.WorkingEnvironment + "");
+            rootPathConfigurationFile.AppendLine("LoadPatternListPath|" +
+                                                 VedwConfigurationSettings.LoadPatternListPath + "");
+            rootPathConfigurationFile.AppendLine("WorkingEnvironment|" + VedwConfigurationSettings.WorkingEnvironment +
+                                                 "");
             rootPathConfigurationFile.AppendLine("VedwSchema|" + VedwConfigurationSettings.VedwSchema + "");
             rootPathConfigurationFile.AppendLine("/* End of file */");
 
             // Save the VEDW core settings file to disk
-            using (var outfile = new StreamWriter(GlobalParameters.VedwConfigurationPath + GlobalParameters.VedwConfigurationfileName + GlobalParameters.VedwFileExtension))
+            using (var outfile = new StreamWriter(GlobalParameters.VedwConfigurationPath +
+                                                  GlobalParameters.VedwConfigurationfileName +
+                                                  GlobalParameters.VedwFileExtension))
             {
                 outfile.Write(rootPathConfigurationFile.ToString());
                 outfile.Close();
@@ -1694,7 +1769,10 @@ namespace Virtual_Data_Warehouse
             // Reset / reload the checkbox lists
             SetDatabaseConnections();
 
-            richTextBoxInformationMain.Text = "The global parameter file ("+GlobalParameters.VedwConfigurationfileName + GlobalParameters.VedwFileExtension+ ") has been updated in: " + GlobalParameters.VedwConfigurationPath;
+            richTextBoxInformationMain.Text = "The global parameter file (" +
+                                              GlobalParameters.VedwConfigurationfileName +
+                                              GlobalParameters.VedwFileExtension + ") has been updated in: " +
+                                              GlobalParameters.VedwConfigurationPath;
         }
 
         private void openConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1705,7 +1783,9 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occured while attempting to open the configuration directory. The error message is: " + ex;
+                richTextBoxInformationMain.Text =
+                    "An error has occured while attempting to open the configuration directory. The error message is: " +
+                    ex;
             }
         }
 
@@ -1733,10 +1813,12 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occured while attempting to open the TEAM configuration file. The error message is: " + ex;
+                richTextBoxInformationMain.Text =
+                    "An error has occured while attempting to open the TEAM configuration file. The error message is: " +
+                    ex;
             }
         }
-        
+
         private void richTextBoxInformationMain_TextChanged(object sender, EventArgs e)
         {
             // Set the current caret position to the end
@@ -1759,7 +1841,7 @@ namespace Virtual_Data_Warehouse
 
         private DialogResult STAShowDialog(FileDialog dialog)
         {
-            var state = new DialogState { FileDialog = dialog };
+            var state = new DialogState {FileDialog = dialog};
             var t = new Thread(state.ThreadProcShowDialog);
             t.SetApartmentState(ApartmentState.STA);
 
@@ -1768,6 +1850,7 @@ namespace Virtual_Data_Warehouse
 
             return state.DialogResult;
         }
+
         public class DialogState
         {
             public DialogResult DialogResult;
@@ -1800,7 +1883,8 @@ namespace Virtual_Data_Warehouse
                     string fileExtension = Path.GetExtension(theDialog.FileName);
 
                     // Save the list to memory
-                    VedwConfigurationSettings.patternDefinitionList = JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(File.ReadAllText(chosenFile));
+                    VedwConfigurationSettings.patternDefinitionList =
+                        JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(File.ReadAllText(chosenFile));
 
                     // ... and populate the data grid
                     //LoadAllLoadPatternComboBoxes();
@@ -1811,7 +1895,8 @@ namespace Virtual_Data_Warehouse
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxInformationMain.AppendText("An error has been encountered! The reported error is: " + ex);
+                    richTextBoxInformationMain.AppendText("An error has been encountered! The reported error is: " +
+                                                          ex);
                 }
 
                 try
@@ -1820,7 +1905,8 @@ namespace Virtual_Data_Warehouse
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxInformationMain.AppendText("An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                    richTextBoxInformationMain.AppendText(
+                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
                 }
             }
         }
@@ -1844,7 +1930,7 @@ namespace Virtual_Data_Warehouse
                     {
                         var chosenFile = theDialog.FileName;
 
-                        DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternDefinition.DataSource;
+                        DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternDefinition.DataSource;
 
                         // Make sure the output is sorted
                         gridDataTable.DefaultView.Sort = "[KEY] ASC";
@@ -1932,7 +2018,9 @@ namespace Virtual_Data_Warehouse
                     }
                     catch (Exception exception)
                     {
-                        SetTextMain("An issue occured when trying to make a backup of the in-use JSON file. The error message was " + exception + ".");
+                        SetTextMain(
+                            "An issue occured when trying to make a backup of the in-use JSON file. The error message was " +
+                            exception + ".");
                     }
                 }
 
@@ -1943,7 +2031,8 @@ namespace Virtual_Data_Warehouse
                 try
                 {
                     // Quick fix, in the file again to commit changes to memory.
-                    VedwConfigurationSettings.patternDefinitionList = JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(File.ReadAllText(chosenFile));
+                    VedwConfigurationSettings.patternDefinitionList =
+                        JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(File.ReadAllText(chosenFile));
                     CreateCustomTabPages();
                 }
                 catch (Exception ex)
@@ -1970,7 +2059,9 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occured while attempting to open the VEDW configuration file. The error message is: " + ex;
+                richTextBoxInformationMain.Text =
+                    "An error has occured while attempting to open the VEDW configuration file. The error message is: " +
+                    ex;
             }
         }
 
@@ -2007,8 +2098,9 @@ namespace Virtual_Data_Warehouse
             // Add the Custom Tab Pages
             foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
             {
-                var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-                var inputItemList = databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
+                var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+                var inputItemList =
+                    databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
 
                 CustomTabPage localCustomTabPage = new CustomTabPage(pattern, inputItemList);
                 localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
@@ -2017,7 +2109,7 @@ namespace Virtual_Data_Warehouse
                 localCustomTabPageList.Add(localCustomTabPage);
                 tabControlMain.TabPages.Add(localCustomTabPage);
             }
-        }        
+        }
 
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
         {
@@ -2085,7 +2177,8 @@ namespace Virtual_Data_Warehouse
                     string fileExtension = Path.GetExtension(theDialog.FileName);
 
                     // Save the list to memory
-                    VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+                    VedwConfigurationSettings.patternList =
+                        JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
 
                     // ... and populate the data grid
                     populateLoadPatternCollectionDataGrid();
@@ -2105,7 +2198,8 @@ namespace Virtual_Data_Warehouse
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxInformationMain.AppendText("An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                    richTextBoxInformationMain.AppendText(
+                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
                 }
             }
         }
@@ -2129,7 +2223,7 @@ namespace Virtual_Data_Warehouse
                     {
                         var chosenFile = theDialog.FileName;
 
-                        DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
+                        DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternCollection.DataSource;
 
                         // Make sure the output is sorted
                         gridDataTable.DefaultView.Sort = "[NAME] ASC";
@@ -2173,9 +2267,9 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.Clear();
 
-                var chosenFile = textBoxLoadPatternPath.Text+GlobalParameters.LoadPatternListFile;
+                var chosenFile = textBoxLoadPatternPath.Text + GlobalParameters.LoadPatternListFile;
 
-                DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
+                DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternCollection.DataSource;
 
                 // Make sure the output is sorted
                 gridDataTable.DefaultView.Sort = "[NAME] ASC";
@@ -2208,7 +2302,9 @@ namespace Virtual_Data_Warehouse
                     }
                     catch (Exception exception)
                     {
-                        SetTextMain("An issue occured when trying to make a backup of the in-use JSON file. The error message was " + exception + ".");
+                        SetTextMain(
+                            "An issue occured when trying to make a backup of the in-use JSON file. The error message was " +
+                            exception + ".");
                     }
                 }
 
@@ -2219,12 +2315,14 @@ namespace Virtual_Data_Warehouse
                 try
                 {
                     // Quick fix, in the file again to commit changes to memory.
-                    VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+                    VedwConfigurationSettings.patternList =
+                        JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
                     CreateCustomTabPages();
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxInformationMain.AppendText("An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                    richTextBoxInformationMain.AppendText(
+                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
                 }
             }
             catch (Exception ex)
@@ -2242,19 +2340,20 @@ namespace Virtual_Data_Warehouse
             //{
             //    if (pattern.LoadPatternType == tabName)
             //    {
-                    foreach (CustomTabPage customTabPage in localCustomTabPageList)
-                        //      foreach (LoadPatternDefinition in l)
-                    {
+            foreach (CustomTabPage customTabPage in localCustomTabPageList)
+                //      foreach (LoadPatternDefinition in l)
+            {
 
-                        if (customTabPage.Name == tabName)
-                        {
-                            var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-                            var inputItemList = databaseHandling.GetItemList(customTabPage.input.LoadPatternType, customTabPage.input.LoadPatternSelectionQuery, conn);
-                            customTabPage.SetItemList(inputItemList);
-                        }
-                    }
+                if (customTabPage.Name == tabName)
+                {
+                    var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+                    var inputItemList = databaseHandling.GetItemList(customTabPage.input.LoadPatternType,
+                        customTabPage.input.LoadPatternSelectionQuery, conn);
+                    customTabPage.SetItemList(inputItemList);
+                }
+            }
 
-                //}
+            //}
 
             //}
 
@@ -2264,6 +2363,132 @@ namespace Virtual_Data_Warehouse
         {
             GridAutoLayoutLoadPatternCollection();
             GridAutoLayoutLoadPatternDefinition();
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            var fileBrowserDialog = new FolderBrowserDialog();
+            fileBrowserDialog.SelectedPath = textBoxConfigurationPath.Text;
+
+            DialogResult result = fileBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
+            {
+                string[] files = Directory.GetFiles(fileBrowserDialog.SelectedPath);
+
+                int teamFileCounter = 0;
+                foreach (string file in files)
+                {
+                    if (file.Contains("TEAM_configuration_"))
+                    {
+                        teamFileCounter++;
+                    }
+                }
+
+                string finalPath = "";
+                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                {
+                    finalPath = fileBrowserDialog.SelectedPath;
+                }
+                else
+                {
+                    finalPath = fileBrowserDialog.SelectedPath + @"\";
+                }
+
+
+                textBoxConfigurationPath.Text = finalPath;
+
+                if (teamFileCounter == 0)
+                {
+                    richTextBoxInformationMain.Text =
+                        "The selected directory does not seem to contain TEAM configuration files. You are looking for files like TEAM_configuration_*.txt";
+                }
+                else
+                {
+                    richTextBoxInformationMain.Text =
+                        "The path now points to a directory that contains TEAM configuration files.";
+                }
+
+            }
+
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            var fileBrowserDialog = new FolderBrowserDialog();
+            fileBrowserDialog.SelectedPath = textBoxLoadPatternPath.Text;
+
+            DialogResult result = fileBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
+            {
+                string[] files = Directory.GetFiles(fileBrowserDialog.SelectedPath);
+
+                int fileCounter = 0;
+                foreach (string file in files)
+                {
+                    if (file.Contains("loadPatternCollection"))
+                    {
+                        fileCounter++;
+                    }
+                }
+
+                string finalPath = "";
+                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                {
+                    finalPath = fileBrowserDialog.SelectedPath;
+                }
+                else
+                {
+                    finalPath = fileBrowserDialog.SelectedPath + @"\";
+                }
+
+
+                textBoxLoadPatternPath.Text = finalPath;
+
+                if (fileCounter == 0)
+                {
+                    richTextBoxInformationMain.Text =
+                        "The selected directory does not seem to contain a loadPatternCollection.json file. Did you select a correct Load Pattern directory?";
+                }
+                else
+                {
+                    richTextBoxInformationMain.Text =
+                        "The path now points to a directory that contains the loadPatternCollection.json Load Pattern Collection file.";
+                }
+
+            }
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            var fileBrowserDialog = new FolderBrowserDialog();
+            fileBrowserDialog.SelectedPath = textBoxOutputPath.Text;
+
+            DialogResult result = fileBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
+            {
+
+                string finalPath = "";
+                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                {
+                    finalPath = fileBrowserDialog.SelectedPath;
+                }
+                else
+                {
+                    finalPath = fileBrowserDialog.SelectedPath + @"\";
+                }
+
+
+                textBoxOutputPath.Text = finalPath;
+
+
+                    richTextBoxInformationMain.Text =
+                        "The code generation output will be saved at "+finalPath+".'";
+   
+
+            }
         }
     }
 }

@@ -62,6 +62,8 @@
             this.button12 = new System.Windows.Forms.Button();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.textBoxConfigurationPath = new System.Windows.Forms.TextBox();
             this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -92,12 +94,15 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox9.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.tabControlSettings.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternCollection)).BeginInit();
@@ -108,6 +113,7 @@
             this.tabPageHome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabControlMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMainMenu
@@ -228,14 +234,14 @@
             this.generateTestDataToolStripMenuItem,
             this.generateRIValidationToolStripMenuItem});
             this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.testingToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.testingToolStripMenuItem.Text = "Testing";
             // 
             // generateTestDataToolStripMenuItem
             // 
             this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
             this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
             this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
             // 
@@ -243,7 +249,7 @@
             // 
             this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
             this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
             this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
             // 
@@ -382,6 +388,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.pictureBox4);
+            this.groupBox2.Controls.Add(this.pictureBox3);
             this.groupBox2.Controls.Add(this.textBoxConfigurationPath);
             this.groupBox2.Controls.Add(this.textBoxLoadPatternPath);
             this.groupBox2.Controls.Add(this.label10);
@@ -393,13 +401,35 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configuration paths";
             // 
+            // pictureBox4
+            // 
+            this.pictureBox4.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.pictureBox4.Location = new System.Drawing.Point(538, 48);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(19, 20);
+            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox4.TabIndex = 96;
+            this.pictureBox4.TabStop = false;
+            this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.pictureBox3.Location = new System.Drawing.Point(538, 22);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(19, 20);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox3.TabIndex = 95;
+            this.pictureBox3.TabStop = false;
+            this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
+            // 
             // textBoxConfigurationPath
             // 
             this.textBoxConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxConfigurationPath.Location = new System.Drawing.Point(137, 22);
             this.textBoxConfigurationPath.Multiline = true;
             this.textBoxConfigurationPath.Name = "textBoxConfigurationPath";
-            this.textBoxConfigurationPath.Size = new System.Drawing.Size(420, 20);
+            this.textBoxConfigurationPath.Size = new System.Drawing.Size(395, 20);
             this.textBoxConfigurationPath.TabIndex = 83;
             // 
             // textBoxLoadPatternPath
@@ -408,7 +438,7 @@
             this.textBoxLoadPatternPath.Location = new System.Drawing.Point(137, 48);
             this.textBoxLoadPatternPath.Multiline = true;
             this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
-            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(420, 20);
+            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(395, 20);
             this.textBoxLoadPatternPath.TabIndex = 93;
             // 
             // label10
@@ -594,6 +624,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.pictureBox5);
             this.groupBox8.Controls.Add(this.textBoxSchemaName);
             this.groupBox8.Controls.Add(this.label12);
             this.groupBox8.Controls.Add(this.OutputPathLabel);
@@ -636,7 +667,7 @@
             this.textBoxOutputPath.Location = new System.Drawing.Point(87, 49);
             this.textBoxOutputPath.Multiline = true;
             this.textBoxOutputPath.Name = "textBoxOutputPath";
-            this.textBoxOutputPath.Size = new System.Drawing.Size(420, 20);
+            this.textBoxOutputPath.Size = new System.Drawing.Size(395, 20);
             this.textBoxOutputPath.TabIndex = 81;
             // 
             // groupBox1
@@ -736,6 +767,17 @@
             this.tabControlMain.Size = new System.Drawing.Size(1338, 627);
             this.tabControlMain.TabIndex = 3;
             // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.pictureBox5.Location = new System.Drawing.Point(488, 49);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(19, 20);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox5.TabIndex = 97;
+            this.pictureBox5.TabStop = false;
+            this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -765,6 +807,8 @@
             this.tabPageSettings.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.tabControlSettings.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -779,6 +823,7 @@
             this.tabPageHome.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabControlMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -844,6 +889,9 @@
         private System.Windows.Forms.RichTextBox richTextBoxMainScreen;
         private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox pictureBox5;
     }
 }
 
