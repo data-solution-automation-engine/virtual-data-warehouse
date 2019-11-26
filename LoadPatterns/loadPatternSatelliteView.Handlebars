@@ -98,36 +98,27 @@ FROM
           [{{../metadataConfiguration.recordSourceAttribute}}],
           [{{../metadataConfiguration.sourceRowIdAttribute}}],
           [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-              CAST([CustomerID] AS NVARCHAR(100)) AS [CUSTOMER_ID],
-          [COUNTRY],
-          [DOB],
-          [GENDER],
-          [Given],
-          [POSTCODE],
-          [Referee_Offer_Made],
-          [Suburb],
-          [SURNAME],
-          HASHBYTES('MD5',{{#each columnMapping}}
+          CAST([CustomerID] AS NVARCHAR(100)) AS [CUSTOMER_ID],
+          {{#each columnMapping}}
+          [{{sourceColumn.columnName}}],
+          {{/each}}
+           HASHBYTES('MD5',{{#each columnMapping}}
             ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceColumn.columnName}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
            ) AS COMBINED_VALUE
         FROM {{sourceTable}}
       WHERE 2=2
         UNION
         SELECT DISTINCT
-          '1900-01-01' AS [LOAD_DATETIME],
-          '1900-01-01' AS [EVENT_DATETIME],
-          'Data Warehouse' AS [RECORD_SOURCE],
-          0 AS [SOURCE_ROW_ID],
+          '1900-01-01' AS [{{../metadataConfiguration.loadDateTimeAttribute}}],
+          '1900-01-01' AS [{{../metadataConfiguration.eventDateTimeAttribute}}],
+          'Data Warehouse' AS [{{../metadataConfiguration.recordSourceAttribute}}],
+          0 AS [{{../metadataConfiguration.sourceRowIdAttribute}}],
           'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-              CAST([CustomerID] AS NVARCHAR(100)) AS [CUSTOMER_ID],
-          NULL AS COUNTRY,
-          NULL AS DOB,
-          NULL AS GENDER,
-          NULL AS Given,
-          NULL AS POSTCODE,
-          NULL AS Referee_Offer_Made,
-          NULL AS Suburb,
-          NULL AS SURNAME,
+          {{#each businessKey}} {{#each businessKeyComponentMapping}}
+          CAST [{{sourceColumn.columnName}}] AS NVARCHAR(100)) AS [{{targetColumn.columnName}}],{{/each}}{{/each}}        
+          {{#each columnMapping}}
+          NULL AS [{{sourceColumn.columnName}}],
+          {{/each}}
           0x00000000000000000000000000000000 AS COMBINED_VALUE
         FROM {{sourceTable}}
    ) sub
@@ -147,14 +138,9 @@ SELECT 0x00000000000000000000000000000000,
 'Data Warehouse',
 'N',
 0x00000000000000000000000000000000,
+{{#each columnMapping}}
 NULL,
-NULL,
-NULL,
-NULL,
-NULL,
-NULL,
-NULL,
-NULL,
+{{/each}}
 1
 
 {{/each}}
