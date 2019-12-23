@@ -1,54 +1,54 @@
 [
   {
-    "loadPatternName": "Hub 001 View Pattern",
+    "loadPatternName": "Data Vault Hub 001 View Pattern",
     "loadPatternType": "Hub",
     "loadPatternFilePath": "loadPatternHubView.handlebars",
-    "loadPatternNotes": ""
+    "loadPatternNotes": "Standard Hub pattern - display the distinct list of Business Keys for a Core Business Concept."
   },
   {
-    "loadPatternName": "Hub 002 Insert Into Pattern",
+    "loadPatternName": "Data Vault Hub 002 Insert Into Pattern",
     "loadPatternType": "Hub",
     "loadPatternFilePath": "loadPatternHubInsertInto.handlebars",
-    "loadPatternNotes": "Use the Hub view to load into a physical table."
+    "loadPatternNotes": "Pattern to load a Hub view into a physical table (persistence)."
   },
   {
-    "loadPatternName": "Hub 003 Delta Select From Pattern",
+    "loadPatternName": "Data Vault Hub 003 Delta Select From Pattern",
     "loadPatternType": "Hub",
     "loadPatternFilePath": "loadPatternHubDeltaSelect.handlebars",
-    "loadPatternNotes": "This pattern simulates a delta detection from the Staging Layer to the Data Vault."
+    "loadPatternNotes": "Pattern to perform a delta load from the Staging Layer to the target Hub table as an ETL process."
   },
   {
-    "loadPatternName": "Link 001 View Pattern",
+    "loadPatternName": "Data Vault Link 001 View Pattern",
     "loadPatternType": "Link",
     "loadPatternFilePath": "loadPatternLinkView.handlebars",
-    "loadPatternNotes": ""
+    "loadPatternNotes": "Standard Link pattern - display the distinct list of Natural Business Relationships between Core Business Concepts."
   },
   {
-    "loadPatternName": "Link 002 Insert Into Pattern",
+    "loadPatternName": "Data Vault Link 002 Insert Into Pattern",
     "loadPatternType": "Link",
     "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "Link Satellite 001 View Pattern",
+    "loadPatternName": "Data Vault Link Satellite 001 View Pattern",
     "loadPatternType": "LinkSatellite",
     "loadPatternFilePath": "loadPatternLinkSatelliteView.handlebars",
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "LinkSatellite 002 Insert Into Pattern",
+    "loadPatternName": "Data Vault LinkSatellite 002 Insert Into Pattern",
     "loadPatternType": "LinkSatellite",
     "loadPatternFilePath": "loadPatternLinkSatelliteInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "LinkSatellite Driving Key 001 View Pattern",
+    "loadPatternName": "Data Vault LinkSatellite Driving Key 001 View Pattern",
     "loadPatternType": "LinkSatelliteDrivingKey",
     "loadPatternFilePath": "loadPatternLinkSatelliteDrivingKeyView.handlebars",
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "LinkSatellite Driving Key 002 Insert Into Pattern",
+    "loadPatternName": "Data Vault LinkSatellite Driving Key 002 Insert Into Pattern",
     "loadPatternType": "LinkSatelliteDrivingKey",
     "loadPatternFilePath": "loadPatternLinkSatelliteDrivingKeyInsertInto.handlebars",
     "loadPatternNotes": ""
@@ -57,6 +57,12 @@
     "loadPatternName": "Persistent Staging Area 001 View Pattern",
     "loadPatternType": "PersistentStagingArea",
     "loadPatternFilePath": "loadPatternPersistentStagingView.handlebars",
+    "loadPatternNotes": ""
+  },
+    {
+    "loadPatternName": "Persistent Staging Area 001 View Pattern With Deduplication",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternFilePath": "loadPatternPersistentStagingViewWithDedup.handlebars",
     "loadPatternNotes": ""
   },
   {
