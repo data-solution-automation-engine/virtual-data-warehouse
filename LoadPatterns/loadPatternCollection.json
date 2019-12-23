@@ -24,7 +24,12 @@
     "loadPatternNotes": "Standard Link pattern - display the distinct list of Natural Business Relationships between Core Business Concepts."
   },
   {
-    "loadPatternName": "Data Vault Link 002 Insert Into Pattern",
+    "loadPatternName": "Data Vault Link 001 View Pattern Withouth Hash Keys",
+    "loadPatternType": "Link",
+    "loadPatternFilePath": "loadPatternLinkViewNoHash.Handlebars",
+    "loadPatternNotes": ""
+  },  {
+    "loadPatternName": "Link 002 Insert Into Pattern",
     "loadPatternType": "Link",
     "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""

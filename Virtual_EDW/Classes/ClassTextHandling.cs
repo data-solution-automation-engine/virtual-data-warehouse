@@ -154,8 +154,15 @@ namespace Virtual_Data_Warehouse
                     //Check whether the token is a keyword, or between {{ }}  
                     String[] keyWordSql = {
                         "CREATE",
+                        "IF",
+                        "EXISTS",
+                        "DROP",
                         "VIEW",
                         "GO",
+                        "DATEADD",
+                        "ROW_NUMBER()",
+                        "PARTITION",
+                        "BY",
                         "TABLE",
                         "UNION",
                         "TRUNCATE",

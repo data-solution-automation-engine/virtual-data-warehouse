@@ -65,7 +65,7 @@ SELECT
       WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn.columnName}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
          AND PSA_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn.columnName}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
          AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change' ELSE 'No Change' 
-   END AS [CDC_OPERATION],
+   END AS {{../metadataConfiguration.recordSourceAttribute}},
    'PROFILER' AS {{../metadataConfiguration.recordSourceAttribute}},
    ROW_NUMBER() OVER
       (ORDER BY

@@ -58,7 +58,7 @@ namespace Virtual_Data_Warehouse
             public static string hashingStartSnippet { get; set; }
             public static string hashingEndSnippet { get; set; }
             public static string hashingCollation { get; set; }
-            public static string hashingZeroKey { get; set; }
+            public static string hashingZeroKey { get; set; } = "0x00000000000000000000000000000000";
 
             public static List<LoadPattern> patternList { get; set; }
             public static List<LoadPatternDefinition> patternDefinitionList { get; set; }
