@@ -507,7 +507,7 @@ namespace Virtual_Data_Warehouse
                     }
 
                     // Move the data table to the class instance
-                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
+                    List<DataObjectMapping> sourceToTargetMappingList = new List<DataObjectMapping>();
 
                     if (mappingRows != null)
                     {
@@ -571,6 +571,7 @@ namespace Virtual_Data_Warehouse
                             #region Lookup Table
                             // Define a lookup table, in case there is a desire to do key lookups.
                             var lookupTable = (string)row["TARGET_NAME"];
+                            
                             if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
                             {
                                 int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
@@ -594,7 +595,7 @@ namespace Virtual_Data_Warehouse
                             #endregion
 
                             // Add the created Business Key to the source-to-target mapping
-                            var sourceToTargetMapping = new SourceToTargetMapping();
+                            var sourceToTargetMapping = new DataObjectMapping();
 
                             sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];  // Source table
                             sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];  // Target table
@@ -609,11 +610,16 @@ namespace Virtual_Data_Warehouse
                         }
                     }
 
+                    // Create an instance of the non-generic information i.e. VEDW specific. For example the generation date/time.
+                    VedwSpecificMetadata vedwMetadata = new VedwSpecificMetadata();
+                    vedwMetadata.selectedDataObject = targetTableName;
+
                     // Create an instance of the 'MappingList' class / object model 
-                    SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
-                    sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
+                    DataObjectMappingList sourceTargetMappingList = new DataObjectMappingList();
+                    sourceTargetMappingList.dataObjectMapping = sourceToTargetMappingList;
                     sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.mainTable = targetTableName;
+                    sourceTargetMappingList.vedwSpecificMetadata = vedwMetadata;
+
 
                     // Return the result to the user
                     try

@@ -1,19 +1,19 @@
 --
--- Hub View definition for {{mainTable}}
--- Generated at {{generationDateTime}}
+-- Hub View definition for {{vedwSpecificMetadata.selectedDataObject}}
+-- Generated at {{vedwSpecificMetadata.generationDateTime}}
 --
 
 USE [{{metadataConfiguration.psaDatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}]
 GO
 
-CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}] AS
+CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}] AS
 SELECT hub.*
 FROM (
-{{#each individualSourceToTargetMapping}}{{#if @first}}
+{{#each dataObjectMapping}}{{#if @first}}
 SELECT
     HASHBYTES('MD5',
     {{#each businessKey.businessKeyComponentMapping}}
@@ -29,7 +29,7 @@ SELECT
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey.businessKeyComponentMapping}}{{targetComponentName}}{{#unless @last}},{{/unless}}{{/each}} ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}) AS ROW_NR
 FROM {{/if}}{{/each}}
 (
-    {{#each individualSourceToTargetMapping }}
+    {{#each dataObjectMapping }}
     SELECT
     {{#each businessKey.businessKeyComponentMapping}}
         CONVERT(NVARCHAR(100),[{{sourceComponentName}}]) AS [{{targetComponentName}}],

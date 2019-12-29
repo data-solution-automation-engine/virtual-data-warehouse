@@ -248,7 +248,18 @@ namespace Virtual_Data_Warehouse
 
                     // These variables are used as global variables throughout the application
                     // They will be set once after startup
-                    FormBase.TeamConfigurationSettings.SourceDatabaseName = configList["SourceDatabase"];
+
+                    string value;
+                    string lookUpValue = "SourceDatabase";
+                    if (configList.TryGetValue(lookUpValue, out value))
+                    {
+                        FormBase.TeamConfigurationSettings.SourceDatabaseName = value;
+                    }
+                    else
+                    {
+                        returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    }
+
                     FormBase.TeamConfigurationSettings.StagingDatabaseName = configList["StagingDatabase"];
                     FormBase.TeamConfigurationSettings.PsaDatabaseName = configList["PersistentStagingDatabase"];
                     FormBase.TeamConfigurationSettings.IntegrationDatabaseName = configList["IntegrationDatabase"];
@@ -263,7 +274,7 @@ namespace Virtual_Data_Warehouse
                     FormBase.TeamConfigurationSettings.ConnectionStringInt = connectionStringInt;
                     FormBase.TeamConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
                     FormBase.TeamConfigurationSettings.ConnectionStringPres = connectionStringPres;
-                    FormBase.TeamConfigurationSettings.SourceSystemPrefix = configList["SourceSystemPrefix"];
+                    
                     FormBase.TeamConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
                     FormBase.TeamConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
                     FormBase.TeamConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];

@@ -1,7 +1,7 @@
-{{#each individualSourceToTargetMapping}}{{#if @first}}
+{{#each dataObjectMapping}}{{#if @first}}
 --
 -- Hub Insert Into statement for {{targetTable}}
--- Generated at {{../generationDateTime}}
+-- Generated at {{../vedwSpecificMetadata.generationDateTime}}
 --
 USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
 GO

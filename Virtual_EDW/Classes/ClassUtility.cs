@@ -6,7 +6,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
-using static Virtual_Data_Warehouse.FormBase;
 
 namespace Virtual_Data_Warehouse
 {

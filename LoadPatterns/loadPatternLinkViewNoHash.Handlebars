@@ -1,19 +1,19 @@
 --
--- Link View definition for {{mainTable}}
--- Generated at {{generationDateTime}}
+-- Link View definition for {{vedwSpecificMetadata.selectedDataObject}}
+-- Generated at {{vedwSpecificMetadata.generationDateTime}}
 --
 GO
 USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}]
 GO
 
-CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{mainTable}}] AS
+CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}] AS
 SELECT link.*
 FROM 
-( {{#each individualSourceToTargetMapping}}{{#if @first}}
+( {{#each dataObjectMapping}}{{#if @first}}
 SELECT {{#each businessKey}} {{#unless @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}} {{#each businessKeyComponentMapping}}  
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
     AS {{targetTableHashKey}},
@@ -29,7 +29,7 @@ SELECT {{#each businessKey}} {{#unless @first}} {{!-- Create the Surrogate Key u
     ) AS ROW_NR
 FROM 
 ({{/if}}{{/each}}
-    {{#each individualSourceToTargetMapping }}
+    {{#each dataObjectMapping }}
     SELECT {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
         CAST({{sourceColumn.columnName}} AS NVARCHAR(100)) AS {{targetColumn.columnName}}{{../../@index}},{{/each}}{{/unless}}{{/each}}{{#each columnMapping}}
         [{{sourceColumn.columnName}}] AS [{{targetColumn.columnName}}],{{/each}}

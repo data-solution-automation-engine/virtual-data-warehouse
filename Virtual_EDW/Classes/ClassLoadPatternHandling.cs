@@ -225,18 +225,20 @@ namespace Virtual_Data_Warehouse
     /// The parent object containing the list of source-to-target mappings. This is the highest level and contains the list of mappings (as individual objects
     /// but also the parameters inherited from TEAM and VEDW.
     /// </summary>
-    class SourceToTargetMappingList
+    class DataObjectMappingList
     {
-        public string mainTable { get; set; }
-        public List<SourceToTargetMapping> individualSourceToTargetMapping { get; set; }
-        public DateTime generationDateTime { get; } = DateTime.Now;
+        // Generic interface definitions
+        public List<DataObjectMapping> dataObjectMapping { get; set; }
+
+        // TEAM and VDW specific details
         public MetadataConfiguration metadataConfiguration { get; set; }
+        public VedwSpecificMetadata vedwSpecificMetadata { get; set; }
     }
 
     /// <summary>
     /// The mapping between a source and target data set / table / file.
     /// </summary>
-    class SourceToTargetMapping
+    class DataObjectMapping
     {
         public string sourceTable { get; set; }
         public string targetTable { get; set; }
@@ -245,6 +247,11 @@ namespace Virtual_Data_Warehouse
         public List<BusinessKey> businessKey { get; set; }
         public string filterCriterion { get; set; }
         public List<ColumnMapping> columnMapping { get; set; }
+    }
+
+    class DataObject
+    {
+        public string dataObjectName { get; set }
     }
 
     /// <summary>
@@ -274,6 +281,11 @@ namespace Virtual_Data_Warehouse
         public string columnType { get; set; }
     }
 
+    class VedwSpecificMetadata
+    {
+        public string selectedDataObject { get; set; }
+        public DateTime generationDateTime { get; } = DateTime.Now;
+    }
 
     /// <summary>
     /// The parameters that have been inherited from TEAM or are set in VEDW, passed as properties of the metadata.
@@ -293,6 +305,7 @@ namespace Virtual_Data_Warehouse
         public string presentationDatabaseName { get; } = FormBase.TeamConfigurationSettings.PresentationDatabaseName;
         public string presentationDatabaseConnection { get; } = FormBase.TeamConfigurationSettings.ConnectionStringSource;
         public string vedwSchemaName { get; } = FormBase.VedwConfigurationSettings.VedwSchema;
+
         // Attributes
         public string changeDataCaptureAttribute { get; set; } = FormBase.TeamConfigurationSettings.ChangeDataCaptureAttribute;
         public string recordSourceAttribute { get; } = FormBase.TeamConfigurationSettings.RecordSourceAttribute;
