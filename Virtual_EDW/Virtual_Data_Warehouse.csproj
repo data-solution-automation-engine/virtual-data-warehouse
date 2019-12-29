@@ -197,6 +197,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ClassGenericInterfaceObjectModel.cs" />
     <Compile Include="Classes\ClassUtility.cs" />
     <Compile Include="Classes\CustomTabPage.cs" />
     <Compile Include="Classes\ClassInterfaceHandling.cs" />
