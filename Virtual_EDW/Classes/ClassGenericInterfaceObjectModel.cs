@@ -25,8 +25,12 @@ namespace Virtual_Data_Warehouse.Classes
         public string dataObjectMappingName { get; set; }
         public string dataObjectMappingClassification { get; set; }
         public Boolean enabled { get; set; }
+
         public string sourceTable { get; set; }
+        //public DataObject sourceDataObject { get; set; }
         public string targetTable { get; set; }
+        //public DataObject targetDataObject { get; set; }
+
         public string lookupTable { get; set; }
         public string targetTableHashKey { get; set; }
 
