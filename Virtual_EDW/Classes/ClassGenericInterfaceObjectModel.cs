@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Virtual_Data_Warehouse.Classes
 {
-    #region Object Models
     /// <summary>
     /// The parent object containing the list of source-to-target mappings. This is the highest level and contains the list of mappings (as individual objects
     /// but also the parameters inherited from TEAM and VEDW.
@@ -26,10 +22,14 @@ namespace Virtual_Data_Warehouse.Classes
     /// </summary>
     class DataObjectMapping
     {
+        public string dataObjectMappingName { get; set; }
+        public string dataObjectMappingClassification { get; set; }
+        public Boolean enabled { get; set; }
         public string sourceTable { get; set; }
         public string targetTable { get; set; }
         public string lookupTable { get; set; }
         public string targetTableHashKey { get; set; }
+
         public List<BusinessKey> businessKey { get; set; }
         public string filterCriterion { get; set; }
         public List<ColumnMapping> columnMapping { get; set; }
@@ -101,5 +101,5 @@ namespace Virtual_Data_Warehouse.Classes
         public string etlProcessAttribute { get; } = FormBase.TeamConfigurationSettings.EtlProcessAttribute;
         public string sourceRowIdAttribute { get; } = FormBase.TeamConfigurationSettings.RowIdAttribute;
     }
-    #endregion
+
 }
