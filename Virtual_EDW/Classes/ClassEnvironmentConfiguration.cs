@@ -106,7 +106,7 @@ namespace Virtual_Data_Warehouse
                 string textline;
                 while ((textline = sr.ReadLine()) != null)
                 {
-                    if (textline.IndexOf(@"/*", StringComparison.Ordinal) == -1)
+                    if (textline.IndexOf(@"/*", StringComparison.Ordinal) == -1 && textline.Trim() != "")
                     {
                         var line = textline.Split('|');
                         configList.Add(line[0], line[1]);
@@ -208,7 +208,7 @@ namespace Virtual_Data_Warehouse
                     string textline;
                     while ((textline = sr.ReadLine()) != null)
                     {
-                        if (textline.IndexOf(@"/*", StringComparison.Ordinal) == -1)
+                        if (textline.IndexOf(@"/*", StringComparison.Ordinal) == -1 && textline.Trim() != "")
                         {
                             var line = textline.Split('|');
                             configList.Add(line[0], line[1]);
@@ -250,7 +250,9 @@ namespace Virtual_Data_Warehouse
                     // They will be set once after startup
 
                     string value;
-                    string lookUpValue = "SourceDatabase";
+                    string lookUpValue;
+
+                    lookUpValue = "SourceDatabase";
                     if (configList.TryGetValue(lookUpValue, out value))
                     {
                         FormBase.TeamConfigurationSettings.SourceDatabaseName = value;
@@ -260,16 +262,99 @@ namespace Virtual_Data_Warehouse
                         returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
                     }
 
-                    FormBase.TeamConfigurationSettings.StagingDatabaseName = configList["StagingDatabase"];
-                    FormBase.TeamConfigurationSettings.PsaDatabaseName = configList["PersistentStagingDatabase"];
-                    FormBase.TeamConfigurationSettings.IntegrationDatabaseName = configList["IntegrationDatabase"];
-                    FormBase.TeamConfigurationSettings.PresentationDatabaseName = configList["PresentationDatabase"];
-                    FormBase.TeamConfigurationSettings.MetadataDatabaseName = configList["MetadataDatabase"];
-                    FormBase.TeamConfigurationSettings.PhysicalModelServerName = configList["PhysicalModelServerName"];
-                    FormBase.TeamConfigurationSettings.MetadataServerName = configList["MetadataServerName"];
+                    lookUpValue = "StagingDatabase";
+                    if (configList.TryGetValue(lookUpValue, out value))
+                    {
+                        FormBase.TeamConfigurationSettings.StagingDatabaseName = value;
+                    }
+                    else
+                    {
+                        returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    }
+
+                    lookUpValue = "PersistentStagingDatabase";
+                    if (configList.TryGetValue(lookUpValue, out value))
+                    {
+                        FormBase.TeamConfigurationSettings.PsaDatabaseName = value;
+                    }
+                    else
+                    {
+                        returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    }
+
+                    lookUpValue = "IntegrationDatabase";
+                    if (configList.TryGetValue(lookUpValue, out value))
+                    {
+                        FormBase.TeamConfigurationSettings.IntegrationDatabaseName = value;
+                    }
+                    else
+                    {
+                        returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    }
+
+                    lookUpValue = "PresentationDatabase";
+                    if (configList.TryGetValue(lookUpValue, out value))
+                    {
+                        FormBase.TeamConfigurationSettings.PresentationDatabaseName = value;
+                    }
+                    else
+                    {
+                        returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    }
+
+                    lookUpValue = "MetadataDatabase";
+                    if (configList.TryGetValue(lookUpValue, out value))
+                    {
+                        FormBase.TeamConfigurationSettings.MetadataDatabaseName = value;
+                    }
+                    else
+                    {
+                        returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    }
+
+                    lookUpValue = "PhysicalModelServerName";
+                    if (configList.TryGetValue(lookUpValue, out value))
+                    {
+                        FormBase.TeamConfigurationSettings.PhysicalModelServerName = value;
+                    }
+                    else
+                    {
+                        returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    }
+
+                    lookUpValue = "MetadataServerName";
+                    if (configList.TryGetValue(lookUpValue, out value))
+                    {
+                        FormBase.TeamConfigurationSettings.MetadataServerName = value;
+                    }
+                    else
+                    {
+                        returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    }
+
+                    //lookUpValue = connectionStringSource;
+                    //if (configList.TryGetValue(lookUpValue, out value))
+                    //{
+                    //    FormBase.TeamConfigurationSettings.ConnectionStringSource = value;
+                    //}
+                    //else
+                    //{
+                    //    returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    //}
+
+                    //lookUpValue = connectionStringStg;
+                    //if (configList.TryGetValue(lookUpValue, out value))
+                    //{
+                    //    FormBase.TeamConfigurationSettings.ConnectionStringStg = value;
+                    //}
+                    //else
+                    //{
+                    //    returnCode.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                    //}
+
+                    // 10
                     FormBase.TeamConfigurationSettings.ConnectionStringSource = connectionStringSource;
                     FormBase.TeamConfigurationSettings.ConnectionStringStg = connectionStringStg;
-                    // 10
                     FormBase.TeamConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
                     FormBase.TeamConfigurationSettings.ConnectionStringInt = connectionStringInt;
                     FormBase.TeamConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
