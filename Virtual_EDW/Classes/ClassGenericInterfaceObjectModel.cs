@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DataWarehouseAutomation;
 
 namespace Virtual_Data_Warehouse.Classes
 {
@@ -62,14 +63,14 @@ namespace Virtual_Data_Warehouse.Classes
         public Column targetColumn { get; set; }
     }
 
-    /// <summary>
-    /// And individual column
-    /// </summary>
-    class Column
-    {
-        public string columnName { get; set; }
-        public string columnType { get; set; }
-    }
+    ///// <summary>
+    ///// And individual column
+    ///// </summary>
+    //class Column
+    //{
+    //    public string columnName { get; set; }
+    //    public string columnType { get; set; }
+    //}
 
     class VedwSpecificMetadata
     {
