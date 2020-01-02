@@ -19,59 +19,8 @@ namespace Virtual_Data_Warehouse.Classes
     }
 
     /// <summary>
-    /// The mapping between a source and target data set / table / file.
+    /// Specific metadata related to VDW, but which is relevant to use in templates.
     /// </summary>
-    class DataObjectMapping
-    {
-        public string dataObjectMappingName { get; set; }
-        public string dataObjectMappingClassification { get; set; }
-        public Boolean enabled { get; set; }
-
-        public string sourceTable { get; set; }
-        //public DataObject sourceDataObject { get; set; }
-        public string targetTable { get; set; }
-        //public DataObject targetDataObject { get; set; }
-
-        public string lookupTable { get; set; }
-        public string targetTableHashKey { get; set; }
-
-        public List<BusinessKey> businessKey { get; set; }
-        public string filterCriterion { get; set; }
-        public List<ColumnMapping> columnMapping { get; set; }
-    }
-
-    class DataObject
-    {
-        public string dataObjectName { get; set; }
-    }
-
-    /// <summary>
-    /// A Business Key, which consists of one or more components (column mappings) and has its own surrogate key.
-    /// </summary>
-    class BusinessKey
-    {
-        public List<ColumnMapping> businessKeyComponentMapping { get; set; }
-        public string surrogateKey { get; set; }
-    }
-
-    /// <summary>
-    /// The individual column-to-column mapping
-    /// </summary>
-    class ColumnMapping
-    {
-        public Column sourceColumn { get; set; }
-        public Column targetColumn { get; set; }
-    }
-
-    ///// <summary>
-    ///// And individual column
-    ///// </summary>
-    //class Column
-    //{
-    //    public string columnName { get; set; }
-    //    public string columnType { get; set; }
-    //}
-
     class VedwSpecificMetadata
     {
         public string selectedDataObject { get; set; }
@@ -79,7 +28,7 @@ namespace Virtual_Data_Warehouse.Classes
     }
 
     /// <summary>
-    /// The parameters that have been inherited from TEAM or are set in VEDW, passed as properties of the metadata.
+    /// The parameters that have been inherited from TEAM or are set in VDW, passed as properties of the metadata - and can be used in the templates.
     /// </summary>
     class MetadataConfiguration
     {
@@ -106,5 +55,4 @@ namespace Virtual_Data_Warehouse.Classes
         public string etlProcessAttribute { get; } = FormBase.TeamConfigurationSettings.EtlProcessAttribute;
         public string sourceRowIdAttribute { get; } = FormBase.TeamConfigurationSettings.RowIdAttribute;
     }
-
 }

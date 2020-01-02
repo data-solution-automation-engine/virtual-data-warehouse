@@ -618,6 +618,7 @@ namespace Virtual_Data_Warehouse
                     // Create an instance of the 'MappingList' class / object model 
                     DataObjectMappingList sourceTargetMappingList = new DataObjectMappingList();
                     sourceTargetMappingList.dataObjectMapping = sourceToTargetMappingList;
+
                     sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
                     sourceTargetMappingList.vedwSpecificMetadata = vedwMetadata;
 
