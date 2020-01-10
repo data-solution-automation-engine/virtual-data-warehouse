@@ -8,20 +8,20 @@ namespace Virtual_Data_Warehouse.Classes
     /// The parent object containing the list of source-to-target mappings. This is the highest level and contains the list of mappings (as individual objects
     /// but also the parameters inherited from TEAM and VEDW.
     /// </summary>
-    class DataObjectMappingList
+    class VEDW_DataObjectMappingList : DataObjectMappingList
     {
         // Generic interface definitions
-        public List<DataObjectMapping> dataObjectMapping { get; set; }
+        //public List<DataObjectMapping> dataObjectMapping { get; set; }
 
         // TEAM and VDW specific details
         public MetadataConfiguration metadataConfiguration { get; set; }
-        public VedwSpecificMetadata vedwSpecificMetadata { get; set; }
+        public GenerationSpecificMetadata generationSpecificMetadata { get; set; }
     }
 
     /// <summary>
-    /// Specific metadata related to VDW, but which is relevant to use in templates.
+    /// Specific metadata related for generation purposes, but which is relevant to use in templates.
     /// </summary>
-    class VedwSpecificMetadata
+    public class GenerationSpecificMetadata
     {
         public string selectedDataObject { get; set; }
         public DateTime generationDateTime { get; } = DateTime.Now;

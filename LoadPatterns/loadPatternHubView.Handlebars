@@ -1,19 +1,19 @@
 --
--- Hub View definition for {{vedwSpecificMetadata.selectedDataObject}}
--- Generated at {{vedwSpecificMetadata.generationDateTime}}
+-- Hub View definition for {{generationSpecificMetadata.selectedDataObject}}
+-- Generated at {{generationSpecificMetadata.generationDateTime}}
 --
 GO
 USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
 GO
 
-CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}] AS
+CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
 SELECT hub.*
 FROM (
-{{#each dataObjectMapping}}{{#if @first}}
+{{#each dataObjectMappingList}}{{#if @first}}
 SELECT
     HASHBYTES('MD5', {{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
     {{#each businessKeyComponentMapping}}
@@ -33,12 +33,12 @@ SELECT
     ) AS ROW_NR
 FROM 
 ( {{/if}}{{/each}}
-    {{#each dataObjectMapping }}
+    {{#each dataObjectMappingList }}
     SELECT {{#each businessKey}}{{#each businessKeyComponentMapping}}
         CAST({{sourceColumn.columnName}} AS NVARCHAR(100)) AS {{targetColumn.columnName}},{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}]
+    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}]
     WHERE {{#each businessKey}}{{#each businessKeyComponentMapping}}
         {{sourceColumn.columnName}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
@@ -47,7 +47,7 @@ FROM
         {{../metadataConfiguration.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}
-) HUB_selection {{#each dataObjectMapping}}{{#if @first}}
+) HUB_selection {{#each dataObjectMappingList}}{{#if @first}}
 GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
     {{targetColumn.columnName}},{{/each}}{{/each}}
     {{../metadataConfiguration.recordSourceAttribute}} {{/if}}{{/each}}
@@ -58,6 +58,6 @@ SELECT
   0x00000000000000000000000000000000,
   - 1,
   '1900-01-01',
-  'Data Warehouse',{{#each dataObjectMapping}}{{#if @first}}{{#each businessKey}}{{#each businessKeyComponentMapping}}
+  'Data Warehouse',{{#each dataObjectMappingList}}{{#if @first}}{{#each businessKey}}{{#each businessKeyComponentMapping}}
   'Unknown',{{/each}}{{/each}}{{/if}}{{/each}}
   1 AS ROW_NR

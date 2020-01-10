@@ -21,10 +21,12 @@ namespace Virtual_Data_Warehouse
 
             foreach (string keyPart in sourceBusinessKeyComponentList)
             {
-                var businessKeyEval = "";
+                bool businessKeyEval = false;
+
                 if (keyPart.StartsWith("'") && keyPart.EndsWith("'"))
                 {
-                    businessKeyEval = "HardCoded";
+                    //businessKeyEval = "HardCoded";
+                    businessKeyEval = true;
                 }
 
                 DataItemMapping keyComponent = new DataItemMapping();
@@ -33,21 +35,21 @@ namespace Virtual_Data_Warehouse
                 DataItem targetColumn = new DataItem();
 
                 sourceColumn.name = keyPart;
-                sourceColumn.columnType = businessKeyEval;
+                sourceColumn.isHardCodedValue = businessKeyEval;
 
-                keyComponent.sourceColumn = sourceColumn;
+                keyComponent.sourceDataItem = sourceColumn;
 
                 var indexExists = targetBusinessKeyComponentList.ElementAtOrDefault(counter) != null;
                 if (indexExists)
                 {
-                    targetColumn.columnName = targetBusinessKeyComponentList[counter];                    
+                    targetColumn.name = targetBusinessKeyComponentList[counter];                    
                 }
                 else
                 {
-                    targetColumn.columnName = "";
+                    targetColumn.name = "";
                 }
 
-                keyComponent.targetColumn = targetColumn;
+                keyComponent.targetDataItem = targetColumn;
 
                 returnList.Add(keyComponent);
                 counter++;
@@ -96,16 +98,16 @@ namespace Virtual_Data_Warehouse
             return sourceBusinessKeyComponentList;
         }
 
-        internal static string EvaluateBusinessKey(ColumnMapping businessKey)
+        internal static string EvaluateBusinessKey(DataItemMapping businessKey)
         {
             var businessKeyEval = "";
-            if (businessKey.sourceColumn.columnName.Contains("'"))
+            if (businessKey.sourceDataItem.name.Contains("'"))
             {
-                businessKeyEval = businessKey.sourceColumn.columnName;
+                businessKeyEval = businessKey.sourceDataItem.name;
             }
             else
             {
-                businessKeyEval = "[" + businessKey.sourceColumn.columnName + "]";
+                businessKeyEval = "[" + businessKey.sourceDataItem.name + "]";
             }
 
             return businessKeyEval;

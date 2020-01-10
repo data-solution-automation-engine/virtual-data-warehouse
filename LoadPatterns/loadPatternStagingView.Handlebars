@@ -1,7 +1,7 @@
-{{#each dataObjectMapping}}
+{{#each dataObjectMappingList}}
 --
 -- Staging Area View definition for {{targetTable}}
--- Generated at {{../vedwSpecificMetadata.generationDateTime}}
+-- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 
 GO
@@ -24,7 +24,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceColumn.columnName}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
    {{/each}}
    ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{../metadataConfiguration.sourceDatabaseName}}].[dbo].[{{sourceTable}}]
+FROM [{{../metadataConfiguration.sourceDatabaseName}}].[dbo].[{{sourceDataObject.name}}]
 ),
 PSA_CTE AS
 (

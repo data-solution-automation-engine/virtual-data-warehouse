@@ -1,7 +1,7 @@
-{{#each dataObjectMapping }}
+{{#each dataObjectMappingList }}
 --
 -- Working on mapping to {{targetTable}} from source table {{sourceTable}}
--- Generated at {{../vedwSpecificMetadata.generationDateTime}}
+-- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 SELECT
     HASHBYTES('MD5', {{#each businessKey}} {{#if @first}}
@@ -28,7 +28,7 @@ FROM
             stg.[{{../metadataConfiguration.loadDateTimeAttribute}}],
             -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
             stg.[{{../metadataConfiguration.recordSourceAttribute}}]
-          FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}] stg
+          FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}] stg
           WHERE NOT EXISTS
           (
              SELECT 1

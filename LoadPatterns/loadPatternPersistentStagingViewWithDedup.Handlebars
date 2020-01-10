@@ -1,7 +1,7 @@
-{{#each dataObjectMapping}}
+{{#each dataObjectMappingList}}
 --
 -- Persistent Staging Area View definition for {{targetTable}}
--- Generated at {{../vedwSpecificMetadata.generationDateTime}}
+-- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 
 GO
@@ -53,7 +53,7 @@ FROM
              STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
       )  AS INT
     ) AS KEY_ROW_NUMBER
-  FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{sourceTable}}] STG
+  FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{sourceDataObject.name}}] STG
   LEFT OUTER JOIN -- Prevent reprocessing
     [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetTable}}] HSTG
     ON

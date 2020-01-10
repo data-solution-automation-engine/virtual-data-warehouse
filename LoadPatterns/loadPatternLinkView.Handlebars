@@ -1,19 +1,19 @@
 --
--- Link View definition for {{vedwSpecificMetadata.selectedDataObject}}
--- Generated at {{vedwSpecificMetadata.generationDateTime}}
+-- Link View definition for {{generationSpecificMetadata.selectedDataObject}}
+-- Generated at {{generationSpecificMetadata.generationDateTime}}
 --
 GO
 USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
 GO
 
-CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{vedwSpecificMetadata.selectedDataObject}}] AS
+CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
 SELECT link.*
 FROM 
-( {{#each dataObjectMapping}}{{#if @first}}
+( {{#each dataObjectMappingList}}{{#if @first}}
 SELECT
     HASHBYTES('MD5', {{#each businessKey}} {{#unless @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}}
     {{#each businessKeyComponentMapping}}  ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
@@ -36,13 +36,13 @@ SELECT
     ) AS ROW_NR
 FROM 
 ({{/if}}{{/each}}
-    {{#each dataObjectMapping }}
+    {{#each dataObjectMappingList }}
     SELECT {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
         CAST({{sourceColumn.columnName}} AS NVARCHAR(100)) AS {{targetColumn.columnName}}{{../../@index}},{{/each}}{{/unless}}{{/each}}{{#each columnMapping}}
         [{{sourceColumn.columnName}}] AS [{{targetColumn.columnName}}],{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceTable}}]
+    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}]
     WHERE {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
        {{sourceColumn.columnName}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{#unless @last}} AND{{/unless}}{{/unless}} {{/each}}
        {{#each columnMapping}}

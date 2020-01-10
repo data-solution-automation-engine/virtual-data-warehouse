@@ -529,22 +529,22 @@ namespace Virtual_Data_Warehouse
 
                             #region Column Mapping
                             // Create the column-to-column mapping
-                            List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
+                            List<DataItemMapping> columnMappingList = new List<DataItemMapping>();
                             if (columnMetadataDataTable != null && columnMetadataDataTable.Rows.Count > 0)
                             {
                                 DataRow[] columnRows = columnMetadataDataTable.Select("[TARGET_NAME] = '" + targetTableName + "' AND [SOURCE_NAME] = '" + (string)row["SOURCE_NAME"] + "'");
 
                                 foreach (DataRow column in columnRows)
                                 {
-                                    ColumnMapping columnMapping = new ColumnMapping();
-                                    Column sourceColumn = new Column();
-                                    Column targetColumn = new Column();
+                                    DataItemMapping columnMapping = new DataItemMapping();
+                                    DataItem sourceColumn = new DataItem();
+                                    DataItem targetColumn = new DataItem();
 
-                                    sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
-                                    targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
+                                    sourceColumn.name = (string)column["SOURCE_ATTRIBUTE_NAME"];
+                                    targetColumn.name = (string)column["TARGET_ATTRIBUTE_NAME"];
 
-                                    columnMapping.sourceColumn = sourceColumn;
-                                    columnMapping.targetColumn = targetColumn;
+                                    columnMapping.sourceDataItem = sourceColumn;
+                                    columnMapping.targetDataItem = targetColumn;
 
                                     columnMappingList.Add(columnMapping);
                                 }
@@ -598,13 +598,24 @@ namespace Virtual_Data_Warehouse
                             // Add the created Business Key to the source-to-target mapping
                             var sourceToTargetMapping = new DataObjectMapping();
 
-                            sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];  // Source table
-                            sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];  // Target table
+                            var sourceDataObject = new DataWarehouseAutomation.DataObject();
+                            var targetDataObject = new DataWarehouseAutomation.DataObject();
+
+                            sourceDataObject.name = (string)row["SOURCE_NAME"];
+                            targetDataObject.name = (string)row["TARGET_NAME"];
+
+                            //sourceToTargetMapping.sourceDataObject.name = (string)row["SOURCE_NAME"];  // Source table
+                            //sourceToTargetMapping.targetDataObject.name = (string)row["TARGET_NAME"];  // Target table
+
+                            sourceToTargetMapping.sourceDataObject = sourceDataObject;
+                            sourceToTargetMapping.targetDataObject = targetDataObject;
+                            sourceToTargetMapping.enabled = true;
+
                             sourceToTargetMapping.lookupTable = lookupTable; // Lookup Table
                             sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"]; // Surrogate Key
                             sourceToTargetMapping.businessKey = businessKeyList; // Business Key
                             sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"]; // Filter criterion
-                            sourceToTargetMapping.columnMapping = columnMappingList; // Column to column mapping
+                            sourceToTargetMapping.dataItemMapping = columnMappingList; // Column to column mapping
 
                             // Add the source-to-target mapping to the mapping list
                             sourceToTargetMappingList.Add(sourceToTargetMapping);
@@ -612,15 +623,15 @@ namespace Virtual_Data_Warehouse
                     }
 
                     // Create an instance of the non-generic information i.e. VEDW specific. For example the generation date/time.
-                    VedwSpecificMetadata vedwMetadata = new VedwSpecificMetadata();
+                    GenerationSpecificMetadata vedwMetadata = new GenerationSpecificMetadata();
                     vedwMetadata.selectedDataObject = targetTableName;
 
                     // Create an instance of the 'MappingList' class / object model 
-                    DataObjectMappingList sourceTargetMappingList = new DataObjectMappingList();
-                    sourceTargetMappingList.dataObjectMapping = sourceToTargetMappingList;
+                    VEDW_DataObjectMappingList sourceTargetMappingList = new VEDW_DataObjectMappingList();
+                    sourceTargetMappingList.dataObjectMappingList = sourceToTargetMappingList;
 
                     sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.vedwSpecificMetadata = vedwMetadata;
+                    sourceTargetMappingList.generationSpecificMetadata = vedwMetadata;
 
 
                     // Return the result to the user
