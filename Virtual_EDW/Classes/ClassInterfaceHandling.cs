@@ -8,10 +8,10 @@ namespace Virtual_Data_Warehouse
 {
     class InterfaceHandling
     {
-        public static List<ColumnMapping> BusinessKeyComponentMappingList (string sourceBusinessKeyDefinition, string targetBusinessKeyDefinition)
+        public static List<DataItemMapping> BusinessKeyComponentMappingList (string sourceBusinessKeyDefinition, string targetBusinessKeyDefinition)
         {
             // Set the return type
-            List<ColumnMapping> returnList = new List<ColumnMapping>();
+            List<DataItemMapping> returnList = new List<DataItemMapping>();
 
             // Evaluate key components for source and target key definitions
             var sourceBusinessKeyComponentList = businessKeyComponentList(sourceBusinessKeyDefinition);
@@ -27,12 +27,12 @@ namespace Virtual_Data_Warehouse
                     businessKeyEval = "HardCoded";
                 }
 
-                ColumnMapping keyComponent = new ColumnMapping();
+                DataItemMapping keyComponent = new DataItemMapping();
 
-                Column sourceColumn = new Column();
-                Column targetColumn = new Column();
+                DataItem sourceColumn = new DataItem();
+                DataItem targetColumn = new DataItem();
 
-                sourceColumn.columnName = keyPart;
+                sourceColumn.name = keyPart;
                 sourceColumn.columnType = businessKeyEval;
 
                 keyComponent.sourceColumn = sourceColumn;
