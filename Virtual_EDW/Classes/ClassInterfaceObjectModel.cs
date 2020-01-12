@@ -18,6 +18,13 @@ namespace Virtual_Data_Warehouse.Classes
         public GenerationSpecificMetadata generationSpecificMetadata { get; set; }
     }
 
+    class VEDW_DataObjectMapping : DataObjectMapping
+    {
+        // The following columns are VEDW specific for the moment. These can probably be deprecated but for now remain as backward-compatibility while moving to the generic schema
+        public string lookupTable { get; set; }
+        public string targetTableHashKey { get; set; }
+    }
+
     /// <summary>
     /// Specific metadata related for generation purposes, but which is relevant to use in templates.
     /// </summary>

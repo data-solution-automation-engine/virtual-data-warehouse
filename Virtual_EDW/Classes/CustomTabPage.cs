@@ -527,9 +527,9 @@ namespace Virtual_Data_Warehouse
                             businessKeyList.Add(businessKey);
                             #endregion
 
-                            #region Column Mapping
+                            #region Data Item Mapping (column to column)
                             // Create the column-to-column mapping
-                            List<DataItemMapping> columnMappingList = new List<DataItemMapping>();
+                            List<DataItemMapping> dataItemMappingList = new List<DataItemMapping>();
                             if (columnMetadataDataTable != null && columnMetadataDataTable.Rows.Count > 0)
                             {
                                 DataRow[] columnRows = columnMetadataDataTable.Select("[TARGET_NAME] = '" + targetTableName + "' AND [SOURCE_NAME] = '" + (string)row["SOURCE_NAME"] + "'");
@@ -546,7 +546,7 @@ namespace Virtual_Data_Warehouse
                                     columnMapping.sourceDataItem = sourceColumn;
                                     columnMapping.targetDataItem = targetColumn;
 
-                                    columnMappingList.Add(columnMapping);
+                                    dataItemMappingList.Add(columnMapping);
                                 }
                             }
                             #endregion
@@ -596,7 +596,7 @@ namespace Virtual_Data_Warehouse
                             #endregion
 
                             // Add the created Business Key to the source-to-target mapping
-                            var sourceToTargetMapping = new DataObjectMapping();
+                            var sourceToTargetMapping = new VEDW_DataObjectMapping();
 
                             var sourceDataObject = new DataWarehouseAutomation.DataObject();
                             var targetDataObject = new DataWarehouseAutomation.DataObject();
@@ -615,7 +615,13 @@ namespace Virtual_Data_Warehouse
                             sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"]; // Surrogate Key
                             sourceToTargetMapping.businessKey = businessKeyList; // Business Key
                             sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"]; // Filter criterion
-                            sourceToTargetMapping.dataItemMapping = columnMappingList; // Column to column mapping
+
+                            if (dataItemMappingList.Count == 0)
+                            {
+                                dataItemMappingList = null;
+                            }
+
+                            sourceToTargetMapping.dataItemMapping = dataItemMappingList; // Column to column mapping
 
                             // Add the source-to-target mapping to the mapping list
                             sourceToTargetMappingList.Add(sourceToTargetMapping);
