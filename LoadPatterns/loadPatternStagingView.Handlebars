@@ -1,6 +1,6 @@
 {{#each dataObjectMappingList}}
 --
--- Staging Area View definition for {{targetTable}}
+-- Staging Area View definition for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 
@@ -8,20 +8,20 @@ GO
 USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
 GO
 
-CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
+CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
 WITH STG_CTE AS
 (
 SELECT
-   {{#each columnMapping}}
-   [{{sourceColumn.columnName}}] AS [{{targetColumn.columnName}}],
+   {{#each dataItemMapping}}
+   [{{sourceDataItem.name}}] AS [{{targetDataItem.name}}],
    {{/each}}
    HASHBYTES('MD5',
-   {{#each columnMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceColumn.columnName}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
+   {{#each dataItemMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItem.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
    {{/each}}
    ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
 FROM [{{../metadataConfiguration.sourceDatabaseName}}].[dbo].[{{sourceDataObject.name}}]
@@ -30,57 +30,57 @@ PSA_CTE AS
 (
 SELECT
    A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
-   {{#each columnMapping}}
-   A.[{{sourceColumn.columnName}}] AS [{{targetColumn.columnName}}]{{#unless @last}},{{/unless}}
+   {{#each dataItemMapping}}
+   A.[{{sourceDataItem.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
 FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{lookupTable}}] A
 JOIN
    (
    SELECT {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-      [{{sourceColumn.columnName}}], {{/each}} {{/each}}
+      [{{sourceDataItem.name}}], {{/each}} {{/each}}
       MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
    FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{lookupTable}}]
    GROUP BY {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-      [{{sourceColumn.columnName}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
+      [{{sourceDataItem.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
    ) B ON {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-   A.[{{sourceColumn.columnName}}] = B.[{{sourceColumn.columnName}}] AND {{/each}} {{/each}}
+   A.[{{sourceDataItem.name}}] = B.[{{sourceDataItem.name}}] AND {{/each}} {{/each}}
    A.{{../metadataConfiguration.loadDateTimeAttribute}} = B.MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
    WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'Delete'
 )
 SELECT
-   {{#each columnMapping}}
+   {{#each dataItemMapping}}
    CASE 
-     WHEN STG_CTE.{{#each ../businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn.columnName}}]{{/if}}{{/each}}{{/each}} IS NULL 
-     THEN PSA_CTE.[{{sourceColumn.columnName}}]
-     ELSE STG_CTE.[{{sourceColumn.columnName}}] 
-   END AS [{{sourceColumn.columnName}}],{{/each}}
+     WHEN STG_CTE.{{#each ../businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
+     THEN PSA_CTE.[{{sourceDataItem.name}}]
+     ELSE STG_CTE.[{{sourceDataItem.name}}] 
+   END AS [{{sourceDataItem.name}}],{{/each}}
    CASE 
-     WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn.columnName}}]{{/if}}{{/each}}{{/each}} IS NULL
+     WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL
      THEN PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
      ELSE STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
    END AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
    CASE 
-      WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn.columnName}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'Delete' 
-      WHEN PSA_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn.columnName}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'Insert' 
-      WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn.columnName}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
-         AND PSA_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceColumn.columnName}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
+      WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'Delete' 
+      WHEN PSA_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'Insert' 
+      WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
+         AND PSA_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
          AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change' ELSE 'No Change' 
    END AS {{../metadataConfiguration.changeDataCaptureAttribute}},
    'PROFILER' AS {{../metadataConfiguration.recordSourceAttribute}},
    ROW_NUMBER() OVER
       (ORDER BY
-         {{#each businessKey}}{{#each businessKeyComponentMapping}}CASE WHEN STG_CTE.[{{sourceColumn.columnName}}] IS NULL THEN PSA_CTE.[{{sourceColumn.columnName}}] ELSE STG_CTE.[{{sourceColumn.columnName}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+         {{#each businessKey}}{{#each businessKeyComponentMapping}}CASE WHEN STG_CTE.[{{sourceDataItem.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItem.name}}] ELSE STG_CTE.[{{sourceDataItem.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}
       ) AS {{../metadataConfiguration.sourceRowIdAttribute}},
    GETDATE() {{../metadataConfiguration.eventDateTimeAttribute}}
 FROM STG_CTE
 FULL OUTER JOIN PSA_CTE ON {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-    PSA_CTE.[{{sourceColumn.columnName}}] = STG_CTE.[{{sourceColumn.columnName}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
+    PSA_CTE.[{{sourceDataItem.name}}] = STG_CTE.[{{sourceDataItem.name}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
 WHERE
 (
    CASE
-      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}STG_CTE.[{{sourceColumn.columnName}}] IS NULL THEN 'Delete'{{/if}}{{/each}}{{/each}}
-      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceColumn.columnName}}] IS NULL THEN 'Insert'{{/if}}{{/each}}{{/each}}
-      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceColumn.columnName}}] IS NOT NULL AND PSA_CTE.{{sourceColumn.columnName}} IS NOT NULL AND STG_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] != PSA_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}STG_CTE.[{{sourceDataItem.name}}] IS NULL THEN 'Delete'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItem.name}}] IS NULL THEN 'Insert'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItem.name}}] IS NOT NULL AND PSA_CTE.{{sourceDataItem.name}} IS NOT NULL AND STG_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] != PSA_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change'{{/if}}{{/each}}{{/each}}
       ELSE 'No Change'
    END
 ) != 'No Change'

@@ -36,7 +36,7 @@ FROM {{/if}}{{/each}}
     {{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM {{sourceTable}}
+    FROM {{sourceDataObject.name}}
     WHERE
     {{#each businessKey.businessKeyComponentMapping}}
         [{{sourceComponentName}}] IS NOT NULL {{/each}}{{#if filterCriterion}}AND {{filterCriterion}}{{/if}}

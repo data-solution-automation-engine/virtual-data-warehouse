@@ -1,28 +1,28 @@
 {{#each dataObjectMappingList}}{{#if @first}}
 --
--- Hub Insert Into statement for {{targetTable}}
+-- Hub Insert Into statement for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
 GO
 
-INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}]
+INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}]
 (
    [{{targetTableHashKey}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
-   [{{targetColumn.columnName}}],{{/each}}{{/if}}{{/each}}
+   [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.recordSourceAttribute}}]
 )
 SELECT
    hub_view.[{{targetTableHashKey}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
-   hub_view.[{{targetColumn.columnName}}],{{/each}}{{/if}}{{/each}}
+   hub_view.[{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
    hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] hub_view
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] hub_view
 LEFT OUTER JOIN
-   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}] hub_table
+   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] hub_table
    ON hub_view.[{{targetTableHashKey}}] = hub_table.[{{targetTableHashKey}}]
 WHERE hub_table.[{{targetTableHashKey}}] IS NULL
 {{/if}}{{/each}}

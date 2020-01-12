@@ -15,15 +15,15 @@ SELECT link.*
 FROM 
 ( {{#each dataObjectMappingList}}{{#if @first}}
 SELECT {{#each businessKey}} {{#unless @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}} {{#each businessKeyComponentMapping}}  
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
     AS {{targetTableHashKey}},
     -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
     MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
     {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}} {{#unless @first}} {{!-- List out the separate (Hub) business keys --}} {{#each businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
-    AS {{surrogateKey}},{{/unless}} {{/each}} {{#each columnMapping}} [{{targetColumn.columnName}}],{{/each}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
+    AS {{surrogateKey}},{{/unless}} {{/each}} {{#each dataItemMapping}} [{{targetDataItem.name}}],{{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-      {{targetColumn.columnName}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
+      {{targetDataItem.name}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
     ORDER BY 
        MIN({{../metadataConfiguration.loadDateTimeAttribute}})
     ) AS ROW_NR
@@ -31,23 +31,23 @@ FROM
 ({{/if}}{{/each}}
     {{#each dataObjectMappingList }}
     SELECT {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-        CAST({{sourceColumn.columnName}} AS NVARCHAR(100)) AS {{targetColumn.columnName}}{{../../@index}},{{/each}}{{/unless}}{{/each}}{{#each columnMapping}}
-        [{{sourceColumn.columnName}}] AS [{{targetColumn.columnName}}],{{/each}}
+        CAST({{sourceDataItem.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}}{{../../@index}},{{/each}}{{/unless}}{{/each}}{{#each dataItemMapping}}
+        [{{sourceDataItem.name}}] AS [{{targetDataItem.name}}],{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
     FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}]
     WHERE {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-       {{sourceColumn.columnName}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{#unless @last}} AND{{/unless}}{{/unless}} {{/each}}
-       {{#each columnMapping}}
-       AND [{{sourceColumn.columnName}}] IS NOT NULL
+       {{sourceDataItem.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{#unless @last}} AND{{/unless}}{{/unless}} {{/each}}
+       {{#each dataItemMapping}}
+       AND [{{sourceDataItem.name}}] IS NOT NULL
        {{/each}}
        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-       {{#unless sourceColumn.columnType}}{{sourceColumn.columnName}},{{/unless}}{{/each}}{{/unless}}{{/each}}{{#each columnMapping}}[{{sourceColumn.columnName}}],{{/each}}
+       {{#unless sourceDataItem.isHardCodedValue}}{{sourceDataItem.name}},{{/unless}}{{/each}}{{/unless}}{{/each}}{{#each dataItemMapping}}[{{sourceDataItem.name}}],{{/each}}
        {{../metadataConfiguration.recordSourceAttribute}}{{#unless @last}}UNION{{/unless}}
   ) LINK_selection
   GROUP BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-     {{targetColumn.columnName}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}},{{/unless}}{{/each}} {{#each columnMapping}} [{{targetColumn.columnName}}],{{/each}}
+     {{targetDataItem.name}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}},{{/unless}}{{/each}} {{#each dataItemMapping}} [{{targetDataItem.name}}],{{/each}}
      {{../metadataConfiguration.recordSourceAttribute}} {{/each}}
 ) link
 WHERE ROW_NR = 1

@@ -1,30 +1,30 @@
 {{#each dataObjectMappingList}}{{#if @first}}
 --
--- Link Insert Into statement for {{targetTable}}
+-- Link Insert Into statement for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 USE [{{../metadataConfiguration.integrationDatabaseName}}]
 GO
 
-INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}]
+INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}]
 (  {{#each businessKey}}
    [{{surrogateKey}}],{{/each}}
-   {{#each columnMapping}}
-   [{{targetColumn.columnName}}],{{/each}}
+   {{#each dataItemMapping}}
+   [{{targetDataItem.name}}],{{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.recordSourceAttribute}}]
 )
 SELECT {{#each businessKey}}
    link_view.[{{surrogateKey}}],{{/each}}
-   {{#each columnMapping}}
-   link_view.[{{targetColumn.columnName}}],{{/each}}
+   {{#each dataItemMapping}}
+   link_view.[{{targetDataItem.name}}],{{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
    link_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] link_view
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] link_view
 LEFT OUTER JOIN
-   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetTable}}] link_table
+   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] link_table
    ON link_view.[{{targetTableHashKey}}] = link_table.[{{targetTableHashKey}}]
 WHERE link_table.[{{targetTableHashKey}}] IS NULL
 {{/if}}{{/each}}

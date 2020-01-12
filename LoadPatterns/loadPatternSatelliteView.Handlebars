@@ -11,11 +11,11 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metada
 DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject}}]
 GO
 
-CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
+CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
 SELECT 
     HASHBYTES('MD5', {{#each businessKey}} {{!-- Create the Surrogate Key using the Business Key and components --}}
     {{#each businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetColumn.columnName}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
     ) AS {{surrogateKey}},{{/each}}
     DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
@@ -23,13 +23,13 @@ SELECT
       LEAD (DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) ) OVER
       ( PARTITION BY {{#each businessKey}} {{!-- The Hub business key --}}
           {{#each businessKeyComponentMapping}}
-          {{targetColumn.columnName}}{{/each}}{{#unless @last}},{{/unless}}{{/each}}
+          {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
        ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
        CAST( '9999-12-31' AS DATETIME)
     ) AS LOAD_END_DATETIME,
     CASE
       WHEN ( RANK() OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
-        {{targetColumn.columnName}}{{/each}}{{#unless @last}},{{/unless}}{{/each}}
+        {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
          ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}} desc )) = 1
        THEN 'Y'
        ELSE 'N'
@@ -43,17 +43,17 @@ SELECT
       ELSE 'N'
     END AS [DELETED_RECORD_INDICATOR],
     HASHBYTES('MD5',
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each columnMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceColumn.columnName}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
     ) AS HASH_FULL_RECORD,
-    {{#each columnMapping}}
-    {{sourceColumn.columnName}} AS {{targetColumn.columnName}},
+    {{#each dataItemMapping}}
+    {{sourceDataItem.name}} AS {{targetDataItem.name}},
     {{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-       {{targetColumn.columnName}}{{#unless @last}},{{/unless}}{{/each}}
+       {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}
     {{/each}}
     ORDER BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-       {{targetColumn.columnName}},{{/each}}{{/each}}
+       {{targetDataItem.name}},{{/each}}{{/each}}
        {{../metadataConfiguration.loadDateTimeAttribute}}
     ) AS ROW_NUMBER
 FROM
@@ -64,28 +64,28 @@ FROM
          [{{../metadataConfiguration.recordSourceAttribute}}],
          [{{../metadataConfiguration.sourceRowIdAttribute}}],
          [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKey}}{{#each businessKeyComponentMapping}}
-         {{targetColumn.columnName}},{{/each}}{{/each}}
-         {{#each columnMapping}}
-         {{sourceColumn.columnName}},
+         {{targetDataItem.name}},{{/each}}{{/each}}
+         {{#each dataItemMapping}}
+         {{sourceDataItem.name}},
          {{/each}}
          COMBINED_VALUE,
          CASE 
            WHEN LAG(COMBINED_VALUE,1,0x00000000000000000000000000000000) OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
-             {{targetColumn.columnName}}{{/each}}{{#unless @last}},{{/unless}}{{/each}} 
+             {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] DESC) = COMBINED_VALUE
            THEN 'Same'
            ELSE 'Different'
          END AS VALUE_CHANGE_INDICATOR,
          CASE 
            WHEN LAG([{{../metadataConfiguration.changeDataCaptureAttribute}}],1,'') OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
-             {{targetColumn.columnName}}{{/each}}{{#unless @last}},{{/unless}}{{/each}} 
+             {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.changeDataCaptureAttribute}}]
            THEN 'Same'
            ELSE 'Different'
          END AS CDC_CHANGE_INDICATOR,
          CASE 
            WHEN LEAD([{{../metadataConfiguration.loadDateTimeAttribute}}],1,'9999-12-31') OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
-             {{targetColumn.columnName}}{{/each}}{{#unless @last}},{{/unless}}{{/each}} 
+             {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.loadDateTimeAttribute}}]
            THEN 'Same'
            ELSE 'Different'
@@ -98,14 +98,14 @@ FROM
           [{{../metadataConfiguration.recordSourceAttribute}}],
           [{{../metadataConfiguration.sourceRowIdAttribute}}],
           [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKey}} {{#each businessKeyComponentMapping}}
-          CAST ([{{sourceColumn.columnName}}] AS NVARCHAR(100)) AS [{{targetColumn.columnName}}],{{/each}}{{/each}}        
-          {{#each columnMapping}}
-          [{{sourceColumn.columnName}}],
+          CAST ({{sourceDataItem.name}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}],{{/each}}{{/each}}        
+          {{#each dataItemMapping}}
+          [{{sourceDataItem.name}}],
           {{/each}}
-           HASHBYTES('MD5',{{#each columnMapping}}
-            ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceColumn.columnName}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
+           HASHBYTES('MD5',{{#each dataItemMapping}}
+            ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
            ) AS COMBINED_VALUE
-        FROM {{sourceTable}}
+        FROM {{sourceDataObject.name}}
       WHERE 2=2
         UNION
         SELECT DISTINCT
@@ -114,12 +114,12 @@ FROM
           'Data Warehouse' AS [{{../metadataConfiguration.recordSourceAttribute}}],
           0 AS [{{../metadataConfiguration.sourceRowIdAttribute}}],
           'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKey}} {{#each businessKeyComponentMapping}}
-          CAST ([{{sourceColumn.columnName}}] AS NVARCHAR(100)) AS [{{targetColumn.columnName}}],{{/each}}{{/each}}        
-          {{#each columnMapping}}
-          NULL AS [{{sourceColumn.columnName}}],
+          CAST ({{sourceDataItem.name}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}],{{/each}}{{/each}}        
+          {{#each dataItemMapping}}
+          NULL AS [{{sourceDataItem.name}}],
           {{/each}}
           0x00000000000000000000000000000000 AS COMBINED_VALUE
-        FROM {{sourceTable}}
+        FROM {{sourceDataObject.name}}
    ) sub
 ) combined_value
 WHERE 
@@ -137,7 +137,7 @@ SELECT 0x00000000000000000000000000000000,
 'Data Warehouse',
 'N',
 0x00000000000000000000000000000000,
-{{#each columnMapping}}
+{{#each dataItemMapping}}
 NULL,
 {{/each}}
 1

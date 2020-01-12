@@ -1,13 +1,13 @@
 {{#each dataObjectMappingList}}
 --
--- Persistent Staging Area Insert Into statement for {{targetTable}}
+-- Persistent Staging Area Insert Into statement for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 
 USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
 GO
 
-INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetTable}}]
+INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetDataObject.name}}]
 (
    [{{../metadataConfiguration.etlProcessAttribute}}], 
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
@@ -16,8 +16,8 @@ INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[
    [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
-   {{#each columnMapping}}
-   [{{sourceColumn.columnName}}]{{#unless @last}},{{/unless}}
+   {{#each dataItemMapping}}
+   [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
 )
 SELECT
@@ -28,8 +28,8 @@ SELECT
    [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
-   {{#each columnMapping}}
-   [{{sourceColumn.columnName}}]{{#unless @last}},{{/unless}}
+   {{#each dataItemMapping}}
+   [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
 {{/each}}

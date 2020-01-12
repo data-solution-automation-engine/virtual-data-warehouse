@@ -1,6 +1,6 @@
 {{#each dataObjectMappingList}}
 --
--- Persistent Staging Area View definition for {{targetTable}}
+-- Persistent Staging Area View definition for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 
@@ -8,15 +8,15 @@ GO
 USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
 GO
 
-CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetTable}}] AS
+CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
 
 SELECT
-   {{#each columnMapping}}
-   [{{targetColumn.columnName}}],
+   {{#each dataItemMapping}}
+   [{{targetDataItem.name}}],
    {{/each}}
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
@@ -36,18 +36,18 @@ FROM
      STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
      STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
      STG.[{{../metadataConfiguration.recordChecksumAttribute}}],
-     {{#each columnMapping}}
-     STG.[{{sourceColumn.columnName}}],
+     {{#each dataItemMapping}}
+     STG.[{{sourceDataItem.name}}],
      {{/each}}
      COALESCE(maxsub.[LKP_{{../metadataConfiguration.recordChecksumAttribute}}], 'N/A') AS [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
      COALESCE(maxsub.[LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}], 'N/A') AS [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}],
      CAST(ROW_NUMBER() OVER
         (  PARTITION BY
-             {{#each businessKey}}{{#each businessKeyComponentMapping}}STG.[{{sourceColumn.columnName}}],
+             {{#each businessKey}}{{#each businessKeyComponentMapping}}STG.[{{sourceDataItem.name}}],
              {{/each}}{{/each}}
              STG.[{{../metadataConfiguration.sourceRowIdAttribute}}]
            ORDER BY
-             {{#each businessKey}}{{#each businessKeyComponentMapping}}STG.[{{sourceColumn.columnName}}],
+             {{#each businessKey}}{{#each businessKeyComponentMapping}}STG.[{{sourceDataItem.name}}],
              {{/each}}{{/each}}
              STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
              STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
@@ -55,41 +55,41 @@ FROM
     ) AS KEY_ROW_NUMBER
   FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{sourceDataObject.name}}] STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetTable}}] HSTG
+    [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetDataObject.name}}] HSTG
     ON
        {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-       HSTG.[{{targetColumn.columnName}}] = STG.[{{sourceColumn.columnName}}] AND{{/each}} {{/each}}
+       HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItem.name}}] AND{{/each}} {{/each}}
        HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
        HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
   LEFT OUTER JOIN -- max HSTG checksum
   (
       SELECT {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-         A.[{{sourceColumn.columnName}}], {{/each}} {{/each}}
+         A.[{{sourceDataItem.name}}], {{/each}} {{/each}}
          A.[{{../metadataConfiguration.sourceRowIdAttribute}}],  
          A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
          A.[{{../metadataConfiguration.changeDataCaptureAttribute}}] AS [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}]
-      FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{targetTable}}] A
+      FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{targetDataObject.name}}] A
       JOIN
       (
         SELECT {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-          B.[{{sourceColumn.columnName}}], {{/each}} {{/each}}
+          B.[{{sourceDataItem.name}}], {{/each}} {{/each}}
           B.[{{../metadataConfiguration.sourceRowIdAttribute}}],  
           MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-        FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{targetTable}}] B
+        FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{targetDataObject.name}}] B
         GROUP BY {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-          B.[{{sourceColumn.columnName}}],{{/each}} {{/each}}
+          B.[{{sourceDataItem.name}}],{{/each}} {{/each}}
           B.[{{../metadataConfiguration.sourceRowIdAttribute}}]
      ) C ON
          {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-         A.[{{targetColumn.columnName}}] = C.[{{targetColumn.columnName}}] AND{{/each}} {{/each}}
+         A.[{{targetDataItem.name}}] = C.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
          A.[{{../metadataConfiguration.sourceRowIdAttribute}}] = C.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
          A.[{{../metadataConfiguration.loadDateTimeAttribute}}] = C.[MAX_{{../metadataConfiguration.loadDateTimeAttribute}}]
   ) maxsub ON
      {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-     STG.[{{sourceColumn.columnName}}] = maxsub.[{{targetColumn.columnName}}] AND{{/each}} {{/each}}
+     STG.[{{sourceDataItem.name}}] = maxsub.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
      STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = maxsub.[{{../metadataConfiguration.sourceRowIdAttribute}}] 
   WHERE {{#each businessKey}}  {{#each businessKeyComponentMapping}} {{#if @first}}
-     HSTG.[{{targetColumn.columnName}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
+     HSTG.[{{targetDataItem.name}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
 ) sub
 WHERE
 (
