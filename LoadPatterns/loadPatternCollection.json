@@ -18,6 +18,12 @@
     "loadPatternNotes": "Pattern to perform a delta load from the Staging Layer to the target Hub table as an ETL process."
   },
   {
+    "loadPatternName": "Data Vault Hub 004 View using DBT and Snowflake syntax",
+    "loadPatternType": "Hub",
+    "loadPatternFilePath": "loadPatternHubView_DBT_Snowflake.handlebars",
+    "loadPatternNotes": "Standard Hub pattern - display the distinct list of Business Keys for a Core Business Concept."
+  },  
+  {
     "loadPatternName": "Data Vault Link 001 View Pattern",
     "loadPatternType": "Link",
     "loadPatternFilePath": "loadPatternLinkView.handlebars",

@@ -668,7 +668,7 @@ namespace Virtual_Data_Warehouse
                         EventLog fileSaveEventLog = new EventLog();
                         if (saveOutputFileFlag)
                         {
-                            fileSaveEventLog = Utility.SaveOutputToDisk(VedwConfigurationSettings.VedwOutputPath + @"\Output_" + targetTableName + ".sql", result);
+                            fileSaveEventLog = Utility.SaveOutputToDisk(VedwConfigurationSettings.VedwOutputPath + targetTableName + ".sql", result);
                         }
 
                         //Generate in database
