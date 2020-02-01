@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2046
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual_Data_Warehouse", "Virtual_EDW\Virtual_Data_Warehouse.csproj", "{73971441-2782-43CF-862C-1F636528858A}"
 EndProject
@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoadPatterns", "LoadPatterns", "{E3AF448B-08FD-4B47-8D9A-7107CEBE0FD8}"
 	ProjectSection(SolutionItems) = preProject
 		LoadPatterns\loadPatternCollection.json = LoadPatterns\loadPatternCollection.json
+		LoadPatterns\loadPatternDefinition.json = LoadPatterns\loadPatternDefinition.json
 		LoadPatterns\loadPatternHubDeltaSelect.Handlebars = LoadPatterns\loadPatternHubDeltaSelect.Handlebars
 		LoadPatterns\loadPatternHubInsertInto.Handlebars = LoadPatterns\loadPatternHubInsertInto.Handlebars
 		LoadPatterns\loadPatternHubView.Handlebars = LoadPatterns\loadPatternHubView.Handlebars

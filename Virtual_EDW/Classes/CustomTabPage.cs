@@ -373,7 +373,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-
         private void DisplayPattern(object o, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
@@ -427,7 +426,6 @@ namespace Virtual_Data_Warehouse
             OnClearMainText(this, new MyClearArgs());
         }
 
-
         void SavePattern(object o, EventArgs e)
         {
             RaiseOnClearMainText();
@@ -455,7 +453,6 @@ namespace Virtual_Data_Warehouse
             DoWork();
         }
 
-
         void DoWork()
         {
             Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringStg);
@@ -475,6 +472,7 @@ namespace Virtual_Data_Warehouse
             localTabControl.SelectedIndex = 0;
 
             var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
+
             // Populate the main list of source-to-target mappings (base query)
             var metadataQuery = input.LoadPatternBaseQuery;
             var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);

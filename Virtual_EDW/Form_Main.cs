@@ -124,6 +124,7 @@ namespace Virtual_Data_Warehouse
         {
             // Create a datatable 
             DataTable dt = VedwConfigurationSettings.patternList.ToDataTable();
+      
 
             dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
             dt.Columns[0].ColumnName = "Name";
@@ -837,10 +838,8 @@ namespace Virtual_Data_Warehouse
             rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" +
                                                  VedwConfigurationSettings.TeamConfigurationPath + "");
             rootPathConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath + "");
-            rootPathConfigurationFile.AppendLine("LoadPatternListPath|" +
-                                                 VedwConfigurationSettings.LoadPatternListPath + "");
-            rootPathConfigurationFile.AppendLine("WorkingEnvironment|" + VedwConfigurationSettings.WorkingEnvironment +
-                                                 "");
+            rootPathConfigurationFile.AppendLine("LoadPatternListPath|" + VedwConfigurationSettings.LoadPatternListPath + "");
+            rootPathConfigurationFile.AppendLine("WorkingEnvironment|" + VedwConfigurationSettings.WorkingEnvironment + "");
             rootPathConfigurationFile.AppendLine("VedwSchema|" + VedwConfigurationSettings.VedwSchema + "");
             rootPathConfigurationFile.AppendLine("/* End of file */");
 

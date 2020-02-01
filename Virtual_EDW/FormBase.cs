@@ -91,7 +91,6 @@ namespace Virtual_Data_Warehouse
 
             internal static string ConnectionStringOmd { get; set; }
 
-
             internal static string DwhKeyIdentifier { get; set; }
 
             internal static string PsaKeyLocation { get; set; }
@@ -112,7 +111,6 @@ namespace Virtual_Data_Warehouse
 
             internal static string EtlProcessAttribute { get; set; }
 
-
             internal static string EtlProcessUpdateAttribute { get; set; }
 
             internal static string RowIdAttribute { get; set; }
@@ -120,7 +118,6 @@ namespace Virtual_Data_Warehouse
             internal static string RecordChecksumAttribute { get; set; }
 
             internal static string CurrentRowAttribute { get; set; }
-
 
             internal static string AlternativeRecordSourceAttribute { get; set; }
 
@@ -160,10 +157,6 @@ namespace Virtual_Data_Warehouse
 
             internal static string MetadataRepositoryType { get; set; }
         }
-
-
-
-
 
 
         public KeyValuePair<int, int> GetVersion(int selectedVersion)
