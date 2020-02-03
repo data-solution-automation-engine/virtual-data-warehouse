@@ -93,7 +93,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DataWarehouseAutomation">
-      <HintPath>..\..\Data_Warehouse_Automation_Metadata_Interface\ClassLibrary\DataWarehouseAutomation\DataWarehouseAutomation\bin\Debug\netstandard2.0\DataWarehouseAutomation.dll</HintPath>
+      <HintPath>Libraries\DataWarehouseAutomation.dll</HintPath>
     </Reference>
     <Reference Include="Handlebars, Version=1.0.0.0, Culture=neutral, PublicKeyToken=623b39d890c8829c, processorArchitecture=MSIL">
       <HintPath>..\packages\Handlebars.Net.1.8.0.Signed.1.8.0\lib\portable-net45+sl50+win+wpa81\Handlebars.dll</HintPath>
@@ -342,7 +342,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Libraries\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.SqlServer.SqlManagementObjects.150.18208.0\build\net45\Microsoft.SqlServer.SqlManagementObjects.targets" Condition="Exists('..\packages\Microsoft.SqlServer.SqlManagementObjects.150.18208.0\build\net45\Microsoft.SqlServer.SqlManagementObjects.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
