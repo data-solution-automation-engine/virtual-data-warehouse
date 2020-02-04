@@ -50,8 +50,9 @@ namespace Virtual_Data_Warehouse
         {
             public static string VedwSchema { get; set; } = "dbo";
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
+            public static string VedwInputPath { get; set; } = Application.StartupPath + @"\Output\";
             public static string VedwOutputPath { get; set; } = Application.StartupPath + @"\Output\";
-            public static string LoadPatternListPath { get; set; } = Application.StartupPath + @"\LoadPatterns\";
+            //public static string LoadPatternListPath { get; set; } = Application.StartupPath + @"\LoadPatterns\";
             public static string WorkingEnvironment { get; set; }
 
             // Parameters that can be changed at runtime

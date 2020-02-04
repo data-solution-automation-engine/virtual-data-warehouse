@@ -84,7 +84,7 @@ namespace Virtual_Data_Warehouse
                 SetTextMain(
                     "There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " +
                     GlobalParameters.LoadPatternDefinitionFile + " in the " +
-                    VedwConfigurationSettings.LoadPatternListPath +
+                    VedwConfigurationSettings.VedwInputPath +
                     " directory, and if the file contains pattern types.");
             }
 
@@ -96,7 +96,7 @@ namespace Virtual_Data_Warehouse
             {
                 SetTextMain(
                     "There are no patterns found in the designated load pattern directory. Please verify if there is a " +
-                    GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.LoadPatternListPath +
+                    GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.VedwInputPath +
                     " directory, and if the file contains patterns.");
             }
 
@@ -407,7 +407,7 @@ namespace Virtual_Data_Warehouse
         {
             textBoxOutputPath.Text = VedwConfigurationSettings.VedwOutputPath;
             textBoxConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
-            textBoxLoadPatternPath.Text = VedwConfigurationSettings.LoadPatternListPath;
+            textBoxLoadPatternPath.Text = VedwConfigurationSettings.VedwInputPath;
             textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
 
 
@@ -813,7 +813,7 @@ namespace Virtual_Data_Warehouse
             // Make the paths accessible from anywhere in the app (global parameters)
             VedwConfigurationSettings.TeamConfigurationPath = textBoxConfigurationPath.Text;
             VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
-            VedwConfigurationSettings.LoadPatternListPath = textBoxLoadPatternPath.Text;
+            VedwConfigurationSettings.VedwInputPath = textBoxLoadPatternPath.Text;
             VedwConfigurationSettings.VedwSchema = textBoxSchemaName.Text;
 
             // Working environment radiobutton
@@ -838,7 +838,7 @@ namespace Virtual_Data_Warehouse
             rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" +
                                                  VedwConfigurationSettings.TeamConfigurationPath + "");
             rootPathConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath + "");
-            rootPathConfigurationFile.AppendLine("LoadPatternListPath|" + VedwConfigurationSettings.LoadPatternListPath + "");
+            rootPathConfigurationFile.AppendLine("LoadPatternListPath|" + VedwConfigurationSettings.VedwInputPath + "");
             rootPathConfigurationFile.AppendLine("WorkingEnvironment|" + VedwConfigurationSettings.WorkingEnvironment + "");
             rootPathConfigurationFile.AppendLine("VedwSchema|" + VedwConfigurationSettings.VedwSchema + "");
             rootPathConfigurationFile.AppendLine("/* End of file */");
@@ -957,7 +957,7 @@ namespace Virtual_Data_Warehouse
             {
                 Title = @"Open Load Pattern Definition File",
                 Filter = @"Load Pattern Definition|*.json",
-                InitialDirectory = VedwConfigurationSettings.LoadPatternListPath
+                InitialDirectory = VedwConfigurationSettings.VedwInputPath
             };
 
             var ret = STAShowDialog(theDialog);
@@ -1184,6 +1184,20 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
+
+            if (Directory.Exists(VedwConfigurationSettings.VedwInputPath))
+            {
+                string[] fileEntries = Directory.GetFiles(VedwConfigurationSettings.VedwInputPath);
+                foreach (string fileName in fileEntries)
+                {
+                    
+                }
+            }
+            else
+            {
+
+            }
+
             // Add the Custom Tab Pages
             foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
             {
@@ -1251,7 +1265,7 @@ namespace Virtual_Data_Warehouse
             {
                 Title = @"Open Load Pattern Collection File",
                 Filter = @"Load Pattern Collection|*.json",
-                InitialDirectory = VedwConfigurationSettings.LoadPatternListPath
+                InitialDirectory = VedwConfigurationSettings.VedwInputPath
             };
 
             var ret = STAShowDialog(theDialog);
@@ -1577,6 +1591,20 @@ namespace Virtual_Data_Warehouse
                         "The code generation output will be saved at "+finalPath+".'";
    
 
+            }
+        }
+
+        private void openVDWConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(GlobalParameters.VedwConfigurationPath);
+            }
+            catch (Exception ex)
+            {
+                richTextBoxInformationMain.Text =
+                    "An error has occured while attempting to open the configuration directory. The error message is: " +
+                    ex;
             }
         }
     }

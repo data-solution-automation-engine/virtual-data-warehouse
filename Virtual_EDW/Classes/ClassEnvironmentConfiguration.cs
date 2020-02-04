@@ -43,14 +43,14 @@ namespace Virtual_Data_Warehouse
             // Create the pattern directory if it does not exist yet
             try
             {
-                if (!Directory.Exists(FormBase.VedwConfigurationSettings.LoadPatternListPath))
+                if (!Directory.Exists(FormBase.VedwConfigurationSettings.VedwInputPath))
                 {
-                    Directory.CreateDirectory(FormBase.VedwConfigurationSettings.LoadPatternListPath);
+                    Directory.CreateDirectory(FormBase.VedwConfigurationSettings.VedwInputPath);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error creation default directory at " + FormBase.VedwConfigurationSettings.LoadPatternListPath + " the message is " + ex, "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error creation default directory at " + FormBase.VedwConfigurationSettings.VedwInputPath + " the message is " + ex, "An issue has been encountered", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             
             #endregion
@@ -66,7 +66,7 @@ namespace Virtual_Data_Warehouse
                     initialConfigurationFile.AppendLine("/* Virtual Enterprise Data Warehouse (VEDW) Core Settings */");
                     initialConfigurationFile.AppendLine("TeamConfigurationPath|" + FormBase.VedwConfigurationSettings.TeamConfigurationPath); //Initially make this the same as the VEDW application root
                     initialConfigurationFile.AppendLine("VedwOutputPath|" + FormBase.VedwConfigurationSettings.VedwOutputPath);
-                    initialConfigurationFile.AppendLine("LoadPatternListPath|" + FormBase.VedwConfigurationSettings.LoadPatternListPath);
+                    initialConfigurationFile.AppendLine("LoadPatternListPath|" + FormBase.VedwConfigurationSettings.VedwInputPath);
                     initialConfigurationFile.AppendLine("WorkingEnvironment|Development");
                     initialConfigurationFile.AppendLine("VedwSchema|vedw");
                     initialConfigurationFile.AppendLine("/* End of file */");
@@ -146,7 +146,7 @@ namespace Virtual_Data_Warehouse
                 configurationValue = "LoadPatternListPath";
                 if (configList.ContainsKey(configurationValue))
                 {
-                    FormBase.VedwConfigurationSettings.LoadPatternListPath = configList[configurationValue];
+                    FormBase.VedwConfigurationSettings.VedwInputPath = configList[configurationValue];
                 }
                 else
                 {
