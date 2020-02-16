@@ -161,5 +161,33 @@ namespace Virtual_Data_Warehouse
 
             return eventLog;
         }
+
+        internal static Dictionary<String, String> MatchConnectionKey(string connectionKey)
+        {
+            Dictionary<string, string> returnValue = new Dictionary<string, string>();
+
+            if (connectionKey == "SourceDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringSource);
+            }
+            else if (connectionKey == "StagingDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringStg);
+            }
+            else if (connectionKey == "PersistentStagingDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringHstg);
+            }
+            else if (connectionKey == "IntegrationDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringInt);
+            }
+            else if (connectionKey == "PresentationDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringPres);
+            }
+
+            return returnValue;
+        }
     }
 }

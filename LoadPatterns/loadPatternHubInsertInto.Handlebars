@@ -8,14 +8,14 @@ GO
 
 INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}]
 (
-   [{{targetTableHashKey}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
+   [{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
    [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.recordSourceAttribute}}]
 )
 SELECT
-   hub_view.[{{targetTableHashKey}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
+   hub_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
    hub_view.[{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
@@ -23,7 +23,6 @@ SELECT
 FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] hub_view
 LEFT OUTER JOIN
    [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] hub_table
-   ON hub_view.[{{targetTableHashKey}}] = hub_table.[{{targetTableHashKey}}]
-WHERE hub_table.[{{targetTableHashKey}}] IS NULL
+   ON hub_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+WHERE hub_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}{{/each}}
-

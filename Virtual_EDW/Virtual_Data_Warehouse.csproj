@@ -92,8 +92,9 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DataWarehouseAutomation">
-      <HintPath>Libraries\DataWarehouseAutomation.dll</HintPath>
+    <Reference Include="DataWarehouseAutomation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Data_Warehouse_Automation_Metadata_Interface\ClassLibrary\DataWarehouseAutomation\DataWarehouseAutomation\bin\Debug\netstandard2.0\DataWarehouseAutomation.dll</HintPath>
     </Reference>
     <Reference Include="Handlebars, Version=1.0.0.0, Culture=neutral, PublicKeyToken=623b39d890c8829c, processorArchitecture=MSIL">
       <HintPath>..\packages\Handlebars.Net.1.8.0.Signed.1.8.0\lib\portable-net45+sl50+win+wpa81\Handlebars.dll</HintPath>

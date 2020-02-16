@@ -18,7 +18,7 @@ SELECT
     HASHBYTES('MD5', {{#each businessKey}} {{#unless @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}}
     {{#each businessKeyComponentMapping}}  ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
     {{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
-    ) AS {{targetTableHashKey}},
+    {{#each businessKey}} {{#if @first}} ) AS {{surrogateKey}},{{/if}}{{/each}}
     -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
     MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
     {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}} {{#unless @first}} {{!-- List out the separate (Hub) business keys --}}
@@ -60,4 +60,3 @@ FROM
      {{../metadataConfiguration.recordSourceAttribute}} {{/each}}
 ) link
 WHERE ROW_NR = 1
-

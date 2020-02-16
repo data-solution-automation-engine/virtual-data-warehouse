@@ -1,30 +1,38 @@
 {{#each dataObjectMappingList}}{{#if @first}}
 --
--- Link Insert Into statement for {{targetDataObject.name}}
+-- Satellite Insert Into statement for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
-USE [{{../metadataConfiguration.integrationDatabaseName}}]
+USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
 GO
 
 INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}]
 (  {{#each businessKey}}
    [{{surrogateKey}}],{{/each}}
    {{#each dataItemMapping}}
-   [{{targetDataItem.name}}],{{/each}}
+   [{{targetDataItem.name}}],
+   {{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
-   [{{../metadataConfiguration.recordSourceAttribute}}]
+   [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.sourceRowIdAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}]
 )
 SELECT {{#each businessKey}}
-   link_view.[{{surrogateKey}}],{{/each}}
+   sat_view.[{{surrogateKey}}],{{/each}}
    {{#each dataItemMapping}}
-   link_view.[{{targetDataItem.name}}],{{/each}}
+   sat_view.[{{targetDataItem.name}}],
+   {{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
-   link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-   link_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] link_view
+   sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
+   sat_view.[{{../metadataConfiguration.recordSourceAttribute}}],
+   sat_view.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   sat_view.[{{../metadataConfiguration.sourceRowIdAttribute}}],
+   sat_view.[{{../metadataConfiguration.recordChecksumAttribute}}]
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] sat_view
 LEFT OUTER JOIN
-   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] link_table
-   ON link_view.[{{targetTableHashKey}}] = link_table.[{{targetTableHashKey}}]
-WHERE link_table.[{{targetTableHashKey}}] IS NULL
+   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] sat_table
+   ON sat_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+WHERE sat_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}{{/each}}

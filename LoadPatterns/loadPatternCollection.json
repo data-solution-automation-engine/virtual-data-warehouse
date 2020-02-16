@@ -1,66 +1,67 @@
 [
   {
     "loadPatternName": "Data Vault Hub 001 View Pattern",
-    "loadPatternType": "Hub",
+    "loadPatternType": "CoreBusinessConcept",
     "loadPatternFilePath": "loadPatternHubView.handlebars",
     "loadPatternNotes": "Standard Hub pattern - display the distinct list of Business Keys for a Core Business Concept."
   },
   {
     "loadPatternName": "Data Vault Hub 002 Insert Into Pattern",
-    "loadPatternType": "Hub",
+    "loadPatternType": "CoreBusinessConcept",
     "loadPatternFilePath": "loadPatternHubInsertInto.handlebars",
     "loadPatternNotes": "Pattern to load a Hub view into a physical table (persistence)."
   },
   {
     "loadPatternName": "Data Vault Hub 003 Delta Select From Pattern",
-    "loadPatternType": "Hub",
+    "loadPatternType": "CoreBusinessConcept",
     "loadPatternFilePath": "loadPatternHubDeltaSelect.handlebars",
     "loadPatternNotes": "Pattern to perform a delta load from the Staging Layer to the target Hub table as an ETL process."
   },
   {
     "loadPatternName": "Data Vault Hub 004 View using DBT and Snowflake syntax",
-    "loadPatternType": "Hub",
+    "loadPatternType": "CoreBusinessConcept",
     "loadPatternFilePath": "loadPatternHubView_DBT_Snowflake.handlebars",
     "loadPatternNotes": "Standard Hub pattern - display the distinct list of Business Keys for a Core Business Concept."
   },  
   {
     "loadPatternName": "Data Vault Link 001 View Pattern",
-    "loadPatternType": "Link",
+    "loadPatternType": "NaturalBusinessRelationship",
     "loadPatternFilePath": "loadPatternLinkView.handlebars",
     "loadPatternNotes": "Standard Link pattern - display the distinct list of Natural Business Relationships between Core Business Concepts."
   },
   {
-    "loadPatternName": "Data Vault Link 001 View Pattern Withouth Hash Keys",
-    "loadPatternType": "Link",
+    "loadPatternName": "Data Vault Link 001 View Pattern without Hash Keys",
+    "loadPatternType": "NaturalBusinessRelationship",
     "loadPatternFilePath": "loadPatternLinkViewNoHash.Handlebars",
     "loadPatternNotes": ""
-  },  {
+  },
+  {
     "loadPatternName": "Link 002 Insert Into Pattern",
-    "loadPatternType": "Link",
+    "loadPatternType": "NaturalBusinessRelationship",
     "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Data Vault Link Satellite 001 View Pattern",
-    "loadPatternType": "LinkSatellite",
+    "loadPatternType": "NaturalBusinessRelationshipContext",
     "loadPatternFilePath": "loadPatternLinkSatelliteView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Data Vault LinkSatellite 002 Insert Into Pattern",
-    "loadPatternType": "LinkSatellite",
+    "loadPatternType": "NaturalBusinessRelationshipContext",
     "loadPatternFilePath": "loadPatternLinkSatelliteInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Data Vault LinkSatellite Driving Key 001 View Pattern",
-    "loadPatternType": "LinkSatelliteDrivingKey",
+    "loadPatternType": "NaturalBusinessRelationshipContextDrivingKey",
     "loadPatternFilePath": "loadPatternLinkSatelliteDrivingKeyView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Data Vault LinkSatellite Driving Key 002 Insert Into Pattern",
-    "loadPatternType": "LinkSatelliteDrivingKey",
+    "loadPatternType": "NaturalBusinessRelationshipContextDrivingKey",
     "loadPatternFilePath": "loadPatternLinkSatelliteDrivingKeyInsertInto.handlebars",
     "loadPatternNotes": ""
   },
@@ -84,13 +85,19 @@
   },
   {
     "loadPatternName": "Satellite 001 View Pattern",
-    "loadPatternType": "Satellite",
+    "loadPatternType": "Context",
     "loadPatternFilePath": "loadPatternSatelliteView.handlebars",
     "loadPatternNotes": ""
   },
   {
+    "loadPatternName": "Satellite 001 View Pattern With Zero Record",
+    "loadPatternType": "Context",
+    "loadPatternFilePath": "loadPatternSatelliteViewZeroRecord.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
     "loadPatternName": "Satellite 002 Insert Into Pattern",
-    "loadPatternType": "Satellite",
+    "loadPatternType": "Context",
     "loadPatternFilePath": "loadPatternSatelliteInsertInto.handlebars",
     "loadPatternNotes": ""
   },

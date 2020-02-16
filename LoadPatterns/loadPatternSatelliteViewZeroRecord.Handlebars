@@ -126,4 +126,20 @@ WHERE
   (VALUE_CHANGE_INDICATOR ='Different' and  [{{../metadataConfiguration.changeDataCaptureAttribute}}] in ('Insert', 'Change')) 
   OR
   (  [{{../metadataConfiguration.changeDataCaptureAttribute}}] = 'Different' and TIME_CHANGE_INDICATOR = 'Different')
+UNION
+SELECT 0x00000000000000000000000000000000,
+'1900-01-01',
+'9999-12-31',
+'Y',
+- 1,
+'N/A',
+1,
+'Data Warehouse',
+'N',
+0x00000000000000000000000000000000,
+{{#each dataItemMapping}}
+NULL,
+{{/each}}
+1
+
 {{/each}}

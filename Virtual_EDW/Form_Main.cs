@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -1171,12 +1170,120 @@ namespace Virtual_Data_Warehouse
             richTextBoxInformationMain.Clear();
         }
 
+
+        internal class localPattern
+        {
+            internal int id { get; set; }
+            internal string classification { get; set; }
+            internal string notes { get; set; }
+            internal Dictionary<string,VEDW_DataObjectMappingList> itemList { get; set; }
+            internal string connectionString { get; set; }
+        }
+
+        internal List<localPattern> patternlist()
+        {
+            // Deserialise the Json files for further use
+            List<VEDW_DataObjectMappingList> mappingList = new List<VEDW_DataObjectMappingList>();
+
+            if (Directory.Exists(VedwConfigurationSettings.VedwInputPath))
+            {
+                string[] fileEntries = Directory.GetFiles(VedwConfigurationSettings.VedwInputPath, "*.json");
+
+                // Hard-coded exclusions
+                string[] excludedfiles = {"interfaceBusinessKeyComponent.json", "interfaceBusinessKeyComponentPart.json", "interfaceDrivingKey.json", "interfaceHubLinkXref.json", "interfacePhysicalModel.json", "interfaceSourceHubXref.json", "interfaceSourceLinkAttributeXref.json" };
+
+                foreach (string fileName in fileEntries)
+                {
+                    if (!Array.Exists(excludedfiles, x => x == Path.GetFileName(fileName)))
+                    {
+                        try
+                        {
+                            var jsonInput = File.ReadAllText(fileName);
+                            VEDW_DataObjectMappingList deserialisedMapping =
+                                JsonConvert.DeserializeObject<VEDW_DataObjectMappingList>(jsonInput);
+
+                            mappingList.Add(deserialisedMapping);
+                        }
+                        catch
+                        {
+                            richTextBoxInformationMain.AppendText($"The file {fileName} could not be loaded properly.");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                richTextBoxInformationMain.AppendText("There were issues accessing the directory.");
+            }
+
+            // Create base list of classification / types to become the tab pages (based on the classification + notes field)
+            Dictionary<string, string> classificationDictionary = new Dictionary<string, string>();
+
+            foreach (VEDW_DataObjectMappingList dataObjectMappingList in mappingList)
+            {
+                foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappingList)
+                {
+                    foreach (DataObjectMappingClassification classification in dataObjectMapping.mappingClassification)
+                    {
+                        if (!classificationDictionary.ContainsKey(classification.classification))
+                        {
+                            classificationDictionary.Add(classification.classification, classification.notes);
+                        }
+                    }
+                }
+            }
+
+            // Now use the base list of classifications / tab pages to add the item list (individual mappings) by searching the VEDW_DataObjectMappingList
+            List<localPattern> finalMappingList = new List<localPattern>();
+
+            foreach (KeyValuePair<string, string> classification in classificationDictionary)
+            {
+                int localclassification = 0;
+                string localConnectionString = "";
+
+                localPattern localPatternMapping = new localPattern();
+                Dictionary<string, VEDW_DataObjectMappingList> itemList = new Dictionary<string, VEDW_DataObjectMappingList>();
+
+                // Iterate through the various levels to find the classification
+                foreach (VEDW_DataObjectMappingList dataObjectMappingList in mappingList)
+                {
+                    foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappingList)
+                    {
+                        foreach (DataObjectMappingClassification dataObjectMappingClassification in dataObjectMapping.mappingClassification)
+                        {
+                            if (dataObjectMappingClassification.classification == classification.Key)
+                            {
+                                localclassification = dataObjectMappingClassification.id;
+                                localConnectionString = dataObjectMapping.targetDataObject.dataObjectConnection.dataConnectionString;
+
+                                if (!itemList.ContainsKey(dataObjectMapping.mappingName))
+                                {
+                                    itemList.Add(dataObjectMapping.mappingName, dataObjectMappingList);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                localPatternMapping.id = localclassification;
+                localPatternMapping.classification = classification.Key;
+                localPatternMapping.notes = classification.Value;
+                localPatternMapping.itemList = itemList;
+                localPatternMapping.connectionString = localConnectionString;
+
+                finalMappingList.Add(localPatternMapping);
+
+            }
+
+            return finalMappingList;
+        }
+
         /// <summary>
         /// Generates the Custom Tab Pages using the pattern metadata. This method will remove any non-standard Tab Pages and create these using the Load Pattern Definition metadata.
         /// </summary>
         internal void CreateCustomTabPages()
         {
-            // Remove any existing Custom Tab Pages
+            // Remove any existing Custom Tab Pages before rebuild
             localCustomTabPageList.Clear();
             foreach (TabPage customTabPage in tabControlMain.TabPages)
             {
@@ -1191,46 +1298,13 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
-
-            if (Directory.Exists(VedwConfigurationSettings.VedwInputPath))
-            {
-                // The classification list dictates the number of tabs tha will be created (the distinct classifications in the Jsons).
-                List<string> classificationList = new List<string>();
-
-                string[] fileEntries = Directory.GetFiles(VedwConfigurationSettings.VedwInputPath, "*.json");
-                foreach (string fileName in fileEntries)
-                {
-                    var jsonInput = File.ReadAllText(fileName);
-                    VEDW_DataObjectMappingList deserialisedMapping = JsonConvert.DeserializeObject<VEDW_DataObjectMappingList>(jsonInput);
-
-                    foreach (var dataObjectMapping in deserialisedMapping.dataObjectMappingList)
-                    {
-                        foreach (var localClassification in dataObjectMapping.classification)
-                        {
-                            if (!classificationList.Contains(localClassification))
-                                classificationList.Add(localClassification);
-                        }
-            
-                    }
-                    
-                    //JObject rss = JObject.Parse(jsonInput);
-                    //JArray categories = (JArray)rss["channel"]["item"][0]["categories"];
-                    //IList<string> categoriesText = categories.Select(c => (string)c).ToList();
-
-                }
-            }
-            else
-            {
-
-            }
+            List<localPattern> finalMappingList = patternlist();
+            var sortedMappingList = finalMappingList.OrderBy(x => x.id);
 
             // Add the Custom Tab Pages
-            foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
+            foreach (var pattern in sortedMappingList)
             {
-                var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-                var inputItemList = databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
-
-                CustomTabPage localCustomTabPage = new CustomTabPage(pattern, inputItemList);
+                CustomTabPage localCustomTabPage = new CustomTabPage(pattern.classification, pattern.notes, pattern.itemList, pattern.connectionString);
                 localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
                 localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);
 
@@ -1475,23 +1549,23 @@ namespace Virtual_Data_Warehouse
 
         private void button12_Click(object sender, EventArgs e)
         {
+            // Get the total of tab pages to create
+            var patternList = patternlist();
+
             // Get the name of the active tab so this can be refreshed
             string tabName = tabControlMain.SelectedTab.Name;
 
-            //foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
-            //{
-            //    if (pattern.LoadPatternType == tabName)
-            //    {
             foreach (CustomTabPage customTabPage in localCustomTabPageList)
-                //      foreach (LoadPatternDefinition in l)
             {
-
                 if (customTabPage.Name == tabName)
                 {
-                    var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-                    var inputItemList = databaseHandling.GetItemList(customTabPage.input.LoadPatternType,
-                        customTabPage.input.LoadPatternSelectionQuery, conn);
-                    customTabPage.SetItemList(inputItemList);
+                    foreach (localPattern localPattern in patternList)
+                    {
+                        if (localPattern.classification == tabName)
+                        {
+                            customTabPage.SetItemList(localPattern.itemList);
+                        }
+                    }
                 }
             }
 
@@ -1569,7 +1643,7 @@ namespace Virtual_Data_Warehouse
                 int fileCounter = 0;
                 foreach (string file in files)
                 {
-                    if (file.Contains("loadPatternCollection"))
+                    if (file.EndsWith(".json"))
                     {
                         fileCounter++;
                     }
@@ -1591,12 +1665,12 @@ namespace Virtual_Data_Warehouse
                 if (fileCounter == 0)
                 {
                     richTextBoxInformationMain.Text =
-                        "The selected directory does not seem to contain a loadPatternCollection.json file. Did you select a correct Load Pattern directory?";
+                        "There are no Json files in this location. Did you select a correct Load Pattern directory?";
                 }
                 else
                 {
                     richTextBoxInformationMain.Text =
-                        "The path now points to a directory that contains the loadPatternCollection.json Load Pattern Collection file.";
+                        "The path now points to a directory that contains Json files.";
                 }
 
             }
@@ -1612,7 +1686,7 @@ namespace Virtual_Data_Warehouse
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
             {
 
-                string finalPath = "";
+                string finalPath;
                 if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
                 {
                     finalPath = fileBrowserDialog.SelectedPath;
@@ -1658,6 +1732,53 @@ namespace Virtual_Data_Warehouse
                 richTextBoxInformationMain.Text =
                     "An error has occured while attempting to open the input directory. The error message is: " +
                     ex;
+            }
+        }
+
+        private void pictureBox6_Click(object sender, EventArgs e)
+        {
+            var fileBrowserDialog = new FolderBrowserDialog();
+            fileBrowserDialog.SelectedPath = textBoxLoadPattern.Text;
+
+            DialogResult result = fileBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
+            {
+                string[] files = Directory.GetFiles(fileBrowserDialog.SelectedPath);
+
+                int fileCounter = 0;
+                foreach (string file in files)
+                {
+                    if (file.Contains("loadPatternCollection"))
+                    {
+                        fileCounter++;
+                    }
+                }
+
+                string finalPath;
+                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                {
+                    finalPath = fileBrowserDialog.SelectedPath;
+                }
+                else
+                {
+                    finalPath = fileBrowserDialog.SelectedPath + @"\";
+                }
+
+
+                textBoxLoadPattern.Text = finalPath;
+
+                if (fileCounter == 0)
+                {
+                    richTextBoxInformationMain.Text =
+                        "The selected directory does not seem to contain a loadPatternCollection.json file. Did you select a correct Load Pattern directory?";
+                }
+                else
+                {
+                    richTextBoxInformationMain.Text =
+                        "The path now points to a directory that contains the loadPatternCollection.json Load Pattern Collection file.";
+                }
+
             }
         }
     }

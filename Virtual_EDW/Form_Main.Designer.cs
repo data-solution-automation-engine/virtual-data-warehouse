@@ -65,6 +65,9 @@
             this.button12 = new System.Windows.Forms.Button();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.textBoxLoadPattern = new System.Windows.Forms.TextBox();
+            this.labelPatternPath = new System.Windows.Forms.Label();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.textBoxConfigurationPath = new System.Windows.Forms.TextBox();
@@ -98,15 +101,13 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
-            this.textBoxLoadPattern = new System.Windows.Forms.TextBox();
-            this.labelPatternPath = new System.Windows.Forms.Label();
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox9.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.tabControlSettings.SuspendLayout();
@@ -120,7 +121,6 @@
             this.tabPageHome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabControlMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMainMenu
@@ -435,6 +435,35 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configuration paths";
             // 
+            // pictureBox6
+            // 
+            this.pictureBox6.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.pictureBox6.Location = new System.Drawing.Point(538, 74);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(19, 20);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox6.TabIndex = 99;
+            this.pictureBox6.TabStop = false;
+            this.pictureBox6.Click += new System.EventHandler(this.pictureBox6_Click);
+            // 
+            // textBoxLoadPattern
+            // 
+            this.textBoxLoadPattern.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxLoadPattern.Location = new System.Drawing.Point(137, 74);
+            this.textBoxLoadPattern.Multiline = true;
+            this.textBoxLoadPattern.Name = "textBoxLoadPattern";
+            this.textBoxLoadPattern.Size = new System.Drawing.Size(395, 20);
+            this.textBoxLoadPattern.TabIndex = 97;
+            // 
+            // labelPatternPath
+            // 
+            this.labelPatternPath.AutoSize = true;
+            this.labelPatternPath.Location = new System.Drawing.Point(6, 77);
+            this.labelPatternPath.Name = "labelPatternPath";
+            this.labelPatternPath.Size = new System.Drawing.Size(92, 13);
+            this.labelPatternPath.TabIndex = 98;
+            this.labelPatternPath.Text = "Load Pattern path";
+            // 
             // pictureBox4
             // 
             this.pictureBox4.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
@@ -607,7 +636,7 @@
             this.tabPage11.Location = new System.Drawing.Point(4, 22);
             this.tabPage11.Name = "tabPage11";
             this.tabPage11.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage11.Size = new System.Drawing.Size(1301, 445);
+            this.tabPage11.Size = new System.Drawing.Size(1301, 431);
             this.tabPage11.TabIndex = 1;
             this.tabPage11.Text = "Load Pattern Types";
             this.tabPage11.UseVisualStyleBackColor = true;
@@ -620,13 +649,13 @@
             this.dataGridViewLoadPatternDefinition.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLoadPatternDefinition.Location = new System.Drawing.Point(3, 3);
             this.dataGridViewLoadPatternDefinition.Name = "dataGridViewLoadPatternDefinition";
-            this.dataGridViewLoadPatternDefinition.Size = new System.Drawing.Size(1295, 383);
+            this.dataGridViewLoadPatternDefinition.Size = new System.Drawing.Size(1295, 369);
             this.dataGridViewLoadPatternDefinition.TabIndex = 92;
             // 
             // buttonUpdateLoadPatternDefinition
             // 
             this.buttonUpdateLoadPatternDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonUpdateLoadPatternDefinition.Location = new System.Drawing.Point(237, 394);
+            this.buttonUpdateLoadPatternDefinition.Location = new System.Drawing.Point(237, 380);
             this.buttonUpdateLoadPatternDefinition.Name = "buttonUpdateLoadPatternDefinition";
             this.buttonUpdateLoadPatternDefinition.Size = new System.Drawing.Size(109, 40);
             this.buttonUpdateLoadPatternDefinition.TabIndex = 98;
@@ -637,7 +666,7 @@
             // buttonSaveAsLoadPatternDefinition
             // 
             this.buttonSaveAsLoadPatternDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSaveAsLoadPatternDefinition.Location = new System.Drawing.Point(122, 394);
+            this.buttonSaveAsLoadPatternDefinition.Location = new System.Drawing.Point(122, 380);
             this.buttonSaveAsLoadPatternDefinition.Name = "buttonSaveAsLoadPatternDefinition";
             this.buttonSaveAsLoadPatternDefinition.Size = new System.Drawing.Size(109, 40);
             this.buttonSaveAsLoadPatternDefinition.TabIndex = 95;
@@ -648,7 +677,7 @@
             // buttonOpenLoadPatternDefinition
             // 
             this.buttonOpenLoadPatternDefinition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonOpenLoadPatternDefinition.Location = new System.Drawing.Point(7, 394);
+            this.buttonOpenLoadPatternDefinition.Location = new System.Drawing.Point(7, 380);
             this.buttonOpenLoadPatternDefinition.Name = "buttonOpenLoadPatternDefinition";
             this.buttonOpenLoadPatternDefinition.Size = new System.Drawing.Size(109, 40);
             this.buttonOpenLoadPatternDefinition.TabIndex = 96;
@@ -812,34 +841,6 @@
             this.tabControlMain.Size = new System.Drawing.Size(1338, 627);
             this.tabControlMain.TabIndex = 3;
             // 
-            // pictureBox6
-            // 
-            this.pictureBox6.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox6.Location = new System.Drawing.Point(538, 74);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(19, 20);
-            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox6.TabIndex = 99;
-            this.pictureBox6.TabStop = false;
-            // 
-            // textBoxLoadPattern
-            // 
-            this.textBoxLoadPattern.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxLoadPattern.Location = new System.Drawing.Point(137, 74);
-            this.textBoxLoadPattern.Multiline = true;
-            this.textBoxLoadPattern.Name = "textBoxLoadPattern";
-            this.textBoxLoadPattern.Size = new System.Drawing.Size(395, 20);
-            this.textBoxLoadPattern.TabIndex = 97;
-            // 
-            // labelPatternPath
-            // 
-            this.labelPatternPath.AutoSize = true;
-            this.labelPatternPath.Location = new System.Drawing.Point(6, 77);
-            this.labelPatternPath.Name = "labelPatternPath";
-            this.labelPatternPath.Size = new System.Drawing.Size(92, 13);
-            this.labelPatternPath.TabIndex = 98;
-            this.labelPatternPath.Text = "Load Pattern path";
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -869,6 +870,7 @@
             this.tabPageSettings.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.tabControlSettings.ResumeLayout(false);
@@ -886,7 +888,6 @@
             this.tabPageHome.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabControlMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

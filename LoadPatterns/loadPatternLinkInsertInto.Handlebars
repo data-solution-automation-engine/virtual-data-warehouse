@@ -25,6 +25,6 @@ SELECT {{#each businessKey}}
 FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] link_view
 LEFT OUTER JOIN
    [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] link_table
-   ON link_view.[{{targetTableHashKey}}] = link_table.[{{targetTableHashKey}}]
-WHERE link_table.[{{targetTableHashKey}}] IS NULL
+   ON link_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = link_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+WHERE link_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}{{/each}}
