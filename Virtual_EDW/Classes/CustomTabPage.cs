@@ -379,7 +379,7 @@ namespace Virtual_Data_Warehouse
             var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
             
             // Set the label with the path so it's visible to the user where the file is located
-            string localFullPath = Path.Combine(VedwConfigurationSettings.VedwInputPath, loadPattern.LoadPatternFilePath);
+            string localFullPath = Path.Combine(VedwConfigurationSettings.LoadPatternPath, loadPattern.LoadPatternFilePath);
 
             localLabelFullFilePath.Text = localFullPath;
 

@@ -65,12 +65,9 @@ namespace Virtual_Data_Warehouse
             // Start monitoring the configuration directories for file changes
             // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
 
-            richTextBoxInformationMain.AppendText(
-                "Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
+            richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
-
-
 
             SetDatabaseConnections();
 
@@ -84,7 +81,7 @@ namespace Virtual_Data_Warehouse
                 SetTextMain(
                     "There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " +
                     GlobalParameters.LoadPatternDefinitionFile + " in the " +
-                    VedwConfigurationSettings.VedwInputPath +
+                    VedwConfigurationSettings.LoadPatternPath +
                     " directory, and if the file contains pattern types.");
             }
 
@@ -96,7 +93,7 @@ namespace Virtual_Data_Warehouse
             {
                 SetTextMain(
                     "There are no patterns found in the designated load pattern directory. Please verify if there is a " +
-                    GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.VedwInputPath +
+                    GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.LoadPatternPath +
                     " directory, and if the file contains patterns.");
             }
 
@@ -406,8 +403,9 @@ namespace Virtual_Data_Warehouse
         private void UpdateVedwConfigurationSettingsOnForm()
         {
             textBoxOutputPath.Text = VedwConfigurationSettings.VedwOutputPath;
+            textBoxLoadPattern.Text = VedwConfigurationSettings.LoadPatternPath;
             textBoxConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
-            textBoxLoadPatternPath.Text = VedwConfigurationSettings.VedwInputPath;
+            textBoxInputPath.Text = VedwConfigurationSettings.VedwInputPath;
             textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
 
 
@@ -800,9 +798,14 @@ namespace Virtual_Data_Warehouse
                 textBoxOutputPath.Text = textBoxOutputPath.Text + @"\";
             }
 
-            if (!textBoxLoadPatternPath.Text.EndsWith(@"\"))
+            if (!textBoxLoadPattern.Text.EndsWith(@"\"))
             {
-                textBoxLoadPatternPath.Text = textBoxLoadPatternPath.Text + @"\";
+                textBoxLoadPattern.Text = textBoxLoadPattern.Text + @"\";
+            }
+
+            if (!textBoxInputPath.Text.EndsWith(@"\"))
+            {
+                textBoxInputPath.Text = textBoxInputPath.Text + @"\";
             }
 
             if (!textBoxConfigurationPath.Text.EndsWith(@"\"))
@@ -812,8 +815,9 @@ namespace Virtual_Data_Warehouse
 
             // Make the paths accessible from anywhere in the app (global parameters)
             VedwConfigurationSettings.TeamConfigurationPath = textBoxConfigurationPath.Text;
+            VedwConfigurationSettings.LoadPatternPath = textBoxLoadPattern.Text;
             VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
-            VedwConfigurationSettings.VedwInputPath = textBoxLoadPatternPath.Text;
+            VedwConfigurationSettings.VedwInputPath = textBoxInputPath.Text;
             VedwConfigurationSettings.VedwSchema = textBoxSchemaName.Text;
 
             // Working environment radiobutton
@@ -835,10 +839,10 @@ namespace Virtual_Data_Warehouse
             var rootPathConfigurationFile = new StringBuilder();
             rootPathConfigurationFile.AppendLine("/* Virtual Data Warehouse Core Settings */");
             rootPathConfigurationFile.AppendLine("/* Saved at " + DateTime.Now + " */");
-            rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" +
-                                                 VedwConfigurationSettings.TeamConfigurationPath + "");
+            rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VedwConfigurationSettings.TeamConfigurationPath + "");
             rootPathConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath + "");
-            rootPathConfigurationFile.AppendLine("LoadPatternListPath|" + VedwConfigurationSettings.VedwInputPath + "");
+            rootPathConfigurationFile.AppendLine("LoadPatternPath|" + VedwConfigurationSettings.LoadPatternPath + "");
+            rootPathConfigurationFile.AppendLine("InputPath|" + VedwConfigurationSettings.VedwInputPath + "");
             rootPathConfigurationFile.AppendLine("WorkingEnvironment|" + VedwConfigurationSettings.WorkingEnvironment + "");
             rootPathConfigurationFile.AppendLine("VedwSchema|" + VedwConfigurationSettings.VedwSchema + "");
             rootPathConfigurationFile.AppendLine("/* End of file */");
@@ -1008,7 +1012,7 @@ namespace Virtual_Data_Warehouse
                 {
                     Title = @"Save Load Pattern Definition File",
                     Filter = @"Load Pattern Definition|*.json",
-                    InitialDirectory = textBoxLoadPatternPath.Text
+                    InitialDirectory = textBoxInputPath.Text
                 };
 
                 var ret = STAShowDialog(theDialog);
@@ -1067,7 +1071,7 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.Clear();
 
-                var chosenFile = textBoxLoadPatternPath.Text + GlobalParameters.LoadPatternDefinitionFile;
+                var chosenFile = textBoxInputPath.Text + GlobalParameters.LoadPatternDefinitionFile;
 
 
                 DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternDefinition.DataSource;
@@ -1202,8 +1206,7 @@ namespace Virtual_Data_Warehouse
             foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
             {
                 var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-                var inputItemList =
-                    databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
+                var inputItemList = databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
 
                 CustomTabPage localCustomTabPage = new CustomTabPage(pattern, inputItemList);
                 localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
@@ -1315,7 +1318,7 @@ namespace Virtual_Data_Warehouse
                 {
                     Title = @"Save Load Pattern Collection File",
                     Filter = @"Load Pattern Collection|*.json",
-                    InitialDirectory = textBoxLoadPatternPath.Text
+                    InitialDirectory = textBoxInputPath.Text
                 };
 
                 var ret = STAShowDialog(theDialog);
@@ -1370,7 +1373,7 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.Clear();
 
-                var chosenFile = textBoxLoadPatternPath.Text + GlobalParameters.LoadPatternListFile;
+                var chosenFile = textBoxInputPath.Text + GlobalParameters.LoadPatternListFile;
 
                 DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternCollection.DataSource;
 
@@ -1519,7 +1522,7 @@ namespace Virtual_Data_Warehouse
         private void pictureBox4_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
-            fileBrowserDialog.SelectedPath = textBoxLoadPatternPath.Text;
+            fileBrowserDialog.SelectedPath = textBoxInputPath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
 
@@ -1547,7 +1550,7 @@ namespace Virtual_Data_Warehouse
                 }
 
 
-                textBoxLoadPatternPath.Text = finalPath;
+                textBoxInputPath.Text = finalPath;
 
                 if (fileCounter == 0)
                 {
@@ -1604,6 +1607,20 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.Text =
                     "An error has occured while attempting to open the configuration directory. The error message is: " +
+                    ex;
+            }
+        }
+
+        private void openInputDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(VedwConfigurationSettings.VedwInputPath);
+            }
+            catch (Exception ex)
+            {
+                richTextBoxInformationMain.Text =
+                    "An error has occured while attempting to open the input directory. The error message is: " +
                     ex;
             }
         }

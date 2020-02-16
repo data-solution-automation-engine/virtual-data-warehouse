@@ -116,9 +116,9 @@ namespace Virtual_Data_Warehouse
         {
             List<LoadPatternDefinition> loadPatternDefinitionList = new List<LoadPatternDefinition>();
             // Retrieve the file contents and store in a string
-            if (File.Exists(VedwConfigurationSettings.VedwInputPath + GlobalParameters.LoadPatternListFile))
+            if (File.Exists(VedwConfigurationSettings.LoadPatternPath + GlobalParameters.LoadPatternListFile))
             {
-                var jsonInput = File.ReadAllText(VedwConfigurationSettings.VedwInputPath +
+                var jsonInput = File.ReadAllText(VedwConfigurationSettings.LoadPatternPath +
                                                  GlobalParameters.LoadPatternDefinitionFile);
 
                 //Move the (json) string into a List object (a list of the type LoadPattern)
@@ -206,9 +206,9 @@ namespace Virtual_Data_Warehouse
         {
             List<LoadPattern> loadPatternList = new List<LoadPattern>();
             // Retrieve the file contents and store in a string
-            if (File.Exists(VedwConfigurationSettings.VedwInputPath + GlobalParameters.LoadPatternListFile))
+            if (File.Exists(VedwConfigurationSettings.LoadPatternPath + GlobalParameters.LoadPatternListFile))
             {
-                var jsonInput = File.ReadAllText(VedwConfigurationSettings.VedwInputPath +
+                var jsonInput = File.ReadAllText(VedwConfigurationSettings.LoadPatternPath +
                                                  GlobalParameters.LoadPatternListFile);
 
                 //Move the (json) string into a List object (a list of the type LoadPattern)

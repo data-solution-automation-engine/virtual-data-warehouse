@@ -30,17 +30,20 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openInputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.openVEDWConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openTEAMConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveConfigurationFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.saveConfigurationFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openTEAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,7 +68,7 @@
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.textBoxConfigurationPath = new System.Windows.Forms.TextBox();
-            this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
+            this.textBoxInputPath = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.tabControlSettings = new System.Windows.Forms.TabControl();
@@ -95,7 +98,9 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
-            this.openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.textBoxLoadPattern = new System.Windows.Forms.TextBox();
+            this.labelPatternPath = new System.Windows.Forms.Label();
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -115,6 +120,7 @@
             this.tabPageHome.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabControlMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMainMenu
@@ -133,19 +139,45 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openOutputDirectoryToolStripMenuItem,
             this.openConfigurationDirectoryToolStripMenuItem,
             this.openVDWConfigurationDirectoryToolStripMenuItem,
+            this.openInputDirectoryToolStripMenuItem,
+            this.openOutputDirectoryToolStripMenuItem,
+            this.toolStripSeparator1,
             this.openVEDWConfigurationSettingsFileToolStripMenuItem,
             this.openTEAMConfigurationSettingsFileToolStripMenuItem,
-            this.saveConfigurationFileToolStripMenuItem,
             this.toolStripSeparator2,
+            this.saveConfigurationFileToolStripMenuItem,
             this.openTEAMToolStripMenuItem,
             this.toolStripSeparator3,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // openConfigurationDirectoryToolStripMenuItem
+            // 
+            this.openConfigurationDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.openConfigurationDirectoryToolStripMenuItem.Name = "openConfigurationDirectoryToolStripMenuItem";
+            this.openConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.openConfigurationDirectoryToolStripMenuItem.Text = "Open TEAM  Configuration Directory";
+            this.openConfigurationDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openConfigurationDirectoryToolStripMenuItem_Click);
+            // 
+            // openVDWConfigurationDirectoryToolStripMenuItem
+            // 
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Name = "openVDWConfigurationDirectoryToolStripMenuItem";
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Text = "Open VDW Configuration Directory";
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openVDWConfigurationDirectoryToolStripMenuItem_Click);
+            // 
+            // openInputDirectoryToolStripMenuItem
+            // 
+            this.openInputDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.openInputDirectoryToolStripMenuItem.Name = "openInputDirectoryToolStripMenuItem";
+            this.openInputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
+            this.openInputDirectoryToolStripMenuItem.Text = "Open Input Directory";
+            this.openInputDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openInputDirectoryToolStripMenuItem_Click);
             // 
             // openOutputDirectoryToolStripMenuItem
             // 
@@ -155,13 +187,10 @@
             this.openOutputDirectoryToolStripMenuItem.Text = "Open Output Directory";
             this.openOutputDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openOutputDirectoryToolStripMenuItem_Click);
             // 
-            // openConfigurationDirectoryToolStripMenuItem
+            // toolStripSeparator1
             // 
-            this.openConfigurationDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.openConfigurationDirectoryToolStripMenuItem.Name = "openConfigurationDirectoryToolStripMenuItem";
-            this.openConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
-            this.openConfigurationDirectoryToolStripMenuItem.Text = "Open Configuration Directory";
-            this.openConfigurationDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openConfigurationDirectoryToolStripMenuItem_Click);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(278, 6);
             // 
             // openVEDWConfigurationSettingsFileToolStripMenuItem
             // 
@@ -179,6 +208,11 @@
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Text = "Open TEAM Configuration Settings File";
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openTEAMConfigurationSettingsFileToolStripMenuItem_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(278, 6);
+            // 
             // saveConfigurationFileToolStripMenuItem
             // 
             this.saveConfigurationFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.SaveFile;
@@ -187,11 +221,6 @@
             this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
             this.saveConfigurationFileToolStripMenuItem.Text = "Save VEDW Settings";
             this.saveConfigurationFileToolStripMenuItem.Click += new System.EventHandler(this.saveConfigurationFileToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(278, 6);
             // 
             // openTEAMToolStripMenuItem
             // 
@@ -226,7 +255,7 @@
             // 
             this.pointInTimeToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.Time;
             this.pointInTimeToolStripMenuItem.Name = "pointInTimeToolStripMenuItem";
-            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pointInTimeToolStripMenuItem.Text = "Point In Time";
             this.pointInTimeToolStripMenuItem.Click += new System.EventHandler(this.pointInTimeToolStripMenuItem_Click);
             // 
@@ -236,14 +265,14 @@
             this.generateTestDataToolStripMenuItem,
             this.generateRIValidationToolStripMenuItem});
             this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.testingToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.testingToolStripMenuItem.Text = "Testing";
             // 
             // generateTestDataToolStripMenuItem
             // 
             this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
             this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
             this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
             // 
@@ -251,7 +280,7 @@
             // 
             this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
             this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(283, 22);
+            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
             this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
             this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
             // 
@@ -390,15 +419,18 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.pictureBox6);
+            this.groupBox2.Controls.Add(this.textBoxLoadPattern);
+            this.groupBox2.Controls.Add(this.labelPatternPath);
             this.groupBox2.Controls.Add(this.pictureBox4);
             this.groupBox2.Controls.Add(this.pictureBox3);
             this.groupBox2.Controls.Add(this.textBoxConfigurationPath);
-            this.groupBox2.Controls.Add(this.textBoxLoadPatternPath);
+            this.groupBox2.Controls.Add(this.textBoxInputPath);
             this.groupBox2.Controls.Add(this.label10);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Location = new System.Drawing.Point(10, 18);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(569, 85);
+            this.groupBox2.Size = new System.Drawing.Size(569, 110);
             this.groupBox2.TabIndex = 100;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configuration paths";
@@ -434,14 +466,14 @@
             this.textBoxConfigurationPath.Size = new System.Drawing.Size(395, 20);
             this.textBoxConfigurationPath.TabIndex = 83;
             // 
-            // textBoxLoadPatternPath
+            // textBoxInputPath
             // 
-            this.textBoxLoadPatternPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxLoadPatternPath.Location = new System.Drawing.Point(137, 48);
-            this.textBoxLoadPatternPath.Multiline = true;
-            this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
-            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(395, 20);
-            this.textBoxLoadPatternPath.TabIndex = 93;
+            this.textBoxInputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxInputPath.Location = new System.Drawing.Point(137, 48);
+            this.textBoxInputPath.Multiline = true;
+            this.textBoxInputPath.Name = "textBoxInputPath";
+            this.textBoxInputPath.Size = new System.Drawing.Size(395, 20);
+            this.textBoxInputPath.TabIndex = 93;
             // 
             // label10
             // 
@@ -468,10 +500,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlSettings.Controls.Add(this.tabPage1);
             this.tabControlSettings.Controls.Add(this.tabPage11);
-            this.tabControlSettings.Location = new System.Drawing.Point(10, 120);
+            this.tabControlSettings.Location = new System.Drawing.Point(10, 134);
             this.tabControlSettings.Name = "tabControlSettings";
             this.tabControlSettings.SelectedIndex = 0;
-            this.tabControlSettings.Size = new System.Drawing.Size(1309, 471);
+            this.tabControlSettings.Size = new System.Drawing.Size(1309, 457);
             this.tabControlSettings.TabIndex = 99;
             this.tabControlSettings.SelectedIndexChanged += new System.EventHandler(this.tabControlSettings_SelectedIndexChanged);
             // 
@@ -485,7 +517,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1301, 445);
+            this.tabPage1.Size = new System.Drawing.Size(1301, 431);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Load Pattern Collection";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -496,28 +528,28 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLoadPatternCollection.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridViewLoadPatternCollection.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewLoadPatternCollection.Location = new System.Drawing.Point(3, 3);
             this.dataGridViewLoadPatternCollection.Name = "dataGridViewLoadPatternCollection";
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle9;
-            this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(1295, 383);
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(1295, 369);
             this.dataGridViewLoadPatternCollection.TabIndex = 99;
             // 
             // checkBoxBackupFiles
@@ -526,7 +558,7 @@
             this.checkBoxBackupFiles.AutoSize = true;
             this.checkBoxBackupFiles.Checked = true;
             this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxBackupFiles.Location = new System.Drawing.Point(347, 394);
+            this.checkBoxBackupFiles.Location = new System.Drawing.Point(347, 380);
             this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
             this.checkBoxBackupFiles.Size = new System.Drawing.Size(181, 17);
             this.checkBoxBackupFiles.TabIndex = 97;
@@ -536,7 +568,7 @@
             // buttonUpdateLoadPatternCollection
             // 
             this.buttonUpdateLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonUpdateLoadPatternCollection.Location = new System.Drawing.Point(232, 394);
+            this.buttonUpdateLoadPatternCollection.Location = new System.Drawing.Point(232, 380);
             this.buttonUpdateLoadPatternCollection.Name = "buttonUpdateLoadPatternCollection";
             this.buttonUpdateLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
             this.buttonUpdateLoadPatternCollection.TabIndex = 102;
@@ -547,7 +579,7 @@
             // buttonSaveAsLoadPatternCollection
             // 
             this.buttonSaveAsLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonSaveAsLoadPatternCollection.Location = new System.Drawing.Point(117, 394);
+            this.buttonSaveAsLoadPatternCollection.Location = new System.Drawing.Point(117, 380);
             this.buttonSaveAsLoadPatternCollection.Name = "buttonSaveAsLoadPatternCollection";
             this.buttonSaveAsLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
             this.buttonSaveAsLoadPatternCollection.TabIndex = 100;
@@ -558,7 +590,7 @@
             // buttonOpenLoadPatternCollection
             // 
             this.buttonOpenLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonOpenLoadPatternCollection.Location = new System.Drawing.Point(2, 394);
+            this.buttonOpenLoadPatternCollection.Location = new System.Drawing.Point(2, 380);
             this.buttonOpenLoadPatternCollection.Name = "buttonOpenLoadPatternCollection";
             this.buttonOpenLoadPatternCollection.Size = new System.Drawing.Size(109, 40);
             this.buttonOpenLoadPatternCollection.TabIndex = 101;
@@ -633,7 +665,7 @@
             this.groupBox8.Controls.Add(this.textBoxOutputPath);
             this.groupBox8.Location = new System.Drawing.Point(585, 18);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(519, 86);
+            this.groupBox8.Size = new System.Drawing.Size(519, 110);
             this.groupBox8.TabIndex = 89;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "ETL output options";
@@ -689,7 +721,7 @@
             this.groupBox1.Controls.Add(this.radioButtonDevelopment);
             this.groupBox1.Location = new System.Drawing.Point(1110, 18);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(116, 86);
+            this.groupBox1.Size = new System.Drawing.Size(205, 110);
             this.groupBox1.TabIndex = 90;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Target environment";
@@ -780,12 +812,33 @@
             this.tabControlMain.Size = new System.Drawing.Size(1338, 627);
             this.tabControlMain.TabIndex = 3;
             // 
-            // openVDWConfigurationDirectoryToolStripMenuItem
+            // pictureBox6
             // 
-            this.openVDWConfigurationDirectoryToolStripMenuItem.Name = "openVDWConfigurationDirectoryToolStripMenuItem";
-            this.openVDWConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
-            this.openVDWConfigurationDirectoryToolStripMenuItem.Text = "Open VDW Configuration Directory";
-            this.openVDWConfigurationDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openVDWConfigurationDirectoryToolStripMenuItem_Click);
+            this.pictureBox6.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.pictureBox6.Location = new System.Drawing.Point(538, 74);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(19, 20);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox6.TabIndex = 99;
+            this.pictureBox6.TabStop = false;
+            // 
+            // textBoxLoadPattern
+            // 
+            this.textBoxLoadPattern.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxLoadPattern.Location = new System.Drawing.Point(137, 74);
+            this.textBoxLoadPattern.Multiline = true;
+            this.textBoxLoadPattern.Name = "textBoxLoadPattern";
+            this.textBoxLoadPattern.Size = new System.Drawing.Size(395, 20);
+            this.textBoxLoadPattern.TabIndex = 97;
+            // 
+            // labelPatternPath
+            // 
+            this.labelPatternPath.AutoSize = true;
+            this.labelPatternPath.Location = new System.Drawing.Point(6, 77);
+            this.labelPatternPath.Name = "labelPatternPath";
+            this.labelPatternPath.Size = new System.Drawing.Size(92, 13);
+            this.labelPatternPath.TabIndex = 98;
+            this.labelPatternPath.Text = "Load Pattern path";
             // 
             // FormMain
             // 
@@ -833,6 +886,7 @@
             this.tabPageHome.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabControlMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -880,7 +934,7 @@
         private System.Windows.Forms.Button buttonUpdateLoadPatternDefinition;
         private System.Windows.Forms.Button buttonSaveAsLoadPatternDefinition;
         private System.Windows.Forms.Button buttonOpenLoadPatternDefinition;
-        internal System.Windows.Forms.TextBox textBoxLoadPatternPath;
+        internal System.Windows.Forms.TextBox textBoxInputPath;
         internal System.Windows.Forms.TextBox textBoxConfigurationPath;
         internal System.Windows.Forms.TextBox textBoxOutputPath;
         internal System.Windows.Forms.GroupBox groupBox8;
@@ -902,6 +956,11 @@
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.ToolStripMenuItem openVDWConfigurationDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openInputDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.PictureBox pictureBox6;
+        internal System.Windows.Forms.TextBox textBoxLoadPattern;
+        private System.Windows.Forms.Label labelPatternPath;
     }
 }
 

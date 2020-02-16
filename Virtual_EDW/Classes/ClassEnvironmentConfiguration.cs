@@ -66,7 +66,8 @@ namespace Virtual_Data_Warehouse
                     initialConfigurationFile.AppendLine("/* Virtual Enterprise Data Warehouse (VEDW) Core Settings */");
                     initialConfigurationFile.AppendLine("TeamConfigurationPath|" + FormBase.VedwConfigurationSettings.TeamConfigurationPath); //Initially make this the same as the VEDW application root
                     initialConfigurationFile.AppendLine("VedwOutputPath|" + FormBase.VedwConfigurationSettings.VedwOutputPath);
-                    initialConfigurationFile.AppendLine("LoadPatternListPath|" + FormBase.VedwConfigurationSettings.VedwInputPath);
+                    initialConfigurationFile.AppendLine("InputPath|" + FormBase.VedwConfigurationSettings.VedwInputPath);
+                    initialConfigurationFile.AppendLine("LoadPatternPath|" + FormBase.VedwConfigurationSettings.LoadPatternPath);
                     initialConfigurationFile.AppendLine("WorkingEnvironment|Development");
                     initialConfigurationFile.AppendLine("VedwSchema|vedw");
                     initialConfigurationFile.AppendLine("/* End of file */");
@@ -131,6 +132,17 @@ namespace Virtual_Data_Warehouse
                     errorCounter++;
                 }
 
+                configurationValue = "LoadPatternPath";
+                if (configList.ContainsKey(configurationValue))
+                {
+                    FormBase.VedwConfigurationSettings.LoadPatternPath = configList[configurationValue];
+                }
+                else
+                {
+                    errorValue = errorValue + $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
+                    errorCounter++;
+                }
+
 
                 configurationValue = "VedwOutputPath";
                 if (configList.ContainsKey(configurationValue))
@@ -143,7 +155,7 @@ namespace Virtual_Data_Warehouse
                     errorCounter++;
                 }
 
-                configurationValue = "LoadPatternListPath";
+                configurationValue = "InputPath";
                 if (configList.ContainsKey(configurationValue))
                 {
                     FormBase.VedwConfigurationSettings.VedwInputPath = configList[configurationValue];
@@ -188,7 +200,6 @@ namespace Virtual_Data_Warehouse
             }
             return returnValue;
         }
-
 
         /// <summary>
         ///    Retrieve the TEAM configuration information from disk and save this to memory
@@ -406,7 +417,5 @@ namespace Virtual_Data_Warehouse
 
             return returnCode;
         }
-
-
     }
 }
