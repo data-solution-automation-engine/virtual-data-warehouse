@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,8 +11,10 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using DataWarehouseAutomation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Virtual_Data_Warehouse.Classes;
 
 namespace Virtual_Data_Warehouse
 {
@@ -1191,10 +1194,29 @@ namespace Virtual_Data_Warehouse
 
             if (Directory.Exists(VedwConfigurationSettings.VedwInputPath))
             {
-                string[] fileEntries = Directory.GetFiles(VedwConfigurationSettings.VedwInputPath);
+                // The classification list dictates the number of tabs tha will be created (the distinct classifications in the Jsons).
+                List<string> classificationList = new List<string>();
+
+                string[] fileEntries = Directory.GetFiles(VedwConfigurationSettings.VedwInputPath, "*.json");
                 foreach (string fileName in fileEntries)
                 {
+                    var jsonInput = File.ReadAllText(fileName);
+                    VEDW_DataObjectMappingList deserialisedMapping = JsonConvert.DeserializeObject<VEDW_DataObjectMappingList>(jsonInput);
+
+                    foreach (var dataObjectMapping in deserialisedMapping.dataObjectMappingList)
+                    {
+                        foreach (var localClassification in dataObjectMapping.classification)
+                        {
+                            if (!classificationList.Contains(localClassification))
+                                classificationList.Add(localClassification);
+                        }
+            
+                    }
                     
+                    //JObject rss = JObject.Parse(jsonInput);
+                    //JArray categories = (JArray)rss["channel"]["item"][0]["categories"];
+                    //IList<string> categoriesText = categories.Select(c => (string)c).ToList();
+
                 }
             }
             else
@@ -1205,7 +1227,7 @@ namespace Virtual_Data_Warehouse
             // Add the Custom Tab Pages
             foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
             {
-                var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+                var conn = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
                 var inputItemList = databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
 
                 CustomTabPage localCustomTabPage = new CustomTabPage(pattern, inputItemList);
@@ -1215,6 +1237,20 @@ namespace Virtual_Data_Warehouse
                 localCustomTabPageList.Add(localCustomTabPage);
                 tabControlMain.TabPages.Add(localCustomTabPage);
             }
+
+            //// Add the Custom Tab Pages
+            //foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
+            //{
+            //    var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            //    var inputItemList = databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
+
+            //    CustomTabPage localCustomTabPage = new CustomTabPage(pattern, inputItemList);
+            //    localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
+            //    localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);
+
+            //    localCustomTabPageList.Add(localCustomTabPage);
+            //    tabControlMain.TabPages.Add(localCustomTabPage);
+            //}
         }
 
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)

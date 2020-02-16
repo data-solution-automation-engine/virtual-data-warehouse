@@ -38,8 +38,6 @@ namespace Virtual_Data_Warehouse
     class CustomTabPage : TabPage
     {
         string inputNiceName;
-        StringBuilder inputMetadataQuery = new StringBuilder();
-
         internal LoadPatternDefinition input;
         internal List<string> itemList;
 
