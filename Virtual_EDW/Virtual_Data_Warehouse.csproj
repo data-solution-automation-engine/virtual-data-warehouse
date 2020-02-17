@@ -204,16 +204,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\ClassInterfaceObjectModel.cs" />
-    <Compile Include="Classes\ClassUtility.cs" />
-    <Compile Include="Classes\CustomTabPage.cs" />
-    <Compile Include="Classes\ClassInterfaceHandling.cs" />
-    <Compile Include="Classes\ClassJsonHandling.cs" />
-    <Compile Include="Classes\ClassTextHandling.cs" />
-    <Compile Include="Classes\ClassEnvironmentConfiguration.cs" />
-    <Compile Include="Classes\ClassLoadPatternHandling.cs" />
-    <Compile Include="Classes\ClassExtensionMethods.cs" />
-    <Compile Include="Classes\ClassDatabaseHandling.cs" />
+    <Compile Include="ClassExtensionMethods.cs" />
+    <Compile Include="ClassInterfaceObjectModel.cs" />
+    <Compile Include="ClassUtility.cs" />
+    <Compile Include="CustomTabPage.cs" />
+    <Compile Include="ClassInterfaceHandling.cs" />
+    <Compile Include="ClassJsonHandling.cs" />
+    <Compile Include="ClassTextHandling.cs" />
+    <Compile Include="ClassEnvironmentConfiguration.cs" />
+    <Compile Include="ClassLoadPatternHandling.cs" />
+    <Compile Include="ClassDatabaseHandling.cs" />
     <Compile Include="FormBase.cs">
       <SubType>Form</SubType>
     </Compile>

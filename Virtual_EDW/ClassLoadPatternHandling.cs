@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Newtonsoft.Json;
-using static Virtual_Data_Warehouse.FormBase;
 
 namespace Virtual_Data_Warehouse
 {
@@ -18,38 +16,7 @@ namespace Virtual_Data_Warehouse
         public string LoadPatternNotes { get; set; }
         public string LoadPatternConnectionKey { get; set; }
 
-        /// <summary>
-        /// Create a file backup for the configuration file at the provided location and return notice of success or failure as a string.
-        /// /// </summary>
-        internal static string BackupLoadPatternDefinition(string loadPatternDefinitionFilePath)
-        {
-            string returnMessage = "";
-
-            try
-            {
-                if (File.Exists(loadPatternDefinitionFilePath))
-                {
-                    var targetFilePathName = loadPatternDefinitionFilePath +
-                                             string.Concat("Backup_" + DateTime.Now.ToString("yyyyMMddHHmmss"));
-
-                    File.Copy(loadPatternDefinitionFilePath, targetFilePathName);
-                    returnMessage = "A backup was created at: " + targetFilePathName;
-                }
-                else
-                {
-                    returnMessage = "VEDW couldn't locate a configuration file! Can you check the paths and existence of directories?";
-                }
-            }
-            catch (Exception ex)
-            {
-                returnMessage = ("An error has occured while creating a file backup. The error message is " + ex);
-            }
-
-            return returnMessage;
-        }
-
-
-        
+       
     
 
         /// <summary>
@@ -82,26 +49,6 @@ namespace Virtual_Data_Warehouse
         }
 
 
-    }
-
-    class LoadPatternDefinitionFileHandling
-    {
-        internal List<LoadPatternDefinition> DeserializeLoadPatternDefinition()
-        {
-            List<LoadPatternDefinition> loadPatternDefinitionList = new List<LoadPatternDefinition>();
-            // Retrieve the file contents and store in a string
-            if (File.Exists(VedwConfigurationSettings.LoadPatternPath + GlobalParameters.LoadPatternListFile))
-            {
-                var jsonInput = File.ReadAllText(VedwConfigurationSettings.LoadPatternPath +
-                                                 GlobalParameters.LoadPatternDefinitionFile);
-
-                //Move the (json) string into a List object (a list of the type LoadPattern)
-                loadPatternDefinitionList = JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(jsonInput);
-            }
-
-            // Return the list to the instance
-            return loadPatternDefinitionList;
-        }
     }
 
     /// <summary>
@@ -152,7 +99,7 @@ namespace Virtual_Data_Warehouse
         /// <returns></returns>
         internal static string SaveLoadPattern(string loadPatternFilePath, string fileContent)
         {
-            string returnMessage = "";
+            string returnMessage;
 
             try
             {
@@ -180,10 +127,10 @@ namespace Virtual_Data_Warehouse
         {
             List<LoadPattern> loadPatternList = new List<LoadPattern>();
             // Retrieve the file contents and store in a string
-            if (File.Exists(VedwConfigurationSettings.LoadPatternPath + GlobalParameters.LoadPatternListFile))
+            if (File.Exists(FormBase.VedwConfigurationSettings.LoadPatternPath + FormBase.GlobalParameters.LoadPatternListFile))
             {
-                var jsonInput = File.ReadAllText(VedwConfigurationSettings.LoadPatternPath +
-                                                 GlobalParameters.LoadPatternListFile);
+                var jsonInput = File.ReadAllText(FormBase.VedwConfigurationSettings.LoadPatternPath +
+                                                 FormBase.GlobalParameters.LoadPatternListFile);
 
                 //Move the (json) string into a List object (a list of the type LoadPattern)
                 loadPatternList = JsonConvert.DeserializeObject<List<LoadPattern>>(jsonInput);

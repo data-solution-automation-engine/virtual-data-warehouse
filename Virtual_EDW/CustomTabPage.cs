@@ -1,6 +1,4 @@
-﻿using HandlebarsDotNet;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -9,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Virtual_Data_Warehouse.Classes;
-using static Virtual_Data_Warehouse.FormBase;
+using HandlebarsDotNet;
+using Newtonsoft.Json;
 
 namespace Virtual_Data_Warehouse
 {
@@ -36,7 +34,6 @@ namespace Virtual_Data_Warehouse
     class CustomTabPage : TabPage
     {
         string inputNiceName;
-        internal LoadPatternDefinition input;
         internal Dictionary<string, VEDW_DataObjectMappingList> itemList;
         internal string connectionString;
 
@@ -373,10 +370,10 @@ namespace Virtual_Data_Warehouse
         private void DisplayPattern(object o, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
+            var loadPattern = FormBase.VedwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
             
             // Set the label with the path so it's visible to the user where the file is located
-            string localFullPath = Path.Combine(VedwConfigurationSettings.LoadPatternPath, loadPattern.LoadPatternFilePath);
+            string localFullPath = Path.Combine(FormBase.VedwConfigurationSettings.LoadPatternPath, loadPattern.LoadPatternFilePath);
 
             localLabelFullFilePath.Text = localFullPath;
 
@@ -452,7 +449,7 @@ namespace Virtual_Data_Warehouse
 
         void DoWork()
         {
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringStg);
+            Utility.CreateSchema(FormBase.TeamConfigurationSettings.ConnectionStringStg);
             localRichTextBox.Clear();
             GenerateFromPattern();
         }
@@ -508,7 +505,7 @@ namespace Virtual_Data_Warehouse
                         EventLog fileSaveEventLog = new EventLog();
                         if (saveOutputFileFlag)
                         {
-                            fileSaveEventLog = Utility.SaveOutputToDisk(VedwConfigurationSettings.VedwOutputPath + targetTableName + ".sql", result);
+                            fileSaveEventLog = Utility.SaveOutputToDisk(FormBase.VedwConfigurationSettings.VedwOutputPath + targetTableName + ".sql", result);
                         }
 
                         //Generate in database
@@ -558,7 +555,7 @@ namespace Virtual_Data_Warehouse
             }
 
             RaiseOnChangeMainText($"\r\n{errorCounter} error(s) have been found.\r\n");
-            RaiseOnChangeMainText($"\r\nAssociated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            RaiseOnChangeMainText($"\r\nAssociated scripts have been saved in {FormBase.VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Apply syntax highlighting
             SyntaxHighlight();
@@ -574,7 +571,7 @@ namespace Virtual_Data_Warehouse
             bool available = false;
             try
             {
-                var patternList = VedwConfigurationSettings.patternList;
+                var patternList = FormBase.VedwConfigurationSettings.patternList;
 
                 localComboBoxGenerationPattern.Items.Clear();
                 localRichTextBoxGenerationPattern.Clear();

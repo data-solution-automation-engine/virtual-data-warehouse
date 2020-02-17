@@ -22,7 +22,7 @@
     "loadPatternType": "CoreBusinessConcept",
     "loadPatternFilePath": "loadPatternHubView_DBT_Snowflake.handlebars",
     "loadPatternNotes": "Standard Hub pattern - display the distinct list of Business Keys for a Core Business Concept."
-  },  
+  },
   {
     "loadPatternName": "Data Vault Link 001 View Pattern",
     "loadPatternType": "NaturalBusinessRelationship",
@@ -33,12 +33,6 @@
     "loadPatternName": "Data Vault Link 001 View Pattern without Hash Keys",
     "loadPatternType": "NaturalBusinessRelationship",
     "loadPatternFilePath": "loadPatternLinkViewNoHash.Handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Link 002 Insert Into Pattern",
-    "loadPatternType": "NaturalBusinessRelationship",
-    "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
@@ -66,12 +60,18 @@
     "loadPatternNotes": ""
   },
   {
+    "loadPatternName": "Link 002 Insert Into Pattern",
+    "loadPatternType": "NaturalBusinessRelationship",
+    "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
     "loadPatternName": "Persistent Staging Area 001 View Pattern",
     "loadPatternType": "PersistentStagingArea",
     "loadPatternFilePath": "loadPatternPersistentStagingView.handlebars",
     "loadPatternNotes": ""
   },
-    {
+  {
     "loadPatternName": "Persistent Staging Area 001 View Pattern With Deduplication",
     "loadPatternType": "PersistentStagingArea",
     "loadPatternFilePath": "loadPatternPersistentStagingViewWithDedup.handlebars",

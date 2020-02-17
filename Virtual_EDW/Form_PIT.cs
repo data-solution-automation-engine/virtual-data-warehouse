@@ -54,12 +54,9 @@ namespace Virtual_Data_Warehouse
         {
             richTextBoxInformation.Clear();
 
-             
-
             var conn = new SqlConnection
             {
-                ConnectionString =
-                    radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
+                ConnectionString = radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
             };
 
             var hubIdentifier = TeamConfigurationSettings.HubTablePrefixValue;

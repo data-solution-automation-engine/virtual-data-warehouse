@@ -68,7 +68,6 @@ namespace Virtual_Data_Warehouse
                     initialConfigurationFile.AppendLine("VedwOutputPath|" + FormBase.VedwConfigurationSettings.VedwOutputPath);
                     initialConfigurationFile.AppendLine("InputPath|" + FormBase.VedwConfigurationSettings.VedwInputPath);
                     initialConfigurationFile.AppendLine("LoadPatternPath|" + FormBase.VedwConfigurationSettings.LoadPatternPath);
-                    initialConfigurationFile.AppendLine("WorkingEnvironment|Development");
                     initialConfigurationFile.AppendLine("VedwSchema|vedw");
                     initialConfigurationFile.AppendLine("/* End of file */");
 
@@ -94,7 +93,7 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         public static string LoadVedwSettingsFile(string filename)
         {
-            string returnValue = "";
+            string returnValue;
             string errorValue = "";
 
             // This is the hardcoded base path that always needs to be accessible, it has the main file which can locate the rest of the configuration
@@ -119,7 +118,7 @@ namespace Virtual_Data_Warehouse
 
                 // Load the information from the VEDW settings file into memory
                 int errorCounter = 0;
-                string configurationValue = "";
+                string configurationValue;
 
                 configurationValue = "TeamConfigurationPath";
                 if (configList.ContainsKey(configurationValue))
@@ -163,17 +162,6 @@ namespace Virtual_Data_Warehouse
                 else
                 {
                     errorValue = errorValue + $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>).\r\n";
-                    errorCounter++;
-                }
-
-                configurationValue = "WorkingEnvironment";
-                if (configList.ContainsKey(configurationValue))
-                {
-                    FormBase.VedwConfigurationSettings.WorkingEnvironment = configList[configurationValue];
-                }
-                else
-                {
-                    errorValue = errorValue + $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
                     errorCounter++;
                 }
 

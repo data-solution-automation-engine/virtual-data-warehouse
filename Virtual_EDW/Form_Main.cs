@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using DataWarehouseAutomation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Virtual_Data_Warehouse.Classes;
 
 namespace Virtual_Data_Warehouse
 {
@@ -26,7 +25,6 @@ namespace Virtual_Data_Warehouse
         private List<CustomTabPage> localCustomTabPageList = new List<CustomTabPage>();
 
         private BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
-        private BindingSource _bindingSourceLoadPatternDefinition = new BindingSource();
 
         private DatabaseHandling databaseHandling;
 
@@ -71,11 +69,6 @@ namespace Virtual_Data_Warehouse
 
             checkBoxGenerateInDatabase.Checked = false;
 
-            SetDatabaseConnections();
-
-            var patternDefinition = new LoadPatternDefinitionFileHandling();
-            VedwConfigurationSettings.patternDefinitionList = patternDefinition.DeserializeLoadPatternDefinition();
-
             // Load Pattern definition in memory
             if ((VedwConfigurationSettings.patternDefinitionList != null) &&
                 (!VedwConfigurationSettings.patternDefinitionList.Any()))
@@ -100,13 +93,10 @@ namespace Virtual_Data_Warehouse
             }
 
 
+            // Populate the data grid.
+            PopulateLoadPatternCollectionDataGrid();
 
-
-
-            // Populate the data grid
-            populateLoadPatternCollectionDataGrid();
-            populateLoadPatternDefinitionDataGrid();
-
+            // Create the tab pages based on available content.
             CreateCustomTabPages();
 
             foreach (CustomTabPage localCustomTabPage in localCustomTabPageList)
@@ -119,11 +109,10 @@ namespace Virtual_Data_Warehouse
             startUpIndicator = false;
         }
 
-        public void populateLoadPatternCollectionDataGrid()
+        public void PopulateLoadPatternCollectionDataGrid()
         {
-            // Create a datatable 
+            // Create a datatable. 
             DataTable dt = VedwConfigurationSettings.patternList.ToDataTable();
-      
 
             dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
             dt.Columns[0].ColumnName = "Name";
@@ -159,93 +148,93 @@ namespace Virtual_Data_Warehouse
             GridAutoLayoutLoadPatternCollection();
         }
 
-        public void populateLoadPatternDefinitionDataGrid()
-        {
-            // Create a datatable 
-            DataTable dt = VedwConfigurationSettings.patternDefinitionList.ToDataTable();
+        //public void populateLoadPatternDefinitionDataGrid()
+        //{
+        //    // Create a datatable 
+        //    DataTable dt = VedwConfigurationSettings.patternDefinitionList.ToDataTable();
 
-            dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
-            dt.Columns[0].ColumnName = "Key";
-            dt.Columns[1].ColumnName = "Type";
-            dt.Columns[2].ColumnName = "SelectionQuery";
-            dt.Columns[3].ColumnName = "BaseQuery";
-            dt.Columns[4].ColumnName = "AttributeQuery";
-            dt.Columns[5].ColumnName = "AdditionalBusinessKeyQuery";
-            dt.Columns[6].ColumnName = "Notes";
-            dt.Columns[7].ColumnName = "ConnectionKey";
+        //    dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
+        //    dt.Columns[0].ColumnName = "Key";
+        //    dt.Columns[1].ColumnName = "Type";
+        //    dt.Columns[2].ColumnName = "SelectionQuery";
+        //    dt.Columns[3].ColumnName = "BaseQuery";
+        //    dt.Columns[4].ColumnName = "AttributeQuery";
+        //    dt.Columns[5].ColumnName = "AdditionalBusinessKeyQuery";
+        //    dt.Columns[6].ColumnName = "Notes";
+        //    dt.Columns[7].ColumnName = "ConnectionKey";
 
-            _bindingSourceLoadPatternDefinition.DataSource = dt;
+        //    _bindingSourceLoadPatternDefinition.DataSource = dt;
 
-            if (VedwConfigurationSettings.patternList != null)
-            {
-                // Set the column header names.
-                dataGridViewLoadPatternDefinition.DataSource = _bindingSourceLoadPatternDefinition;
-                dataGridViewLoadPatternDefinition.ColumnHeadersVisible = true;
-                dataGridViewLoadPatternDefinition.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                dataGridViewLoadPatternDefinition.Columns[0].HeaderText = "Key";
-                dataGridViewLoadPatternCollection.Columns[0].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+        //    if (VedwConfigurationSettings.patternList != null)
+        //    {
+        //        // Set the column header names.
+        //        dataGridViewLoadPatternDefinition.DataSource = _bindingSourceLoadPatternDefinition;
+        //        dataGridViewLoadPatternDefinition.ColumnHeadersVisible = true;
+        //        dataGridViewLoadPatternDefinition.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+        //        dataGridViewLoadPatternDefinition.Columns[0].HeaderText = "Key";
+        //        dataGridViewLoadPatternCollection.Columns[0].DefaultCellStyle.Alignment =
+        //            DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[1].HeaderText = "Type";
-                dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+        //        dataGridViewLoadPatternDefinition.Columns[1].HeaderText = "Type";
+        //        dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment =
+        //            DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[2].HeaderText = "Selection Query";
-                dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+        //        dataGridViewLoadPatternDefinition.Columns[2].HeaderText = "Selection Query";
+        //        dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        //        dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.Alignment =
+        //            DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[3].HeaderText = "Base Query";
-                dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+        //        dataGridViewLoadPatternDefinition.Columns[3].HeaderText = "Base Query";
+        //        dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        //        dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.Alignment =
+        //            DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[4].HeaderText = "Attribute Query";
-                dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+        //        dataGridViewLoadPatternDefinition.Columns[4].HeaderText = "Attribute Query";
+        //        dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        //        dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.Alignment =
+        //            DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[5].HeaderText = "Add. Business Key Query";
-                dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+        //        dataGridViewLoadPatternDefinition.Columns[5].HeaderText = "Add. Business Key Query";
+        //        dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        //        dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.Alignment =
+        //            DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[6].HeaderText = "Notes";
-                dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+        //        dataGridViewLoadPatternDefinition.Columns[6].HeaderText = "Notes";
+        //        dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        //        dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.Alignment =
+        //            DataGridViewContentAlignment.TopLeft;
 
-                dataGridViewLoadPatternDefinition.Columns[7].HeaderText = "ConnectionKey";
-                dataGridViewLoadPatternDefinition.Columns[7].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridViewLoadPatternDefinition.Columns[7].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
-            }
+        //        dataGridViewLoadPatternDefinition.Columns[7].HeaderText = "ConnectionKey";
+        //        dataGridViewLoadPatternDefinition.Columns[7].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        //        dataGridViewLoadPatternDefinition.Columns[7].DefaultCellStyle.Alignment =
+        //            DataGridViewContentAlignment.TopLeft;
+        //    }
 
-            GridAutoLayoutLoadPatternDefinition();
-        }
+        //    GridAutoLayoutLoadPatternDefinition();
+        //}
 
-        private void GridAutoLayoutLoadPatternDefinition()
-        {
-            //Table Mapping metadata grid - set the auto size based on all cells for each column
-            for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
-            {
-                dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            }
+        //private void GridAutoLayoutLoadPatternDefinition()
+        //{
+        //    //Table Mapping metadata grid - set the auto size based on all cells for each column
+        //    for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
+        //    {
+        //        dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+        //    }
 
-            if (dataGridViewLoadPatternDefinition.Columns.Count > 0)
-            {
-                dataGridViewLoadPatternDefinition.Columns[dataGridViewLoadPatternDefinition.Columns.Count - 1]
-                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            }
+        //    if (dataGridViewLoadPatternDefinition.Columns.Count > 0)
+        //    {
+        //        dataGridViewLoadPatternDefinition.Columns[dataGridViewLoadPatternDefinition.Columns.Count - 1]
+        //            .AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        //    }
 
-            // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
-            for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
-            {
-                int columnWidth = dataGridViewLoadPatternDefinition.Columns[i].Width;
-                dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dataGridViewLoadPatternDefinition.Columns[i].Width = columnWidth;
-            }
-        }
+        //    // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
+        //    for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
+        //    {
+        //        int columnWidth = dataGridViewLoadPatternDefinition.Columns[i].Width;
+        //        dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+        //        dataGridViewLoadPatternDefinition.Columns[i].Width = columnWidth;
+        //    }
+        //}
 
 
 
@@ -354,10 +343,6 @@ namespace Virtual_Data_Warehouse
             try
             {
                 connOmd.Open();
-
-                InitialiseVersion();
-
-
             }
             catch (Exception ex)
             {
@@ -370,14 +355,8 @@ namespace Virtual_Data_Warehouse
                 connOmd.Close();
                 connOmd.Dispose();
             }
-
-
-
-
         }
-
-
-
+        
         private void LoadTeamConfigurationFile()
         {
             // Load the rest of the (TEAM) configurations, from wherever they may be according to the VEDW settings (the TEAM configuration file)\
@@ -405,26 +384,11 @@ namespace Virtual_Data_Warehouse
         private void UpdateVedwConfigurationSettingsOnForm()
         {
             textBoxOutputPath.Text = VedwConfigurationSettings.VedwOutputPath;
-            textBoxLoadPattern.Text = VedwConfigurationSettings.LoadPatternPath;
+            textBoxLoadPatternPath.Text = VedwConfigurationSettings.LoadPatternPath;
             textBoxConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
             textBoxInputPath.Text = VedwConfigurationSettings.VedwInputPath;
             textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
 
-
-            // Environment radiobutton
-            if (VedwConfigurationSettings.WorkingEnvironment == "Development")
-            {
-                radioButtonDevelopment.Checked = true;
-            }
-            else if (VedwConfigurationSettings.WorkingEnvironment == "Production")
-            {
-                radioButtonProduction.Checked = true;
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText(
-                    "An issue was encountered updating the environment setting on the application - please verify.");
-            }
         }
 
 
@@ -458,22 +422,6 @@ namespace Virtual_Data_Warehouse
             // Specify what is done when a file is changed, created, or deleted.
             MessageBox.Show("File changed");
         }
-
-        private void InitialiseVersion()
-        {
-            //Initialise the versioning
-            var selectedVersion = GetMaxVersionId();
-
-            var versionMajorMinor = GetVersion(selectedVersion);
-            var majorVersion = versionMajorMinor.Key;
-            var minorVersion = versionMajorMinor.Value;
-
-        }
-
-
-
-
-
 
 
         private void openOutputDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -800,9 +748,9 @@ namespace Virtual_Data_Warehouse
                 textBoxOutputPath.Text = textBoxOutputPath.Text + @"\";
             }
 
-            if (!textBoxLoadPattern.Text.EndsWith(@"\"))
+            if (!textBoxLoadPatternPath.Text.EndsWith(@"\"))
             {
-                textBoxLoadPattern.Text = textBoxLoadPattern.Text + @"\";
+                textBoxLoadPatternPath.Text = textBoxLoadPatternPath.Text + @"\";
             }
 
             if (!textBoxInputPath.Text.EndsWith(@"\"))
@@ -817,25 +765,12 @@ namespace Virtual_Data_Warehouse
 
             // Make the paths accessible from anywhere in the app (global parameters)
             VedwConfigurationSettings.TeamConfigurationPath = textBoxConfigurationPath.Text;
-            VedwConfigurationSettings.LoadPatternPath = textBoxLoadPattern.Text;
+            VedwConfigurationSettings.LoadPatternPath = textBoxLoadPatternPath.Text;
             VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
             VedwConfigurationSettings.VedwInputPath = textBoxInputPath.Text;
             VedwConfigurationSettings.VedwSchema = textBoxSchemaName.Text;
 
-            // Working environment radiobutton
-            if (radioButtonDevelopment.Checked)
-            {
-                VedwConfigurationSettings.WorkingEnvironment = "Development";
-            }
-            else if (!radioButtonDevelopment.Checked)
-            {
-                VedwConfigurationSettings.WorkingEnvironment = "Production";
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText(
-                    "An issue was encountered saving the environment selection, can you verify the selection of the Development / Production radio button?");
-            }
+
 
             // Update the root path file (from memory)
             var rootPathConfigurationFile = new StringBuilder();
@@ -922,16 +857,9 @@ namespace Virtual_Data_Warehouse
             richTextBoxInformationMain.ScrollToCaret();
         }
 
-        private void FormMain_SizeChanged(object sender, EventArgs e)
-        {
-            GridAutoLayoutLoadPatternCollection();
-            GridAutoLayoutLoadPatternDefinition();
-        }
-
         private void FormMain_Shown(object sender, EventArgs e)
         {
             GridAutoLayoutLoadPatternCollection();
-            GridAutoLayoutLoadPatternDefinition();
         }
 
         private DialogResult STAShowDialog(FileDialog dialog)
@@ -957,191 +885,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void ButtonOpenLoadPatternList(object sender, EventArgs e)
-        {
-            var theDialog = new OpenFileDialog
-            {
-                Title = @"Open Load Pattern Definition File",
-                Filter = @"Load Pattern Definition|*.json",
-                InitialDirectory = VedwConfigurationSettings.VedwInputPath
-            };
-
-            var ret = STAShowDialog(theDialog);
-
-            if (ret == DialogResult.OK)
-            {
-                try
-                {
-                    var chosenFile = theDialog.FileName;
-                    var dataSet = new DataSet();
-
-                    string fileExtension = Path.GetExtension(theDialog.FileName);
-
-                    // Save the list to memory
-                    VedwConfigurationSettings.patternDefinitionList =
-                        JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(File.ReadAllText(chosenFile));
-
-                    // ... and populate the data grid
-                    //LoadAllLoadPatternComboBoxes();
-                    populateLoadPatternDefinitionDataGrid();
-
-                    SetTextMain("The file " + chosenFile + " was loaded.\r\n");
-                    GridAutoLayoutLoadPatternDefinition();
-                }
-                catch (Exception ex)
-                {
-                    richTextBoxInformationMain.AppendText("An error has been encountered! The reported error is: " +
-                                                          ex);
-                }
-
-                try
-                {
-                    CreateCustomTabPages();
-                }
-                catch (Exception ex)
-                {
-                    richTextBoxInformationMain.AppendText(
-                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
-                }
-            }
-        }
-
-        private void ButtonSaveLoadPatternList_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var theDialog = new SaveFileDialog
-                {
-                    Title = @"Save Load Pattern Definition File",
-                    Filter = @"Load Pattern Definition|*.json",
-                    InitialDirectory = textBoxInputPath.Text
-                };
-
-                var ret = STAShowDialog(theDialog);
-
-                if (ret == DialogResult.OK)
-                {
-                    try
-                    {
-                        var chosenFile = theDialog.FileName;
-
-                        DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternDefinition.DataSource;
-
-                        // Make sure the output is sorted
-                        gridDataTable.DefaultView.Sort = "[KEY] ASC";
-
-                        gridDataTable.TableName = "LoadPatternDefinition";
-
-                        JArray outputFileArray = new JArray();
-                        foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
-                        {
-                            JObject individualRow = JObject.FromObject(new
-                            {
-                                loadPatternKey = singleRow[0].ToString(),
-                                loadPatternType = singleRow[1].ToString(),
-                                LoadPatternSelectionQuery = singleRow[2].ToString(),
-                                loadPatternBaseQuery = singleRow[3].ToString(),
-                                loadPatternAttributeQuery = singleRow[4].ToString(),
-                                loadPatternAdditionalBusinessKeyQuery = singleRow[5].ToString(),
-                                loadPatternNotes = singleRow[6].ToString(),
-                                LoadPatternConnectionKey = singleRow[7].ToString()
-                            });
-                            outputFileArray.Add(individualRow);
-                        }
-
-                        string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
-
-                        File.WriteAllText(chosenFile, json);
-
-                        SetTextMain("The file " + chosenFile + " was loaded.\r\n");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error has been encountered! The reported error is: " + ex);
-            }
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                richTextBoxInformationMain.Clear();
-
-                var chosenFile = textBoxInputPath.Text + GlobalParameters.LoadPatternDefinitionFile;
-
-
-                DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternDefinition.DataSource;
-
-                // Make sure the output is sorted
-                gridDataTable.DefaultView.Sort = "[KEY] ASC";
-
-                gridDataTable.TableName = "LoadPatternDefinition";
-
-                JArray outputFileArray = new JArray();
-                foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
-                {
-                    JObject individualRow = JObject.FromObject(new
-                    {
-                        loadPatternKey = singleRow[0].ToString(),
-                        loadPatternType = singleRow[1].ToString(),
-                        LoadPatternSelectionQuery = singleRow[2].ToString(),
-                        loadPatternBaseQuery = singleRow[3].ToString(),
-                        loadPatternAttributeQuery = singleRow[4].ToString(),
-                        loadPatternAdditionalBusinessKeyQuery = singleRow[5].ToString(),
-                        loadPatternNotes = singleRow[6].ToString(),
-                        LoadPatternConnectionKey = singleRow[7].ToString()
-                    });
-                    outputFileArray.Add(individualRow);
-                }
-
-                string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
-
-                // Create a backup file, if enabled
-                if (checkBoxBackupFiles.Checked)
-                {
-                    try
-                    {
-                        var backupFile = new ClassJsonHandling();
-                        var targetFileName = backupFile.BackupJsonFile(chosenFile);
-                        SetTextMain("A backup of the in-use JSON file was created as " + targetFileName + ".\r\n\r\n");
-                    }
-                    catch (Exception exception)
-                    {
-                        SetTextMain(
-                            "An issue occured when trying to make a backup of the in-use JSON file. The error message was " +
-                            exception + ".");
-                    }
-                }
-
-                File.WriteAllText(chosenFile, json);
-
-                SetTextMain("The file " + chosenFile + " was updated.\r\n");
-
-                try
-                {
-                    // Quick fix, in the file again to commit changes to memory.
-                    VedwConfigurationSettings.patternDefinitionList =
-                        JsonConvert.DeserializeObject<List<LoadPatternDefinition>>(File.ReadAllText(chosenFile));
-                    CreateCustomTabPages();
-                }
-                catch (Exception ex)
-                {
-                    richTextBoxInformationMain.AppendText(
-                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-
-        }
 
         private void openVEDWConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1171,7 +914,7 @@ namespace Virtual_Data_Warehouse
         }
 
 
-        internal class localPattern
+        internal class LocalPattern
         {
             internal int id { get; set; }
             internal string classification { get; set; }
@@ -1180,7 +923,7 @@ namespace Virtual_Data_Warehouse
             internal string connectionString { get; set; }
         }
 
-        internal List<localPattern> patternlist()
+        internal List<LocalPattern> Patternlist()
         {
             // Deserialise the Json files for further use
             List<VEDW_DataObjectMappingList> mappingList = new List<VEDW_DataObjectMappingList>();
@@ -1234,14 +977,14 @@ namespace Virtual_Data_Warehouse
             }
 
             // Now use the base list of classifications / tab pages to add the item list (individual mappings) by searching the VEDW_DataObjectMappingList
-            List<localPattern> finalMappingList = new List<localPattern>();
+            List<LocalPattern> finalMappingList = new List<LocalPattern>();
 
             foreach (KeyValuePair<string, string> classification in classificationDictionary)
             {
                 int localclassification = 0;
                 string localConnectionString = "";
 
-                localPattern localPatternMapping = new localPattern();
+                LocalPattern localPatternMapping = new LocalPattern();
                 Dictionary<string, VEDW_DataObjectMappingList> itemList = new Dictionary<string, VEDW_DataObjectMappingList>();
 
                 // Iterate through the various levels to find the classification
@@ -1298,33 +1041,19 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
-            List<localPattern> finalMappingList = patternlist();
+            List<LocalPattern> finalMappingList = Patternlist();
             var sortedMappingList = finalMappingList.OrderBy(x => x.id);
 
             // Add the Custom Tab Pages
             foreach (var pattern in sortedMappingList)
             {
                 CustomTabPage localCustomTabPage = new CustomTabPage(pattern.classification, pattern.notes, pattern.itemList, pattern.connectionString);
-                localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
-                localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);
+                localCustomTabPage.OnChangeMainText += UpdateMainInformationTextBox;
+                localCustomTabPage.OnClearMainText += (ClearMainInformationTextBox);
 
                 localCustomTabPageList.Add(localCustomTabPage);
                 tabControlMain.TabPages.Add(localCustomTabPage);
             }
-
-            //// Add the Custom Tab Pages
-            //foreach (LoadPatternDefinition pattern in VedwConfigurationSettings.patternDefinitionList)
-            //{
-            //    var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-            //    var inputItemList = databaseHandling.GetItemList(pattern.LoadPatternType, pattern.LoadPatternSelectionQuery, conn);
-
-            //    CustomTabPage localCustomTabPage = new CustomTabPage(pattern, inputItemList);
-            //    localCustomTabPage.OnChangeMainText += new EventHandler<MyEventArgs>(UpdateMainInformationTextBox);
-            //    localCustomTabPage.OnClearMainText += new EventHandler<MyClearArgs>(ClearMainInformationTextBox);
-
-            //    localCustomTabPageList.Add(localCustomTabPage);
-            //    tabControlMain.TabPages.Add(localCustomTabPage);
-            //}
         }
 
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
@@ -1372,185 +1101,10 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void buttonOpenLoadPatternCollection_Click(object sender, EventArgs e)
-        {
-            var theDialog = new OpenFileDialog
-            {
-                Title = @"Open Load Pattern Collection File",
-                Filter = @"Load Pattern Collection|*.json",
-                InitialDirectory = VedwConfigurationSettings.VedwInputPath
-            };
-
-            var ret = STAShowDialog(theDialog);
-
-            if (ret == DialogResult.OK)
-            {
-                try
-                {
-                    var chosenFile = theDialog.FileName;
-                    var dataSet = new DataSet();
-
-                    string fileExtension = Path.GetExtension(theDialog.FileName);
-
-                    // Save the list to memory
-                    VedwConfigurationSettings.patternList =
-                        JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
-
-                    // ... and populate the data grid
-                    populateLoadPatternCollectionDataGrid();
-
-                    SetTextMain("The file " + chosenFile + " was loaded.\r\n");
-                    GridAutoLayoutLoadPatternCollection();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error has been encountered! The reported error is: " + ex);
-                }
-
-                try
-                {
-                    // Quick fix, in the file again to commit changes to memory.
-                    CreateCustomTabPages();
-                }
-                catch (Exception ex)
-                {
-                    richTextBoxInformationMain.AppendText(
-                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
-                }
-            }
-        }
-
-        private void buttonSaveAsLoadPatternCollection_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var theDialog = new SaveFileDialog
-                {
-                    Title = @"Save Load Pattern Collection File",
-                    Filter = @"Load Pattern Collection|*.json",
-                    InitialDirectory = textBoxInputPath.Text
-                };
-
-                var ret = STAShowDialog(theDialog);
-
-                if (ret == DialogResult.OK)
-                {
-                    try
-                    {
-                        var chosenFile = theDialog.FileName;
-
-                        DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternCollection.DataSource;
-
-                        // Make sure the output is sorted
-                        gridDataTable.DefaultView.Sort = "[NAME] ASC";
-
-                        gridDataTable.TableName = "LoadPatternList";
-
-                        JArray outputFileArray = new JArray();
-                        foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
-                        {
-                            JObject individualRow = JObject.FromObject(new
-                            {
-                                loadPatternName = singleRow[0].ToString(),
-                                loadPatternType = singleRow[1].ToString(),
-                                loadPatternFilePath = singleRow[2].ToString(),
-                                loadPatternNotes = singleRow[3].ToString()
-                            });
-                            outputFileArray.Add(individualRow);
-                        }
-
-                        string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
-
-                        File.WriteAllText(chosenFile, json);
-
-                        SetTextMain("The file " + chosenFile + " was loaded.\r\n");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error has been encountered! The reported error is: " + ex);
-            }
-        }
-
-        private void buttonUpdateLoadPatternCollection_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                richTextBoxInformationMain.Clear();
-
-                var chosenFile = textBoxInputPath.Text + GlobalParameters.LoadPatternListFile;
-
-                DataTable gridDataTable = (DataTable) _bindingSourceLoadPatternCollection.DataSource;
-
-                // Make sure the output is sorted
-                gridDataTable.DefaultView.Sort = "[NAME] ASC";
-
-                gridDataTable.TableName = "LoadPatternCollection";
-
-                JArray outputFileArray = new JArray();
-                foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
-                {
-                    JObject individualRow = JObject.FromObject(new
-                    {
-                        loadPatternName = singleRow[0].ToString(),
-                        loadPatternType = singleRow[1].ToString(),
-                        loadPatternFilePath = singleRow[2].ToString(),
-                        loadPatternNotes = singleRow[3].ToString()
-                    });
-                    outputFileArray.Add(individualRow);
-                }
-
-                string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
-
-                // Create a backup file, if enabled
-                if (checkBoxBackupFiles.Checked)
-                {
-                    try
-                    {
-                        var backupFile = new ClassJsonHandling();
-                        var targetFileName = backupFile.BackupJsonFile(chosenFile);
-                        SetTextMain("A backup of the in-use JSON file was created as " + targetFileName + ".\r\n\r\n");
-                    }
-                    catch (Exception exception)
-                    {
-                        SetTextMain(
-                            "An issue occured when trying to make a backup of the in-use JSON file. The error message was " +
-                            exception + ".");
-                    }
-                }
-
-                File.WriteAllText(chosenFile, json);
-
-                SetTextMain("The file " + chosenFile + " was updated.\r\n");
-
-                try
-                {
-                    // Quick fix, in the file again to commit changes to memory.
-                    VedwConfigurationSettings.patternList =
-                        JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
-                    CreateCustomTabPages();
-                }
-                catch (Exception ex)
-                {
-                    richTextBoxInformationMain.AppendText(
-                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
-
         private void button12_Click(object sender, EventArgs e)
         {
             // Get the total of tab pages to create
-            var patternList = patternlist();
+            var patternList = Patternlist();
 
             // Get the name of the active tab so this can be refreshed
             string tabName = tabControlMain.SelectedTab.Name;
@@ -1559,7 +1113,7 @@ namespace Virtual_Data_Warehouse
             {
                 if (customTabPage.Name == tabName)
                 {
-                    foreach (localPattern localPattern in patternList)
+                    foreach (LocalPattern localPattern in patternList)
                     {
                         if (localPattern.classification == tabName)
                         {
@@ -1568,17 +1122,6 @@ namespace Virtual_Data_Warehouse
                     }
                 }
             }
-
-            //}
-
-            //}
-
-        }
-
-        private void tabControlSettings_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            GridAutoLayoutLoadPatternCollection();
-            GridAutoLayoutLoadPatternDefinition();
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
@@ -1601,7 +1144,7 @@ namespace Virtual_Data_Warehouse
                     }
                 }
 
-                string finalPath = "";
+                string finalPath;
                 if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
                 {
                     finalPath = fileBrowserDialog.SelectedPath;
@@ -1649,7 +1192,7 @@ namespace Virtual_Data_Warehouse
                     }
                 }
 
-                string finalPath = "";
+                string finalPath;
                 if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
                 {
                     finalPath = fileBrowserDialog.SelectedPath;
@@ -1738,7 +1281,7 @@ namespace Virtual_Data_Warehouse
         private void pictureBox6_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
-            fileBrowserDialog.SelectedPath = textBoxLoadPattern.Text;
+            fileBrowserDialog.SelectedPath = textBoxLoadPatternPath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
 
@@ -1766,7 +1309,7 @@ namespace Virtual_Data_Warehouse
                 }
 
 
-                textBoxLoadPattern.Text = finalPath;
+                textBoxLoadPatternPath.Text = finalPath;
 
                 if (fileCounter == 0)
                 {
@@ -1780,6 +1323,146 @@ namespace Virtual_Data_Warehouse
                 }
 
             }
+        }
+
+         private void openPatternCollectionFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var theDialog = new OpenFileDialog
+            {
+                Title = @"Open Load Pattern Collection File",
+                Filter = @"Load Pattern Collection|*.json",
+                InitialDirectory = VedwConfigurationSettings.LoadPatternPath
+            };
+
+            var ret = STAShowDialog(theDialog);
+
+            if (ret == DialogResult.OK)
+            {
+                try
+                {
+                    var chosenFile = theDialog.FileName;
+
+                    // Save the list to memory
+                    VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+
+                    // ... and populate the data grid
+                    PopulateLoadPatternCollectionDataGrid();
+
+                    SetTextMain("The file " + chosenFile + " was loaded.\r\n");
+                    GridAutoLayoutLoadPatternCollection();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error has been encountered! The reported error is: " + ex);
+                }
+
+                try
+                {
+                    // Quick fix, in the file again to commit changes to memory.
+                    CreateCustomTabPages();
+                }
+                catch (Exception ex)
+                {
+                    richTextBoxInformationMain.AppendText(
+                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                }
+            }
+        }
+
+        private void savePatternCollectionFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                richTextBoxInformationMain.Clear();
+
+                var chosenFile = textBoxLoadPatternPath.Text + GlobalParameters.LoadPatternListFile;
+
+                DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
+
+                // Make sure the output is sorted
+                gridDataTable.DefaultView.Sort = "[NAME] ASC";
+
+                gridDataTable.TableName = "LoadPatternCollection";
+
+                JArray outputFileArray = new JArray();
+                foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
+                {
+                    JObject individualRow = JObject.FromObject(new
+                    {
+                        loadPatternName = singleRow[0].ToString(),
+                        loadPatternType = singleRow[1].ToString(),
+                        loadPatternFilePath = singleRow[2].ToString(),
+                        loadPatternNotes = singleRow[3].ToString()
+                    });
+                    outputFileArray.Add(individualRow);
+                }
+
+                string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
+
+                // Create a backup file, if enabled
+                if (checkBoxBackupFiles.Checked)
+                {
+                    try
+                    {
+                        var backupFile = new ClassJsonHandling();
+                        var targetFileName = backupFile.BackupJsonFile(chosenFile);
+                        SetTextMain("A backup of the in-use JSON file was created as " + targetFileName + ".\r\n\r\n");
+                    }
+                    catch (Exception exception)
+                    {
+                        SetTextMain(
+                            "An issue occured when trying to make a backup of the in-use JSON file. The error message was " +
+                            exception + ".");
+                    }
+                }
+
+                File.WriteAllText(chosenFile, json);
+
+                SetTextMain("The file " + chosenFile + " was updated.\r\n");
+
+                try
+                {
+                    // Quick fix, in the file again to commit changes to memory.
+                    VedwConfigurationSettings.patternList =
+                        JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+                    CreateCustomTabPages();
+                }
+                catch (Exception ex)
+                {
+                    richTextBoxInformationMain.AppendText(
+                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void openLoadPatternDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(VedwConfigurationSettings.LoadPatternPath);
+            }
+            catch (Exception ex)
+            {
+                richTextBoxInformationMain.Text =
+                    "An error has occured while attempting to open the load pattern directory. The error message is: " + ex;
+            }
+        }
+
+
+
+        private void FormMain_ResizeEnd(object sender, EventArgs e)
+        {
+            GridAutoLayoutLoadPatternCollection();
+        }
+
+
+        private void FormMain_SizeChanged_1(object sender, EventArgs e)
+        {
+            GridAutoLayoutLoadPatternCollection();
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using static Virtual_Data_Warehouse.FormBase;
 
 namespace Virtual_Data_Warehouse
 {
@@ -30,7 +27,7 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         internal static void RemoveExistingJsonFile(string inputFileName)
         {
-            File.Delete(VedwConfigurationSettings.VedwInputPath + inputFileName);
+            File.Delete(FormBase.VedwConfigurationSettings.VedwInputPath + inputFileName);
         }
 
     }
