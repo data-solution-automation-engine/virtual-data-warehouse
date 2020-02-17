@@ -362,7 +362,7 @@ namespace Virtual_Data_Warehouse
             // Load the rest of the (TEAM) configurations, from wherever they may be according to the VEDW settings (the TEAM configuration file)\
             var teamConfigurationFileName = VedwConfigurationSettings.TeamConfigurationPath +
                                             GlobalParameters.TeamConfigurationfileName + '_' +
-                                            VedwConfigurationSettings.WorkingEnvironment +
+                                            "Development" +
                                             GlobalParameters.VedwFileExtension;
 
             richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" +
@@ -1463,6 +1463,11 @@ namespace Virtual_Data_Warehouse
         private void FormMain_SizeChanged_1(object sender, EventArgs e)
         {
             GridAutoLayoutLoadPatternCollection();
+        }
+
+        private void tabPageSettings_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

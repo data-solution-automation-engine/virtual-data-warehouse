@@ -90,9 +90,9 @@ namespace Virtual_Data_Warehouse
 
             var metaDataTable = Utility.GetDataTable(ref connOmd, queryTableArraySat.ToString());
 
-            if (metaDataTable.Rows.Count == 0)
+            if (metaDataTable == null || metaDataTable.Rows.Count == 0)
             {
-                richTextBoxInformationMain.Text += "There was no metadata available to create Satellite Referential Integrity scripts.";
+                richTextBoxInformationMain.Text += "There was no metadata available to create Satellite Referential Integrity scripts. Is the database available?\r\n";
             }
             else
             {
@@ -171,10 +171,10 @@ namespace Virtual_Data_Warehouse
             queryRi.AppendLine("-- Link validation");
             queryRi.AppendLine();
 
-            if (metaDataTable.Rows.Count == 0)
+            if (metaDataTable == null || metaDataTable.Rows.Count == 0)
             {
                 richTextBoxInformationMain.Text +=
-                    "There was no metadata available to create Link Referential Integrity scripts.";
+                    "There was no metadata available to create Link Referential Integrity scripts.\r\n";
             }
             else
             {
@@ -260,9 +260,9 @@ namespace Virtual_Data_Warehouse
 
             metaDataTable = Utility.GetDataTable(ref connOmd, queryTableArrayLsat.ToString());
 
-            if (metaDataTable.Rows.Count == 0)
+            if (metaDataTable == null || metaDataTable.Rows.Count == 0)
             {
-                richTextBoxInformationMain.Text += "There was no metadata available to create Link Satellite Referential Integrity scripts.";
+                richTextBoxInformationMain.Text += "There was no metadata available to create Link Satellite Referential Integrity scripts.\r\n";
             }
             else
             {

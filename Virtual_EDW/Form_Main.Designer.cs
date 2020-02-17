@@ -79,7 +79,7 @@
             this.textBoxConfigurationPath = new System.Windows.Forms.TextBox();
             this.textBoxInputPath = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.labelTEAMConfigurationFile = new System.Windows.Forms.Label();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.textBoxSchemaName = new System.Windows.Forms.TextBox();
@@ -435,6 +435,7 @@
             this.tabPageSettings.TabIndex = 8;
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
+            this.tabPageSettings.Click += new System.EventHandler(this.tabPageSettings_Click);
             // 
             // dataGridViewLoadPatternCollection
             // 
@@ -472,11 +473,11 @@
             this.checkBoxBackupFiles.AutoSize = true;
             this.checkBoxBackupFiles.Checked = true;
             this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxBackupFiles.Location = new System.Drawing.Point(1103, 17);
+            this.checkBoxBackupFiles.Location = new System.Drawing.Point(668, 105);
             this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
-            this.checkBoxBackupFiles.Size = new System.Drawing.Size(181, 17);
+            this.checkBoxBackupFiles.Size = new System.Drawing.Size(222, 17);
             this.checkBoxBackupFiles.TabIndex = 103;
-            this.checkBoxBackupFiles.Text = "Automatically create file backups";
+            this.checkBoxBackupFiles.Text = "Automatically create file backups on save";
             this.checkBoxBackupFiles.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -489,10 +490,10 @@
             this.groupBox2.Controls.Add(this.textBoxConfigurationPath);
             this.groupBox2.Controls.Add(this.textBoxInputPath);
             this.groupBox2.Controls.Add(this.label10);
-            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.labelTEAMConfigurationFile);
             this.groupBox2.Location = new System.Drawing.Point(3, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(569, 110);
+            this.groupBox2.Size = new System.Drawing.Size(659, 110);
             this.groupBox2.TabIndex = 100;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configuration paths";
@@ -500,7 +501,7 @@
             // pictureBox6
             // 
             this.pictureBox6.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox6.Location = new System.Drawing.Point(538, 74);
+            this.pictureBox6.Location = new System.Drawing.Point(634, 74);
             this.pictureBox6.Name = "pictureBox6";
             this.pictureBox6.Size = new System.Drawing.Size(19, 20);
             this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -514,7 +515,7 @@
             this.textBoxLoadPatternPath.Location = new System.Drawing.Point(137, 74);
             this.textBoxLoadPatternPath.Multiline = true;
             this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
-            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(395, 20);
+            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(491, 20);
             this.textBoxLoadPatternPath.TabIndex = 97;
             // 
             // labelPatternPath
@@ -522,14 +523,14 @@
             this.labelPatternPath.AutoSize = true;
             this.labelPatternPath.Location = new System.Drawing.Point(6, 77);
             this.labelPatternPath.Name = "labelPatternPath";
-            this.labelPatternPath.Size = new System.Drawing.Size(92, 13);
+            this.labelPatternPath.Size = new System.Drawing.Size(111, 13);
             this.labelPatternPath.TabIndex = 98;
-            this.labelPatternPath.Text = "Load Pattern path";
+            this.labelPatternPath.Text = "Load Pattern directory";
             // 
             // pictureBox4
             // 
             this.pictureBox4.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox4.Location = new System.Drawing.Point(538, 48);
+            this.pictureBox4.Location = new System.Drawing.Point(634, 48);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(19, 20);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -540,7 +541,7 @@
             // pictureBox3
             // 
             this.pictureBox3.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox3.Location = new System.Drawing.Point(538, 22);
+            this.pictureBox3.Location = new System.Drawing.Point(634, 22);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(19, 20);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -554,7 +555,7 @@
             this.textBoxConfigurationPath.Location = new System.Drawing.Point(137, 22);
             this.textBoxConfigurationPath.Multiline = true;
             this.textBoxConfigurationPath.Name = "textBoxConfigurationPath";
-            this.textBoxConfigurationPath.Size = new System.Drawing.Size(395, 20);
+            this.textBoxConfigurationPath.Size = new System.Drawing.Size(491, 20);
             this.textBoxConfigurationPath.TabIndex = 83;
             // 
             // textBoxInputPath
@@ -563,7 +564,7 @@
             this.textBoxInputPath.Location = new System.Drawing.Point(137, 48);
             this.textBoxInputPath.Multiline = true;
             this.textBoxInputPath.Name = "textBoxInputPath";
-            this.textBoxInputPath.Size = new System.Drawing.Size(395, 20);
+            this.textBoxInputPath.Size = new System.Drawing.Size(491, 20);
             this.textBoxInputPath.TabIndex = 93;
             // 
             // label10
@@ -571,18 +572,18 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(6, 51);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(55, 13);
+            this.label10.Size = new System.Drawing.Size(74, 13);
             this.label10.TabIndex = 94;
-            this.label10.Text = "Input path";
+            this.label10.Text = "Input directory";
             // 
-            // label6
+            // labelTEAMConfigurationFile
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 25);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(125, 13);
-            this.label6.TabIndex = 84;
-            this.label6.Text = "TEAM configuration path";
+            this.labelTEAMConfigurationFile.AutoSize = true;
+            this.labelTEAMConfigurationFile.Location = new System.Drawing.Point(6, 25);
+            this.labelTEAMConfigurationFile.Name = "labelTEAMConfigurationFile";
+            this.labelTEAMConfigurationFile.Size = new System.Drawing.Size(117, 13);
+            this.labelTEAMConfigurationFile.TabIndex = 84;
+            this.labelTEAMConfigurationFile.Text = "TEAM configuration file";
             // 
             // groupBox8
             // 
@@ -591,9 +592,9 @@
             this.groupBox8.Controls.Add(this.label12);
             this.groupBox8.Controls.Add(this.OutputPathLabel);
             this.groupBox8.Controls.Add(this.textBoxOutputPath);
-            this.groupBox8.Location = new System.Drawing.Point(578, 12);
+            this.groupBox8.Location = new System.Drawing.Point(667, 12);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(519, 110);
+            this.groupBox8.Size = new System.Drawing.Size(659, 87);
             this.groupBox8.TabIndex = 89;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "ETL output options";
@@ -601,7 +602,7 @@
             // pictureBox5
             // 
             this.pictureBox5.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox5.Location = new System.Drawing.Point(488, 49);
+            this.pictureBox5.Location = new System.Drawing.Point(634, 48);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(19, 20);
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -611,9 +612,9 @@
             // 
             // textBoxSchemaName
             // 
-            this.textBoxSchemaName.Location = new System.Drawing.Point(87, 23);
+            this.textBoxSchemaName.Location = new System.Drawing.Point(137, 23);
             this.textBoxSchemaName.Name = "textBoxSchemaName";
-            this.textBoxSchemaName.Size = new System.Drawing.Size(420, 20);
+            this.textBoxSchemaName.Size = new System.Drawing.Size(491, 20);
             this.textBoxSchemaName.TabIndex = 91;
             // 
             // label12
@@ -630,17 +631,17 @@
             this.OutputPathLabel.AutoSize = true;
             this.OutputPathLabel.Location = new System.Drawing.Point(6, 52);
             this.OutputPathLabel.Name = "OutputPathLabel";
-            this.OutputPathLabel.Size = new System.Drawing.Size(63, 13);
+            this.OutputPathLabel.Size = new System.Drawing.Size(82, 13);
             this.OutputPathLabel.TabIndex = 82;
-            this.OutputPathLabel.Text = "Output path";
+            this.OutputPathLabel.Text = "Output directory";
             // 
             // textBoxOutputPath
             // 
             this.textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxOutputPath.Location = new System.Drawing.Point(87, 49);
+            this.textBoxOutputPath.Location = new System.Drawing.Point(137, 48);
             this.textBoxOutputPath.Multiline = true;
             this.textBoxOutputPath.Name = "textBoxOutputPath";
-            this.textBoxOutputPath.Size = new System.Drawing.Size(395, 20);
+            this.textBoxOutputPath.Size = new System.Drawing.Size(491, 20);
             this.textBoxOutputPath.TabIndex = 81;
             // 
             // tabPageHome
@@ -792,7 +793,7 @@
         internal System.Windows.Forms.GroupBox groupBox8;
         internal System.Windows.Forms.TextBox textBoxSchemaName;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label labelTEAMConfigurationFile;
         private System.Windows.Forms.Label OutputPathLabel;
         private System.Windows.Forms.TabPage tabPageHome;
         private System.Windows.Forms.LinkLabel linkLabel1;
