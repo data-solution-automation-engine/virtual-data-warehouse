@@ -39,7 +39,6 @@ namespace Virtual_Data_Warehouse
             _errorDetails = new StringBuilder();
             _errorDetails.AppendLine();
 
-
             localCustomTabPageList = new List<CustomTabPage>();
 
             InitializeComponent();
@@ -360,10 +359,7 @@ namespace Virtual_Data_Warehouse
         private void LoadTeamConfigurationFile()
         {
             // Load the rest of the (TEAM) configurations, from wherever they may be according to the VEDW settings (the TEAM configuration file)\
-            var teamConfigurationFileName = VedwConfigurationSettings.TeamConfigurationPath +
-                                            GlobalParameters.TeamConfigurationfileName + '_' +
-                                            "Development" +
-                                            GlobalParameters.VedwFileExtension;
+            var teamConfigurationFileName = VedwConfigurationSettings.TeamConfigurationPath;
 
             richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" +
                                                   teamConfigurationFileName + "'. \r\n\r\n");
@@ -385,7 +381,7 @@ namespace Virtual_Data_Warehouse
         {
             textBoxOutputPath.Text = VedwConfigurationSettings.VedwOutputPath;
             textBoxLoadPatternPath.Text = VedwConfigurationSettings.LoadPatternPath;
-            textBoxConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
+            textBoxTeamConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
             textBoxInputPath.Text = VedwConfigurationSettings.VedwInputPath;
             textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
 
@@ -758,19 +754,17 @@ namespace Virtual_Data_Warehouse
                 textBoxInputPath.Text = textBoxInputPath.Text + @"\";
             }
 
-            if (!textBoxConfigurationPath.Text.EndsWith(@"\"))
+            if (textBoxTeamConfigurationPath.Text.EndsWith(@"\"))
             {
-                textBoxConfigurationPath.Text = textBoxConfigurationPath.Text + @"\";
+                textBoxTeamConfigurationPath.Text = textBoxTeamConfigurationPath.Text.Replace(@"\","");
             }
 
             // Make the paths accessible from anywhere in the app (global parameters)
-            VedwConfigurationSettings.TeamConfigurationPath = textBoxConfigurationPath.Text;
+            VedwConfigurationSettings.TeamConfigurationPath = textBoxTeamConfigurationPath.Text;
             VedwConfigurationSettings.LoadPatternPath = textBoxLoadPatternPath.Text;
             VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
             VedwConfigurationSettings.VedwInputPath = textBoxInputPath.Text;
             VedwConfigurationSettings.VedwSchema = textBoxSchemaName.Text;
-
-
 
             // Update the root path file (from memory)
             var rootPathConfigurationFile = new StringBuilder();
@@ -802,14 +796,18 @@ namespace Virtual_Data_Warehouse
             richTextBoxInformationMain.Text = "The global parameter file (" +
                                               GlobalParameters.VedwConfigurationfileName +
                                               GlobalParameters.VedwFileExtension + ") has been updated in: " +
-                                              GlobalParameters.VedwConfigurationPath;
+                                              GlobalParameters.VedwConfigurationPath+"\r\n\r\n";
+
+            // Reload settings
+            LoadTeamConfigurationFile();
+            UpdateVedwConfigurationSettingsOnForm();
         }
 
         private void openConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                Process.Start(VedwConfigurationSettings.TeamConfigurationPath);
+                Process.Start(Path.GetDirectoryName(VedwConfigurationSettings.TeamConfigurationPath));
             }
             catch (Exception ex)
             {
@@ -836,10 +834,7 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(VedwConfigurationSettings.TeamConfigurationPath +
-                              GlobalParameters.TeamConfigurationfileName + '_' +
-                              VedwConfigurationSettings.WorkingEnvironment +
-                              GlobalParameters.VedwFileExtension);
+                Process.Start(VedwConfigurationSettings.TeamConfigurationPath);
             }
             catch (Exception ex)
             {
@@ -966,7 +961,7 @@ namespace Virtual_Data_Warehouse
             {
                 foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappingList)
                 {
-                    foreach (DataObjectMappingClassification classification in dataObjectMapping.mappingClassification)
+                    foreach (Classification classification in dataObjectMapping.mappingClassification)
                     {
                         if (!classificationDictionary.ContainsKey(classification.classification))
                         {
@@ -992,7 +987,7 @@ namespace Virtual_Data_Warehouse
                 {
                     foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappingList)
                     {
-                        foreach (DataObjectMappingClassification dataObjectMappingClassification in dataObjectMapping.mappingClassification)
+                        foreach (Classification dataObjectMappingClassification in dataObjectMapping.mappingClassification)
                         {
                             if (dataObjectMappingClassification.classification == classification.Key)
                             {
@@ -1126,14 +1121,14 @@ namespace Virtual_Data_Warehouse
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            var fileBrowserDialog = new FolderBrowserDialog();
-            fileBrowserDialog.SelectedPath = textBoxConfigurationPath.Text;
+            var fileBrowserDialog = new OpenFileDialog();
+            fileBrowserDialog.InitialDirectory = Path.GetDirectoryName(textBoxTeamConfigurationPath.Text);
 
             DialogResult result = fileBrowserDialog.ShowDialog();
 
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.InitialDirectory))
             {
-                string[] files = Directory.GetFiles(fileBrowserDialog.SelectedPath);
+                string[] files = Directory.GetFiles(fileBrowserDialog.InitialDirectory);
 
                 int teamFileCounter = 0;
                 foreach (string file in files)
@@ -1145,17 +1140,16 @@ namespace Virtual_Data_Warehouse
                 }
 
                 string finalPath;
-                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                if (fileBrowserDialog.InitialDirectory.EndsWith(@"\"))
                 {
-                    finalPath = fileBrowserDialog.SelectedPath;
+                    finalPath = fileBrowserDialog.FileName.Replace(@"\", "");
                 }
                 else
                 {
-                    finalPath = fileBrowserDialog.SelectedPath + @"\";
+                    finalPath = fileBrowserDialog.FileName;
                 }
 
-
-                textBoxConfigurationPath.Text = finalPath;
+                textBoxTeamConfigurationPath.Text = finalPath;
 
                 if (teamFileCounter == 0)
                 {

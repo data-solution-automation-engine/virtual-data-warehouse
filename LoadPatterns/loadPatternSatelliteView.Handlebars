@@ -45,7 +45,7 @@ SELECT
     HASHBYTES('MD5',
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMapping}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
-    ) AS HASH_FULL_RECORD,
+    ) AS {{../metadataConfiguration.recordChecksumAttribute}},
     {{#each dataItemMapping}}
     {{sourceDataItem.name}} AS {{targetDataItem.name}},
     {{/each}}

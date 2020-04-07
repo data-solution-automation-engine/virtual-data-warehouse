@@ -4,13 +4,13 @@
 -- The Row ID and Load Date/Time will be created upon insert as default values
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 
-TRUNCATE TABLE [100_Staging_Area].[dbo].[STG_PROFILER_CUST_MEMBERSHIP]
+TRUNCATE TABLE [dbo].[STG_PROFILER_CUST_MEMBERSHIP]
 GO
 
-INSERT INTO [100_Staging_Area].[dbo].[STG_PROFILER_CUST_MEMBERSHIP]
+INSERT INTO [dbo].[STG_PROFILER_CUST_MEMBERSHIP]
    (
    [ETL_INSERT_RUN_ID],
    [EVENT_DATETIME],
@@ -44,13 +44,13 @@ FROM [vedw].[STG_PROFILER_CUST_MEMBERSHIP]
 -- The Row ID and Load Date/Time will be created upon insert as default values
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 
-TRUNCATE TABLE [100_Staging_Area].[dbo].[STG_PROFILER_CUSTOMER_OFFER]
+TRUNCATE TABLE [dbo].[STG_PROFILER_CUSTOMER_OFFER]
 GO
 
-INSERT INTO [100_Staging_Area].[dbo].[STG_PROFILER_CUSTOMER_OFFER]
+INSERT INTO [dbo].[STG_PROFILER_CUSTOMER_OFFER]
    (
    [ETL_INSERT_RUN_ID],
    [EVENT_DATETIME],
@@ -76,13 +76,13 @@ FROM [vedw].[STG_PROFILER_CUSTOMER_OFFER]
 -- The Row ID and Load Date/Time will be created upon insert as default values
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 
-TRUNCATE TABLE [100_Staging_Area].[dbo].[STG_PROFILER_CUSTOMER_PERSONAL]
+TRUNCATE TABLE [dbo].[STG_PROFILER_CUSTOMER_PERSONAL]
 GO
 
-INSERT INTO [100_Staging_Area].[dbo].[STG_PROFILER_CUSTOMER_PERSONAL]
+INSERT INTO [dbo].[STG_PROFILER_CUSTOMER_PERSONAL]
    (
    [ETL_INSERT_RUN_ID],
    [EVENT_DATETIME],
@@ -126,13 +126,13 @@ FROM [vedw].[STG_PROFILER_CUSTOMER_PERSONAL]
 -- The Row ID and Load Date/Time will be created upon insert as default values
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 
-TRUNCATE TABLE [100_Staging_Area].[dbo].[STG_PROFILER_ESTIMATED_WORTH]
+TRUNCATE TABLE [dbo].[STG_PROFILER_ESTIMATED_WORTH]
 GO
 
-INSERT INTO [100_Staging_Area].[dbo].[STG_PROFILER_ESTIMATED_WORTH]
+INSERT INTO [dbo].[STG_PROFILER_ESTIMATED_WORTH]
    (
    [ETL_INSERT_RUN_ID],
    [EVENT_DATETIME],
@@ -160,13 +160,13 @@ FROM [vedw].[STG_PROFILER_ESTIMATED_WORTH]
 -- The Row ID and Load Date/Time will be created upon insert as default values
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 
-TRUNCATE TABLE [100_Staging_Area].[dbo].[STG_PROFILER_OFFER]
+TRUNCATE TABLE [dbo].[STG_PROFILER_OFFER]
 GO
 
-INSERT INTO [100_Staging_Area].[dbo].[STG_PROFILER_OFFER]
+INSERT INTO [dbo].[STG_PROFILER_OFFER]
    (
    [ETL_INSERT_RUN_ID],
    [EVENT_DATETIME],
@@ -192,13 +192,13 @@ FROM [vedw].[STG_PROFILER_OFFER]
 -- The Row ID and Load Date/Time will be created upon insert as default values
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 
-TRUNCATE TABLE [100_Staging_Area].[dbo].[STG_PROFILER_PERSONALISED_COSTING]
+TRUNCATE TABLE [dbo].[STG_PROFILER_PERSONALISED_COSTING]
 GO
 
-INSERT INTO [100_Staging_Area].[dbo].[STG_PROFILER_PERSONALISED_COSTING]
+INSERT INTO [dbo].[STG_PROFILER_PERSONALISED_COSTING]
    (
    [ETL_INSERT_RUN_ID],
    [EVENT_DATETIME],
@@ -230,13 +230,13 @@ FROM [vedw].[STG_PROFILER_PERSONALISED_COSTING]
 -- The Row ID and Load Date/Time will be created upon insert as default values
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 
-TRUNCATE TABLE [100_Staging_Area].[dbo].[STG_PROFILER_PLAN]
+TRUNCATE TABLE [dbo].[STG_PROFILER_PLAN]
 GO
 
-INSERT INTO [100_Staging_Area].[dbo].[STG_PROFILER_PLAN]
+INSERT INTO [dbo].[STG_PROFILER_PLAN]
    (
    [ETL_INSERT_RUN_ID],
    [EVENT_DATETIME],

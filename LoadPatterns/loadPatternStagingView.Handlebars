@@ -33,13 +33,13 @@ SELECT
    {{#each dataItemMapping}}
    A.[{{sourceDataItem.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{lookupTable}}] A
+FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{#each relatedDataObject}}{{#each dataObjectClassification}}{{#if classification}}{{../name}}{{/if}}{{/each}}{{/each}}] A
 JOIN
    (
    SELECT {{#each businessKey}}  {{#each businessKeyComponentMapping}}
       [{{sourceDataItem.name}}], {{/each}} {{/each}}
       MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-   FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{lookupTable}}]
+   FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{#each relatedDataObject}}{{#each dataObjectClassification}}{{#if classification}}{{../name}}{{/if}}{{/each}}{{/each}}]
    GROUP BY {{#each businessKey}}  {{#each businessKeyComponentMapping}}
       [{{sourceDataItem.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
    ) B ON {{#each businessKey}}  {{#each businessKeyComponentMapping}}

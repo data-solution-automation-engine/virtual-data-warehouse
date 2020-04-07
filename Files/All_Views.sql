@@ -3,7 +3,7 @@
 -- Generated at 17/07/2019 12:57:31 PM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[STG_PROFILER_CUST_MEMBERSHIP]') AND type in (N'V'))
 DROP VIEW [vedw].[STG_PROFILER_CUST_MEMBERSHIP]
@@ -26,7 +26,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Status])),'N/A')+'|'+
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Comment])),'N/A')+'|'
    ) AS [HASH_FULL_RECORD]
-FROM [000_Source].[dbo].[CUST_MEMBERSHIP]
+FROM [dbo].[CUST_MEMBERSHIP]
 ),
 PSA_CTE AS
 (
@@ -38,12 +38,12 @@ SELECT
    A.End_Date AS End_Date,
    A.Status AS Status,
    A.Comment AS Comment
-FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUST_MEMBERSHIP A
+FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUST_MEMBERSHIP A
    JOIN (
         SELECT
             [CustomerID],            [Plan_Code],
             MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME
-        FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUST_MEMBERSHIP
+        FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUST_MEMBERSHIP
         GROUP BY
          CustomerID,         Plan_Code
         ) B ON
@@ -96,7 +96,7 @@ GO
 -- Generated at 17/07/2019 12:57:31 PM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[STG_PROFILER_CUSTOMER_OFFER]') AND type in (N'V'))
 DROP VIEW [vedw].[STG_PROFILER_CUSTOMER_OFFER]
@@ -111,7 +111,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[CustomerID])),'N/A')+'|'+
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[OfferID])),'N/A')+'|'
    ) AS [HASH_FULL_RECORD]
-FROM [000_Source].[dbo].[CUSTOMER_OFFER]
+FROM [dbo].[CUSTOMER_OFFER]
 ),
 PSA_CTE AS
 (
@@ -119,12 +119,12 @@ SELECT
    A.HASH_FULL_RECORD AS HASH_FULL_RECORD,
    A.CustomerID AS CustomerID,
    A.OfferID AS OfferID
-FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_OFFER A
+FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_OFFER A
    JOIN (
         SELECT
             [CustomerID],            [OfferID],
             MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME
-        FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_OFFER
+        FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_OFFER
         GROUP BY
          CustomerID,         OfferID
         ) B ON
@@ -181,7 +181,7 @@ GO
 -- Generated at 17/07/2019 12:57:31 PM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[STG_PROFILER_CUSTOMER_PERSONAL]') AND type in (N'V'))
 DROP VIEW [vedw].[STG_PROFILER_CUSTOMER_PERSONAL]
@@ -214,7 +214,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Contact_Number])),'N/A')+'|'+
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Referee_Offer_Made])),'N/A')+'|'
    ) AS [HASH_FULL_RECORD]
-FROM [000_Source].[dbo].[CUSTOMER_PERSONAL]
+FROM [dbo].[CUSTOMER_PERSONAL]
 ),
 PSA_CTE AS
 (
@@ -231,12 +231,12 @@ SELECT
    A.DOB AS DOB,
    A.Contact_Number AS Contact_Number,
    A.Referee_Offer_Made AS Referee_Offer_Made
-FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_PERSONAL A
+FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_PERSONAL A
    JOIN (
         SELECT
             [CustomerID],
             MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME
-        FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_PERSONAL
+        FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_PERSONAL
         GROUP BY
          CustomerID
         ) B ON
@@ -286,7 +286,7 @@ GO
 -- Generated at 17/07/2019 12:57:31 PM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[STG_PROFILER_ESTIMATED_WORTH]') AND type in (N'V'))
 DROP VIEW [vedw].[STG_PROFILER_ESTIMATED_WORTH]
@@ -303,7 +303,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Date_effective])),'N/A')+'|'+
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Value_Amount])),'N/A')+'|'
    ) AS [HASH_FULL_RECORD]
-FROM [000_Source].[dbo].[ESTIMATED_WORTH]
+FROM [dbo].[ESTIMATED_WORTH]
 ),
 PSA_CTE AS
 (
@@ -312,12 +312,12 @@ SELECT
    A.Plan_Code AS Plan_Code,
    A.Date_effective AS Date_effective,
    A.Value_Amount AS Value_Amount
-FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_ESTIMATED_WORTH A
+FROM [Sandbox_VDW].dbo.PSA_PROFILER_ESTIMATED_WORTH A
    JOIN (
         SELECT
             [Plan_Code],            [Date_effective],
             MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME
-        FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_ESTIMATED_WORTH
+        FROM [Sandbox_VDW].dbo.PSA_PROFILER_ESTIMATED_WORTH
         GROUP BY
          Plan_Code,         Date_effective
         ) B ON
@@ -363,7 +363,7 @@ GO
 -- Generated at 17/07/2019 12:57:31 PM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[STG_PROFILER_OFFER]') AND type in (N'V'))
 DROP VIEW [vedw].[STG_PROFILER_OFFER]
@@ -378,7 +378,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[OfferID])),'N/A')+'|'+
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Offer_Long_Description])),'N/A')+'|'
    ) AS [HASH_FULL_RECORD]
-FROM [000_Source].[dbo].[OFFER]
+FROM [dbo].[OFFER]
 ),
 PSA_CTE AS
 (
@@ -386,12 +386,12 @@ SELECT
    A.HASH_FULL_RECORD AS HASH_FULL_RECORD,
    A.OfferID AS OfferID,
    A.Offer_Long_Description AS Offer_Long_Description
-FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_OFFER A
+FROM [Sandbox_VDW].dbo.PSA_PROFILER_OFFER A
    JOIN (
         SELECT
             [OfferID],
             MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME
-        FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_OFFER
+        FROM [Sandbox_VDW].dbo.PSA_PROFILER_OFFER
         GROUP BY
          OfferID
         ) B ON
@@ -432,7 +432,7 @@ GO
 -- Generated at 17/07/2019 12:57:31 PM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[STG_PROFILER_PERSONALISED_COSTING]') AND type in (N'V'))
 DROP VIEW [vedw].[STG_PROFILER_PERSONALISED_COSTING]
@@ -453,7 +453,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Date_effective])),'N/A')+'|'+
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Monthly_Cost])),'N/A')+'|'
    ) AS [HASH_FULL_RECORD]
-FROM [000_Source].[dbo].[PERSONALISED_COSTING]
+FROM [dbo].[PERSONALISED_COSTING]
 ),
 PSA_CTE AS
 (
@@ -464,12 +464,12 @@ SELECT
    A.Plan_Code AS Plan_Code,
    A.Date_effective AS Date_effective,
    A.Monthly_Cost AS Monthly_Cost
-FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PERSONALISED_COSTING A
+FROM [Sandbox_VDW].dbo.PSA_PROFILER_PERSONALISED_COSTING A
    JOIN (
         SELECT
             [Segment],            [Plan_Code],            [Date_effective],
             MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME
-        FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PERSONALISED_COSTING
+        FROM [Sandbox_VDW].dbo.PSA_PROFILER_PERSONALISED_COSTING
         GROUP BY
          Segment,         Plan_Code,         Date_effective
         ) B ON
@@ -521,7 +521,7 @@ GO
 -- Generated at 17/07/2019 12:57:31 PM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[STG_PROFILER_PLAN]') AND type in (N'V'))
 DROP VIEW [vedw].[STG_PROFILER_PLAN]
@@ -538,7 +538,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Plan_Desc])),'N/A')+'|'+
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[Renewal_Plan_Code])),'N/A')+'|'
    ) AS [HASH_FULL_RECORD]
-FROM [000_Source].[dbo].[PLAN]
+FROM [dbo].[PLAN]
 ),
 PSA_CTE AS
 (
@@ -547,12 +547,12 @@ SELECT
    A.Plan_Code AS Plan_Code,
    A.Plan_Desc AS Plan_Desc,
    A.Renewal_Plan_Code AS Renewal_Plan_Code
-FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PLAN A
+FROM [Sandbox_VDW].dbo.PSA_PROFILER_PLAN A
    JOIN (
         SELECT
             [Plan_Code],
             MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME
-        FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PLAN
+        FROM [Sandbox_VDW].dbo.PSA_PROFILER_PLAN
         GROUP BY
          Plan_Code
         ) B ON
@@ -596,7 +596,7 @@ GO
 -- Generated at 11/21/2014 11:52:15 AM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[PSA_PROFILER_CUST_MEMBERSHIP]') AND type in (N'V'))
 DROP VIEW [vedw].[PSA_PROFILER_CUST_MEMBERSHIP];
@@ -648,7 +648,7 @@ FROM
        STG.CustomerID,        STG.Plan_Code,        STG.SOURCE_ROW_ID, STG.LOAD_DATETIME) AS INT) AS KEY_ROW_NUMBER
   FROM [dbo].STG_PROFILER_CUST_MEMBERSHIP STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUST_MEMBERSHIP HSTG
+    [Sandbox_VDW].dbo.PSA_PROFILER_CUST_MEMBERSHIP HSTG
     ON
        HSTG.CustomerID = STG.CustomerID AND
        HSTG.Plan_Code = STG.Plan_Code AND
@@ -662,14 +662,14 @@ FROM
       A.SOURCE_ROW_ID,
       A.HASH_FULL_RECORD AS LKP_HASH_FULL_RECORD,
       A.CDC_OPERATION AS LKP_CDC_OPERATION
-    FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUST_MEMBERSHIP A
+    FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUST_MEMBERSHIP A
     JOIN (
       SELECT 
         B.CustomerID,
         B.Plan_Code,
         B.SOURCE_ROW_ID,
         MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME 
-      FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUST_MEMBERSHIP B
+      FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUST_MEMBERSHIP B
       GROUP BY 
        B.CustomerID,
        B.Plan_Code,
@@ -712,7 +712,7 @@ GO
 -- Generated at 11/21/2014 11:52:15 AM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[PSA_PROFILER_CUSTOMER_OFFER]') AND type in (N'V'))
 DROP VIEW [vedw].[PSA_PROFILER_CUSTOMER_OFFER];
@@ -756,7 +756,7 @@ FROM
        STG.CustomerID,        STG.OfferID,        STG.SOURCE_ROW_ID, STG.LOAD_DATETIME) AS INT) AS KEY_ROW_NUMBER
   FROM [dbo].STG_PROFILER_CUSTOMER_OFFER STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_OFFER HSTG
+    [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_OFFER HSTG
     ON
        HSTG.CustomerID = STG.CustomerID AND
        HSTG.OfferID = STG.OfferID AND
@@ -770,14 +770,14 @@ FROM
       A.SOURCE_ROW_ID,
       A.HASH_FULL_RECORD AS LKP_HASH_FULL_RECORD,
       A.CDC_OPERATION AS LKP_CDC_OPERATION
-    FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_OFFER A
+    FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_OFFER A
     JOIN (
       SELECT 
         B.CustomerID,
         B.OfferID,
         B.SOURCE_ROW_ID,
         MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME 
-      FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_OFFER B
+      FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_OFFER B
       GROUP BY 
        B.CustomerID,
        B.OfferID,
@@ -820,7 +820,7 @@ GO
 -- Generated at 11/21/2014 11:52:15 AM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[PSA_PROFILER_CUSTOMER_PERSONAL]') AND type in (N'V'))
 DROP VIEW [vedw].[PSA_PROFILER_CUSTOMER_PERSONAL];
@@ -881,7 +881,7 @@ FROM
        STG.CustomerID,        STG.SOURCE_ROW_ID, STG.LOAD_DATETIME) AS INT) AS KEY_ROW_NUMBER
   FROM [dbo].STG_PROFILER_CUSTOMER_PERSONAL STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_PERSONAL HSTG
+    [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_PERSONAL HSTG
     ON
        HSTG.CustomerID = STG.CustomerID AND
        HSTG.SOURCE_ROW_ID = STG.SOURCE_ROW_ID AND
@@ -893,13 +893,13 @@ FROM
       A.SOURCE_ROW_ID,
       A.HASH_FULL_RECORD AS LKP_HASH_FULL_RECORD,
       A.CDC_OPERATION AS LKP_CDC_OPERATION
-    FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_PERSONAL A
+    FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_PERSONAL A
     JOIN (
       SELECT 
         B.CustomerID,
         B.SOURCE_ROW_ID,
         MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME 
-      FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_CUSTOMER_PERSONAL B
+      FROM [Sandbox_VDW].dbo.PSA_PROFILER_CUSTOMER_PERSONAL B
       GROUP BY 
        B.CustomerID,
        B.SOURCE_ROW_ID
@@ -939,7 +939,7 @@ GO
 -- Generated at 11/21/2014 11:52:15 AM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[PSA_PROFILER_ESTIMATED_WORTH]') AND type in (N'V'))
 DROP VIEW [vedw].[PSA_PROFILER_ESTIMATED_WORTH];
@@ -985,7 +985,7 @@ FROM
        STG.Plan_Code,        STG.Date_effective,        STG.SOURCE_ROW_ID, STG.LOAD_DATETIME) AS INT) AS KEY_ROW_NUMBER
   FROM [dbo].STG_PROFILER_ESTIMATED_WORTH STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [150_Persistent_Staging_Area].dbo.PSA_PROFILER_ESTIMATED_WORTH HSTG
+    [Sandbox_VDW].dbo.PSA_PROFILER_ESTIMATED_WORTH HSTG
     ON
        HSTG.Plan_Code = STG.Plan_Code AND
        HSTG.Date_effective = STG.Date_effective AND
@@ -999,14 +999,14 @@ FROM
       A.SOURCE_ROW_ID,
       A.HASH_FULL_RECORD AS LKP_HASH_FULL_RECORD,
       A.CDC_OPERATION AS LKP_CDC_OPERATION
-    FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_ESTIMATED_WORTH A
+    FROM [Sandbox_VDW].dbo.PSA_PROFILER_ESTIMATED_WORTH A
     JOIN (
       SELECT 
         B.Plan_Code,
         B.Date_effective,
         B.SOURCE_ROW_ID,
         MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME 
-      FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_ESTIMATED_WORTH B
+      FROM [Sandbox_VDW].dbo.PSA_PROFILER_ESTIMATED_WORTH B
       GROUP BY 
        B.Plan_Code,
        B.Date_effective,
@@ -1049,7 +1049,7 @@ GO
 -- Generated at 11/21/2014 11:52:15 AM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[PSA_PROFILER_OFFER]') AND type in (N'V'))
 DROP VIEW [vedw].[PSA_PROFILER_OFFER];
@@ -1092,7 +1092,7 @@ FROM
        STG.OfferID,        STG.SOURCE_ROW_ID, STG.LOAD_DATETIME) AS INT) AS KEY_ROW_NUMBER
   FROM [dbo].STG_PROFILER_OFFER STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [150_Persistent_Staging_Area].dbo.PSA_PROFILER_OFFER HSTG
+    [Sandbox_VDW].dbo.PSA_PROFILER_OFFER HSTG
     ON
        HSTG.OfferID = STG.OfferID AND
        HSTG.SOURCE_ROW_ID = STG.SOURCE_ROW_ID AND
@@ -1104,13 +1104,13 @@ FROM
       A.SOURCE_ROW_ID,
       A.HASH_FULL_RECORD AS LKP_HASH_FULL_RECORD,
       A.CDC_OPERATION AS LKP_CDC_OPERATION
-    FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_OFFER A
+    FROM [Sandbox_VDW].dbo.PSA_PROFILER_OFFER A
     JOIN (
       SELECT 
         B.OfferID,
         B.SOURCE_ROW_ID,
         MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME 
-      FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_OFFER B
+      FROM [Sandbox_VDW].dbo.PSA_PROFILER_OFFER B
       GROUP BY 
        B.OfferID,
        B.SOURCE_ROW_ID
@@ -1150,7 +1150,7 @@ GO
 -- Generated at 11/21/2014 11:52:15 AM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[PSA_PROFILER_PERSONALISED_COSTING]') AND type in (N'V'))
 DROP VIEW [vedw].[PSA_PROFILER_PERSONALISED_COSTING];
@@ -1202,7 +1202,7 @@ FROM
        STG.Member,        STG.Segment,        STG.Plan_Code,        STG.Date_effective,        STG.SOURCE_ROW_ID, STG.LOAD_DATETIME) AS INT) AS KEY_ROW_NUMBER
   FROM [dbo].STG_PROFILER_PERSONALISED_COSTING STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PERSONALISED_COSTING HSTG
+    [Sandbox_VDW].dbo.PSA_PROFILER_PERSONALISED_COSTING HSTG
     ON
        HSTG.Member = STG.Member AND
        HSTG.Segment = STG.Segment AND
@@ -1220,7 +1220,7 @@ FROM
       A.SOURCE_ROW_ID,
       A.HASH_FULL_RECORD AS LKP_HASH_FULL_RECORD,
       A.CDC_OPERATION AS LKP_CDC_OPERATION
-    FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PERSONALISED_COSTING A
+    FROM [Sandbox_VDW].dbo.PSA_PROFILER_PERSONALISED_COSTING A
     JOIN (
       SELECT 
         B.Member,
@@ -1229,7 +1229,7 @@ FROM
         B.Date_effective,
         B.SOURCE_ROW_ID,
         MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME 
-      FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PERSONALISED_COSTING B
+      FROM [Sandbox_VDW].dbo.PSA_PROFILER_PERSONALISED_COSTING B
       GROUP BY 
        B.Member,
        B.Segment,
@@ -1278,7 +1278,7 @@ GO
 -- Generated at 11/21/2014 11:52:15 AM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[PSA_PROFILER_PLAN]') AND type in (N'V'))
 DROP VIEW [vedw].[PSA_PROFILER_PLAN];
@@ -1323,7 +1323,7 @@ FROM
        STG.Plan_Code,        STG.SOURCE_ROW_ID, STG.LOAD_DATETIME) AS INT) AS KEY_ROW_NUMBER
   FROM [dbo].STG_PROFILER_PLAN STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PLAN HSTG
+    [Sandbox_VDW].dbo.PSA_PROFILER_PLAN HSTG
     ON
        HSTG.Plan_Code = STG.Plan_Code AND
        HSTG.SOURCE_ROW_ID = STG.SOURCE_ROW_ID AND
@@ -1335,13 +1335,13 @@ FROM
       A.SOURCE_ROW_ID,
       A.HASH_FULL_RECORD AS LKP_HASH_FULL_RECORD,
       A.CDC_OPERATION AS LKP_CDC_OPERATION
-    FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PLAN A
+    FROM [Sandbox_VDW].dbo.PSA_PROFILER_PLAN A
     JOIN (
       SELECT 
         B.Plan_Code,
         B.SOURCE_ROW_ID,
         MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME 
-      FROM [150_Persistent_Staging_Area].dbo.PSA_PROFILER_PLAN B
+      FROM [Sandbox_VDW].dbo.PSA_PROFILER_PLAN B
       GROUP BY 
        B.Plan_Code,
        B.SOURCE_ROW_ID
@@ -1381,7 +1381,7 @@ GO
 -- Generated at 11/21/2014 11:52:15 AM
 --
 
-USE [100_Staging_Area]
+--USE [100_Staging_Area]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[PSA_USERMANAGED_SEGMENT]') AND type in (N'V'))
 DROP VIEW [vedw].[PSA_USERMANAGED_SEGMENT];
@@ -1424,7 +1424,7 @@ FROM
        STG.SOURCE_ROW_ID,        STG.Demographic_Segment_Code, STG.LOAD_DATETIME) AS INT) AS KEY_ROW_NUMBER
   FROM [dbo].STG_USERMANAGED_SEGMENT STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [150_Persistent_Staging_Area].dbo.PSA_USERMANAGED_SEGMENT HSTG
+    [Sandbox_VDW].dbo.PSA_USERMANAGED_SEGMENT HSTG
     ON
        HSTG.SOURCE_ROW_ID = STG.SOURCE_ROW_ID AND
        HSTG.Demographic_Segment_Code = STG.Demographic_Segment_Code AND
@@ -1436,13 +1436,13 @@ FROM
       A.Demographic_Segment_Code,
       A.HASH_FULL_RECORD AS LKP_HASH_FULL_RECORD,
       A.CDC_OPERATION AS LKP_CDC_OPERATION
-    FROM [150_Persistent_Staging_Area].dbo.PSA_USERMANAGED_SEGMENT A
+    FROM [Sandbox_VDW].dbo.PSA_USERMANAGED_SEGMENT A
     JOIN (
       SELECT 
         B.SOURCE_ROW_ID,
         B.Demographic_Segment_Code,
         MAX(LOAD_DATETIME) AS MAX_LOAD_DATETIME 
-      FROM [150_Persistent_Staging_Area].dbo.PSA_USERMANAGED_SEGMENT B
+      FROM [Sandbox_VDW].dbo.PSA_USERMANAGED_SEGMENT B
       GROUP BY 
        B.SOURCE_ROW_ID,
        B.Demographic_Segment_Code
@@ -1484,7 +1484,7 @@ GO
 -- Generated at 10/07/2019 1:18:43 PM
 --
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[HUB_CUSTOMER]') AND type in (N'V'))
@@ -1575,7 +1575,7 @@ GO
 -- Generated at 10/07/2019 1:18:49 PM
 --
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[HUB_INCENTIVE_OFFER]') AND type in (N'V'))
@@ -1643,7 +1643,7 @@ GO
 -- Generated at 10/07/2019 1:18:51 PM
 --
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[HUB_MEMBERSHIP_PLAN]') AND type in (N'V'))
@@ -1757,7 +1757,7 @@ GO
 -- Generated at 10/07/2019 1:19:02 PM
 --
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[HUB_SEGMENT]') AND type in (N'V'))
@@ -1824,7 +1824,7 @@ GO
 -- Generated at 17/07/2019 1:01:43 PM
 --
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[LSAT_CUSTOMER_COSTING]') AND type in (N'V'))
@@ -2125,7 +2125,7 @@ WHERE OFFER_ID2 != PREVIOUS_FOLLOWER_KEY1
 -- Generated at 17/07/2019 1:00:52 PM
 --
 GO
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[LNK_CUSTOMER_COSTING]') AND type in (N'V'))
@@ -2174,7 +2174,7 @@ FROM
     CAST([Member] AS NVARCHAR(100)) AS [CUSTOMER_ID2],
    ISNULL([Segment], '') +  'TEST'  AS [SEGMENT_CODE3],     RECORD_SOURCE,
     MIN(LOAD_DATETIME) AS LOAD_DATETIME
-  FROM [150_Persistent_Staging_Area].[dbo].[PSA_PROFILER_PERSONALISED_COSTING]
+  FROM [Sandbox_VDW].[dbo].[PSA_PROFILER_PERSONALISED_COSTING]
   WHERE
   [Plan_Code] IS NOT NULL AND
  [Member] IS NOT NULL AND
@@ -2201,7 +2201,7 @@ WHERE ROW_NR=1
 -- Generated at 17/07/2019 1:01:00 PM
 --
 GO
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[LNK_CUSTOMER_OFFER]') AND type in (N'V'))
@@ -2242,7 +2242,7 @@ FROM
     CAST([OfferID] AS NVARCHAR(100)) AS [OFFER_ID2],
     RECORD_SOURCE,
     MIN(LOAD_DATETIME) AS LOAD_DATETIME
-  FROM [150_Persistent_Staging_Area].[dbo].[PSA_PROFILER_CUSTOMER_OFFER]
+  FROM [Sandbox_VDW].[dbo].[PSA_PROFILER_CUSTOMER_OFFER]
   WHERE
     [CustomerID] IS NOT NULL AND
     [OfferID] IS NOT NULL 
@@ -2267,7 +2267,7 @@ WHERE ROW_NR=1
 -- Generated at 17/07/2019 1:01:00 PM
 --
 GO
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[LNK_MEMBERSHIP]') AND type in (N'V'))
@@ -2312,7 +2312,7 @@ FROM
     'XYZ' AS [PLAN_SUFFIX2],     RECORD_SOURCE,
     [Status] AS [SALES_CHANNEL],
     MIN(LOAD_DATETIME) AS LOAD_DATETIME
-  FROM [150_Persistent_Staging_Area].[dbo].[PSA_PROFILER_CUST_MEMBERSHIP]
+  FROM [Sandbox_VDW].[dbo].[PSA_PROFILER_CUST_MEMBERSHIP]
   WHERE
   [CustomerID] IS NOT NULL AND
  [Plan_Code] IS NOT NULL 
@@ -2336,7 +2336,7 @@ WHERE ROW_NR=1
 -- Generated at 17/07/2019 1:01:01 PM
 --
 GO
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[LNK_RENEWAL_MEMBERSHIP]') AND type in (N'V'))
@@ -2381,7 +2381,7 @@ FROM
       [Renewal_Plan_Code] AS [PLAN_CODE2],
     'XYZ' AS [PLAN_SUFFIX2],     RECORD_SOURCE,
     MIN(LOAD_DATETIME) AS LOAD_DATETIME
-  FROM [150_Persistent_Staging_Area].[dbo].[PSA_PROFILER_PLAN]
+  FROM [Sandbox_VDW].[dbo].[PSA_PROFILER_PLAN]
   WHERE
   [Plan_Code] IS NOT NULL AND
  [Renewal_Plan_Code] IS NOT NULL 
@@ -2404,7 +2404,7 @@ WHERE ROW_NR=1
 -- Generated at 17/07/2019 12:58:27 PM
 -- 
 GO
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[SAT_CUSTOMER]') AND type in (N'V'))
@@ -2583,7 +2583,7 @@ GO
 -- Generated at 17/07/2019 12:58:28 PM
 -- 
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[SAT_CUSTOMER_ADDITIONAL_DETAILS]') AND type in (N'V'))
@@ -2719,7 +2719,7 @@ GO
 -- Generated at 17/07/2019 12:58:28 PM
 -- 
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[SAT_INCENTIVE_OFFER]') AND type in (N'V'))
@@ -2849,7 +2849,7 @@ GO
 -- Generated at 17/07/2019 12:58:31 PM
 -- 
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[SAT_MEMBERSHIP_PLAN_DETAIL]') AND type in (N'V'))
@@ -2990,7 +2990,7 @@ GO
 -- Generated at 17/07/2019 12:58:34 PM
 -- 
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[SAT_MEMBERSHIP_PLAN_VALUATION]') AND type in (N'V'))
@@ -3145,7 +3145,7 @@ GO
 -- Generated at 17/07/2019 12:58:37 PM
 -- 
 
-USE [150_Persistent_Staging_Area]
+--USE [Sandbox_VDW]
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[SAT_SEGMENT]') AND type in (N'V'))

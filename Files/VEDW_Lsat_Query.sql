@@ -3,8 +3,6 @@
 -- Generated at 17/07/2019 1:01:43 PM
 --
 
-USE [150_Persistent_Staging_Area]
-GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[vedw].[LSAT_CUSTOMER_COSTING]') AND type in (N'V'))
 DROP VIEW [vedw].[LSAT_CUSTOMER_COSTING]

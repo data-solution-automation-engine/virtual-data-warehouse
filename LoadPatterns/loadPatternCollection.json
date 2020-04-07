@@ -84,6 +84,12 @@
     "loadPatternNotes": ""
   },
   {
+    "loadPatternName": "Persistent Staging Area 003 Generate Tables",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternFilePath": "loadPatternPersistentStagingGenerateTables.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
     "loadPatternName": "Satellite 001 View Pattern",
     "loadPatternType": "Context",
     "loadPatternFilePath": "loadPatternSatelliteView.handlebars",
@@ -111,6 +117,12 @@
     "loadPatternName": "Staging Area 002 Insert Into Pattern",
     "loadPatternType": "StagingArea",
     "loadPatternFilePath": "loadPatternStagingInsertInto.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Staging Area 003 Generate Tables",
+    "loadPatternType": "StagingArea",
+    "loadPatternFilePath": "loadPatternStagingGenerateTables.handlebars",
     "loadPatternNotes": ""
   }
 ]

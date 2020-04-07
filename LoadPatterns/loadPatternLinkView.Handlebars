@@ -15,9 +15,10 @@ SELECT link.*
 FROM 
 ( {{#each dataObjectMappingList}}{{#if @first}}
 SELECT
-    HASHBYTES('MD5', {{#each businessKey}} {{#unless @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}}
-    {{#each businessKeyComponentMapping}}  ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
-    {{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
+    HASHBYTES('MD5', 
+   {{#each dataItemMapping}}     ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{{/each}} +
+   {{#each businessKey}} {{#unless @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}}{{#each dataItemMapping}}   ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}], 'N/A') + '#~!'{{/each}}{{#each businessKeyComponentMapping}}  ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +
+{{/unless}}{{/unless}}{{/each}}
     {{#each businessKey}} {{#if @first}} ) AS {{surrogateKey}},{{/if}}{{/each}}
     -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
     MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
