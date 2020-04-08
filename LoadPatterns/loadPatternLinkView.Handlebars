@@ -31,7 +31,7 @@ SELECT
     [{{targetDataItem.name}}],{{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
       {{targetDataItem.name}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
-     {{#each dataItemMapping}},[{{targetDataItem.name}}{{/each}}
+     {{#each dataItemMapping}},[{{targetDataItem.name}}]{{/each}}
     ORDER BY 
        MIN({{../metadataConfiguration.loadDateTimeAttribute}})
     ) AS ROW_NR

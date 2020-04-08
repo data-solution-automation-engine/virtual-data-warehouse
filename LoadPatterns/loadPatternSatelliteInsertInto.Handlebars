@@ -35,11 +35,6 @@ LEFT OUTER JOIN
    [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] sat_table
     ON sat_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
     AND sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}] = sat_table.[{{../metadataConfiguration.loadDateTimeAttribute}}] 
+    {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}AND sat_view.{{../targetDataItem.name}} = sat_table.{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
 WHERE sat_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
-
-   {{#each dataItemMapping}}
-      {{#each targetDataItem.dataObjectClassification}}{{#if classification}}{{classification}}{{/if}}{{/each}}
-   {{/each}}
-
-
 {{/if}}{{/each}}
