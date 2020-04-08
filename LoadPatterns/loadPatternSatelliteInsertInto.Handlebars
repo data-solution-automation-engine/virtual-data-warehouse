@@ -33,6 +33,13 @@ SELECT {{#each businessKey}}
 FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] sat_view
 LEFT OUTER JOIN
    [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] sat_table
-   ON sat_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+    ON sat_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+    AND sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}] = sat_table.[{{../metadataConfiguration.loadDateTimeAttribute}}] 
 WHERE sat_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
+
+   {{#each dataItemMapping}}
+      {{#each targetDataItem.dataObjectClassification}}{{#if classification}}{{classification}}{{/if}}{{/each}}
+   {{/each}}
+
+
 {{/if}}{{/each}}
