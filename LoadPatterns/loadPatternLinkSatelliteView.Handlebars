@@ -13,23 +13,20 @@ GO
 
 CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
 SELECT 
-    HASHBYTES('MD5', {{#each businessKey}} {{!-- Create the Surrogate Key using the Business Key and components --}}
-    {{#each businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
-    {{/each}}
-    ) AS {{surrogateKey}},{{/each}}
+    HASHBYTES('MD5', {{#each businessKey}}{{#unless @first}} +{{/unless}}{{!-- Create the Surrogate Key using the Business Key and components --}}{{#each businessKeyComponentMapping}}
+       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{/each}}{{#each businessKey}}{{#if @first}}
+    ) AS {{surrogateKey}},{{/if}}{{/each}}
     DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
     COALESCE (
       LEAD (DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) ) OVER
-      ( PARTITION BY {{#each businessKey}} {{!-- The Hub business key --}}
-          {{#each businessKeyComponentMapping}}
-          {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+      ( PARTITION BY {{#each businessKey}} {{!-- The Hub business key --}}{{#unless @first}},{{/unless}}
+          {{#each businessKeyComponentMapping}}{{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
          {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
        ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
        CAST( '9999-12-31' AS DATETIME)
     ) AS LOAD_END_DATETIME,
     CASE
-      WHEN ( RANK() OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
+      WHEN ( RANK() OVER (PARTITION BY {{#each businessKey}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
           {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
          {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
          ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}} desc )) = 1
@@ -51,7 +48,7 @@ SELECT
     {{#each dataItemMapping}}
     {{sourceDataItem.name}} AS {{targetDataItem.name}},
     {{/each}}
-    ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+    ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
           {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
          {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
     ORDER BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
@@ -73,7 +70,7 @@ FROM
          {{/each}}
          COMBINED_VALUE,
          CASE 
-           WHEN LAG(COMBINED_VALUE,1,0x00000000000000000000000000000000) OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
+           WHEN LAG(COMBINED_VALUE,1,0x00000000000000000000000000000000) OVER (PARTITION BY {{#each businessKey}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
              {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] DESC) = COMBINED_VALUE
@@ -81,7 +78,7 @@ FROM
            ELSE 'Different'
          END AS VALUE_CHANGE_INDICATOR,
          CASE 
-           WHEN LAG([{{../metadataConfiguration.changeDataCaptureAttribute}}],1,'') OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
+           WHEN LAG([{{../metadataConfiguration.changeDataCaptureAttribute}}],1,'') OVER (PARTITION BY {{#each businessKey}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
              {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.changeDataCaptureAttribute}}]
@@ -89,7 +86,7 @@ FROM
            ELSE 'Different'
          END AS CDC_CHANGE_INDICATOR,
          CASE 
-           WHEN LEAD([{{../metadataConfiguration.loadDateTimeAttribute}}],1,'9999-12-31') OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
+           WHEN LEAD([{{../metadataConfiguration.loadDateTimeAttribute}}],1,'9999-12-31') OVER (PARTITION BY {{#each businessKey}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
              {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.loadDateTimeAttribute}}]
@@ -133,4 +130,3 @@ WHERE
   OR
   (  [{{../metadataConfiguration.changeDataCaptureAttribute}}] = 'Different' and TIME_CHANGE_INDICATOR = 'Different')
 {{/each}}
-

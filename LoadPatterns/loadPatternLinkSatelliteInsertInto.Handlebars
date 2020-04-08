@@ -7,8 +7,8 @@ USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
 GO
 
 INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}]
-(  {{#each businessKey}}
-   [{{surrogateKey}}],{{/each}}
+(  {{#each businessKey}}{{#if @first}}
+   [{{surrogateKey}}],{{/if}}{{/each}}
    {{#each dataItemMapping}}
    [{{targetDataItem.name}}],
    {{/each}}
@@ -19,8 +19,8 @@ INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targ
    [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}]
 )
-SELECT {{#each businessKey}}
-   sat_view.[{{surrogateKey}}],{{/each}}
+SELECT {{#each businessKey}}{{#if @first}}
+   sat_view.[{{surrogateKey}}],{{/if}}{{/each}}
    {{#each dataItemMapping}}
    sat_view.[{{targetDataItem.name}}],
    {{/each}}
