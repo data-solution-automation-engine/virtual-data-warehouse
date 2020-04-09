@@ -14,16 +14,23 @@ CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMeta
 SELECT link.*
 FROM 
 ( {{#each dataObjectMappingList}}{{#if @first}}
-SELECT {{#each businessKey}} {{#unless @first}} {{!-- Create the Surrogate Key using the combined Business Keys --}} {{#each businessKeyComponentMapping}}  
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
-   {{#each businessKey}} {{#if @first}} AS {{surrogateKey}},{{/if}}{{/each}}
+SELECT
+    {{#each businessKey}} {{#unless @first}}{{!-- Create the Surrogate Key using the combined Business Keys --}}{{#each dataItemMapping}}ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}], 'N/A') + '#~!'{{/each}}
+{{#each businessKeyComponentMapping}} ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
+{{#each dataItemMapping}} + ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{{/each}}{{#each businessKey}} {{#if @first}}AS {{surrogateKey}},{{/if}}{{/each}}
     -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
     MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
-    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}} {{#unless @first}} {{!-- List out the separate (Hub) business keys --}} {{#each businessKeyComponentMapping}}
+    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
+    {{#unless businessKeyClassification}}
+    {{#each businessKeyComponentMapping}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
-    AS {{surrogateKey}},{{/unless}} {{/each}} {{#each dataItemMapping}} [{{targetDataItem.name}}],{{/each}}
+    AS {{surrogateKey}},
+    {{/unless}}{{#if businessKeyClassification}}{{#each businessKeyComponentMapping}}{{targetDataItem.name}}{{../../@index}}{{/each}} AS {{surrogateKey}},
+    {{/if}} {{/unless}} {{/each}}{{#each dataItemMapping}}
+    [{{targetDataItem.name}}],{{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
       {{targetDataItem.name}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
+     {{#each dataItemMapping}},[{{targetDataItem.name}}]{{/each}}
     ORDER BY 
        MIN({{../metadataConfiguration.loadDateTimeAttribute}})
     ) AS ROW_NR
@@ -47,7 +54,11 @@ FROM
        {{../metadataConfiguration.recordSourceAttribute}}{{#unless @last}}UNION{{/unless}}
   ) LINK_selection
   GROUP BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-     {{targetDataItem.name}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}},{{/unless}}{{/each}} {{#each dataItemMapping}} [{{targetDataItem.name}}],{{/each}}
+     {{targetDataItem.name}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}},{{/unless}}{{/each}}
+     {{#each dataItemMapping}}
+     [{{targetDataItem.name}}],{{/each}}
      {{../metadataConfiguration.recordSourceAttribute}} {{/each}}
 ) link
 WHERE ROW_NR = 1
+
+

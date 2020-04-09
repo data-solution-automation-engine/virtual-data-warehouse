@@ -65,6 +65,12 @@
     "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
+    {
+    "loadPatternName": "Persistent Staging Area 001 Simplified View Pattern",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternFilePath": "loadPatternPersistentStagingViewSimplified.handlebars",
+    "loadPatternNotes": "This PSA pattern does not contain a full row checksum and CDC operation check, but just inserts STG records if they haven't been processed already."
+  },
   {
     "loadPatternName": "Persistent Staging Area 001 View Pattern",
     "loadPatternType": "PersistentStagingArea",

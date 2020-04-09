@@ -24,12 +24,14 @@ SELECT
       ( PARTITION BY {{#each businessKey}} {{!-- The Hub business key --}}
           {{#each businessKeyComponentMapping}}
           {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+         {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
        ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
        CAST( '9999-12-31' AS DATETIME)
     ) AS LOAD_END_DATETIME,
     CASE
       WHEN ( RANK() OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
-        {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+          {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+         {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
          ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}} desc )) = 1
        THEN 'Y'
        ELSE 'N'
@@ -45,16 +47,17 @@ SELECT
     HASHBYTES('MD5',
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMapping}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
-    ) AS HASH_FULL_RECORD,
+    ) AS {{../metadataConfiguration.recordChecksumAttribute}},
     {{#each dataItemMapping}}
     {{sourceDataItem.name}} AS {{targetDataItem.name}},
     {{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-       {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}
-    {{/each}}
+          {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+         {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
     ORDER BY {{#each businessKey}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-       {{targetDataItem.name}},{{/each}}{{/each}}
-       {{../metadataConfiguration.loadDateTimeAttribute}}
+          {{targetDataItem.name}},{{/each}}{{/each}}
+          {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}{{../sourceDataItem.name}},{{/if}}{{/each}}{{/each}}
+          {{../metadataConfiguration.loadDateTimeAttribute}}
     ) AS ROW_NUMBER
 FROM
    (
@@ -71,21 +74,24 @@ FROM
          COMBINED_VALUE,
          CASE 
            WHEN LAG(COMBINED_VALUE,1,0x00000000000000000000000000000000) OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
-             {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
+              {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
+             {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] DESC) = COMBINED_VALUE
            THEN 'Same'
            ELSE 'Different'
          END AS VALUE_CHANGE_INDICATOR,
          CASE 
            WHEN LAG([{{../metadataConfiguration.changeDataCaptureAttribute}}],1,'') OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
-             {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
+              {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+             {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.changeDataCaptureAttribute}}]
            THEN 'Same'
            ELSE 'Different'
          END AS CDC_CHANGE_INDICATOR,
          CASE 
            WHEN LEAD([{{../metadataConfiguration.loadDateTimeAttribute}}],1,'9999-12-31') OVER (PARTITION BY {{#each businessKey}} {{#each businessKeyComponentMapping}}
-             {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
+              {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+             {{#each dataItemMapping}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.loadDateTimeAttribute}}]
            THEN 'Same'
            ELSE 'Different'
@@ -106,7 +112,7 @@ FROM
             ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
            ) AS COMBINED_VALUE
         FROM {{sourceDataObject.name}}
-      WHERE 2=2
+      {{#if filterCriterion}}WHERE {{filterCriterion}} {{/if}}
         UNION
         SELECT DISTINCT
           '1900-01-01' AS [{{../metadataConfiguration.loadDateTimeAttribute}}],

@@ -112,7 +112,7 @@ FROM
             ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
            ) AS COMBINED_VALUE
         FROM {{sourceDataObject.name}}
-      WHERE 2=2
+      {{#if filterCriterion}}WHERE {{filterCriterion}} {{/if}}
         UNION
         SELECT DISTINCT
           '1900-01-01' AS [{{../metadataConfiguration.loadDateTimeAttribute}}],
@@ -133,4 +133,3 @@ WHERE
   OR
   (  [{{../metadataConfiguration.changeDataCaptureAttribute}}] = 'Different' and TIME_CHANGE_INDICATOR = 'Different')
 {{/each}}
-
