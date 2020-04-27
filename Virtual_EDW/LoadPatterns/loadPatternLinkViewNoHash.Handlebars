@@ -1,0 +1,64 @@
+--
+-- Link View definition for {{generationSpecificMetadata.selectedDataObject}}
+-- Generated at {{generationSpecificMetadata.generationDateTime}}
+--
+GO
+USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
+GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
+GO
+
+CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
+SELECT link.*
+FROM 
+( {{#each dataObjectMappingList}}{{#if @first}}
+SELECT
+    {{#each businessKey}} {{#unless @first}}{{!-- Create the Surrogate Key using the combined Business Keys --}}{{#each dataItemMapping}}ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}], 'N/A') + '#~!'{{/each}}
+{{#each businessKeyComponentMapping}} ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
+{{#each dataItemMapping}} + ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{{/each}}{{#each businessKey}} {{#if @first}}AS {{surrogateKey}},{{/if}}{{/each}}
+    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
+    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKey}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
+    {{#unless businessKeyClassification}}
+    {{#each businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{../../@index}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
+    AS {{surrogateKey}},
+    {{/unless}}{{#if businessKeyClassification}}{{#each businessKeyComponentMapping}}{{targetDataItem.name}}{{../../@index}}{{/each}} AS {{surrogateKey}},
+    {{/if}} {{/unless}} {{/each}}{{#each dataItemMapping}}
+    [{{targetDataItem.name}}],{{/each}}
+    ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+      {{targetDataItem.name}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
+     {{#each dataItemMapping}},[{{targetDataItem.name}}]{{/each}}
+    ORDER BY 
+       MIN({{../metadataConfiguration.loadDateTimeAttribute}})
+    ) AS ROW_NR
+FROM 
+({{/if}}{{/each}}
+    {{#each dataObjectMappingList }}
+    SELECT {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
+        CAST({{sourceDataItem.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}}{{../../@index}},{{/each}}{{/unless}}{{/each}}{{#each dataItemMapping}}
+        [{{sourceDataItem.name}}] AS [{{targetDataItem.name}}],{{/each}}
+        {{../metadataConfiguration.recordSourceAttribute}},
+        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
+    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}]
+    WHERE {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
+       {{sourceDataItem.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{#unless @last}} AND{{/unless}}{{/unless}} {{/each}}
+       {{#each dataItemMapping}}
+       AND [{{sourceDataItem.name}}] IS NOT NULL
+       {{/each}}
+       {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
+    GROUP BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
+       {{#unless sourceDataItem.isHardCodedValue}}{{sourceDataItem.name}},{{/unless}}{{/each}}{{/unless}}{{/each}}{{#each dataItemMapping}}[{{sourceDataItem.name}}],{{/each}}
+       {{../metadataConfiguration.recordSourceAttribute}}{{#unless @last}}UNION{{/unless}}
+  ) LINK_selection
+  GROUP BY {{#each businessKey}} {{#unless @first}} {{#each businessKeyComponentMapping}}
+     {{targetDataItem.name}}{{../../@index}}{{#unless @last}},{{/unless}}{{/each}},{{/unless}}{{/each}}
+     {{#each dataItemMapping}}
+     [{{targetDataItem.name}}],{{/each}}
+     {{../metadataConfiguration.recordSourceAttribute}} {{/each}}
+) link
+WHERE ROW_NR = 1
+
+

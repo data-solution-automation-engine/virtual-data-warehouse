@@ -290,6 +290,78 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Content Include="LoadPatterns\loadPatternCollection.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternHubDeltaSelect.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternHubInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternHubView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternHubView_DBT_Snowflake.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternLinkInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternLinkSatelliteDrivingKeyInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternLinkSatelliteDrivingKeyView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternLinkSatelliteInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternLinkSatelliteView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternLinkView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternLinkViewNoHash.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternPersistentStagingFullOuterJoin.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternPersistentStagingGenerateTables.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternPersistentStagingInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternPersistentStagingView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternPersistentStagingViewSimplified.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternPersistentStagingViewWithDedup.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternSatelliteInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternSatelliteView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternSatelliteViewZeroRecord.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternStagingGenerateTables.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternStagingInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternStagingView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
@@ -344,9 +416,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Libraries\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.SqlServer.SqlManagementObjects.150.18208.0\build\net45\Microsoft.SqlServer.SqlManagementObjects.targets" Condition="Exists('..\packages\Microsoft.SqlServer.SqlManagementObjects.150.18208.0\build\net45\Microsoft.SqlServer.SqlManagementObjects.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

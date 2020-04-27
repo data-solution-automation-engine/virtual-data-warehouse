@@ -1,0 +1,33 @@
+{{#each dataObjectMappingList}}
+--
+-- Staging Area Insert Into statement for {{targetDataObject.name}}
+-- Generated at {{../generationSpecificMetadata.generationDateTime}}
+--
+
+USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
+GO
+
+TRUNCATE TABLE [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+
+INSERT INTO [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+(
+   [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each dataItemMapping}}
+   [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+)
+SELECT
+   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each dataItemMapping}}
+   [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
+{{/each}}

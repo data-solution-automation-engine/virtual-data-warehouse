@@ -727,7 +727,7 @@
             this.MinimumSize = new System.Drawing.Size(1378, 835);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Virtual Enterprise Data Warehouse - v1.6.1.0";
+            this.Text = "Virtual Enterprise Data Warehouse - v1.6.1";
             this.Shown += new System.EventHandler(this.FormMain_Shown);
             this.ResizeEnd += new System.EventHandler(this.FormMain_ResizeEnd);
             this.SizeChanged += new System.EventHandler(this.FormMain_SizeChanged_1);

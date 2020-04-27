@@ -69,14 +69,9 @@ namespace Virtual_Data_Warehouse
             checkBoxGenerateInDatabase.Checked = false;
 
             // Load Pattern definition in memory
-            if ((VedwConfigurationSettings.patternDefinitionList != null) &&
-                (!VedwConfigurationSettings.patternDefinitionList.Any()))
+            if ((VedwConfigurationSettings.patternDefinitionList != null) && (!VedwConfigurationSettings.patternDefinitionList.Any()))
             {
-                SetTextMain(
-                    "There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " +
-                    GlobalParameters.LoadPatternDefinitionFile + " in the " +
-                    VedwConfigurationSettings.LoadPatternPath +
-                    " directory, and if the file contains pattern types.");
+                SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFile + " in the " + VedwConfigurationSettings.LoadPatternPath + " directory, and if the file contains pattern types.");
             }
 
             // Load Pattern metadata & update in memory
@@ -85,12 +80,8 @@ namespace Virtual_Data_Warehouse
 
             if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
             {
-                SetTextMain(
-                    "There are no patterns found in the designated load pattern directory. Please verify if there is a " +
-                    GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.LoadPatternPath +
-                    " directory, and if the file contains patterns.");
+                SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.LoadPatternPath + " directory, and if the file contains patterns.");
             }
-
 
             // Populate the data grid.
             PopulateLoadPatternCollectionDataGrid();
@@ -361,16 +352,23 @@ namespace Virtual_Data_Warehouse
             // Load the rest of the (TEAM) configurations, from wherever they may be according to the VEDW settings (the TEAM configuration file)\
             var teamConfigurationFileName = VedwConfigurationSettings.TeamConfigurationPath;
 
-            richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" +
-                                                  teamConfigurationFileName + "'. \r\n\r\n");
+            richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n");
 
-            var teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
-
-            if (teamConfigResult.Length > 0)
+            if (File.Exists(teamConfigurationFileName))
             {
-                richTextBoxInformationMain.AppendText(
-                    "Issues have been encountered while retrieving the TEAM configuration details. The following is returned: " +
-                    teamConfigResult + "\r\n\r\n");
+
+                var teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
+
+                if (teamConfigResult.Length > 0)
+                {
+                    richTextBoxInformationMain.AppendText(
+                        "Issues have been encountered while retrieving the TEAM configuration details. The following is returned: " +
+                        teamConfigResult + "\r\n\r\n");
+                }
+            }
+            else
+            {
+                richTextBoxInformationMain.AppendText("No valid TEAM configuration file was found. Please select a valid TEAM configuration file (settings tab => TEAM configuration file).\r\n\r\n");    
             }
         }
 
@@ -1126,14 +1124,14 @@ namespace Virtual_Data_Warehouse
 
             DialogResult result = fileBrowserDialog.ShowDialog();
 
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.InitialDirectory))
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.FileName))
             {
-                string[] files = Directory.GetFiles(fileBrowserDialog.InitialDirectory);
+                string[] files = Directory.GetFiles(Path.GetDirectoryName(fileBrowserDialog.FileName));
 
                 int teamFileCounter = 0;
                 foreach (string file in files)
                 {
-                    if (file.Contains("TEAM_configuration_"))
+                    if (file.Contains("TEAM_configuration"))
                     {
                         teamFileCounter++;
                     }
@@ -1158,8 +1156,15 @@ namespace Virtual_Data_Warehouse
                 }
                 else
                 {
-                    richTextBoxInformationMain.Text =
-                        "The path now points to a directory that contains TEAM configuration files.";
+                    richTextBoxInformationMain.Text = "";
+
+                    // Ensuring the path is set in memory also and reload the configuration
+                    VedwConfigurationSettings.TeamConfigurationPath = finalPath;
+
+                    LoadTeamConfigurationFile();
+                    richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains TEAM configuration files.");
+
+                    
                 }
 
             }
@@ -1169,6 +1174,8 @@ namespace Virtual_Data_Warehouse
         private void pictureBox4_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
+
+            var originalPath = textBoxInputPath.Text;
             fileBrowserDialog.SelectedPath = textBoxInputPath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
@@ -1201,13 +1208,14 @@ namespace Virtual_Data_Warehouse
 
                 if (fileCounter == 0)
                 {
-                    richTextBoxInformationMain.Text =
-                        "There are no Json files in this location. Did you select a correct Load Pattern directory?";
+                    richTextBoxInformationMain.Text = "There are no Json files in this location. Can you check if the selected directory contains Json files?";
+                    textBoxInputPath.Text = originalPath;
                 }
                 else
                 {
-                    richTextBoxInformationMain.Text =
-                        "The path now points to a directory that contains Json files.";
+                    richTextBoxInformationMain.Text = "The path now points to a directory that contains Json files.";
+                    // (Re)Create the tab pages based on available content.
+                    CreateCustomTabPages();
                 }
 
             }
@@ -1312,8 +1320,7 @@ namespace Virtual_Data_Warehouse
                 }
                 else
                 {
-                    richTextBoxInformationMain.Text =
-                        "The path now points to a directory that contains the loadPatternCollection.json Load Pattern Collection file.";
+                    richTextBoxInformationMain.Text = "The path now points to a directory that contains the loadPatternCollection.json Load Pattern Collection file.";
                 }
 
             }
