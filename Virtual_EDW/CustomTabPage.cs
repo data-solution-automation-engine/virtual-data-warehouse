@@ -30,9 +30,11 @@ namespace Virtual_Data_Warehouse
         {
         }
     }
-    
+
+
     class CustomTabPage : TabPage
     {
+
         string inputNiceName;
         internal Dictionary<string, VEDW_DataObjectMappingList> itemList;
         internal string connectionString;
@@ -91,6 +93,9 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         public CustomTabPage(string classification, string notes, Dictionary<string, VEDW_DataObjectMappingList> itemList, string connectionString)
         {
+            // Register the Handlebars helpers (extensions)
+            ClassHandlebarsHelpers.RegisterHandleBarsHelpers();
+
             this.itemList = itemList;
             this.connectionString = connectionString;
 
