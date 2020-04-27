@@ -1214,7 +1214,9 @@ namespace Virtual_Data_Warehouse
                 else
                 {
                     richTextBoxInformationMain.Text = "The path now points to a directory that contains Json files.";
+
                     // (Re)Create the tab pages based on available content.
+                    VedwConfigurationSettings.VedwInputPath = finalPath;
                     CreateCustomTabPages();
                 }
 
