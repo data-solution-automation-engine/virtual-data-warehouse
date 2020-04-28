@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Virtual_Data_Warehouse;
 
 namespace Virtual_Data_Warehouse
 {
@@ -54,12 +53,9 @@ namespace Virtual_Data_Warehouse
         {
             richTextBoxInformation.Clear();
 
-             
-
             var conn = new SqlConnection
             {
-                ConnectionString =
-                    radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
+                ConnectionString = radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
             };
 
             var hubIdentifier = TeamConfigurationSettings.HubTablePrefixValue;
@@ -82,39 +78,48 @@ namespace Virtual_Data_Warehouse
                             "FROM INFORMATION_SCHEMA.TABLES " +
                             "WHERE TABLE_NAME like '" + hubIdentifier + @"' " +
                             "ORDER BY 1";
-            conn.Open();
 
-            var hubQuery = new SqlCommand(queryHubs, conn);
-            var queryCommandReaderSource = hubQuery.ExecuteReader();
-
-            // Load the results of the query in a DataTable for display later (in a grid).
-            var dataTableHubs = new DataTable();
-            dataTableHubs.Load(queryCommandReaderSource);
-
-            queryCommandReaderSource.Dispose();
-            hubQuery.Dispose();
-
-            if (dataTableHubs.Rows.Count == 0)
+            try
             {
-                var environmentSelection = radioButtonPSA.Checked ? "Persistent Staging Area (virtual Data Vault model)" : "Integration Layer (physical Data Vault model)";
-                richTextBoxInformation.Text +=
-                    "There was no metadata available to display Hub content. Please check the metadata schema (are there any Hubs available?) or the database connection. The "+ environmentSelection + " is currently selected";
+                conn.Open();
+
+                var hubQuery = new SqlCommand(queryHubs, conn);
+                var queryCommandReaderSource = hubQuery.ExecuteReader();
+
+                // Load the results of the query in a DataTable for display later (in a grid).
+                var dataTableHubs = new DataTable();
+                dataTableHubs.Load(queryCommandReaderSource);
+
+                queryCommandReaderSource.Dispose();
+                hubQuery.Dispose();
+
+                if (dataTableHubs.Rows.Count == 0)
+                {
+                    var environmentSelection = radioButtonPSA.Checked ? "Persistent Staging Area (virtual Data Vault model)" : "Integration Layer (physical Data Vault model)";
+                    richTextBoxInformation.Text +=
+                        "There was no metadata available to display Hub content. Please check the metadata schema (are there any Hubs available?) or the database connection. The " + environmentSelection + " is currently selected";
+                }
+
+                // Dynamically create the radio buttons
+                var dynamicRadioButton = new RadioButton[dataTableHubs.Rows.Count];
+
+                var hubCounter = 0;
+                foreach (DataRow row in dataTableHubs.Rows)
+                {
+                    dynamicRadioButton[hubCounter] = new RadioButton();
+                    dynamicRadioButton[hubCounter].CheckedChanged += RadioButtonCheckedChanged;
+                    dynamicRadioButton[hubCounter].Text = row["HUB_NAME"].ToString();
+                    dynamicRadioButton[hubCounter].Location = new Point(10, 10 + hubCounter * 20);
+                    dynamicRadioButton[hubCounter].Width = 500;
+                    tabHub.Controls.Add(dynamicRadioButton[hubCounter]);
+                    hubCounter++;
+                }
+            }
+            catch
+            {
+                richTextBoxInformation.AppendText("There was an issue accessing the database.");
             }
 
-            // Dynamically create the radio buttons
-            var dynamicRadioButton = new RadioButton[dataTableHubs.Rows.Count];
-                  
-            var hubCounter = 0;
-            foreach (DataRow row in dataTableHubs.Rows)
-            {
-                dynamicRadioButton[hubCounter] = new RadioButton();
-                dynamicRadioButton[hubCounter].CheckedChanged += RadioButtonCheckedChanged;
-                dynamicRadioButton[hubCounter].Text = row["HUB_NAME"].ToString();
-                dynamicRadioButton[hubCounter].Location = new Point(10, 10 + hubCounter*20);
-                dynamicRadioButton[hubCounter].Width = 500;
-                tabHub.Controls.Add(dynamicRadioButton[hubCounter]);
-                hubCounter++;
-            }
         }
 
         // Event handler for dynamically generated radio buttons

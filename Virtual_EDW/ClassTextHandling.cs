@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -154,8 +152,15 @@ namespace Virtual_Data_Warehouse
                     //Check whether the token is a keyword, or between {{ }}  
                     String[] keyWordSql = {
                         "CREATE",
+                        "IF",
+                        "EXISTS",
+                        "DROP",
                         "VIEW",
                         "GO",
+                        "DATEADD",
+                        "ROW_NUMBER()",
+                        "PARTITION",
+                        "BY",
                         "TABLE",
                         "UNION",
                         "TRUNCATE",

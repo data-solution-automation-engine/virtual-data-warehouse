@@ -50,15 +50,18 @@ namespace Virtual_Data_Warehouse
         {
             public static string VedwSchema { get; set; } = "dbo";
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
+
+            public static string LoadPatternPath { get; set; } = Application.StartupPath + @"\LoadPatterns\";
+            public static string VedwInputPath { get; set; } = Application.StartupPath + @"\Output\";
             public static string VedwOutputPath { get; set; } = Application.StartupPath + @"\Output\";
-            public static string LoadPatternListPath { get; set; } = Application.StartupPath + @"\LoadPatterns\";
+            //public static string InputPath { get; set; } = Application.StartupPath + @"\LoadPatterns\";
             public static string WorkingEnvironment { get; set; }
 
             // Parameters that can be changed at runtime
             public static string hashingStartSnippet { get; set; }
             public static string hashingEndSnippet { get; set; }
             public static string hashingCollation { get; set; }
-            public static string hashingZeroKey { get; set; }
+            public static string hashingZeroKey { get; set; } = "0x00000000000000000000000000000000";
 
             public static List<LoadPattern> patternList { get; set; }
             public static List<LoadPatternDefinition> patternDefinitionList { get; set; }
@@ -91,7 +94,6 @@ namespace Virtual_Data_Warehouse
 
             internal static string ConnectionStringOmd { get; set; }
 
-
             internal static string DwhKeyIdentifier { get; set; }
 
             internal static string PsaKeyLocation { get; set; }
@@ -112,7 +114,6 @@ namespace Virtual_Data_Warehouse
 
             internal static string EtlProcessAttribute { get; set; }
 
-
             internal static string EtlProcessUpdateAttribute { get; set; }
 
             internal static string RowIdAttribute { get; set; }
@@ -120,7 +121,6 @@ namespace Virtual_Data_Warehouse
             internal static string RecordChecksumAttribute { get; set; }
 
             internal static string CurrentRowAttribute { get; set; }
-
 
             internal static string AlternativeRecordSourceAttribute { get; set; }
 
@@ -160,10 +160,6 @@ namespace Virtual_Data_Warehouse
 
             internal static string MetadataRepositoryType { get; set; }
         }
-
-
-
-
 
 
         public KeyValuePair<int, int> GetVersion(int selectedVersion)

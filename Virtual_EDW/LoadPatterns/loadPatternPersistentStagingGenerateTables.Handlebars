@@ -1,0 +1,29 @@
+{{#each dataObjectMappingList}}
+--
+-- Staging Area table creation statement for {{targetDataObject.name}}
+-- Generated at {{../generationSpecificMetadata.generationDateTime}}
+--
+
+USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
+GO
+
+IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
+DROP TABLE [{{targetDataObject.name}}]
+
+CREATE TABLE [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+(
+   [{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL, 
+   [{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL,
+   [{{../metadataConfiguration.eventDateTimeAttribute}}] [datetime2](7) NOT NULL,
+   [{{../metadataConfiguration.recordSourceAttribute}}] [nvarchar](100) NOT NULL,
+   [{{../metadataConfiguration.sourceRowIdAttribute}}] int NOT NULL,
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
+   [{{../metadataConfiguration.recordChecksumAttribute}}] binary(16) NOT NULL,
+   {{#each dataItemMapping}}
+   [{{sourceDataItem.name}}] [varchar](100){{#unless @last}},{{/unless}}
+   {{/each}}
+)
+{{/each}}
+
+
+

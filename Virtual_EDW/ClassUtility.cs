@@ -1,12 +1,11 @@
-﻿using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
-using static Virtual_Data_Warehouse.FormBase;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace Virtual_Data_Warehouse
 {
@@ -161,6 +160,34 @@ namespace Virtual_Data_Warehouse
             }
 
             return eventLog;
+        }
+
+        internal static Dictionary<String, String> MatchConnectionKey(string connectionKey)
+        {
+            Dictionary<string, string> returnValue = new Dictionary<string, string>();
+
+            if (connectionKey == "SourceDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringSource);
+            }
+            else if (connectionKey == "StagingDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringStg);
+            }
+            else if (connectionKey == "PersistentStagingDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringHstg);
+            }
+            else if (connectionKey == "IntegrationDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringInt);
+            }
+            else if (connectionKey == "PresentationDatabase")
+            {
+                returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringPres);
+            }
+
+            return returnValue;
         }
     }
 }

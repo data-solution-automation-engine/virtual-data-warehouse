@@ -66,18 +66,6 @@
     "loadPatternNotes": ""
   },
   {
-    "loadPatternName": "Persistent Staging Area 001 Full Outer Join Insert Pattern",
-    "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "loadPatternPersistentStagingFullOuterJoin.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Persistent Staging Area 001 Simplified View Pattern",
-    "loadPatternType": "PersistentStagingArea",
-    "loadPatternFilePath": "loadPatternPersistentStagingViewSimplified.handlebars",
-    "loadPatternNotes": "This PSA pattern does not contain a full row checksum and CDC operation check, but just inserts STG records if they haven't been processed already."
-  },  
-  {
     "loadPatternName": "Persistent Staging Area 001 View Pattern",
     "loadPatternType": "PersistentStagingArea",
     "loadPatternFilePath": "loadPatternPersistentStagingView.handlebars",
@@ -89,7 +77,19 @@
     "loadPatternFilePath": "loadPatternPersistentStagingViewWithDedup.handlebars",
     "loadPatternNotes": ""
   },
-    {
+  {
+    "loadPatternName": "Persistent Staging Area 001 Full Outer Join Insert Pattern",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternFilePath": "loadPatternPersistentStagingFullOuterJoin.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Persistent Staging Area 001 Simplified View Pattern",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternFilePath": "loadPatternPersistentStagingViewSimplified.handlebars",
+    "loadPatternNotes": "This PSA pattern does not contain a full row checksum and CDC operation check, but just inserts STG records if they haven't been processed already."
+  },
+  {
     "loadPatternName": "Persistent Staging Area 002 Insert Into Pattern",
     "loadPatternType": "PersistentStagingArea",
     "loadPatternFilePath": "loadPatternPersistentStagingInsertInto.handlebars",

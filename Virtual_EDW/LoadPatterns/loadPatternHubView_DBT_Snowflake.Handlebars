@@ -1,23 +1,16 @@
+\{{ config(materialized='view') }}  
 --
 -- Hub View definition for {{generationSpecificMetadata.selectedDataObject}}
 -- Generated at {{generationSpecificMetadata.generationDateTime}}
 --
-GO
-USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
-GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
-GO
-
-CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
 SELECT hub.*
 FROM (
 {{#each dataObjectMappingList}}{{#if @first}}
 SELECT
-    HASHBYTES('MD5', {{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
+    MD5({{#each businessKey}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
     {{#each businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
+      COALESCE(RTRIM(CAST({{targetDataItem.name}} AS NVARCHAR(100))), 'N/A') || '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
     -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
@@ -38,7 +31,7 @@ FROM
         CAST({{sourceDataItem.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}]
+    FROM VDW.{{sourceDataObject.name}}
     WHERE {{#each businessKey}}{{#each businessKeyComponentMapping}}
         {{sourceDataItem.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
@@ -55,7 +48,7 @@ GROUP BY {{#each businessKey}}{{#each businessKeyComponentMapping}}
 WHERE ROW_NR = 1
 UNION
 SELECT 
-  0x00000000000000000000000000000000,
+  MD5('ZeroRecord'),
   - 1,
   '1900-01-01',
   'Data Warehouse',{{#each dataObjectMappingList}}{{#if @first}}{{#each businessKey}}{{#each businessKeyComponentMapping}}

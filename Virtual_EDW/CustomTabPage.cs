@@ -1,17 +1,14 @@
-﻿using HandlebarsDotNet;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Forms;
-using static Virtual_Data_Warehouse.FormBase;
+using HandlebarsDotNet;
+using Newtonsoft.Json;
 
 namespace Virtual_Data_Warehouse
 {
@@ -33,14 +30,14 @@ namespace Virtual_Data_Warehouse
         {
         }
     }
-    
+
+
     class CustomTabPage : TabPage
     {
-        string inputNiceName;
-        StringBuilder inputMetadataQuery = new StringBuilder();
 
-        internal LoadPatternDefinition input;
-        internal List<string> itemList;
+        string inputNiceName;
+        internal Dictionary<string, VEDW_DataObjectMappingList> itemList;
+        internal string connectionString;
 
         // Objects on main Tab Page
         Panel localPanel;
@@ -94,12 +91,15 @@ namespace Virtual_Data_Warehouse
         /// <summary>
         /// Constructor to instantiate a new Custom Tab Page
         /// </summary>
-        /// <param name="input"></param>
-        public CustomTabPage(LoadPatternDefinition input, List<string> itemList)
+        public CustomTabPage(string classification, string notes, Dictionary<string, VEDW_DataObjectMappingList> itemList, string connectionString)
         {
-            this.input = input;
+            // Register the Handlebars helpers (extensions)
+            ClassHandlebarsHelpers.RegisterHandleBarsHelpers();
+
             this.itemList = itemList;
-            inputNiceName = Regex.Replace(input.LoadPatternType, "(\\B[A-Z])", " $1");
+            this.connectionString = connectionString;
+
+            inputNiceName = Regex.Replace(classification, "(\\B[A-Z])", " $1");
 
             displayJsonFlag = true;
             generateInDatabaseFlag = true;
@@ -108,7 +108,7 @@ namespace Virtual_Data_Warehouse
             #region Main Tab Page
 
             // Base properties of the custom tab page
-            Name = $"tabPage{input.LoadPatternType}";
+            Name = $"{classification}";
             Text = inputNiceName;
             BackColor = Color.Transparent;
             BorderStyle = BorderStyle.None;
@@ -128,7 +128,7 @@ namespace Virtual_Data_Warehouse
             localPanel.Controls.Add(localButtonGenerate);
             localButtonGenerate.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             localButtonGenerate.Location = new Point(17, 542);
-            localButtonGenerate.Name = $"enerate{input.LoadPatternType}";
+            localButtonGenerate.Name = $"enerate{classification}";
             localButtonGenerate.Size = new Size(109, 40);
             localButtonGenerate.Text = $"Generate {inputNiceName}";
             localButtonGenerate.Click += new EventHandler(Generate);
@@ -139,7 +139,7 @@ namespace Virtual_Data_Warehouse
             localLabelProcessing.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelProcessing.Location = new Point(14, 12);
             localLabelProcessing.Size = new Size(123, 13);
-            localLabelProcessing.Name = $"label{input.LoadPatternType}Processing";
+            localLabelProcessing.Name = $"label{classification}Processing";
             localLabelProcessing.Text = $"{inputNiceName} Processing";
 
 
@@ -162,7 +162,7 @@ namespace Virtual_Data_Warehouse
             localCheckedListBox.Size = new Size(393, 377);
             localCheckedListBox.BorderStyle = BorderStyle.FixedSingle;
             localCheckedListBox.CheckOnClick = true;
-            localCheckedListBox.Name = $"checkedListBox{input.LoadPatternType}";
+            localCheckedListBox.Name = $"checkedListBox{classification}";
 
             // Add User feedback RichTextBox (left hand side of form)
             localRichTextBox = new RichTextBox();
@@ -203,7 +203,7 @@ namespace Virtual_Data_Warehouse
             localTabControl.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
             localTabControl.Location = new Point(416, 9);
             localTabControl.Size = new Size(896, 573);
-            localTabControl.Name = $"tabControl{input.LoadPatternType}";
+            localTabControl.Name = $"tabControl{classification}";
             localTabControl.BackColor = Color.White;
             localTabControl.SelectedIndexChanged += new EventHandler(SyntaxHighlightsHandlebars);
 
@@ -236,7 +236,7 @@ namespace Virtual_Data_Warehouse
             localComboBoxGenerationPattern.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localComboBoxGenerationPattern.Location = new Point(108, 8);
             localComboBoxGenerationPattern.Size = new Size(496, 21);
-            localComboBoxGenerationPattern.Name = $"comboBox{input.LoadPatternType}Pattern";
+            localComboBoxGenerationPattern.Name = $"comboBox{classification}Pattern";
             localComboBoxGenerationPattern.SelectedIndexChanged += new EventHandler(DisplayPattern);
 
             // Add 'Active Pattern' Label
@@ -245,7 +245,7 @@ namespace Virtual_Data_Warehouse
             localLabelActivePattern.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelActivePattern.Location = new Point(2, 11);
             localLabelActivePattern.Size = new Size(77, 13);
-            localLabelActivePattern.Name = $"label{input.LoadPatternType}ActivePattern";
+            localLabelActivePattern.Name = $"label{classification}ActivePattern";
             localLabelActivePattern.Text = "Active Pattern:";
 
             // Add 'File Path' Label
@@ -254,7 +254,7 @@ namespace Virtual_Data_Warehouse
             localLabelFilePath.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelFilePath.Location = new Point(2, 34);
             localLabelFilePath.Size = new Size(60, 13);
-            localLabelFilePath.Name = $"label{input.LoadPatternType}FilePath";
+            localLabelFilePath.Name = $"label{classification}FilePath";
             localLabelFilePath.Text = @"File Path:";
 
             // Add 'Full Path' Label
@@ -263,7 +263,7 @@ namespace Virtual_Data_Warehouse
             localLabelFullFilePath.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelFullFilePath.Location = new Point(105, 34);
             localLabelFullFilePath.Size = new Size(650, 13);
-            localLabelFullFilePath.Name = $"label{input.LoadPatternType}FullFilePath";
+            localLabelFullFilePath.Name = $"label{classification}FullFilePath";
             localLabelFullFilePath.Text = @"<path>";
 
             // Add 'Save Pattern' Button
@@ -273,7 +273,7 @@ namespace Virtual_Data_Warehouse
             localSavePattern.Location = new Point(610, 7);
             localSavePattern.Size = new Size(101, 23);
             localSavePattern.Text = $"Save updates";
-            localSavePattern.Name = $"Generate{input.LoadPatternType}";
+            localSavePattern.Name = $"Generate{classification}";
             localSavePattern.Click += new EventHandler(SavePattern);
 
             // Add 'Generation Pattern' RichTextBox to Pattern tab
@@ -291,7 +291,7 @@ namespace Virtual_Data_Warehouse
             #region Constructor Methods
 
             // Populate the Combo Box
-            LoadTabPageComboBox(input.LoadPatternType);
+            LoadTabPageComboBox(classification);
 
             // Populate the Checked List Box
             SetItemList(itemList);
@@ -304,7 +304,7 @@ namespace Virtual_Data_Warehouse
             }
 
             // Initial documentation as per the definition notes
-            localRichTextBox.AppendText(input.LoadPatternNotes);
+            localRichTextBox.AppendText(notes);
 
             // Prevention of double hitting of some event handlers
             startUpIndicator = false;
@@ -333,7 +333,7 @@ namespace Virtual_Data_Warehouse
             SetItemList(itemList);
         }
 
-        public void SetItemList(List<string> itemList)
+        public void SetItemList(Dictionary<string, VEDW_DataObjectMappingList> itemList)
         {
             // Copy the input variable to the local item list
             this.itemList = itemList;
@@ -342,7 +342,7 @@ namespace Virtual_Data_Warehouse
             localCheckedListBox.Items.Clear();
 
             // Add items to the Checked List Box, if it satisfies the filter criterion
-            foreach (string item in itemList)
+            foreach (string item in itemList.Keys)
             {
                 if (item.Contains(localTextBoxFilter.Text))
                 {
@@ -372,14 +372,13 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-
         private void DisplayPattern(object o, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = VedwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
+            var loadPattern = FormBase.VedwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
             
             // Set the label with the path so it's visible to the user where the file is located
-            string localFullPath = Path.Combine(VedwConfigurationSettings.LoadPatternListPath, loadPattern.LoadPatternFilePath);
+            string localFullPath = Path.Combine(FormBase.VedwConfigurationSettings.LoadPatternPath, loadPattern.LoadPatternFilePath);
 
             localLabelFullFilePath.Text = localFullPath;
 
@@ -426,7 +425,6 @@ namespace Virtual_Data_Warehouse
             OnClearMainText(this, new MyClearArgs());
         }
 
-
         void SavePattern(object o, EventArgs e)
         {
             RaiseOnClearMainText();
@@ -454,10 +452,9 @@ namespace Virtual_Data_Warehouse
             DoWork();
         }
 
-
         void DoWork()
         {
-            Utility.CreateSchema(TeamConfigurationSettings.ConnectionStringStg);
+            Utility.CreateSchema(FormBase.TeamConfigurationSettings.ConnectionStringStg);
             localRichTextBox.Clear();
             GenerateFromPattern();
         }
@@ -473,20 +470,6 @@ namespace Virtual_Data_Warehouse
             RaiseOnClearMainText();
             localTabControl.SelectedIndex = 0;
 
-            var connOmd = new SqlConnection { ConnectionString = TeamConfigurationSettings.ConnectionStringOmd };
-            // Populate the main list of source-to-target mappings (base query)
-            var metadataQuery = input.LoadPatternBaseQuery;
-            var metadataDataTable = Utility.GetDataTable(ref connOmd, metadataQuery);
-
-            // Populate the attribute mappings
-            // Create the column-to-column mapping
-            var columnMetadataQuery = input.LoadPatternAttributeQuery;
-            var columnMetadataDataTable = Utility.GetDataTable(ref connOmd, columnMetadataQuery);
-
-            // Populate the additional business key information (i.e. links)
-            var additionalBusinessKeyQuery = input.LoadPatternAdditionalBusinessKeyQuery;
-            var additionalBusinessKeyDataTable = Utility.GetDataTable(ref connOmd, additionalBusinessKeyQuery);
-
             // Loop through the checked items, select the right mapping and generate the pattern
             if (localCheckedListBox.CheckedItems.Count != 0)
             {
@@ -495,139 +478,23 @@ namespace Virtual_Data_Warehouse
                     var targetTableName = localCheckedListBox.CheckedItems[x].ToString();
                     localRichTextBox.AppendText(@"Processing generation for " + targetTableName + ".\r\n");
 
-                    DataRow[] mappingRows = null;
-                    try
-                    {
-                        mappingRows = metadataDataTable.Select("[TARGET_NAME] = '" + targetTableName + "'");
-                    }
-                    catch (Exception ex)
-                    {
-                        RaiseOnChangeMainText("There was an error generating the output, this happened when interpreting the source-to-mapping rows. " +
-                            "\r\n\r\nThe query used was:" + input.LoadPatternBaseQuery + ".\r\n\r\nThe error message was:" + ex);
-                    }
-
-                    // Move the data table to the class instance
-                    List<SourceToTargetMapping> sourceToTargetMappingList = new List<SourceToTargetMapping>();
-
-                    if (mappingRows != null)
-                    {
-                        foreach (DataRow row in mappingRows)
-                        {
-
-                            #region Business Key
-                            // Creating the Business Key definition, using the available components (see above)
-                            List<BusinessKey> businessKeyList = new List<BusinessKey>();
-                            BusinessKey businessKey =
-                                new BusinessKey
-                                {
-                                    businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)row["SOURCE_BUSINESS_KEY_DEFINITION"], (string)row["TARGET_BUSINESS_KEY_DEFINITION"]),
-                                    surrogateKey = (string)row["SURROGATE_KEY"]
-                                };
-                            businessKeyList.Add(businessKey);
-                            #endregion
-
-                            #region Column Mapping
-                            // Create the column-to-column mapping
-                            List<ColumnMapping> columnMappingList = new List<ColumnMapping>();
-                            if (columnMetadataDataTable != null && columnMetadataDataTable.Rows.Count > 0)
-                            {
-                                DataRow[] columnRows = columnMetadataDataTable.Select("[TARGET_NAME] = '" + targetTableName + "' AND [SOURCE_NAME] = '" + (string)row["SOURCE_NAME"] + "'");
-
-                                foreach (DataRow column in columnRows)
-                                {
-                                    ColumnMapping columnMapping = new ColumnMapping();
-                                    Column sourceColumn = new Column();
-                                    Column targetColumn = new Column();
-
-                                    sourceColumn.columnName = (string)column["SOURCE_ATTRIBUTE_NAME"];
-                                    targetColumn.columnName = (string)column["TARGET_ATTRIBUTE_NAME"];
-
-                                    columnMapping.sourceColumn = sourceColumn;
-                                    columnMapping.targetColumn = targetColumn;
-
-                                    columnMappingList.Add(columnMapping);
-                                }
-                            }
-                            #endregion
-
-                            #region Additional Business Keys
-                            if (additionalBusinessKeyDataTable != null && additionalBusinessKeyDataTable.Rows.Count > 0)
-                            {
-                                DataRow[] additionalBusinessKeyRows = additionalBusinessKeyDataTable.Select("[LINK_NAME] = '" + targetTableName + "'");
-
-                                foreach (DataRow additionalKeyRow in additionalBusinessKeyRows)
-                                {
-                                    var hubBusinessKey = new BusinessKey();
-
-                                    hubBusinessKey.businessKeyComponentMapping = InterfaceHandling.BusinessKeyComponentMappingList((string)additionalKeyRow["HUB_SOURCE_BUSINESS_KEY_DEFINITION"], (string)additionalKeyRow["HUB_TARGET_BUSINESS_KEY_DEFINITION"]);
-                                    hubBusinessKey.surrogateKey = (string)additionalKeyRow["HUB_TARGET_KEY_NAME_IN_LINK"];
-
-                                    businessKeyList.Add(hubBusinessKey); // Adding the Link Business Key
-                                }
-                            }
-                            #endregion
-
-
-                            #region Lookup Table
-                            // Define a lookup table, in case there is a desire to do key lookups.
-                            var lookupTable = (string)row["TARGET_NAME"];
-                            if (TeamConfigurationSettings.TableNamingLocation == "Prefix")
-                            {
-                                int prefixLocation = lookupTable.IndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-                                if (prefixLocation != -1)
-                                {
-                                    lookupTable = lookupTable
-                                        .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
-                                        .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
-                                }
-                            }
-                            else
-                            {
-                                int prefixLocation = lookupTable.LastIndexOf(TeamConfigurationSettings.StgTablePrefixValue);
-                                if (prefixLocation != -1)
-                                {
-                                    lookupTable = lookupTable
-                                        .Remove(prefixLocation, TeamConfigurationSettings.StgTablePrefixValue.Length)
-                                        .Insert(prefixLocation, TeamConfigurationSettings.PsaTablePrefixValue);
-                                }
-                            }
-                            #endregion
-
-                            // Add the created Business Key to the source-to-target mapping
-                            var sourceToTargetMapping = new SourceToTargetMapping();
-
-                            sourceToTargetMapping.sourceTable = (string)row["SOURCE_NAME"];  // Source table
-                            sourceToTargetMapping.targetTable = (string)row["TARGET_NAME"];  // Target table
-                            sourceToTargetMapping.lookupTable = lookupTable; // Lookup Table
-                            sourceToTargetMapping.targetTableHashKey = (string)row["SURROGATE_KEY"]; // Surrogate Key
-                            sourceToTargetMapping.businessKey = businessKeyList; // Business Key
-                            sourceToTargetMapping.filterCriterion = (string)row["FILTER_CRITERIA"]; // Filter criterion
-                            sourceToTargetMapping.columnMapping = columnMappingList; // Column to column mapping
-
-                            // Add the source-to-target mapping to the mapping list
-                            sourceToTargetMappingList.Add(sourceToTargetMapping);
-                        }
-                    }
-
-                    // Create an instance of the 'MappingList' class / object model 
-                    SourceToTargetMappingList sourceTargetMappingList = new SourceToTargetMappingList();
-                    sourceTargetMappingList.individualSourceToTargetMapping = sourceToTargetMappingList;
-                    sourceTargetMappingList.metadataConfiguration = new MetadataConfiguration();
-                    sourceTargetMappingList.mainTable = targetTableName;
+                    // Only process the selected items in the total of availabel source-to-target mappings
+                    VEDW_DataObjectMappingList dataObjectMappingList = new VEDW_DataObjectMappingList();
+                    itemList.TryGetValue(targetTableName, out dataObjectMappingList);
 
                     // Return the result to the user
                     try
                     {
                         // Compile the template, and merge it with the metadata
                         var template = Handlebars.Compile(localRichTextBoxGenerationPattern.Text);
-                        var result = template(sourceTargetMappingList);
+                        var result = template(dataObjectMappingList);
 
                         // Check if the metadata needs to be displayed
                         if (displayJsonFlag)
                         {
                             try
                             {
-                                var json = JsonConvert.SerializeObject(sourceTargetMappingList, Formatting.Indented);
+                                var json = JsonConvert.SerializeObject(dataObjectMappingList, Formatting.Indented);
                                 localRichTextBoxGenerationOutput.AppendText(json + "\r\n\r\n");
                             }
                             catch (Exception ex)
@@ -643,15 +510,15 @@ namespace Virtual_Data_Warehouse
                         EventLog fileSaveEventLog = new EventLog();
                         if (saveOutputFileFlag)
                         {
-                            fileSaveEventLog = Utility.SaveOutputToDisk(VedwConfigurationSettings.VedwOutputPath + @"\Output_" + targetTableName + ".sql", result);
+                            fileSaveEventLog = Utility.SaveOutputToDisk(FormBase.VedwConfigurationSettings.VedwOutputPath + targetTableName + ".sql", result);
                         }
 
                         //Generate in database
                         EventLog databaseEventLog = new EventLog();
                         if (generateInDatabaseFlag)
                         {
-                            var localConn = input.MatchConnectionKey();
-                            var conn = new SqlConnection { ConnectionString = localConn[input.LoadPatternConnectionKey] };
+                            var localConn = Utility.MatchConnectionKey(connectionString);
+                            var conn = new SqlConnection { ConnectionString = localConn[connectionString]};
 
                             databaseEventLog = Utility.ExecuteOutputInDatabase(conn, result);
                         }
@@ -677,8 +544,8 @@ namespace Virtual_Data_Warehouse
                 localRichTextBox.AppendText($"There was no metadata selected to generate {inputNiceName} code. Please check the metadata schema - are there any {inputNiceName} objects selected?");
             }
 
-            connOmd.Close();
-            connOmd.Dispose();
+            //connOmd.Close();
+            //connOmd.Dispose();
 
             // Report back to the user
             int errorCounter = 0;
@@ -692,8 +559,8 @@ namespace Virtual_Data_Warehouse
                 RaiseOnChangeMainText(individualEvent.eventDescription);
             }
 
-            RaiseOnChangeMainText($"\r\n\r\n{errorCounter} errors have been found.\r\n");
-            RaiseOnChangeMainText($"Associated scripts have been saved in {VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            RaiseOnChangeMainText($"\r\n{errorCounter} error(s) have been found.\r\n");
+            RaiseOnChangeMainText($"\r\nAssociated scripts have been saved in {FormBase.VedwConfigurationSettings.VedwOutputPath}.\r\n");
 
             // Apply syntax highlighting
             SyntaxHighlight();
@@ -709,7 +576,7 @@ namespace Virtual_Data_Warehouse
             bool available = false;
             try
             {
-                var patternList = VedwConfigurationSettings.patternList;
+                var patternList = FormBase.VedwConfigurationSettings.patternList;
 
                 localComboBoxGenerationPattern.Items.Clear();
                 localRichTextBoxGenerationPattern.Clear();

@@ -35,10 +35,14 @@ namespace Virtual_Data_Warehouse
 
             // Evaluate the query types based on the environments / radio buttons
             string environmentSnippet = "";
+            string schemaName = "";
+            string hubSchemaName = "";
 
             if (radioButtonPSA.Checked)
             {
                 environmentSnippet=TeamConfigurationSettings.PsaDatabaseName;
+                schemaName = VedwConfigurationSettings.VedwSchema;
+                hubSchemaName = VedwConfigurationSettings.VedwSchema;
             }
             else if (radioButtonIntegrationLayer.Checked)
             {
@@ -82,21 +86,29 @@ namespace Virtual_Data_Warehouse
             WHERE sat.[TARGET_TYPE]='Normal'
             ");
 
+
+
             var metaDataTable = Utility.GetDataTable(ref connOmd, queryTableArraySat.ToString());
 
-            if (metaDataTable.Rows.Count == 0)
+            if (metaDataTable == null || metaDataTable.Rows.Count == 0)
             {
-                richTextBoxInformationMain.Text += "There was no metadata available to create Satellite Referential Integrity scripts.";
+                richTextBoxInformationMain.Text += "There was no metadata available to create Satellite Referential Integrity scripts. Is the database available?\r\n";
             }
             else
             {
                 foreach (DataRow row in metaDataTable.Rows)
                 {
+                    if (radioButtonIntegrationLayer.Checked)
+                    {
+                        schemaName = (string)row["TARGET_SCHEMA_NAME"];
+                        hubSchemaName = (string) row["HUB_SCHEMA_NAME"];
+                    }
+
                     queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + (string)row["TARGET_NAME"] + "'");
-                    queryRi.AppendLine("FROM [" + environmentSnippet + "].[" + (string)row["TARGET_SCHEMA_NAME"] + "].[" + (string)row["TARGET_NAME"] + "] sat");
+                    queryRi.AppendLine("FROM [" + environmentSnippet + "].["+schemaName+"].[" + (string)row["TARGET_NAME"] + "] sat");
                     queryRi.AppendLine("WHERE NOT EXISTS");
                     queryRi.AppendLine("(");
-                    queryRi.AppendLine("  SELECT 1 FROM [" + environmentSnippet + "].[" + (string)row["HUB_SCHEMA_NAME"] + "].[" + (string)row["HUB_NAME"] + "] hub WHERE sat.["+(string)row["SURROGATE_KEY"]+"] = hub.["+(string)row["SURROGATE_KEY"]+"]");
+                    queryRi.AppendLine("  SELECT 1 FROM [" + environmentSnippet + "].[" + hubSchemaName + "].[" + (string)row["HUB_NAME"] + "] hub WHERE sat.["+(string)row["SURROGATE_KEY"]+"] = hub.["+(string)row["SURROGATE_KEY"]+"]");
                     queryRi.AppendLine(")");
 
                     if (radioButtonDeltaValidation.Checked)
@@ -159,20 +171,26 @@ namespace Virtual_Data_Warehouse
             queryRi.AppendLine("-- Link validation");
             queryRi.AppendLine();
 
-            if (metaDataTable.Rows.Count == 0)
+            if (metaDataTable == null || metaDataTable.Rows.Count == 0)
             {
                 richTextBoxInformationMain.Text +=
-                    "There was no metadata available to create Link Referential Integrity scripts.";
+                    "There was no metadata available to create Link Referential Integrity scripts.\r\n";
             }
             else
             {
                 foreach (DataRow row in metaDataTable.Rows)
                 {
+                    if (radioButtonIntegrationLayer.Checked)
+                    {
+                        schemaName = (string)row["LINK_SCHEMA_NAME"];
+                        hubSchemaName = (string)row["HUB_SCHEMA_NAME"];
+                    }
+
                     queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + (string)row["LINK_NAME"] + "'");
-                    queryRi.AppendLine("FROM [" + environmentSnippet + "].[" + (string)row["LINK_SCHEMA_NAME"] + "].[" + (string)row["LINK_NAME"] + "] lnk");
+                    queryRi.AppendLine("FROM [" + environmentSnippet + "].[" + schemaName + "].[" + (string)row["LINK_NAME"] + "] lnk");
                     queryRi.AppendLine("WHERE NOT EXISTS");
                     queryRi.AppendLine("(");
-                    queryRi.AppendLine("  SELECT 1 FROM [" + environmentSnippet + "].[" + (string)row["HUB_SCHEMA_NAME"] + "].[" + (string)row["HUB_NAME"] + "] hub WHERE lnk.[" + (string)row["HUB_TARGET_KEY_NAME_IN_LINK"] + "] = hub.[" + (string)row["HUB_SURROGATE_KEY"] + "]");
+                    queryRi.AppendLine("  SELECT 1 FROM [" + environmentSnippet + "].[" + hubSchemaName + "].[" + (string)row["HUB_NAME"] + "] hub WHERE lnk.[" + (string)row["HUB_TARGET_KEY_NAME_IN_LINK"] + "] = hub.[" + (string)row["HUB_SURROGATE_KEY"] + "]");
                     queryRi.AppendLine(")");
 
                     if (radioButtonDeltaValidation.Checked)
@@ -242,19 +260,25 @@ namespace Virtual_Data_Warehouse
 
             metaDataTable = Utility.GetDataTable(ref connOmd, queryTableArrayLsat.ToString());
 
-            if (metaDataTable.Rows.Count == 0)
+            if (metaDataTable == null || metaDataTable.Rows.Count == 0)
             {
-                richTextBoxInformationMain.Text += "There was no metadata available to create Link Satellite Referential Integrity scripts.";
+                richTextBoxInformationMain.Text += "There was no metadata available to create Link Satellite Referential Integrity scripts.\r\n";
             }
             else
             {
                 foreach (DataRow row in metaDataTable.Rows)
                 {
+                    if (radioButtonIntegrationLayer.Checked)
+                    {
+                        schemaName = (string)row["TARGET_SCHEMA_NAME"];
+                        hubSchemaName = (string)row["LINK_SCHEMA_NAME"];
+                    }
+
                     queryRi.AppendLine("SELECT COUNT(*) AS RI_ISSUES, '" + (string)row["TARGET_NAME"] + "'");
-                    queryRi.AppendLine("FROM [" + environmentSnippet + "].[" + (string)row["TARGET_SCHEMA_NAME"] + "].[" + (string)row["TARGET_NAME"] + "] sat");
+                    queryRi.AppendLine("FROM [" + environmentSnippet + "].[" + schemaName + "].[" + (string)row["TARGET_NAME"] + "] sat");
                     queryRi.AppendLine("WHERE NOT EXISTS");
                     queryRi.AppendLine("(");
-                    queryRi.AppendLine("  SELECT 1 FROM [" + environmentSnippet + "].[" + (string)row["LINK_SCHEMA_NAME"] + "].[" + (string)row["LINK_NAME"] + "] lnk WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = lnk.[" + (string)row["SURROGATE_KEY"] + "]");
+                    queryRi.AppendLine("  SELECT 1 FROM [" + environmentSnippet + "].[" + hubSchemaName + "].[" + (string)row["LINK_NAME"] + "] lnk WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = lnk.[" + (string)row["SURROGATE_KEY"] + "]");
                     queryRi.AppendLine(")");
 
                     if (radioButtonDeltaValidation.Checked)

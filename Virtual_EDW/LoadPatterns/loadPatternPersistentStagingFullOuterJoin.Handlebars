@@ -1,21 +1,21 @@
 {{#each dataObjectMappingList}}
 --
--- Staging Area View definition for {{targetDataObject.name}}
+-- Landing <=> PSA full outer join query for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 
 GO
-USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
+USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
-GO
+PRINT 'Working on {{targetDataObject.name}}';
+PRINT GETDATE();
 
-CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
 WITH STG_CTE AS
 (
-SELECT
+SELECT  
+   [{{../metadataConfiguration.loadDateTimeAttribute}}], 
+   [{{../metadataConfiguration.eventDateTimeAttribute}}], 
    {{#each dataItemMapping}}
    [{{sourceDataItem.name}}] AS [{{targetDataItem.name}}],
    {{/each}}
@@ -24,12 +24,14 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItem.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
    {{/each}}
    ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{../metadataConfiguration.sourceDatabaseName}}].[dbo].[{{sourceDataObject.name}}]
+FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[landing].[{{sourceDataObject.name}}]
 ),
 PSA_CTE AS
 (
 SELECT
    A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
+   A.[{{../metadataConfiguration.loadDateTimeAttribute}}] AS [{{../metadataConfiguration.loadDateTimeAttribute}}], 
+   A.[{{../metadataConfiguration.eventDateTimeAttribute}}] AS [{{../metadataConfiguration.eventDateTimeAttribute}}], 
    {{#each dataItemMapping}}
    A.[{{sourceDataItem.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
@@ -46,14 +48,9 @@ JOIN
    A.[{{sourceDataItem.name}}] = B.[{{sourceDataItem.name}}] AND {{/each}} {{/each}}
    A.{{../metadataConfiguration.loadDateTimeAttribute}} = B.MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
    WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'Delete'
-)
+), MAIN_CTE AS
+(
 SELECT
-   {{#each dataItemMapping}}
-   CASE 
-     WHEN STG_CTE.{{#each ../businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
-     THEN PSA_CTE.[{{sourceDataItem.name}}]
-     ELSE STG_CTE.[{{sourceDataItem.name}}] 
-   END AS [{{sourceDataItem.name}}],{{/each}}
    CASE 
      WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL
      THEN PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
@@ -66,12 +63,27 @@ SELECT
          AND PSA_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
          AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change' ELSE 'No Change' 
    END AS {{../metadataConfiguration.changeDataCaptureAttribute}},
-   'PROFILER' AS {{../metadataConfiguration.recordSourceAttribute}},
    ROW_NUMBER() OVER
       (ORDER BY
          {{#each businessKey}}{{#each businessKeyComponentMapping}}CASE WHEN STG_CTE.[{{sourceDataItem.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItem.name}}] ELSE STG_CTE.[{{sourceDataItem.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}
       ) AS {{../metadataConfiguration.sourceRowIdAttribute}},
-   GETDATE() {{../metadataConfiguration.eventDateTimeAttribute}}
+   CASE 
+     WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL
+     THEN PSA_CTE.[{{../metadataConfiguration.loadDateTimeAttribute}}]
+     ELSE STG_CTE.[{{../metadataConfiguration.loadDateTimeAttribute}}]
+   END AS [{{../metadataConfiguration.loadDateTimeAttribute}}], 
+   CASE 
+     WHEN STG_CTE.{{#each businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL
+     THEN PSA_CTE.[{{../metadataConfiguration.eventDateTimeAttribute}}]
+     ELSE STG_CTE.[{{../metadataConfiguration.eventDateTimeAttribute}}]
+   END AS [{{../metadataConfiguration.eventDateTimeAttribute}}], 
+   {{#each dataItemMapping}}
+   CASE 
+     WHEN STG_CTE.{{#each ../businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
+     THEN PSA_CTE.[{{sourceDataItem.name}}]
+     ELSE STG_CTE.[{{sourceDataItem.name}}] 
+   END AS [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
+{{/each}}
 FROM STG_CTE
 FULL OUTER JOIN PSA_CTE ON {{#each businessKey}}  {{#each businessKeyComponentMapping}}
     PSA_CTE.[{{sourceDataItem.name}}] = STG_CTE.[{{sourceDataItem.name}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
@@ -84,4 +96,28 @@ WHERE
       ELSE 'No Change'
    END
 ) != 'No Change'
+)
+INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+(
+   [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.sourceRowIdAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each dataItemMapping}}
+   [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+)
+SELECT
+   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.sourceRowIdAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each dataItemMapping}}
+   [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+FROM MAIN_CTE;
 {{/each}}
