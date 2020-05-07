@@ -30,9 +30,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -194,8 +194,8 @@
             // 
             this.openVEDWConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
             this.openVEDWConfigurationSettingsFileToolStripMenuItem.Name = "openVEDWConfigurationSettingsFileToolStripMenuItem";
-            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
-            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Text = "Open VEDW Configuration Settings File";
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(265, 22);
+            this.openVEDWConfigurationSettingsFileToolStripMenuItem.Text = "Open VEDW Configuration File";
             this.openVEDWConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openVEDWConfigurationSettingsFileToolStripMenuItem_Click);
             // 
             // openTEAMConfigurationSettingsFileToolStripMenuItem
@@ -203,7 +203,7 @@
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Name = "openTEAMConfigurationSettingsFileToolStripMenuItem";
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(281, 22);
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Text = "Open TEAM Configuration Settings File";
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Text = "Open TEAM Configuration File";
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openTEAMConfigurationSettingsFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
@@ -443,27 +443,27 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLoadPatternCollection.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewLoadPatternCollection.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridViewLoadPatternCollection.Location = new System.Drawing.Point(3, 128);
             this.dataGridViewLoadPatternCollection.Name = "dataGridViewLoadPatternCollection";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(1324, 470);
             this.dataGridViewLoadPatternCollection.TabIndex = 104;
             // 
@@ -727,7 +727,7 @@
             this.MinimumSize = new System.Drawing.Size(1378, 835);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Virtual Enterprise Data Warehouse - v1.6.1";
+            this.Text = "Virtual Enterprise Data Warehouse - v1.6.2";
             this.Shown += new System.EventHandler(this.FormMain_Shown);
             this.ResizeEnd += new System.EventHandler(this.FormMain_ResizeEnd);
             this.SizeChanged += new System.EventHandler(this.FormMain_SizeChanged_1);

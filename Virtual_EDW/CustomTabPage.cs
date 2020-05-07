@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using HandlebarsDotNet;
 using Newtonsoft.Json;
+using Virtual_Data_Warehouse_Library;
 
 namespace Virtual_Data_Warehouse
 {
@@ -478,7 +479,7 @@ namespace Virtual_Data_Warehouse
                     var targetTableName = localCheckedListBox.CheckedItems[x].ToString();
                     localRichTextBox.AppendText(@"Processing generation for " + targetTableName + ".\r\n");
 
-                    // Only process the selected items in the total of availabel source-to-target mappings
+                    // Only process the selected items in the total of available source-to-target mappings
                     VEDW_DataObjectMappingList dataObjectMappingList = new VEDW_DataObjectMappingList();
                     itemList.TryGetValue(targetTableName, out dataObjectMappingList);
 
@@ -529,13 +530,7 @@ namespace Virtual_Data_Warehouse
                     }
                     catch (Exception ex)
                     {
-                        var localEvent = new Event
-                        {
-                            eventCode = 1,
-                            eventDescription = "The template could not be compiled, the error message is " + ex +"."
-                        };
-
-                        eventLog.Add(localEvent);
+                        eventLog.Add(Event.CreateNewEvent(EventTypes.Error, "The template could not be compiled. The message is: " + ex.Message + "\r\n\r\n"));
                     }
                 }
             }
@@ -596,7 +591,7 @@ namespace Virtual_Data_Warehouse
                 RaiseOnChangeMainText(ex.ToString());
             }
 
-            if (available == true)
+            if (available)
             {
                 localComboBoxGenerationPattern.SelectedItem = localComboBoxGenerationPattern.Items[0];
             }

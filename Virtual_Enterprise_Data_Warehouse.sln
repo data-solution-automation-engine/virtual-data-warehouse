@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual_Data_Warehouse", "V
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Virtual_Data_Warehouse_Installer", "Virtual_EDW_Installer\Virtual_EDW_Installer.vdproj", "{FFFAA8D4-DD12-4659-A020-1B76795C6491}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual_Data_Warehouse_Library", "Virtual_Data_Warehouse_Library\Virtual_Data_Warehouse_Library.csproj", "{04FD49A8-DF12-471A-A21B-589B1469D5A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -32,6 +34,16 @@ Global
 		{FFFAA8D4-DD12-4659-A020-1B76795C6491}.DVD-5|Any CPU.ActiveCfg = Debug
 		{FFFAA8D4-DD12-4659-A020-1B76795C6491}.Release|Any CPU.ActiveCfg = Release
 		{FFFAA8D4-DD12-4659-A020-1B76795C6491}.SingleImage|Any CPU.ActiveCfg = Release
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.CD_ROM|Any CPU.ActiveCfg = Debug|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.CD_ROM|Any CPU.Build.0 = Debug|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.SingleImage|Any CPU.ActiveCfg = Debug|Any CPU
+		{04FD49A8-DF12-471A-A21B-589B1469D5A1}.SingleImage|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using DataWarehouseAutomation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Virtual_Data_Warehouse_Library;
 
 namespace Virtual_Data_Warehouse
 {
@@ -43,23 +44,28 @@ namespace Virtual_Data_Warehouse
 
             InitializeComponent();
 
-            // Make sure the root directories exist, based on hard-coded (tool) parameters
-            // Also creates the initial file with the configuration if it doesn't exist already
-            EnvironmentConfiguration.InitialiseVedwRootPath();
+            // Make sure the root directories exist, based on (tool) parameters
+            EnvironmentConfiguration.InitialisePath(GlobalParameters.VedwConfigurationPath);
+            EnvironmentConfiguration.InitialisePath(VedwConfigurationSettings.VedwOutputPath);
+            EnvironmentConfiguration.InitialisePath(VedwConfigurationSettings.VedwInputPath);
 
-            // Load the VEDW settings information, to be able to locate the TEAM configuration file and load it
-            string loadVedwConfigurationResult = EnvironmentConfiguration.LoadVedwSettingsFile(
-                GlobalParameters.VedwConfigurationPath +
-                GlobalParameters.VedwConfigurationfileName +
-                GlobalParameters.VedwFileExtension);
+            // Create the initial configuration file if it doesn't exist (first time use or change of directory).
+            var initialConfigurationFile = new StringBuilder();
+            initialConfigurationFile.AppendLine("/* Virtual Enterprise Data Warehouse (VEDW) Core Settings */");
+            initialConfigurationFile.AppendLine("TeamConfigurationPath|" + VedwConfigurationSettings.TeamConfigurationPath); //Initially make this path the same as the VDW application root.
+            initialConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath);
+            initialConfigurationFile.AppendLine("InputPath|" + VedwConfigurationSettings.VedwInputPath);
+            initialConfigurationFile.AppendLine("LoadPatternPath|" + VedwConfigurationSettings.LoadPatternPath);
+            initialConfigurationFile.AppendLine("VedwSchema|vedw");
+            initialConfigurationFile.AppendLine("/* End of file */");
 
-            richTextBoxInformationMain.AppendText(loadVedwConfigurationResult + "\r\n\r\n");
+            EnvironmentConfiguration.CreateConfigurationFile(GlobalParameters.VedwConfigurationPath + GlobalParameters.VedwConfigurationfileName + GlobalParameters.VedwFileExtension, initialConfigurationFile);
 
-            // Load the TEAM configuration settings from the TEAM configuration directory
-            LoadTeamConfigurationFile();
+            // Load the VDW configuration from disk, commit to memory and display on the form.
+            richTextBoxInformationMain.AppendText(ApplyVdwConfigurationToMemory()+"\r\n");
 
-            // Make sure the retrieved variables are displayed on the form
-            UpdateVedwConfigurationSettingsOnForm();
+            // Load the TEAM configuration settings and commit to memory.
+            richTextBoxInformationMain.AppendText(ApplyTeamConfigurationToMemory());
 
             // Start monitoring the configuration directories for file changes
             // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
@@ -97,6 +103,283 @@ namespace Virtual_Data_Warehouse
             }
 
             startUpIndicator = false;
+        }
+
+        /// <summary>
+        /// Load the information from the VEDW configuration file into memory and display on the form. Returns the logging information as string.
+        /// </summary>
+        public string ApplyVdwConfigurationToMemory()
+        {
+            // Load the VDW settings information, to be able to locate the TEAM configuration file and load subsequently it as a next step.
+            var configList = EnvironmentConfiguration.LoadConfigurationFile(
+                GlobalParameters.VedwConfigurationPath +
+                GlobalParameters.VedwConfigurationfileName +
+                GlobalParameters.VedwFileExtension);
+
+            string returnValue;
+            string errorValue = "";
+            int errorCounter = 0;
+            string configurationValue;
+
+            configurationValue = "TeamConfigurationPath";
+            if (configList.ContainsKey(configurationValue))
+            {
+                VedwConfigurationSettings.TeamConfigurationPath = configList[configurationValue];
+            }
+            else
+            {
+                errorValue = errorValue +
+                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
+                errorCounter++;
+            }
+
+            configurationValue = "LoadPatternPath";
+            if (configList.ContainsKey(configurationValue))
+            {
+                VedwConfigurationSettings.LoadPatternPath = configList[configurationValue];
+            }
+            else
+            {
+                errorValue = errorValue +
+                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
+                errorCounter++;
+            }
+
+
+            configurationValue = "VedwOutputPath";
+            if (configList.ContainsKey(configurationValue))
+            {
+                VedwConfigurationSettings.VedwOutputPath = configList[configurationValue];
+            }
+            else
+            {
+                errorValue = errorValue +
+                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
+                errorCounter++;
+            }
+
+            configurationValue = "InputPath";
+            if (configList.ContainsKey(configurationValue))
+            {
+                VedwConfigurationSettings.VedwInputPath = configList[configurationValue];
+            }
+            else
+            {
+                errorValue = errorValue +
+                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>).\r\n";
+                errorCounter++;
+            }
+
+            configurationValue = "VedwSchema";
+            if (configList.ContainsKey(configurationValue))
+            {
+                VedwConfigurationSettings.VedwSchema = configList[configurationValue];
+            }
+            else
+            {
+                errorValue = errorValue +
+                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>).\r\n";
+                errorCounter++;
+            }
+
+            returnValue = "The configuration file " + GlobalParameters.VedwConfigurationPath +
+                          GlobalParameters.VedwConfigurationfileName +
+                          GlobalParameters.VedwFileExtension + " was loaded.";
+            if (errorCounter > 0)
+            {
+                returnValue = returnValue +
+                              $"\r\n\r\nHowever, the file was loaded with {errorCounter} error(s). The reported errors are:\r\n" +
+                              errorValue;
+            }
+
+            // Update the values on the form.
+            textBoxOutputPath.Text = VedwConfigurationSettings.VedwOutputPath;
+            textBoxLoadPatternPath.Text = VedwConfigurationSettings.LoadPatternPath;
+            textBoxTeamConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
+            textBoxInputPath.Text = VedwConfigurationSettings.VedwInputPath;
+            textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
+
+            return returnValue;
+        }
+
+
+        /// <summary>
+        /// Load the information from the TEAM configuration file into memory. Returns the logging information as string.
+        /// </summary>
+        public string ApplyTeamConfigurationToMemory()
+        {
+            var returnValue = new StringBuilder(); // Collecting information to feedback to user. returnValue;
+
+            // Load the rest of the (TEAM) configurations, from wherever they may be according to the VDW settings (the TEAM configuration file).
+            var teamConfigurationFileName = VedwConfigurationSettings.TeamConfigurationPath;
+            richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n");
+
+            if (File.Exists(teamConfigurationFileName))
+            {
+                var configList = EnvironmentConfiguration.LoadConfigurationFile(teamConfigurationFileName);
+
+                if (configList.Count == 0)
+                {
+                    returnValue.AppendLine("No lines detected in file " + teamConfigurationFileName + ". Is it empty?");
+                }
+
+                var connectionStringOmd = configList["connectionStringMetadata"];
+                connectionStringOmd = connectionStringOmd.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                var connectionStringSource = configList["connectionStringSource"];
+                connectionStringSource = connectionStringSource.Replace("Provider=SQLNCLI10;", "")
+                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                var connectionStringStg = configList["connectionStringStaging"];
+                connectionStringStg = connectionStringStg.Replace("Provider=SQLNCLI10;", "")
+                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                var connectionStringHstg = configList["connectionStringPersistentStaging"];
+                connectionStringHstg = connectionStringHstg.Replace("Provider=SQLNCLI10;", "")
+                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                var connectionStringInt = configList["connectionStringIntegration"];
+                connectionStringInt = connectionStringInt.Replace("Provider=SQLNCLI10;", "")
+                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                var connectionStringPres = configList["connectionStringPresentation"];
+                connectionStringPres = connectionStringPres.Replace("Provider=SQLNCLI10;", "")
+                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
+
+                // These variables are used as global variables throughout the application
+                // They will be set once after startup
+
+                string value;
+                string lookUpValue;
+
+                lookUpValue = "SourceDatabase";
+                if (configList.TryGetValue(lookUpValue, out value))
+                {
+                    TeamConfigurationSettings.SourceDatabaseName = value;
+                }
+                else
+                {
+                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                }
+
+                lookUpValue = "StagingDatabase";
+                if (configList.TryGetValue(lookUpValue, out value))
+                {
+                    TeamConfigurationSettings.StagingDatabaseName = value;
+                }
+                else
+                {
+                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                }
+
+                lookUpValue = "PersistentStagingDatabase";
+                if (configList.TryGetValue(lookUpValue, out value))
+                {
+                    TeamConfigurationSettings.PsaDatabaseName = value;
+                }
+                else
+                {
+                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                }
+
+                lookUpValue = "IntegrationDatabase";
+                if (configList.TryGetValue(lookUpValue, out value))
+                {
+                    TeamConfigurationSettings.IntegrationDatabaseName = value;
+                }
+                else
+                {
+                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                }
+
+                lookUpValue = "PresentationDatabase";
+                if (configList.TryGetValue(lookUpValue, out value))
+                {
+                    TeamConfigurationSettings.PresentationDatabaseName = value;
+                }
+                else
+                {
+                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                }
+
+                lookUpValue = "MetadataDatabase";
+                if (configList.TryGetValue(lookUpValue, out value))
+                {
+                    TeamConfigurationSettings.MetadataDatabaseName = value;
+                }
+                else
+                {
+                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                }
+
+                lookUpValue = "PhysicalModelServerName";
+                if (configList.TryGetValue(lookUpValue, out value))
+                {
+                    TeamConfigurationSettings.PhysicalModelServerName = value;
+                }
+                else
+                {
+                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                }
+
+                lookUpValue = "MetadataServerName";
+                if (configList.TryGetValue(lookUpValue, out value))
+                {
+                    TeamConfigurationSettings.MetadataServerName = value;
+                }
+                else
+                {
+                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
+                }
+
+                // 10
+                TeamConfigurationSettings.ConnectionStringSource = connectionStringSource;
+                TeamConfigurationSettings.ConnectionStringStg = connectionStringStg;
+                TeamConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
+                TeamConfigurationSettings.ConnectionStringInt = connectionStringInt;
+                TeamConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
+                TeamConfigurationSettings.ConnectionStringPres = connectionStringPres;
+
+                TeamConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
+                TeamConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
+                TeamConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];
+                TeamConfigurationSettings.SatTablePrefixValue = configList["SatTablePrefix"];
+                TeamConfigurationSettings.LinkTablePrefixValue = configList["LinkTablePrefix"];
+                
+                TeamConfigurationSettings.LsatPrefixValue = configList["LinkSatTablePrefix"];
+                TeamConfigurationSettings.DwhKeyIdentifier = configList["KeyIdentifier"];
+                TeamConfigurationSettings.SchemaName = configList["SchemaName"];
+                TeamConfigurationSettings.RowIdAttribute = configList["RowID"];
+                TeamConfigurationSettings.EventDateTimeAttribute = configList["EventDateTimeStamp"];
+                TeamConfigurationSettings.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
+                TeamConfigurationSettings.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
+                TeamConfigurationSettings.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
+                TeamConfigurationSettings.RecordSourceAttribute = configList["RecordSourceAttribute"];
+                TeamConfigurationSettings.EtlProcessAttribute = configList["ETLProcessID"];
+                
+                TeamConfigurationSettings.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
+                TeamConfigurationSettings.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
+                TeamConfigurationSettings.TableNamingLocation = configList["TableNamingLocation"];
+                TeamConfigurationSettings.KeyNamingLocation = configList["KeyNamingLocation"];
+                TeamConfigurationSettings.RecordChecksumAttribute = configList["RecordChecksum"];
+                TeamConfigurationSettings.CurrentRowAttribute = configList["CurrentRecordAttribute"];
+                TeamConfigurationSettings.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
+                TeamConfigurationSettings.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
+                TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute = configList["AlternativeRecordSourceFunction"];
+                TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTSFunction"];
+                
+                TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTSFunction"];
+                TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTS"];
+                TeamConfigurationSettings.PsaKeyLocation = configList["PSAKeyLocation"];
+                TeamConfigurationSettings.MetadataRepositoryType = configList["metadataRepositoryType"];
+            }
+            else
+            {
+                richTextBoxInformationMain.AppendText("No valid TEAM configuration file was found. Please select a valid TEAM configuration file (settings tab => TEAM configuration file).\r\n\r\n");
+            }
+
+
+            return returnValue.ToString();
         }
 
         public void PopulateLoadPatternCollectionDataGrid()
@@ -346,45 +629,6 @@ namespace Virtual_Data_Warehouse
                 connOmd.Dispose();
             }
         }
-        
-        private void LoadTeamConfigurationFile()
-        {
-            // Load the rest of the (TEAM) configurations, from wherever they may be according to the VEDW settings (the TEAM configuration file)\
-            var teamConfigurationFileName = VedwConfigurationSettings.TeamConfigurationPath;
-
-            richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n");
-
-            if (File.Exists(teamConfigurationFileName))
-            {
-
-                var teamConfigResult = EnvironmentConfiguration.LoadTeamConfigurationFile(teamConfigurationFileName);
-
-                if (teamConfigResult.Length > 0)
-                {
-                    richTextBoxInformationMain.AppendText(
-                        "Issues have been encountered while retrieving the TEAM configuration details. The following is returned: " +
-                        teamConfigResult + "\r\n\r\n");
-                }
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText("No valid TEAM configuration file was found. Please select a valid TEAM configuration file (settings tab => TEAM configuration file).\r\n\r\n");    
-            }
-        }
-
-        /// <summary>
-        /// This is the local updates on the VEDW specific configuration.
-        /// </summary>
-        private void UpdateVedwConfigurationSettingsOnForm()
-        {
-            textBoxOutputPath.Text = VedwConfigurationSettings.VedwOutputPath;
-            textBoxLoadPatternPath.Text = VedwConfigurationSettings.LoadPatternPath;
-            textBoxTeamConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
-            textBoxInputPath.Text = VedwConfigurationSettings.VedwInputPath;
-            textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
-
-        }
-
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         public static void RunFileWatcher()
@@ -757,7 +1001,7 @@ namespace Virtual_Data_Warehouse
                 textBoxTeamConfigurationPath.Text = textBoxTeamConfigurationPath.Text.Replace(@"\","");
             }
 
-            // Make the paths accessible from anywhere in the app (global parameters)
+            // Make sure that the updated paths are accessible from anywhere in the app (global parameters)
             VedwConfigurationSettings.TeamConfigurationPath = textBoxTeamConfigurationPath.Text;
             VedwConfigurationSettings.LoadPatternPath = textBoxLoadPatternPath.Text;
             VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
@@ -785,8 +1029,9 @@ namespace Virtual_Data_Warehouse
                 outfile.Close();
             }
 
-            // Reload the TEAM settings, as the environment may have changed
-            LoadTeamConfigurationFile();
+            // Reload the VDW and TEAM settings, as the environment may have changed
+            ApplyVdwConfigurationToMemory();
+            ApplyTeamConfigurationToMemory();
 
             // Reset / reload the checkbox lists
             SetDatabaseConnections();
@@ -795,10 +1040,6 @@ namespace Virtual_Data_Warehouse
                                               GlobalParameters.VedwConfigurationfileName +
                                               GlobalParameters.VedwFileExtension + ") has been updated in: " +
                                               GlobalParameters.VedwConfigurationPath+"\r\n\r\n";
-
-            // Reload settings
-            LoadTeamConfigurationFile();
-            UpdateVedwConfigurationSettingsOnForm();
         }
 
         private void openConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1161,10 +1402,8 @@ namespace Virtual_Data_Warehouse
                     // Ensuring the path is set in memory also and reload the configuration
                     VedwConfigurationSettings.TeamConfigurationPath = finalPath;
 
-                    LoadTeamConfigurationFile();
+                    ApplyTeamConfigurationToMemory();
                     richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains TEAM configuration files.");
-
-                    
                 }
 
             }

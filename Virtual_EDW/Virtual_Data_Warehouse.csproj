@@ -212,7 +212,6 @@
     <Compile Include="ClassInterfaceHandling.cs" />
     <Compile Include="ClassJsonHandling.cs" />
     <Compile Include="ClassTextHandling.cs" />
-    <Compile Include="ClassEnvironmentConfiguration.cs" />
     <Compile Include="ClassLoadPatternHandling.cs" />
     <Compile Include="ClassDatabaseHandling.cs" />
     <Compile Include="FormBase.cs">
@@ -416,7 +415,12 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Virtual_Data_Warehouse_Library\Virtual_Data_Warehouse_Library.csproj">
+      <Project>{04fd49a8-df12-471a-a21b-589b1469d5a1}</Project>
+      <Name>Virtual_Data_Warehouse_Library</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.SqlServer.SqlManagementObjects.150.18208.0\build\net45\Microsoft.SqlServer.SqlManagementObjects.targets" Condition="Exists('..\packages\Microsoft.SqlServer.SqlManagementObjects.150.18208.0\build\net45\Microsoft.SqlServer.SqlManagementObjects.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

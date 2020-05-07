@@ -6,16 +6,17 @@ using System.IO;
 using System.Text;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using Virtual_Data_Warehouse_Library;
 
 namespace Virtual_Data_Warehouse
 {
-    public class EventLog : List<Event> { }
+    //public class EventLog : List<Event> { }
 
-    public class Event
-    {
-        public int eventCode { get; set; }
-        public string eventDescription { get; set; }
-    }
+    //public class Event
+    //{
+    //    public int eventCode { get; set; }
+    //    public string eventDescription { get; set; }
+    //}
 
     public class Utility
     {
@@ -95,39 +96,18 @@ namespace Virtual_Data_Warehouse
                         {
                             server.ConnectionContext.ExecuteNonQuery(query);
 
-                            var localEvent = new Event
-                            {
-                                eventCode = 0,
-                                eventDescription = "The SQL statement was executed successfully.\r\n"
-                            };
-
-                            eventLog.Add(localEvent);
+                            eventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully.\r\n"));
 
                         }
                         catch (Exception ex)
                         {
-                            var localEvent = new Event
-                            {
-                                eventCode = 1,
-                                eventDescription = "Issues occurred executing the SQL statement.\r\n. SQL error: " +
-                                                   ex.Message + "\r\n\r\n"
-                            };
-
-                            eventLog.Add(localEvent);
+                            eventLog.Add(Event.CreateNewEvent(EventTypes.Error, "Issues occurred executing the SQL statement.\r\n. SQL error: " + ex.Message + "\r\n\r\n"));
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    var localEvent = new Event
-                    {
-                        eventCode = 1,
-                        eventDescription =
-                            @"There was an issue executing the code against the database. The message is: " + ex
-                    };
-
-                    eventLog.Add(localEvent);
-
+                    eventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue executing the code against the database. The message is: " + ex.Message + "\r\n\r\n"));
                 }
 
                 return eventLog;
@@ -149,14 +129,7 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                var localEvent = new Event
-                {
-                    eventCode = 1,
-                    eventDescription =
-                        @"There was an issue saving the output to disk. The message is: " + ex
-                };
-
-                eventLog.Add(localEvent);
+                eventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue saving the output to disk. The message is: " + ex.Message + "\r\n\r\n"));
             }
 
             return eventLog;
