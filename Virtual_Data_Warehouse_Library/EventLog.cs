@@ -18,11 +18,40 @@ namespace Virtual_Data_Warehouse_Library
         public int eventCode { get; set; }
         public string eventDescription { get; set; }
 
+        public DateTime eventTime { get; set; } = DateTime.Now;
+
+
+        /// <summary>
+        /// Constructor that only captures type and description of an event. This will assume 'now' as date/time of the event.
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="eventDescription"></param>
+        /// <returns></returns>
         public static Event CreateNewEvent(EventTypes eventType, string eventDescription)
         {
             var localEvent = new Event
             {
                 eventCode = (int)eventType,
+                eventTime = DateTime.Now,
+                eventDescription = eventDescription
+            };
+
+            return localEvent;
+        }
+
+        /// <summary>
+        /// Constructor that also captures date / time.
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="eventDateTime"></param>
+        /// <param name="eventDescription"></param>
+        /// <returns></returns>
+        public static Event CreateNewEvent(EventTypes eventType, DateTime eventDateTime, string eventDescription)
+        {
+            var localEvent = new Event
+            {
+                eventCode = (int)eventType,
+                eventTime = eventDateTime,
                 eventDescription = eventDescription
             };
 
