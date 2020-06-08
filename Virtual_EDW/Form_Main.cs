@@ -1283,7 +1283,7 @@ namespace Virtual_Data_Warehouse
             {
                 CustomTabPage localCustomTabPage = new CustomTabPage(pattern.classification, pattern.notes, pattern.itemList, pattern.connectionString);
                 localCustomTabPage.OnChangeMainText += UpdateMainInformationTextBox;
-                localCustomTabPage.OnClearMainText += (ClearMainInformationTextBox);
+                localCustomTabPage.OnClearMainText += ClearMainInformationTextBox;
 
                 localCustomTabPageList.Add(localCustomTabPage);
                 tabControlMain.TabPages.Add(localCustomTabPage);
