@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
-using Virtual_Data_Warehouse_Library;
+using TEAM;
 
 namespace Virtual_Data_Warehouse
 {

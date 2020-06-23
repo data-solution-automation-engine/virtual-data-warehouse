@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using DataWarehouseAutomation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Virtual_Data_Warehouse_Library;
+using TEAM;
 
 namespace Virtual_Data_Warehouse
 {
@@ -45,9 +45,9 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Make sure the root directories exist, based on (tool) parameters
-            EnvironmentConfiguration.InitialisePath(GlobalParameters.VedwConfigurationPath);
-            EnvironmentConfiguration.InitialisePath(VedwConfigurationSettings.VedwOutputPath);
-            EnvironmentConfiguration.InitialisePath(VedwConfigurationSettings.VedwInputPath);
+            FileHandling.InitialisePath(GlobalParameters.VedwConfigurationPath);
+            FileHandling.InitialisePath(VedwConfigurationSettings.VedwOutputPath);
+            FileHandling.InitialisePath(VedwConfigurationSettings.VedwInputPath);
 
             // Create the initial configuration file if it doesn't exist (first time use or change of directory).
             var initialConfigurationFile = new StringBuilder();
@@ -59,7 +59,7 @@ namespace Virtual_Data_Warehouse
             initialConfigurationFile.AppendLine("VedwSchema|vedw");
             initialConfigurationFile.AppendLine("/* End of file */");
 
-            EnvironmentConfiguration.CreateConfigurationFile(GlobalParameters.VedwConfigurationPath + GlobalParameters.VedwConfigurationfileName + GlobalParameters.VedwFileExtension, initialConfigurationFile);
+            FileHandling.CreateConfigurationFile(GlobalParameters.VedwConfigurationPath + GlobalParameters.VedwConfigurationfileName + GlobalParameters.VedwFileExtension, initialConfigurationFile);
 
             // Load the VDW configuration from disk, commit to memory and display on the form.
             richTextBoxInformationMain.AppendText(ApplyVdwConfigurationToMemory()+"\r\n");
@@ -111,7 +111,7 @@ namespace Virtual_Data_Warehouse
         public string ApplyVdwConfigurationToMemory()
         {
             // Load the VDW settings information, to be able to locate the TEAM configuration file and load subsequently it as a next step.
-            var configList = EnvironmentConfiguration.LoadConfigurationFile(
+            var configList = FileHandling.LoadConfigurationFile(
                 GlobalParameters.VedwConfigurationPath +
                 GlobalParameters.VedwConfigurationfileName +
                 GlobalParameters.VedwFileExtension);
@@ -216,7 +216,7 @@ namespace Virtual_Data_Warehouse
 
             if (File.Exists(teamConfigurationFileName))
             {
-                var configList = EnvironmentConfiguration.LoadConfigurationFile(teamConfigurationFileName);
+                var configList = FileHandling.LoadConfigurationFile(teamConfigurationFileName);
 
                 if (configList.Count == 0)
                 {
