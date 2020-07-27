@@ -131,7 +131,7 @@ FROM
 WHERE 
   (VALUE_CHANGE_INDICATOR ='Different' and  [{{../metadataConfiguration.changeDataCaptureAttribute}}] in ('Insert', 'Change')) 
   OR
-  (  [{{../metadataConfiguration.changeDataCaptureAttribute}}] = 'Different' and TIME_CHANGE_INDICATOR = 'Different')
+  ( CDC_CHANGE_INDICATOR = 'Different' and TIME_CHANGE_INDICATOR = 'Different')
 UNION
 SELECT 0x00000000000000000000000000000000,
 '1900-01-01',
