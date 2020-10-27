@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TEAM;
 
 namespace Virtual_Data_Warehouse
 {
@@ -53,9 +54,12 @@ namespace Virtual_Data_Warehouse
         {
             richTextBoxInformation.Clear();
 
+            // RV: issue selecting right connection
             var conn = new SqlConnection
             {
-                ConnectionString = radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
+                ConnectionString = radioButtonPSA.Checked ? 
+                      TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false) :
+                      TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false)
             };
 
             var hubIdentifier = TeamConfigurationSettings.HubTablePrefixValue;
@@ -147,7 +151,9 @@ namespace Virtual_Data_Warehouse
             // Set connection depending on target area
             var conn = new SqlConnection
             {
-                ConnectionString = radioButtonPSA.Checked ? TeamConfigurationSettings.ConnectionStringHstg : TeamConfigurationSettings.ConnectionStringInt
+                ConnectionString = radioButtonPSA.Checked ? 
+                    TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false) :
+                    TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false)
             };
 
             // Retrieve the location of the key indicator (suffix or prefix)
@@ -461,7 +467,7 @@ namespace Virtual_Data_Warehouse
             string schemaName;
             if (radioButtonPSA.Checked)
             {
-                schemaName = VedwConfigurationSettings.VedwSchema;
+                schemaName = VdwConfigurationSettings.VdwSchema;
             }
             else
             {
@@ -592,7 +598,7 @@ namespace Virtual_Data_Warehouse
                     {
                         if (columnName == hubKey)
                         {
-                            outputQuery.AppendLine("  COALESCE([" + tableName + "." + columnName +"],"+VedwConfigurationSettings.hashingZeroKey+") AS [" + tableName + "." +columnName + "],");
+                            outputQuery.AppendLine("  COALESCE([" + tableName + "." + columnName +"],"+VdwConfigurationSettings.hashingZeroKey+") AS [" + tableName + "." +columnName + "],");
                         }
                         else
                         {
@@ -622,11 +628,11 @@ namespace Virtual_Data_Warehouse
             outputQuery.AppendLine("(");
             outputQuery.AppendLine("  SELECT");
             outputQuery.AppendLine("    *,");
-            outputQuery.AppendLine("    LAG(ATTRIBUTE_CHECKSUM, 1, " + VedwConfigurationSettings.hashingZeroKey + ") OVER(PARTITION BY [" + hubTable+"."+hubKey+"] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PREVIOUS_ATTRIBUTE_CHECKSUM");
+            outputQuery.AppendLine("    LAG(ATTRIBUTE_CHECKSUM, 1, " + VdwConfigurationSettings.hashingZeroKey + ") OVER(PARTITION BY [" + hubTable+"."+hubKey+"] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PREVIOUS_ATTRIBUTE_CHECKSUM");
             outputQuery.AppendLine("  FROM");
             outputQuery.AppendLine("  (");
             outputQuery.AppendLine("    SELECT *,");
-            outputQuery.AppendLine("      "+VedwConfigurationSettings.hashingStartSnippet);
+            outputQuery.AppendLine("      "+VdwConfigurationSettings.hashingStartSnippet);
             foreach (String tableName in tableList.Keys)
             {
                 List<String> columnNames = new List<string>();
@@ -638,7 +644,7 @@ namespace Virtual_Data_Warehouse
             }
             outputQuery.Remove(outputQuery.Length - 3, 3);
             outputQuery.AppendLine();
-            outputQuery.AppendLine("      "+VedwConfigurationSettings.hashingEndSnippet+" AS ATTRIBUTE_CHECKSUM");
+            outputQuery.AppendLine("      "+VdwConfigurationSettings.hashingEndSnippet+" AS ATTRIBUTE_CHECKSUM");
 
             outputQuery.AppendLine("    FROM");
             outputQuery.AppendLine("    (");

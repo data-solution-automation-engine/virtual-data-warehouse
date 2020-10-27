@@ -20,7 +20,7 @@ SELECT
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
    hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] hub_view
+FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
 LEFT OUTER JOIN
    [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] hub_table
    ON hub_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]

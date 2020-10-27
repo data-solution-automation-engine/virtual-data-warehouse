@@ -22,7 +22,7 @@ SELECT {{#each businessKey}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
    link_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] link_view
+FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] link_view
 LEFT OUTER JOIN
    [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] link_table
    ON link_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = link_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]

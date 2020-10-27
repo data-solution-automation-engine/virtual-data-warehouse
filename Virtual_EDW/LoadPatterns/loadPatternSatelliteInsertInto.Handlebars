@@ -30,7 +30,7 @@ SELECT {{#each businessKey}}
    sat_view.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
    sat_view.[{{../metadataConfiguration.sourceRowIdAttribute}}],
    sat_view.[{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] sat_view
+FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] sat_view
 LEFT OUTER JOIN
    [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] sat_table
     ON sat_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]

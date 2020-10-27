@@ -29,5 +29,5 @@ SELECT
    {{#each dataItemMapping}}
    [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
+FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
 {{/each}}

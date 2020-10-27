@@ -199,6 +199,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.SqlClient, Version=4.6.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SqlClient.4.8.2\lib\net461\System.Data.SqlClient.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -210,18 +213,18 @@
     <Compile Include="ClassExtensionMethods.cs" />
     <Compile Include="ClassHandlebarsHelpers.cs" />
     <Compile Include="ClassInterfaceObjectModel.cs" />
-    <Compile Include="ClassUtility.cs" />
+    <Compile Include="ClassVdwUtility.cs" />
     <Compile Include="CustomTabPage.cs" />
     <Compile Include="ClassInterfaceHandling.cs" />
     <Compile Include="ClassJsonHandling.cs" />
     <Compile Include="ClassTextHandling.cs" />
     <Compile Include="ClassLoadPatternHandling.cs" />
     <Compile Include="ClassDatabaseHandling.cs" />
-    <Compile Include="FormBase.cs">
+    <Compile Include="Form_Base.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBase.Designer.cs">
-      <DependentUpon>FormBase.cs</DependentUpon>
+    <Compile Include="Form_Base.Designer.cs">
+      <DependentUpon>Form_Base.cs</DependentUpon>
     </Compile>
     <Compile Include="Form_About.cs">
       <SubType>Form</SubType>
@@ -267,8 +270,8 @@
     <EmbeddedResource Include="Form_Alert.resx">
       <DependentUpon>Form_Alert.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormBase.resx">
-      <DependentUpon>FormBase.cs</DependentUpon>
+    <EmbeddedResource Include="Form_Base.resx">
+      <DependentUpon>Form_Base.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_PIT.resx">
       <DependentUpon>Form_PIT.cs</DependentUpon>
@@ -402,6 +405,7 @@
     <None Include="Resources\Time.png" />
     <None Include="Resources\ghost-icon.png" />
     <None Include="Resources\database_icon.png" />
+    <None Include="Resources\log-file.png" />
     <Content Include="Resources\transparent-green-checkmark-hi.png" />
     <None Include="Resources\DocumentationIcon.ico" />
     <None Include="Resources\CubeIcon.ico" />

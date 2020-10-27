@@ -5,9 +5,9 @@ namespace Virtual_Data_Warehouse
 {
     /// <summary>
     /// The parent object containing the list of source-to-target mappings. This is the highest level and contains the list of mappings (as individual objects
-    /// but also the parameters inherited from TEAM and VEDW.
+    /// but also the parameters inherited from TEAM and VDW.
     /// </summary>
-    class VEDW_DataObjectMappingList : DataObjectMappingList
+    class VDW_DataObjectMappingList : DataObjectMappingList
     {
         // Generic interface definitions
         //public List<DataObjectMapping> dataObjectMapping { get; set; }
@@ -44,7 +44,7 @@ namespace Virtual_Data_Warehouse
         public string integrationDatabaseConnection { get; set; }
         public string presentationDatabaseName { get; set; }
         public string presentationDatabaseConnection { get; set; }
-        public string vedwSchemaName { get; set; } = FormBase.VedwConfigurationSettings.VedwSchema;
+        public string vdwSchemaName { get; set; } = FormBase.VdwConfigurationSettings.VdwSchema;
 
         // Attributes
         public string changeDataCaptureAttribute { get; set; }

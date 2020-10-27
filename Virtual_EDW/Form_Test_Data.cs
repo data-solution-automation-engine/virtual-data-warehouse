@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Text;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using TEAM;
 using Virtual_Data_Warehouse;
 
 namespace Virtual_Data_Warehouse
@@ -60,12 +61,12 @@ namespace Virtual_Data_Warehouse
         {
             var connStg = new SqlConnection
             {
-                ConnectionString = TeamConfigurationSettings.ConnectionStringStg
+                ConnectionString = TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false)
             };
 
             var connMetadata = new SqlConnection
             {
-                ConnectionString = TeamConfigurationSettings.ConnectionStringOmd
+                ConnectionString = TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false)
             };
 
             var connVariable = new SqlConnection();
@@ -220,17 +221,20 @@ namespace Virtual_Data_Warehouse
                         {
                             if (radioButtonStagingArea.Checked)
                             {
-                                connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringStg;
+                                connVariable.ConnectionString = TeamConfigurationSettings.MetadataConnection
+                                    .CreateSqlServerConnectionString(false);
                             }
 
                             if (radioButtonPSA.Checked)
                             {
-                                connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
+                                connVariable.ConnectionString = TeamConfigurationSettings.MetadataConnection
+                                    .CreateSqlServerConnectionString(false);
                             }
 
                             if (radiobuttonSource.Checked)
                             {
-                                connVariable.ConnectionString = TeamConfigurationSettings.ConnectionStringSource;
+                                connVariable.ConnectionString = TeamConfigurationSettings.MetadataConnection
+                                    .CreateSqlServerConnectionString(false);
                             }
 
                             int errorCounter = 0;

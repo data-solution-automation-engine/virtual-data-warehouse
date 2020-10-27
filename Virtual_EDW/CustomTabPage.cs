@@ -37,7 +37,7 @@ namespace Virtual_Data_Warehouse
     {
 
         string inputNiceName;
-        internal Dictionary<string, VEDW_DataObjectMappingList> itemList;
+        internal Dictionary<string, VDW_DataObjectMappingList> itemList;
         internal string connectionString;
 
         // Objects on main Tab Page
@@ -92,7 +92,7 @@ namespace Virtual_Data_Warehouse
         /// <summary>
         /// Constructor to instantiate a new Custom Tab Page
         /// </summary>
-        public CustomTabPage(string classification, string notes, Dictionary<string, VEDW_DataObjectMappingList> itemList, string connectionString)
+        public CustomTabPage(string classification, string notes, Dictionary<string, VDW_DataObjectMappingList> itemList, string connectionString)
         {
             // Register the Handlebars helpers (extensions)
             ClassHandlebarsHelpers.RegisterHandleBarsHelpers();
@@ -139,7 +139,7 @@ namespace Virtual_Data_Warehouse
             localPanel.Controls.Add(localLabelProcessing);
             localLabelProcessing.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelProcessing.Location = new Point(14, 12);
-            localLabelProcessing.Size = new Size(123, 13);
+            localLabelProcessing.Size = new Size(280, 13);
             localLabelProcessing.Name = $"label{classification}Processing";
             localLabelProcessing.Text = $"{inputNiceName} Processing";
 
@@ -148,9 +148,9 @@ namespace Virtual_Data_Warehouse
             localCheckBoxSelectAll = new CheckBox();
             localPanel.Controls.Add(localCheckBoxSelectAll);
             localCheckBoxSelectAll.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
-            localCheckBoxSelectAll.Location = new Point(140, 11);
+            localCheckBoxSelectAll.Location = new Point(346, 11);
             localCheckBoxSelectAll.Size = new Size(69, 17);
-            localCheckBoxSelectAll.Name = "checkBoxStagingAreaSelectAll";
+            localCheckBoxSelectAll.Name = "checkBoxSelectAll";
             localCheckBoxSelectAll.Checked = true;
             localCheckBoxSelectAll.Text = "Select all";
             localCheckBoxSelectAll.CheckedChanged += new EventHandler(SelectAllCheckBoxItems);
@@ -334,7 +334,7 @@ namespace Virtual_Data_Warehouse
             SetItemList(itemList);
         }
 
-        public void SetItemList(Dictionary<string, VEDW_DataObjectMappingList> itemList)
+        public void SetItemList(Dictionary<string, VDW_DataObjectMappingList> itemList)
         {
             // Copy the input variable to the local item list
             this.itemList = itemList;
@@ -376,10 +376,10 @@ namespace Virtual_Data_Warehouse
         private void DisplayPattern(object o, EventArgs e)
         {
             // Retrieve all the info for the pattern name from memory (from the list of patterns)
-            var loadPattern = FormBase.VedwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
+            var loadPattern = FormBase.VdwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
             
             // Set the label with the path so it's visible to the user where the file is located
-            string localFullPath = Path.Combine(FormBase.VedwConfigurationSettings.LoadPatternPath, loadPattern.LoadPatternFilePath);
+            string localFullPath = Path.Combine(FormBase.VdwConfigurationSettings.LoadPatternPath, loadPattern.LoadPatternFilePath);
 
             localLabelFullFilePath.Text = localFullPath;
 
@@ -447,15 +447,14 @@ namespace Virtual_Data_Warehouse
 
         void Generate(object o, EventArgs e)
         {
-            //var newThread = new Thread(DoWork);
-            //newThread.Start();
             localTabControl.SelectedIndex = 0;
             DoWork();
         }
 
         void DoWork()
         {
-            Utility.CreateSchema(FormBase.TeamConfigurationSettings.ConnectionStringStg);
+            //VdwUtility.CreateSchema(FormBase.TeamConfigurationSettings.ConnectionStringStg);
+            // TO DO: retrieve correct schema
             localRichTextBox.Clear();
             GenerateFromPattern();
         }
@@ -480,7 +479,7 @@ namespace Virtual_Data_Warehouse
                     localRichTextBox.AppendText(@"Processing generation for " + targetTableName + ".\r\n");
 
                     // Only process the selected items in the total of available source-to-target mappings
-                    VEDW_DataObjectMappingList dataObjectMappingList = new VEDW_DataObjectMappingList();
+                    VDW_DataObjectMappingList dataObjectMappingList = new VDW_DataObjectMappingList();
                     itemList.TryGetValue(targetTableName, out dataObjectMappingList);
 
                     // Return the result to the user
@@ -511,17 +510,18 @@ namespace Virtual_Data_Warehouse
                         EventLog fileSaveEventLog = new EventLog();
                         if (saveOutputFileFlag)
                         {
-                            fileSaveEventLog = Utility.SaveOutputToDisk(FormBase.VedwConfigurationSettings.VedwOutputPath + targetTableName + ".sql", result);
+                            fileSaveEventLog = VdwUtility.SaveOutputToDisk(FormBase.VdwConfigurationSettings.VdwOutputPath + targetTableName + ".sql", result);
                         }
 
                         //Generate in database
                         EventLog databaseEventLog = new EventLog();
                         if (generateInDatabaseFlag)
                         {
-                            var localConn = Utility.MatchConnectionKey(connectionString);
-                            var conn = new SqlConnection { ConnectionString = localConn[connectionString]};
+                            //var localConn = VdwUtility.MatchConnectionKey(connectionString);
+                            var localConn = FormBase.TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false);
+                            var conn = new SqlConnection { ConnectionString = localConn};
 
-                            databaseEventLog = Utility.ExecuteOutputInDatabase(conn, result);
+                            databaseEventLog = VdwUtility.ExecuteOutputInDatabase(conn, result);
                         }
 
                         eventLog.AddRange(fileSaveEventLog);
@@ -555,7 +555,7 @@ namespace Virtual_Data_Warehouse
             }
 
             RaiseOnChangeMainText($"\r\n{errorCounter} error(s) have been found.\r\n");
-            RaiseOnChangeMainText($"\r\nAssociated scripts have been saved in {FormBase.VedwConfigurationSettings.VedwOutputPath}.\r\n");
+            RaiseOnChangeMainText($"\r\nAssociated scripts have been saved in {FormBase.VdwConfigurationSettings.VdwOutputPath}.\r\n");
 
             // Apply syntax highlighting
             SyntaxHighlight();
@@ -571,7 +571,7 @@ namespace Virtual_Data_Warehouse
             bool available = false;
             try
             {
-                var patternList = FormBase.VedwConfigurationSettings.patternList;
+                var patternList = FormBase.VdwConfigurationSettings.patternList;
 
                 localComboBoxGenerationPattern.Items.Clear();
                 localRichTextBoxGenerationPattern.Clear();

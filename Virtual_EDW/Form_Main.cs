@@ -19,8 +19,6 @@ namespace Virtual_Data_Warehouse
 {
     public partial class FormMain : FormBase
     {
-        private StringBuilder _errorMessage;
-        private StringBuilder _errorDetails;
         internal bool startUpIndicator = true;
 
         private List<CustomTabPage> localCustomTabPageList = new List<CustomTabPage>();
@@ -28,44 +26,78 @@ namespace Virtual_Data_Warehouse
         private BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
 
         private DatabaseHandling databaseHandling;
-
+        FormAlert _alertEventLog;
         public FormMain()
         {
             databaseHandling = new DatabaseHandling();
-
-            _errorMessage = new StringBuilder();
-            _errorMessage.AppendLine("Error were detected:");
-            _errorMessage.AppendLine();
-
-            _errorDetails = new StringBuilder();
-            _errorDetails.AppendLine();
 
             localCustomTabPageList = new List<CustomTabPage>();
 
             InitializeComponent();
 
+            // Set the version of the build for everything
+            const string versionNumberForApplication = "v1.6.2";
+
+            Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
+            GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
+            Event localEvent;
+
+            #region Root Paths
             // Make sure the root directories exist, based on (tool) parameters
-            FileHandling.InitialisePath(GlobalParameters.VedwConfigurationPath);
-            FileHandling.InitialisePath(VedwConfigurationSettings.VedwOutputPath);
-            FileHandling.InitialisePath(VedwConfigurationSettings.VedwInputPath);
 
-            // Create the initial configuration file if it doesn't exist (first time use or change of directory).
-            var initialConfigurationFile = new StringBuilder();
-            initialConfigurationFile.AppendLine("/* Virtual Enterprise Data Warehouse (VEDW) Core Settings */");
-            initialConfigurationFile.AppendLine("TeamConfigurationPath|" + VedwConfigurationSettings.TeamConfigurationPath); //Initially make this path the same as the VDW application root.
-            initialConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath);
-            initialConfigurationFile.AppendLine("InputPath|" + VedwConfigurationSettings.VedwInputPath);
-            initialConfigurationFile.AppendLine("LoadPatternPath|" + VedwConfigurationSettings.LoadPatternPath);
-            initialConfigurationFile.AppendLine("VedwSchema|vedw");
-            initialConfigurationFile.AppendLine("/* End of file */");
+            // Configuration Path
+            localEvent = FileHandling.InitialisePath(GlobalParameters.VdwConfigurationPath);
+            if (localEvent.eventDescription != null)
+            {
+                GlobalParameters.TeamEventLog.Add(localEvent);
+            }
+            GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Configuration path initialised for {GlobalParameters.VdwConfigurationPath}."));
+            
+            
+            // Input Path
+            localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwInputPath);
+            if (localEvent.eventDescription != null)
+            {
+                GlobalParameters.TeamEventLog.Add(localEvent);
+            }
+            GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Input path set for {VdwConfigurationSettings.VdwInputPath}."));
 
-            FileHandling.CreateConfigurationFile(GlobalParameters.VedwConfigurationPath + GlobalParameters.VedwConfigurationfileName + GlobalParameters.VedwFileExtension, initialConfigurationFile);
+            // Output Path
+            localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwOutputPath);
+            if (localEvent.eventDescription != null)
+            {
+                GlobalParameters.TeamEventLog.Add(localEvent);
+            }
+            GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Output path set for {VdwConfigurationSettings.VdwOutputPath}."));
+            #endregion
+
+            // Create the initial VDW configuration file, if it doesn't exist (first time use or change of directory).
+            VdwUtility.CreateNewVdwConfigurationFile();
 
             // Load the VDW configuration from disk, commit to memory and display on the form.
-            richTextBoxInformationMain.AppendText(ApplyVdwConfigurationToMemory()+"\r\n");
+            VdwUtility.LoadVdwConfigurationFile();
 
-            // Load the TEAM configuration settings and commit to memory.
-            richTextBoxInformationMain.AppendText(ApplyTeamConfigurationToMemory());
+            // Update the values on the form.
+            textBoxOutputPath.Text = VdwConfigurationSettings.VdwOutputPath;
+            textBoxLoadPatternPath.Text = VdwConfigurationSettings.LoadPatternPath;
+            textBoxTeamEnvironmentsPath.Text = VdwConfigurationSettings.TeamEnvironmentFilePath;
+            textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.TeamConfigurationPath;
+            textBoxInputPath.Text = VdwConfigurationSettings.VdwInputPath;
+            textBoxSchemaName.Text = VdwConfigurationSettings.VdwSchema;
+
+            // Then load the environments file and current working environment.
+            TeamEnvironmentCollection.LoadTeamEnvironmentCollection(VdwConfigurationSettings.TeamEnvironmentFilePath);
+
+            VdwConfigurationSettings.ActiveEnvironment = TeamEnvironmentCollection.GetEnvironmentByKey(VdwConfigurationSettings.TeamSelectedEnvironment);
+
+            // Load the configuration and connection information from file, based on the selected environment and input path.
+            VdwUtility.LoadTeamConfigurations(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
+
+            PopulateEnvironmentComboBox();
+            comboBoxEnvironments.SelectedIndex = comboBoxEnvironments.FindStringExact(FormBase.VdwConfigurationSettings.TeamSelectedEnvironment);
+
+            var comboItem = comboBoxEnvironments.Items.Cast<KeyValuePair<string, TeamWorkingEnvironment>>().FirstOrDefault(item => item.Value.Equals(FormBase.VdwConfigurationSettings.ActiveEnvironment));
+            comboBoxEnvironments.SelectedItem = comboItem;
 
             // Start monitoring the configuration directories for file changes
             // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
@@ -75,22 +107,23 @@ namespace Virtual_Data_Warehouse
             checkBoxGenerateInDatabase.Checked = false;
 
             // Load Pattern definition in memory
-            if ((VedwConfigurationSettings.patternDefinitionList != null) && (!VedwConfigurationSettings.patternDefinitionList.Any()))
+            if ((VdwConfigurationSettings.patternDefinitionList != null) && (!VdwConfigurationSettings.patternDefinitionList.Any()))
             {
-                SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFile + " in the " + VedwConfigurationSettings.LoadPatternPath + " directory, and if the file contains pattern types.");
+                SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFileName + " in the " + VdwConfigurationSettings.LoadPatternPath + " directory, and if the file contains pattern types.");
             }
 
             // Load Pattern metadata & update in memory
             var patternCollection = new LoadPatternCollectionFileHandling();
-            VedwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
+            VdwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
 
-            if ((VedwConfigurationSettings.patternList != null) && (!VedwConfigurationSettings.patternList.Any()))
+            if ((VdwConfigurationSettings.patternList != null) && (!VdwConfigurationSettings.patternList.Any()))
             {
-                SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternListFile + " in the " + VedwConfigurationSettings.LoadPatternPath + " directory, and if the file contains patterns.");
+                SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternListFileName + " in the " + VdwConfigurationSettings.LoadPatternPath + " directory, and if the file contains patterns.");
             }
 
             // Populate the data grid.
             PopulateLoadPatternCollectionDataGrid();
+            GridAutoLayoutLoadPatternCollection();
 
             // Create the tab pages based on available content.
             CreateCustomTabPages();
@@ -105,287 +138,10 @@ namespace Virtual_Data_Warehouse
             startUpIndicator = false;
         }
 
-        /// <summary>
-        /// Load the information from the VEDW configuration file into memory and display on the form. Returns the logging information as string.
-        /// </summary>
-        public string ApplyVdwConfigurationToMemory()
-        {
-            // Load the VDW settings information, to be able to locate the TEAM configuration file and load subsequently it as a next step.
-            var configList = FileHandling.LoadConfigurationFile(
-                GlobalParameters.VedwConfigurationPath +
-                GlobalParameters.VedwConfigurationfileName +
-                GlobalParameters.VedwFileExtension);
-
-            string returnValue;
-            string errorValue = "";
-            int errorCounter = 0;
-            string configurationValue;
-
-            configurationValue = "TeamConfigurationPath";
-            if (configList.ContainsKey(configurationValue))
-            {
-                VedwConfigurationSettings.TeamConfigurationPath = configList[configurationValue];
-            }
-            else
-            {
-                errorValue = errorValue +
-                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
-                errorCounter++;
-            }
-
-            configurationValue = "LoadPatternPath";
-            if (configList.ContainsKey(configurationValue))
-            {
-                VedwConfigurationSettings.LoadPatternPath = configList[configurationValue];
-            }
-            else
-            {
-                errorValue = errorValue +
-                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
-                errorCounter++;
-            }
-
-
-            configurationValue = "VedwOutputPath";
-            if (configList.ContainsKey(configurationValue))
-            {
-                VedwConfigurationSettings.VedwOutputPath = configList[configurationValue];
-            }
-            else
-            {
-                errorValue = errorValue +
-                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>)\r\n.";
-                errorCounter++;
-            }
-
-            configurationValue = "InputPath";
-            if (configList.ContainsKey(configurationValue))
-            {
-                VedwConfigurationSettings.VedwInputPath = configList[configurationValue];
-            }
-            else
-            {
-                errorValue = errorValue +
-                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>).\r\n";
-                errorCounter++;
-            }
-
-            configurationValue = "VedwSchema";
-            if (configList.ContainsKey(configurationValue))
-            {
-                VedwConfigurationSettings.VedwSchema = configList[configurationValue];
-            }
-            else
-            {
-                errorValue = errorValue +
-                             $"* The entry {configurationValue} was not found in the configuration file. Please make sure an entry exists ({configurationValue}|<value>).\r\n";
-                errorCounter++;
-            }
-
-            returnValue = "The configuration file " + GlobalParameters.VedwConfigurationPath +
-                          GlobalParameters.VedwConfigurationfileName +
-                          GlobalParameters.VedwFileExtension + " was loaded.";
-            if (errorCounter > 0)
-            {
-                returnValue = returnValue +
-                              $"\r\n\r\nHowever, the file was loaded with {errorCounter} error(s). The reported errors are:\r\n" +
-                              errorValue;
-            }
-
-            // Update the values on the form.
-            textBoxOutputPath.Text = VedwConfigurationSettings.VedwOutputPath;
-            textBoxLoadPatternPath.Text = VedwConfigurationSettings.LoadPatternPath;
-            textBoxTeamConfigurationPath.Text = VedwConfigurationSettings.TeamConfigurationPath;
-            textBoxInputPath.Text = VedwConfigurationSettings.VedwInputPath;
-            textBoxSchemaName.Text = VedwConfigurationSettings.VedwSchema;
-
-            return returnValue;
-        }
-
-
-        /// <summary>
-        /// Load the information from the TEAM configuration file into memory. Returns the logging information as string.
-        /// </summary>
-        public string ApplyTeamConfigurationToMemory()
-        {
-            var returnValue = new StringBuilder(); // Collecting information to feedback to user. returnValue;
-
-            // Load the rest of the (TEAM) configurations, from wherever they may be according to the VDW settings (the TEAM configuration file).
-            var teamConfigurationFileName = VedwConfigurationSettings.TeamConfigurationPath;
-            richTextBoxInformationMain.AppendText("Retrieving TEAM configuration details from '" + teamConfigurationFileName + "'. \r\n\r\n");
-
-            if (File.Exists(teamConfigurationFileName))
-            {
-                var configList = FileHandling.LoadConfigurationFile(teamConfigurationFileName);
-
-                if (configList.Count == 0)
-                {
-                    returnValue.AppendLine("No lines detected in file " + teamConfigurationFileName + ". Is it empty?");
-                }
-
-                var connectionStringOmd = configList["connectionStringMetadata"];
-                connectionStringOmd = connectionStringOmd.Replace("Provider=SQLNCLI10;", "").Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringSource = configList["connectionStringSource"];
-                connectionStringSource = connectionStringSource.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringStg = configList["connectionStringStaging"];
-                connectionStringStg = connectionStringStg.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringHstg = configList["connectionStringPersistentStaging"];
-                connectionStringHstg = connectionStringHstg.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringInt = configList["connectionStringIntegration"];
-                connectionStringInt = connectionStringInt.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                var connectionStringPres = configList["connectionStringPresentation"];
-                connectionStringPres = connectionStringPres.Replace("Provider=SQLNCLI10;", "")
-                    .Replace("Provider=SQLNCLI11;", "").Replace("Provider=SQLNCLI12;", "");
-
-                // These variables are used as global variables throughout the application
-                // They will be set once after startup
-
-                string value;
-                string lookUpValue;
-
-                lookUpValue = "SourceDatabase";
-                if (configList.TryGetValue(lookUpValue, out value))
-                {
-                    TeamConfigurationSettings.SourceDatabaseName = value;
-                }
-                else
-                {
-                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
-                }
-
-                lookUpValue = "StagingDatabase";
-                if (configList.TryGetValue(lookUpValue, out value))
-                {
-                    TeamConfigurationSettings.StagingDatabaseName = value;
-                }
-                else
-                {
-                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
-                }
-
-                lookUpValue = "PersistentStagingDatabase";
-                if (configList.TryGetValue(lookUpValue, out value))
-                {
-                    TeamConfigurationSettings.PsaDatabaseName = value;
-                }
-                else
-                {
-                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
-                }
-
-                lookUpValue = "IntegrationDatabase";
-                if (configList.TryGetValue(lookUpValue, out value))
-                {
-                    TeamConfigurationSettings.IntegrationDatabaseName = value;
-                }
-                else
-                {
-                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
-                }
-
-                lookUpValue = "PresentationDatabase";
-                if (configList.TryGetValue(lookUpValue, out value))
-                {
-                    TeamConfigurationSettings.PresentationDatabaseName = value;
-                }
-                else
-                {
-                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
-                }
-
-                lookUpValue = "MetadataDatabase";
-                if (configList.TryGetValue(lookUpValue, out value))
-                {
-                    TeamConfigurationSettings.MetadataDatabaseName = value;
-                }
-                else
-                {
-                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
-                }
-
-                lookUpValue = "PhysicalModelServerName";
-                if (configList.TryGetValue(lookUpValue, out value))
-                {
-                    TeamConfigurationSettings.PhysicalModelServerName = value;
-                }
-                else
-                {
-                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
-                }
-
-                lookUpValue = "MetadataServerName";
-                if (configList.TryGetValue(lookUpValue, out value))
-                {
-                    TeamConfigurationSettings.MetadataServerName = value;
-                }
-                else
-                {
-                    returnValue.AppendLine("The key/value pair " + lookUpValue + " was not found in the configuration file.");
-                }
-
-                // 10
-                TeamConfigurationSettings.ConnectionStringSource = connectionStringSource;
-                TeamConfigurationSettings.ConnectionStringStg = connectionStringStg;
-                TeamConfigurationSettings.ConnectionStringHstg = connectionStringHstg;
-                TeamConfigurationSettings.ConnectionStringInt = connectionStringInt;
-                TeamConfigurationSettings.ConnectionStringOmd = connectionStringOmd;
-                TeamConfigurationSettings.ConnectionStringPres = connectionStringPres;
-
-                TeamConfigurationSettings.StgTablePrefixValue = configList["StagingAreaPrefix"];
-                TeamConfigurationSettings.PsaTablePrefixValue = configList["PersistentStagingAreaPrefix"];
-                TeamConfigurationSettings.HubTablePrefixValue = configList["HubTablePrefix"];
-                TeamConfigurationSettings.SatTablePrefixValue = configList["SatTablePrefix"];
-                TeamConfigurationSettings.LinkTablePrefixValue = configList["LinkTablePrefix"];
-                
-                TeamConfigurationSettings.LsatPrefixValue = configList["LinkSatTablePrefix"];
-                TeamConfigurationSettings.DwhKeyIdentifier = configList["KeyIdentifier"];
-                TeamConfigurationSettings.SchemaName = configList["SchemaName"];
-                TeamConfigurationSettings.RowIdAttribute = configList["RowID"];
-                TeamConfigurationSettings.EventDateTimeAttribute = configList["EventDateTimeStamp"];
-                TeamConfigurationSettings.LoadDateTimeAttribute = configList["LoadDateTimeStamp"];
-                TeamConfigurationSettings.ExpiryDateTimeAttribute = configList["ExpiryDateTimeStamp"];
-                TeamConfigurationSettings.ChangeDataCaptureAttribute = configList["ChangeDataIndicator"];
-                TeamConfigurationSettings.RecordSourceAttribute = configList["RecordSourceAttribute"];
-                TeamConfigurationSettings.EtlProcessAttribute = configList["ETLProcessID"];
-                
-                TeamConfigurationSettings.EtlProcessUpdateAttribute = configList["ETLUpdateProcessID"];
-                TeamConfigurationSettings.LogicalDeleteAttribute = configList["LogicalDeleteAttribute"];
-                TeamConfigurationSettings.TableNamingLocation = configList["TableNamingLocation"];
-                TeamConfigurationSettings.KeyNamingLocation = configList["KeyNamingLocation"];
-                TeamConfigurationSettings.RecordChecksumAttribute = configList["RecordChecksum"];
-                TeamConfigurationSettings.CurrentRowAttribute = configList["CurrentRecordAttribute"];
-                TeamConfigurationSettings.AlternativeRecordSourceAttribute = configList["AlternativeRecordSource"];
-                TeamConfigurationSettings.AlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTS"];
-                TeamConfigurationSettings.EnableAlternativeRecordSourceAttribute = configList["AlternativeRecordSourceFunction"];
-                TeamConfigurationSettings.EnableAlternativeLoadDateTimeAttribute = configList["AlternativeHubLDTSFunction"];
-                
-                TeamConfigurationSettings.EnableAlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTSFunction"];
-                TeamConfigurationSettings.AlternativeSatelliteLoadDateTimeAttribute = configList["AlternativeSatelliteLDTS"];
-                TeamConfigurationSettings.PsaKeyLocation = configList["PSAKeyLocation"];
-                TeamConfigurationSettings.MetadataRepositoryType = configList["metadataRepositoryType"];
-            }
-            else
-            {
-                richTextBoxInformationMain.AppendText("No valid TEAM configuration file was found. Please select a valid TEAM configuration file (settings tab => TEAM configuration file).\r\n\r\n");
-            }
-
-
-            return returnValue.ToString();
-        }
-
         public void PopulateLoadPatternCollectionDataGrid()
         {
             // Create a datatable. 
-            DataTable dt = VedwConfigurationSettings.patternList.ToDataTable();
+            DataTable dt = VdwConfigurationSettings.patternList.ToDataTable();
 
             dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
             dt.Columns[0].ColumnName = "Name";
@@ -394,143 +150,65 @@ namespace Virtual_Data_Warehouse
             dt.Columns[3].ColumnName = "Notes";
             _bindingSourceLoadPatternCollection.DataSource = dt;
 
-            if (VedwConfigurationSettings.patternList != null)
+            if (VdwConfigurationSettings.patternList != null)
             {
+                
                 // Set the column header names.
                 dataGridViewLoadPatternCollection.DataSource = _bindingSourceLoadPatternCollection;
                 dataGridViewLoadPatternCollection.ColumnHeadersVisible = true;
                 dataGridViewLoadPatternCollection.Columns[0].HeaderText = "Name";
-                dataGridViewLoadPatternCollection.Columns[0].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+                dataGridViewLoadPatternCollection.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
+                //dataGridViewLoadPatternCollection.Columns[0].FillWeight = 100;
 
                 dataGridViewLoadPatternCollection.Columns[1].HeaderText = "Type";
-                dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+                dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
+                //dataGridViewLoadPatternCollection.Columns[1].FillWeight = 400;
 
                 dataGridViewLoadPatternCollection.Columns[2].HeaderText = "Path";
-                dataGridViewLoadPatternCollection.Columns[2].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+                dataGridViewLoadPatternCollection.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
+                //dataGridViewLoadPatternCollection.Columns[2].FillWeight = 300;
 
                 dataGridViewLoadPatternCollection.Columns[3].HeaderText = "Notes";
                 dataGridViewLoadPatternCollection.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridViewLoadPatternCollection.Columns[3].DefaultCellStyle.Alignment =
-                    DataGridViewContentAlignment.TopLeft;
+                dataGridViewLoadPatternCollection.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
+                //dataGridViewLoadPatternCollection.Columns[3].FillWeight = 200;
 
             }
-
-            GridAutoLayoutLoadPatternCollection();
         }
-
-        //public void populateLoadPatternDefinitionDataGrid()
-        //{
-        //    // Create a datatable 
-        //    DataTable dt = VedwConfigurationSettings.patternDefinitionList.ToDataTable();
-
-        //    dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
-        //    dt.Columns[0].ColumnName = "Key";
-        //    dt.Columns[1].ColumnName = "Type";
-        //    dt.Columns[2].ColumnName = "SelectionQuery";
-        //    dt.Columns[3].ColumnName = "BaseQuery";
-        //    dt.Columns[4].ColumnName = "AttributeQuery";
-        //    dt.Columns[5].ColumnName = "AdditionalBusinessKeyQuery";
-        //    dt.Columns[6].ColumnName = "Notes";
-        //    dt.Columns[7].ColumnName = "ConnectionKey";
-
-        //    _bindingSourceLoadPatternDefinition.DataSource = dt;
-
-        //    if (VedwConfigurationSettings.patternList != null)
-        //    {
-        //        // Set the column header names.
-        //        dataGridViewLoadPatternDefinition.DataSource = _bindingSourceLoadPatternDefinition;
-        //        dataGridViewLoadPatternDefinition.ColumnHeadersVisible = true;
-        //        dataGridViewLoadPatternDefinition.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-        //        dataGridViewLoadPatternDefinition.Columns[0].HeaderText = "Key";
-        //        dataGridViewLoadPatternCollection.Columns[0].DefaultCellStyle.Alignment =
-        //            DataGridViewContentAlignment.TopLeft;
-
-        //        dataGridViewLoadPatternDefinition.Columns[1].HeaderText = "Type";
-        //        dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment =
-        //            DataGridViewContentAlignment.TopLeft;
-
-        //        dataGridViewLoadPatternDefinition.Columns[2].HeaderText = "Selection Query";
-        //        dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-        //        dataGridViewLoadPatternDefinition.Columns[2].DefaultCellStyle.Alignment =
-        //            DataGridViewContentAlignment.TopLeft;
-
-        //        dataGridViewLoadPatternDefinition.Columns[3].HeaderText = "Base Query";
-        //        dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-        //        dataGridViewLoadPatternDefinition.Columns[3].DefaultCellStyle.Alignment =
-        //            DataGridViewContentAlignment.TopLeft;
-
-        //        dataGridViewLoadPatternDefinition.Columns[4].HeaderText = "Attribute Query";
-        //        dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-        //        dataGridViewLoadPatternDefinition.Columns[4].DefaultCellStyle.Alignment =
-        //            DataGridViewContentAlignment.TopLeft;
-
-        //        dataGridViewLoadPatternDefinition.Columns[5].HeaderText = "Add. Business Key Query";
-        //        dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-        //        dataGridViewLoadPatternDefinition.Columns[5].DefaultCellStyle.Alignment =
-        //            DataGridViewContentAlignment.TopLeft;
-
-        //        dataGridViewLoadPatternDefinition.Columns[6].HeaderText = "Notes";
-        //        dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-        //        dataGridViewLoadPatternDefinition.Columns[6].DefaultCellStyle.Alignment =
-        //            DataGridViewContentAlignment.TopLeft;
-
-        //        dataGridViewLoadPatternDefinition.Columns[7].HeaderText = "ConnectionKey";
-        //        dataGridViewLoadPatternDefinition.Columns[7].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-        //        dataGridViewLoadPatternDefinition.Columns[7].DefaultCellStyle.Alignment =
-        //            DataGridViewContentAlignment.TopLeft;
-        //    }
-
-        //    GridAutoLayoutLoadPatternDefinition();
-        //}
-
-        //private void GridAutoLayoutLoadPatternDefinition()
-        //{
-        //    //Table Mapping metadata grid - set the auto size based on all cells for each column
-        //    for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
-        //    {
-        //        dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-        //    }
-
-        //    if (dataGridViewLoadPatternDefinition.Columns.Count > 0)
-        //    {
-        //        dataGridViewLoadPatternDefinition.Columns[dataGridViewLoadPatternDefinition.Columns.Count - 1]
-        //            .AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-        //    }
-
-        //    // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
-        //    for (var i = 0; i < dataGridViewLoadPatternDefinition.Columns.Count - 1; i++)
-        //    {
-        //        int columnWidth = dataGridViewLoadPatternDefinition.Columns[i].Width;
-        //        dataGridViewLoadPatternDefinition.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-        //        dataGridViewLoadPatternDefinition.Columns[i].Width = columnWidth;
-        //    }
-        //}
-
-
 
         private void GridAutoLayoutLoadPatternCollection()
         {
-            //Table Mapping metadata grid - set the autosize based on all cells for each column
+            //dataGridViewLoadPatternCollection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            ////Set the auto-size based on (the contents of) all cells in each column.
+            //for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
+            //{
+            //    dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            //    int localWidth = dataGridViewLoadPatternCollection.Columns[i].Width;
+            //}
+
+            //// Choose one column to be used to fill out the grid
+            //if (dataGridViewLoadPatternCollection.Columns.Count > 0)
+            //{
+            //    dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            //}
+
+            //// Disable the auto size again (to enable manual resizing).
+            //for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
+            //{
+            //    int columnWidth = dataGridViewLoadPatternCollection.Columns[i].Width;
+            //    dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //    dataGridViewLoadPatternCollection.Columns[i].Width = columnWidth;
+            //}
+            dataGridViewLoadPatternCollection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            //dataGridViewLoadPatternCollection.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            // Disable the auto size again (to enable manual resizing).
             for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
             {
-                dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            }
 
-            if (dataGridViewLoadPatternCollection.Columns.Count > 0)
-            {
-                dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.Columns.Count - 1]
-                    .AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            }
-
-            // Table Mapping metadata grid - disable the auto size again (to enable manual resizing)
-            for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
-            {
-                int columnWidth = dataGridViewLoadPatternCollection.Columns[i].Width;
                 dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dataGridViewLoadPatternCollection.Columns[i].Width = columnWidth;
+                dataGridViewLoadPatternCollection.Columns[i].Width = dataGridViewLoadPatternCollection.Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
             }
         }
 
@@ -538,76 +216,76 @@ namespace Virtual_Data_Warehouse
         {
             #region Database connections
 
-            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-            var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-            var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+            //var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            //var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
+            //var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
 
-            // Attempt to gracefully capture connection troubles
-            if (connOmd.ConnectionString != "Server=<>;Initial Catalog=<Metadata>;user id=sa;password=<>")
-                try
-                {
-                    connOmd.Open();
-                    connOmd.Close();
-                    // connOmd.Dispose();
-                }
-                catch
-                {
-                    SetTextMain(
-                        "There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-                        TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
-                    return;
-                }
-            else
-            {
-                SetTextMain(
-                    "Metadata Repository Connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-                return;
-            }
-
-
-            if (connPsa.ConnectionString !=
-                "Server=<>;Initial Catalog=<Persistent_Staging_Area>;user id = sa;password =<> ")
-                try
-                {
-                    connPsa.Open();
-                    connPsa.Close();
-                    //connPsa.Dispose();
-                }
-                catch
-                {
-                    SetTextMain(
-                        "There was an issue establishing a database connection to the Persistent Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-                        TeamConfigurationSettings.ConnectionStringHstg + "'.\r\n");
-                    return;
-                }
-            else
-            {
-                SetTextMain(
-                    "The Persistent Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-                return;
-            }
+            //// Attempt to gracefully capture connection troubles
+            //if (connOmd.ConnectionString != "Server=<>;Initial Catalog=<Metadata>;user id=sa;password=<>")
+            //    try
+            //    {
+            //        connOmd.Open();
+            //        connOmd.Close();
+            //        // connOmd.Dispose();
+            //    }
+            //    catch
+            //    {
+            //        SetTextMain(
+            //            "There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+            //            TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
+            //        return;
+            //    }
+            //else
+            //{
+            //    SetTextMain(
+            //        "Metadata Repository Connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+            //    return;
+            //}
 
 
-            if (connStg.ConnectionString != "Server=<>;Initial Catalog=<Staging_Area>;user id = sa;password =<> ")
-                try
-                {
-                    connStg.Open();
-                    connStg.Close();
-                    //connStg.Dispose();
-                }
-                catch
-                {
-                    SetTextMain(
-                        "There was an issue establishing a database connection to the Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-                        TeamConfigurationSettings.ConnectionStringStg + "'.\r\n");
-                    return;
-                }
-            else
-            {
-                SetTextMain(
-                    "The Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-                return;
-            }
+            //if (connPsa.ConnectionString !=
+            //    "Server=<>;Initial Catalog=<Persistent_Staging_Area>;user id = sa;password =<> ")
+            //    try
+            //    {
+            //        connPsa.Open();
+            //        connPsa.Close();
+            //        //connPsa.Dispose();
+            //    }
+            //    catch
+            //    {
+            //        SetTextMain(
+            //            "There was an issue establishing a database connection to the Persistent Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+            //            TeamConfigurationSettings.ConnectionStringHstg + "'.\r\n");
+            //        return;
+            //    }
+            //else
+            //{
+            //    SetTextMain(
+            //        "The Persistent Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+            //    return;
+            //}
+
+
+            //if (connStg.ConnectionString != "Server=<>;Initial Catalog=<Staging_Area>;user id = sa;password =<> ")
+            //    try
+            //    {
+            //        connStg.Open();
+            //        connStg.Close();
+            //        //connStg.Dispose();
+            //    }
+            //    catch
+            //    {
+            //        SetTextMain(
+            //            "There was an issue establishing a database connection to the Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
+            //            TeamConfigurationSettings.ConnectionStringStg + "'.\r\n");
+            //        return;
+            //    }
+            //else
+            //{
+            //    SetTextMain(
+            //        "The Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
+            //    return;
+            //}
 
             #endregion
 
@@ -615,7 +293,7 @@ namespace Virtual_Data_Warehouse
             // Use the database connections
             try
             {
-                connOmd.Open();
+                //connOmd.Open();
             }
             catch (Exception ex)
             {
@@ -625,8 +303,8 @@ namespace Virtual_Data_Warehouse
             }
             finally
             {
-                connOmd.Close();
-                connOmd.Dispose();
+              //  connOmd.Close();
+              //  connOmd.Dispose();
             }
         }
 
@@ -637,13 +315,13 @@ namespace Virtual_Data_Warehouse
             FileSystemWatcher watcher = new FileSystemWatcher();
             //watcher.Path = (GlobalParameters.ConfigurationPath + GlobalParameters.ConfigfileName);
 
-            watcher.Path = VedwConfigurationSettings.TeamConfigurationPath;
+            watcher.Path = VdwConfigurationSettings.TeamEnvironmentFilePath;
 
             /* Watch for changes in LastAccess and LastWrite times, and
                the renaming of files or directories. */
             watcher.NotifyFilter = NotifyFilters.LastWrite;
             // Only watch text files.
-            watcher.Filter = GlobalParameters.TeamConfigurationfileName;
+            watcher.Filter = GlobalParameters.TeamConfigurationFileName;
 
             // Add event handlers.
             watcher.Changed += OnChanged;
@@ -666,7 +344,7 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(VedwConfigurationSettings.VedwOutputPath);
+                Process.Start(VdwConfigurationSettings.VdwOutputPath);
             }
             catch (Exception ex)
             {
@@ -974,13 +652,28 @@ namespace Virtual_Data_Warehouse
 
 
         /// <summary>
-        /// Save VEDW settings in the from to memory & disk
+        /// Save VDW settings in the from to memory & disk
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void saveConfigurationFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Make sure the paths contain a backslash
+            if (textBoxTeamEnvironmentsPath.Text.EndsWith(@"\"))
+            {
+                textBoxTeamEnvironmentsPath.Text = textBoxTeamEnvironmentsPath.Text.Replace(@"\", "");
+            }
+
+            if (!textBoxTeamConfigurationPath.Text.EndsWith(@"\"))
+            {
+                textBoxTeamConfigurationPath.Text = textBoxTeamConfigurationPath.Text + @"\";
+            }
+
+            if (!textBoxInputPath.Text.EndsWith(@"\"))
+            {
+                textBoxInputPath.Text = textBoxInputPath.Text + @"\";
+            }
+
             if (!textBoxOutputPath.Text.EndsWith(@"\"))
             {
                 textBoxOutputPath.Text = textBoxOutputPath.Text + @"\";
@@ -991,67 +684,69 @@ namespace Virtual_Data_Warehouse
                 textBoxLoadPatternPath.Text = textBoxLoadPatternPath.Text + @"\";
             }
 
-            if (!textBoxInputPath.Text.EndsWith(@"\"))
-            {
-                textBoxInputPath.Text = textBoxInputPath.Text + @"\";
-            }
+            new KeyValuePair< string, TeamWorkingEnvironment > ("", null);
 
-            if (textBoxTeamConfigurationPath.Text.EndsWith(@"\"))
+            if (comboBoxEnvironments.SelectedItem != null)
             {
-                textBoxTeamConfigurationPath.Text = textBoxTeamConfigurationPath.Text.Replace(@"\","");
+                var selectedEnvironment = (KeyValuePair<string, TeamWorkingEnvironment>)comboBoxEnvironments.SelectedItem;
+                VdwConfigurationSettings.TeamSelectedEnvironment = selectedEnvironment.Value.environmentInternalId;
+            }
+            else
+            {
+                VdwConfigurationSettings.TeamSelectedEnvironment = null;
             }
 
             // Make sure that the updated paths are accessible from anywhere in the app (global parameters)
-            VedwConfigurationSettings.TeamConfigurationPath = textBoxTeamConfigurationPath.Text;
-            VedwConfigurationSettings.LoadPatternPath = textBoxLoadPatternPath.Text;
-            VedwConfigurationSettings.VedwOutputPath = textBoxOutputPath.Text;
-            VedwConfigurationSettings.VedwInputPath = textBoxInputPath.Text;
-            VedwConfigurationSettings.VedwSchema = textBoxSchemaName.Text;
+            VdwConfigurationSettings.TeamEnvironmentFilePath = textBoxTeamEnvironmentsPath.Text;
+            VdwConfigurationSettings.TeamConfigurationPath = textBoxTeamConfigurationPath.Text;
+            VdwConfigurationSettings.LoadPatternPath = textBoxLoadPatternPath.Text;
+            VdwConfigurationSettings.VdwInputPath = textBoxInputPath.Text;
+            VdwConfigurationSettings.VdwOutputPath = textBoxOutputPath.Text;
+            VdwConfigurationSettings.VdwSchema = textBoxSchemaName.Text;
 
             // Update the root path file (from memory)
             var rootPathConfigurationFile = new StringBuilder();
             rootPathConfigurationFile.AppendLine("/* Virtual Data Warehouse Core Settings */");
             rootPathConfigurationFile.AppendLine("/* Saved at " + DateTime.Now + " */");
-            rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VedwConfigurationSettings.TeamConfigurationPath + "");
-            rootPathConfigurationFile.AppendLine("VedwOutputPath|" + VedwConfigurationSettings.VedwOutputPath + "");
-            rootPathConfigurationFile.AppendLine("LoadPatternPath|" + VedwConfigurationSettings.LoadPatternPath + "");
-            rootPathConfigurationFile.AppendLine("InputPath|" + VedwConfigurationSettings.VedwInputPath + "");
-            rootPathConfigurationFile.AppendLine("WorkingEnvironment|" + VedwConfigurationSettings.WorkingEnvironment + "");
-            rootPathConfigurationFile.AppendLine("VedwSchema|" + VedwConfigurationSettings.VedwSchema + "");
+            rootPathConfigurationFile.AppendLine("TeamEnvironmentFilePath|" + VdwConfigurationSettings.TeamEnvironmentFilePath + "");
+            rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VdwConfigurationSettings.TeamConfigurationPath + "");
+            rootPathConfigurationFile.AppendLine("TeamSelectedEnvironment|" + VdwConfigurationSettings.TeamSelectedEnvironment + "");
+            rootPathConfigurationFile.AppendLine("InputPath|" + VdwConfigurationSettings.VdwInputPath + "");
+            rootPathConfigurationFile.AppendLine("OutputPath|" + VdwConfigurationSettings.VdwOutputPath + "");
+            rootPathConfigurationFile.AppendLine("LoadPatternPath|" + VdwConfigurationSettings.LoadPatternPath + "");
+            rootPathConfigurationFile.AppendLine("VdwSchema|" + VdwConfigurationSettings.VdwSchema + "");
             rootPathConfigurationFile.AppendLine("/* End of file */");
 
-            // Save the VEDW core settings file to disk
-            using (var outfile = new StreamWriter(GlobalParameters.VedwConfigurationPath +
-                                                  GlobalParameters.VedwConfigurationfileName +
-                                                  GlobalParameters.VedwFileExtension))
+            // Save the VDW core settings file to disk
+            using (var outfile = new StreamWriter(GlobalParameters.VdwConfigurationPath +
+                                                  GlobalParameters.VdwConfigurationFileName))
             {
                 outfile.Write(rootPathConfigurationFile.ToString());
                 outfile.Close();
             }
 
             // Reload the VDW and TEAM settings, as the environment may have changed
-            ApplyVdwConfigurationToMemory();
-            ApplyTeamConfigurationToMemory();
+            VdwUtility.LoadVdwConfigurationFile();
+            //ApplyTeamConfigurationToMemory();
 
             // Reset / reload the checkbox lists
             SetDatabaseConnections();
 
-            richTextBoxInformationMain.Text = "The global parameter file (" +
-                                              GlobalParameters.VedwConfigurationfileName +
-                                              GlobalParameters.VedwFileExtension + ") has been updated in: " +
-                                              GlobalParameters.VedwConfigurationPath+"\r\n\r\n";
+            richTextBoxInformationMain.Text = DateTime.Now+" - the global parameter file (" +
+                                              GlobalParameters.VdwConfigurationFileName + ") has been updated in: " +
+                                              GlobalParameters.VdwConfigurationPath+"\r\n\r\n";
         }
 
         private void openConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                Process.Start(Path.GetDirectoryName(VedwConfigurationSettings.TeamConfigurationPath));
+                Process.Start(Path.GetDirectoryName(VdwConfigurationSettings.TeamEnvironmentFilePath));
             }
             catch (Exception ex)
             {
                 richTextBoxInformationMain.Text =
-                    "An error has occured while attempting to open the configuration directory. The error message is: " +
+                    DateTime.Now + "- an error has occured while attempting to open the configuration directory. The error message is: " +
                     ex;
             }
         }
@@ -1073,7 +768,7 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(VedwConfigurationSettings.TeamConfigurationPath);
+                Process.Start(VdwConfigurationSettings.TeamEnvironmentFilePath);
             }
             catch (Exception ex)
             {
@@ -1089,11 +784,6 @@ namespace Virtual_Data_Warehouse
             richTextBoxInformationMain.SelectionStart = richTextBoxInformationMain.Text.Length;
             // Scroll automatically
             richTextBoxInformationMain.ScrollToCaret();
-        }
-
-        private void FormMain_Shown(object sender, EventArgs e)
-        {
-            GridAutoLayoutLoadPatternCollection();
         }
 
         private DialogResult STAShowDialog(FileDialog dialog)
@@ -1120,19 +810,18 @@ namespace Virtual_Data_Warehouse
         }
 
 
-        private void openVEDWConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openVDWConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                Process.Start(GlobalParameters.VedwConfigurationPath +
-                              GlobalParameters.VedwConfigurationfileName +
-                              GlobalParameters.VedwFileExtension);
+                Process.Start(GlobalParameters.VdwConfigurationPath +
+                              GlobalParameters.VdwConfigurationFileName);
 
             }
             catch (Exception ex)
             {
                 richTextBoxInformationMain.Text =
-                    "An error has occured while attempting to open the VEDW configuration file. The error message is: " +
+                    "An error has occured while attempting to open the VDW configuration file. The error message is: " +
                     ex;
             }
         }
@@ -1153,18 +842,18 @@ namespace Virtual_Data_Warehouse
             internal int id { get; set; }
             internal string classification { get; set; }
             internal string notes { get; set; }
-            internal Dictionary<string,VEDW_DataObjectMappingList> itemList { get; set; }
+            internal Dictionary<string,VDW_DataObjectMappingList> itemList { get; set; }
             internal string connectionString { get; set; }
         }
 
         internal List<LocalPattern> Patternlist()
         {
             // Deserialise the Json files for further use
-            List<VEDW_DataObjectMappingList> mappingList = new List<VEDW_DataObjectMappingList>();
+            List<VDW_DataObjectMappingList> mappingList = new List<VDW_DataObjectMappingList>();
 
-            if (Directory.Exists(VedwConfigurationSettings.VedwInputPath))
+            if (Directory.Exists(VdwConfigurationSettings.VdwInputPath))
             {
-                string[] fileEntries = Directory.GetFiles(VedwConfigurationSettings.VedwInputPath, "*.json");
+                string[] fileEntries = Directory.GetFiles(VdwConfigurationSettings.VdwInputPath, "*.json");
 
                 // Hard-coded exclusions
                 string[] excludedfiles = {"interfaceBusinessKeyComponent.json", "interfaceBusinessKeyComponentPart.json", "interfaceDrivingKey.json", "interfaceHubLinkXref.json", "interfacePhysicalModel.json", "interfaceSourceHubXref.json", "interfaceSourceLinkAttributeXref.json" };
@@ -1176,8 +865,8 @@ namespace Virtual_Data_Warehouse
                         try
                         {
                             var jsonInput = File.ReadAllText(fileName);
-                            VEDW_DataObjectMappingList deserialisedMapping =
-                                JsonConvert.DeserializeObject<VEDW_DataObjectMappingList>(jsonInput);
+                            VDW_DataObjectMappingList deserialisedMapping =
+                                JsonConvert.DeserializeObject<VDW_DataObjectMappingList>(jsonInput);
 
                             mappingList.Add(deserialisedMapping);
                         }
@@ -1196,7 +885,7 @@ namespace Virtual_Data_Warehouse
             // Create base list of classification / types to become the tab pages (based on the classification + notes field)
             Dictionary<string, string> classificationDictionary = new Dictionary<string, string>();
 
-            foreach (VEDW_DataObjectMappingList dataObjectMappingList in mappingList)
+            foreach (VDW_DataObjectMappingList dataObjectMappingList in mappingList)
             {
                 foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappingList)
                 {
@@ -1210,7 +899,7 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
-            // Now use the base list of classifications / tab pages to add the item list (individual mappings) by searching the VEDW_DataObjectMappingList
+            // Now use the base list of classifications / tab pages to add the item list (individual mappings) by searching the VDW_DataObjectMappingList
             List<LocalPattern> finalMappingList = new List<LocalPattern>();
 
             foreach (KeyValuePair<string, string> classification in classificationDictionary)
@@ -1219,10 +908,10 @@ namespace Virtual_Data_Warehouse
                 string localConnectionString = "";
 
                 LocalPattern localPatternMapping = new LocalPattern();
-                Dictionary<string, VEDW_DataObjectMappingList> itemList = new Dictionary<string, VEDW_DataObjectMappingList>();
+                Dictionary<string, VDW_DataObjectMappingList> itemList = new Dictionary<string, VDW_DataObjectMappingList>();
 
                 // Iterate through the various levels to find the classification
-                foreach (VEDW_DataObjectMappingList dataObjectMappingList in mappingList)
+                foreach (VDW_DataObjectMappingList dataObjectMappingList in mappingList)
                 {
                     foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappingList)
                     {
@@ -1360,8 +1049,10 @@ namespace Virtual_Data_Warehouse
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            var fileBrowserDialog = new OpenFileDialog();
-            fileBrowserDialog.InitialDirectory = Path.GetDirectoryName(textBoxTeamConfigurationPath.Text);
+            var fileBrowserDialog = new OpenFileDialog
+            {
+                InitialDirectory = Path.GetDirectoryName(textBoxTeamEnvironmentsPath.Text)
+            };
 
             DialogResult result = fileBrowserDialog.ShowDialog();
 
@@ -1372,42 +1063,49 @@ namespace Virtual_Data_Warehouse
                 int teamFileCounter = 0;
                 foreach (string file in files)
                 {
-                    if (file.Contains("TEAM_configuration"))
+                    if (file.Contains(GlobalParameters.JsonEnvironmentFileName))
                     {
                         teamFileCounter++;
                     }
                 }
 
-                string finalPath;
-                if (fileBrowserDialog.InitialDirectory.EndsWith(@"\"))
-                {
-                    finalPath = fileBrowserDialog.FileName.Replace(@"\", "");
-                }
-                else
-                {
-                    finalPath = fileBrowserDialog.FileName;
-                }
-
-                textBoxTeamConfigurationPath.Text = finalPath;
-
                 if (teamFileCounter == 0)
                 {
-                    richTextBoxInformationMain.Text =
-                        "The selected directory does not seem to contain TEAM configuration files. You are looking for files like TEAM_configuration_*.txt";
+                    string userFeedback = "The selected directory does not seem to contain a TEAM environments file. You are looking for the file TEAM_environments.json";
+                    richTextBoxInformationMain.Text = userFeedback;
+                    GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, userFeedback));
                 }
                 else
                 {
-                    richTextBoxInformationMain.Text = "";
+                    richTextBoxInformationMain.Clear();
 
                     // Ensuring the path is set in memory also and reload the configuration
-                    VedwConfigurationSettings.TeamConfigurationPath = finalPath;
+                    FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath = fileBrowserDialog.FileName;
+                    textBoxTeamEnvironmentsPath.Text = fileBrowserDialog.FileName;
 
-                    ApplyTeamConfigurationToMemory();
-                    richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains TEAM configuration files.");
+                    richTextBoxInformationMain.AppendText("\r\nThe path now points to a valid TEAM environment file. Please save this configuration to activate these settings.");
+                    FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file path updated to {FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath}."));
+
+                    // Load the file.
+                    FormBase.TeamEnvironmentCollection.LoadTeamEnvironmentCollection(fileBrowserDialog.FileName);
+                    FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file {FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath} has been loaded to memory."));
+
+                    comboBoxEnvironments.Items.Clear();
+                    PopulateEnvironmentComboBox();
                 }
-
             }
 
+        }
+
+        public void PopulateEnvironmentComboBox()
+        {
+            foreach (var environment in FormBase.TeamEnvironmentCollection.EnvironmentDictionary)
+            {
+                // Adding items in the drop down list
+                comboBoxEnvironments.Items.Add(new KeyValuePair<string, TeamWorkingEnvironment>(environment.Value.environmentKey, environment.Value));
+                comboBoxEnvironments.DisplayMember = "Key";
+                comboBoxEnvironments.ValueMember = "Value";
+            }
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)
@@ -1455,7 +1153,7 @@ namespace Virtual_Data_Warehouse
                     richTextBoxInformationMain.Text = "The path now points to a directory that contains Json files.";
 
                     // (Re)Create the tab pages based on available content.
-                    VedwConfigurationSettings.VedwInputPath = finalPath;
+                    VdwConfigurationSettings.VdwInputPath = finalPath;
                     CreateCustomTabPages();
                 }
 
@@ -1497,7 +1195,7 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(GlobalParameters.VedwConfigurationPath);
+                Process.Start(GlobalParameters.VdwConfigurationPath);
             }
             catch (Exception ex)
             {
@@ -1511,7 +1209,7 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(VedwConfigurationSettings.VedwInputPath);
+                Process.Start(VdwConfigurationSettings.VdwInputPath);
             }
             catch (Exception ex)
             {
@@ -1573,7 +1271,7 @@ namespace Virtual_Data_Warehouse
             {
                 Title = @"Open Load Pattern Collection File",
                 Filter = @"Load Pattern Collection|*.json",
-                InitialDirectory = VedwConfigurationSettings.LoadPatternPath
+                InitialDirectory = VdwConfigurationSettings.LoadPatternPath
             };
 
             var ret = STAShowDialog(theDialog);
@@ -1585,7 +1283,7 @@ namespace Virtual_Data_Warehouse
                     var chosenFile = theDialog.FileName;
 
                     // Save the list to memory
-                    VedwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
+                    VdwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
 
                     // ... and populate the data grid
                     PopulateLoadPatternCollectionDataGrid();
@@ -1617,7 +1315,7 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.Clear();
 
-                var chosenFile = textBoxLoadPatternPath.Text + GlobalParameters.LoadPatternListFile;
+                var chosenFile = textBoxLoadPatternPath.Text + GlobalParameters.LoadPatternListFileName;
 
                 DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
 
@@ -1665,7 +1363,7 @@ namespace Virtual_Data_Warehouse
                 try
                 {
                     // Quick fix, in the file again to commit changes to memory.
-                    VedwConfigurationSettings.patternList =
+                    VdwConfigurationSettings.patternList =
                         JsonConvert.DeserializeObject<List<LoadPattern>>(File.ReadAllText(chosenFile));
                     CreateCustomTabPages();
                 }
@@ -1685,7 +1383,7 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(VedwConfigurationSettings.LoadPatternPath);
+                Process.Start(VdwConfigurationSettings.LoadPatternPath);
             }
             catch (Exception ex)
             {
@@ -1695,21 +1393,146 @@ namespace Virtual_Data_Warehouse
         }
 
 
-
-        private void FormMain_ResizeEnd(object sender, EventArgs e)
+        private void displayEventLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GridAutoLayoutLoadPatternCollection();
+            if (backgroundWorkerEventLog.IsBusy != true)
+            {
+                // create a new instance of the alert form
+                _alertEventLog = new FormAlert();
+
+                _alertEventLog.ShowLogButton(false);
+                _alertEventLog.ShowCancelButton(false);
+                _alertEventLog.ShowProgressBar(false);
+                _alertEventLog.ShowProgressLabel(false);
+                // event handler for the Cancel button in AlertForm
+                _alertEventLog.Canceled += buttonCancelEventLogForm_Click;
+                _alertEventLog.Show();
+                // Start the asynchronous operation.
+
+                backgroundWorkerEventLog.RunWorkerAsync();
+            }
         }
 
-
-        private void FormMain_SizeChanged_1(object sender, EventArgs e)
+        private void buttonCancelEventLogForm_Click(object sender, EventArgs e)
         {
-            GridAutoLayoutLoadPatternCollection();
+            if (backgroundWorkerEventLog.WorkerSupportsCancellation)
+            {
+                // Cancel the asynchronous operation.
+                backgroundWorkerEventLog.CancelAsync();
+                // Close the AlertForm
+                _alertEventLog.Close();
+            }
         }
 
-        private void tabPageSettings_Click(object sender, EventArgs e)
+        private void backgroundWorkerEventLog_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // Handle multi-threading
+            if (worker != null && worker.CancellationPending)
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                backgroundWorkerEventLog.ReportProgress(0);
+
+                _alertEventLog.SetTextLogging("Event Log.\r\n\r\n");
+
+                try
+                {
+                    foreach (var individualEvent in GlobalParameters.TeamEventLog)
+                    {
+                        _alertEventLog.SetTextLogging($"{individualEvent.eventTime} - {(EventTypes)individualEvent.eventCode}: {individualEvent.eventDescription}\r\n");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An issue occurred creating the sample schemas. The error message is: " + ex, "An issue has occured", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+
+                backgroundWorkerEventLog.ReportProgress(100);
+            }
+        }
+
+        private void backgroundWorkerEventLog_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            _alertEventLog.Message = "In progress, please wait... " + e.ProgressPercentage + "%";
+            _alertEventLog.ProgressValue = e.ProgressPercentage;
+        }
+
+        private void backgroundWorkerEventLog_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                // Do nothing
+            }
+            else if (e.Error != null)
+            {
+                // Do nothing
+            }
+            else
+            {
+                // Do nothing
+            }
+        }
+
+        private void pictureBox10_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void pictureBox7_Click(object sender, EventArgs e)
+        {
+            var fileBrowserDialog = new FolderBrowserDialog();
+
+            var originalPath = textBoxTeamConfigurationPath.Text;
+            fileBrowserDialog.SelectedPath = textBoxTeamConfigurationPath.Text;
+
+            DialogResult result = fileBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
+            {
+                string[] files = Directory.GetFiles(fileBrowserDialog.SelectedPath);
+
+                int fileCounter = 0;
+                foreach (string file in files)
+                {
+                    if (Path.GetFileName(file).StartsWith("TEAM_con"))
+                    {
+                        fileCounter++;
+                    }
+                }
+
+                string finalPath;
+                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                {
+                    finalPath = fileBrowserDialog.SelectedPath;
+                }
+                else
+                {
+                    finalPath = fileBrowserDialog.SelectedPath + @"\";
+                }
+
+
+                textBoxInputPath.Text = finalPath;
+
+                if (fileCounter == 0)
+                {
+                    richTextBoxInformationMain.Text = "There are no TEAM configuration files in this location. Can you check if the selected directory contains TEAM files?";
+                    textBoxInputPath.Text = originalPath;
+                }
+                else
+                {
+                    richTextBoxInformationMain.Text = "The path now points to a directory that contains TEAM configuration files.\r\n";
+
+                    // (Re)Create the tab pages based on available content.
+                    VdwConfigurationSettings.TeamConfigurationPath = finalPath; 
+                    CreateCustomTabPages();
+                }
+
+            }
         }
     }
 }

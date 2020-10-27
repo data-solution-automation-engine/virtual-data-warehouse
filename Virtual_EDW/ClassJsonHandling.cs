@@ -27,7 +27,7 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         internal static void RemoveExistingJsonFile(string inputFileName)
         {
-            File.Delete(FormBase.VedwConfigurationSettings.VedwInputPath + inputFileName);
+            File.Delete(FormBase.VdwConfigurationSettings.VdwInputPath + inputFileName);
         }
 
     }

@@ -127,10 +127,10 @@ namespace Virtual_Data_Warehouse
         {
             List<LoadPattern> loadPatternList = new List<LoadPattern>();
             // Retrieve the file contents and store in a string
-            if (File.Exists(FormBase.VedwConfigurationSettings.LoadPatternPath + FormBase.GlobalParameters.LoadPatternListFile))
+            if (File.Exists(FormBase.VdwConfigurationSettings.LoadPatternPath + FormBase.GlobalParameters.LoadPatternListFileName))
             {
-                var jsonInput = File.ReadAllText(FormBase.VedwConfigurationSettings.LoadPatternPath +
-                                                 FormBase.GlobalParameters.LoadPatternListFile);
+                var jsonInput = File.ReadAllText(FormBase.VdwConfigurationSettings.LoadPatternPath +
+                                                 FormBase.GlobalParameters.LoadPatternListFileName);
 
                 //Move the (json) string into a List object (a list of the type LoadPattern)
                 loadPatternList = JsonConvert.DeserializeObject<List<LoadPattern>>(jsonInput);

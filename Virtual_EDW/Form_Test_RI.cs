@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using TEAM;
 
 namespace Virtual_Data_Warehouse
 {
@@ -20,7 +21,7 @@ namespace Virtual_Data_Warehouse
 
         private void ButtonGenerateTestcases_Click(object sender, EventArgs e)
         {
-            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
+            var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false)};
 
             try
             {
@@ -40,13 +41,13 @@ namespace Virtual_Data_Warehouse
 
             if (radioButtonPSA.Checked)
             {
-                environmentSnippet=TeamConfigurationSettings.PsaDatabaseName;
-                schemaName = VedwConfigurationSettings.VedwSchema;
-                hubSchemaName = VedwConfigurationSettings.VedwSchema;
+                environmentSnippet=TeamConfigurationSettings.MetadataConnection.DatabaseServer.DatabaseName;
+                schemaName = VdwConfigurationSettings.VdwSchema;
+                hubSchemaName = VdwConfigurationSettings.VdwSchema;
             }
             else if (radioButtonIntegrationLayer.Checked)
             {
-                environmentSnippet = TeamConfigurationSettings.IntegrationDatabaseName;
+                environmentSnippet = TeamConfigurationSettings.MetadataConnection.DatabaseServer.DatabaseName;
             }
 
             var queryRi = new StringBuilder();
@@ -132,7 +133,7 @@ namespace Virtual_Data_Warehouse
 
                         queryRi.AppendLine("AND EXISTS");
                         queryRi.AppendLine("(");
-                        queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = ");
+                        queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.MetadataConnection.DatabaseServer.DatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = ");
                         queryRi.AppendLine("  " + surrogateKeySnippet);
                         queryRi.Remove(queryRi.Length - 3, 3);
                         queryRi.AppendLine(")");
@@ -214,7 +215,7 @@ namespace Virtual_Data_Warehouse
 
                         queryRi.AppendLine("AND EXISTS");
                         queryRi.AppendLine("(");
-                        queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE lnk.[" + (string)row["HUB_SURROGATE_KEY"] + "] = ");
+                        queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.MetadataConnection.DatabaseServer.DatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE lnk.[" + (string)row["HUB_SURROGATE_KEY"] + "] = ");
                         queryRi.AppendLine("  " + surrogateKeySnippet);
                         queryRi.Remove(queryRi.Length - 3, 3);
                         queryRi.AppendLine(")");
@@ -301,7 +302,7 @@ namespace Virtual_Data_Warehouse
 
                         queryRi.AppendLine("AND EXISTS");
                         queryRi.AppendLine("(");
-                        queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.StagingDatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = ");
+                        queryRi.AppendLine("  SELECT 1 FROM [" + TeamConfigurationSettings.MetadataConnection.DatabaseServer.DatabaseName + "].[" + (string)row["SOURCE_SCHEMA_NAME"] + "].[" + (string)row["SOURCE_NAME"] + "] WHERE sat.[" + (string)row["SURROGATE_KEY"] + "] = ");
                         queryRi.AppendLine("  " + surrogateKeySnippet);
                         queryRi.Remove(queryRi.Length - 3, 3);
                         queryRi.AppendLine(")");

@@ -13,6 +13,9 @@ namespace Virtual_Data_Warehouse
     {
         public static void RegisterHandleBarsHelpers()
         {
+            // Generation Date/Time functional helper
+            Handlebars.RegisterHelper("Now", (writer, context, parameters) => { writer.WriteSafeString(DateTime.Now); });
+
             // Normal helper
             Handlebars.RegisterHelper("TenOrMore", (output, options, context, data) =>
             {
@@ -34,6 +37,19 @@ namespace Virtual_Data_Warehouse
                 if (data[0].ToString() == data[1].ToString())
                     options.Template(output, (object) context);
                    
+            });
+
+            // Character spacing not satisfactory? Do not panic, help is near! Make sure the character spacing is righteous using this Handlebars helper.
+            // Usage {{Martjan sourceDataObject.name}} will space out (!?) the name of the source to 30 characters and a few tabs for lots of white spaces. Completely Space man!
+            Handlebars.RegisterHelper("Martjan", (writer, context, args) =>
+            {
+                string outputString = args[0].ToString();
+                if (outputString.Length < 30)
+                {
+                    outputString = outputString.PadRight(30);
+                }
+                writer.WriteSafeString(outputString + "\t\t\t\t");
+
             });
 
             // BLOCK HELPER
