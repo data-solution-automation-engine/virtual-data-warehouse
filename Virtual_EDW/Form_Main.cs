@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -39,7 +38,7 @@ namespace Virtual_Data_Warehouse
             const string versionNumberForApplication = "v1.6.2";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
-            GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
+            VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
             Event localEvent;
 
             #region Root Paths
@@ -49,26 +48,26 @@ namespace Virtual_Data_Warehouse
             localEvent = FileHandling.InitialisePath(GlobalParameters.VdwConfigurationPath);
             if (localEvent.eventDescription != null)
             {
-                GlobalParameters.TeamEventLog.Add(localEvent);
+                VdwConfigurationSettings.VdwEventLog.Add(localEvent);
             }
-            GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Configuration path initialised for {GlobalParameters.VdwConfigurationPath}."));
+            VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Configuration path initialised for {GlobalParameters.VdwConfigurationPath}."));
             
             
             // Input Path
             localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwInputPath);
             if (localEvent.eventDescription != null)
             {
-                GlobalParameters.TeamEventLog.Add(localEvent);
+                VdwConfigurationSettings.VdwEventLog.Add(localEvent);
             }
-            GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Input path set for {VdwConfigurationSettings.VdwInputPath}."));
+            VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Input path set for {VdwConfigurationSettings.VdwInputPath}."));
 
             // Output Path
             localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwOutputPath);
             if (localEvent.eventDescription != null)
             {
-                GlobalParameters.TeamEventLog.Add(localEvent);
+                VdwConfigurationSettings.VdwEventLog.Add(localEvent);
             }
-            GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Output path set for {VdwConfigurationSettings.VdwOutputPath}."));
+            VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Output path set for {VdwConfigurationSettings.VdwOutputPath}."));
             #endregion
 
             // Create the initial VDW configuration file, if it doesn't exist (first time use or change of directory).
@@ -86,15 +85,16 @@ namespace Virtual_Data_Warehouse
             textBoxSchemaName.Text = VdwConfigurationSettings.VdwSchema;
 
             // Then load the environments file and current working environment.
+            // The TeamEnvironmentCollection contains all the environments as specified in TEAM (environments file).
             TeamEnvironmentCollection.LoadTeamEnvironmentCollection(VdwConfigurationSettings.TeamEnvironmentFilePath);
 
-            VdwConfigurationSettings.ActiveEnvironment = TeamEnvironmentCollection.GetEnvironmentByKey(VdwConfigurationSettings.TeamSelectedEnvironment);
+            VdwConfigurationSettings.ActiveEnvironment = TeamEnvironmentCollection.GetEnvironmentByKey(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
 
             // Load the configuration and connection information from file, based on the selected environment and input path.
             VdwUtility.LoadTeamConfigurations(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
 
             PopulateEnvironmentComboBox();
-            comboBoxEnvironments.SelectedIndex = comboBoxEnvironments.FindStringExact(FormBase.VdwConfigurationSettings.TeamSelectedEnvironment);
+            comboBoxEnvironments.SelectedIndex = comboBoxEnvironments.FindStringExact(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
 
             var comboItem = comboBoxEnvironments.Items.Cast<KeyValuePair<string, TeamWorkingEnvironment>>().FirstOrDefault(item => item.Value.Equals(FormBase.VdwConfigurationSettings.ActiveEnvironment));
             comboBoxEnvironments.SelectedItem = comboItem;
@@ -689,11 +689,11 @@ namespace Virtual_Data_Warehouse
             if (comboBoxEnvironments.SelectedItem != null)
             {
                 var selectedEnvironment = (KeyValuePair<string, TeamWorkingEnvironment>)comboBoxEnvironments.SelectedItem;
-                VdwConfigurationSettings.TeamSelectedEnvironment = selectedEnvironment.Value.environmentInternalId;
+                VdwConfigurationSettings.TeamSelectedEnvironmentInternalId = selectedEnvironment.Value.environmentInternalId;
             }
             else
             {
-                VdwConfigurationSettings.TeamSelectedEnvironment = null;
+                VdwConfigurationSettings.TeamSelectedEnvironmentInternalId = null;
             }
 
             // Make sure that the updated paths are accessible from anywhere in the app (global parameters)
@@ -710,7 +710,7 @@ namespace Virtual_Data_Warehouse
             rootPathConfigurationFile.AppendLine("/* Saved at " + DateTime.Now + " */");
             rootPathConfigurationFile.AppendLine("TeamEnvironmentFilePath|" + VdwConfigurationSettings.TeamEnvironmentFilePath + "");
             rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VdwConfigurationSettings.TeamConfigurationPath + "");
-            rootPathConfigurationFile.AppendLine("TeamSelectedEnvironment|" + VdwConfigurationSettings.TeamSelectedEnvironment + "");
+            rootPathConfigurationFile.AppendLine("TeamSelectedEnvironment|" + VdwConfigurationSettings.TeamSelectedEnvironmentInternalId + "");
             rootPathConfigurationFile.AppendLine("InputPath|" + VdwConfigurationSettings.VdwInputPath + "");
             rootPathConfigurationFile.AppendLine("OutputPath|" + VdwConfigurationSettings.VdwOutputPath + "");
             rootPathConfigurationFile.AppendLine("LoadPatternPath|" + VdwConfigurationSettings.LoadPatternPath + "");
@@ -885,11 +885,11 @@ namespace Virtual_Data_Warehouse
             // Create base list of classification / types to become the tab pages (based on the classification + notes field)
             Dictionary<string, string> classificationDictionary = new Dictionary<string, string>();
 
-            foreach (VDW_DataObjectMappingList dataObjectMappingList in mappingList)
+            foreach (VDW_DataObjectMappingList dataObjectMappings in mappingList)
             {
-                foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappingList)
+                foreach (DataObjectMapping dataObjectMapping in dataObjectMappings.dataObjectMappings)
                 {
-                    foreach (Classification classification in dataObjectMapping.mappingClassification)
+                    foreach (Classification classification in dataObjectMapping.mappingClassifications)
                     {
                         if (!classificationDictionary.ContainsKey(classification.classification))
                         {
@@ -913,9 +913,9 @@ namespace Virtual_Data_Warehouse
                 // Iterate through the various levels to find the classification
                 foreach (VDW_DataObjectMappingList dataObjectMappingList in mappingList)
                 {
-                    foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappingList)
+                    foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappings)
                     {
-                        foreach (Classification dataObjectMappingClassification in dataObjectMapping.mappingClassification)
+                        foreach (Classification dataObjectMappingClassification in dataObjectMapping.mappingClassifications)
                         {
                             if (dataObjectMappingClassification.classification == classification.Key)
                             {
@@ -1073,7 +1073,7 @@ namespace Virtual_Data_Warehouse
                 {
                     string userFeedback = "The selected directory does not seem to contain a TEAM environments file. You are looking for the file TEAM_environments.json";
                     richTextBoxInformationMain.Text = userFeedback;
-                    GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, userFeedback));
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, userFeedback));
                 }
                 else
                 {
@@ -1084,11 +1084,11 @@ namespace Virtual_Data_Warehouse
                     textBoxTeamEnvironmentsPath.Text = fileBrowserDialog.FileName;
 
                     richTextBoxInformationMain.AppendText("\r\nThe path now points to a valid TEAM environment file. Please save this configuration to activate these settings.");
-                    FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file path updated to {FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath}."));
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file path updated to {FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath}."));
 
                     // Load the file.
                     FormBase.TeamEnvironmentCollection.LoadTeamEnvironmentCollection(fileBrowserDialog.FileName);
-                    FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file {FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath} has been loaded to memory."));
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file {FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath} has been loaded to memory."));
 
                     comboBoxEnvironments.Items.Clear();
                     PopulateEnvironmentComboBox();
@@ -1441,7 +1441,7 @@ namespace Virtual_Data_Warehouse
 
                 try
                 {
-                    foreach (var individualEvent in GlobalParameters.TeamEventLog)
+                    foreach (var individualEvent in VdwConfigurationSettings.VdwEventLog)
                     {
                         _alertEventLog.SetTextLogging($"{individualEvent.eventTime} - {(EventTypes)individualEvent.eventCode}: {individualEvent.eventDescription}\r\n");
                     }
@@ -1516,12 +1516,12 @@ namespace Virtual_Data_Warehouse
                 }
 
 
-                textBoxInputPath.Text = finalPath;
+                textBoxTeamConfigurationPath.Text = finalPath;
 
                 if (fileCounter == 0)
                 {
                     richTextBoxInformationMain.Text = "There are no TEAM configuration files in this location. Can you check if the selected directory contains TEAM files?";
-                    textBoxInputPath.Text = originalPath;
+                    textBoxTeamConfigurationPath.Text = originalPath;
                 }
                 else
                 {
@@ -1533,6 +1533,37 @@ namespace Virtual_Data_Warehouse
                 }
 
             }
+        }
+
+        private void comboBoxEnvironments_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Retrieve the updated value from the Combobox
+            var selectedEnvironment = (KeyValuePair<string, TeamWorkingEnvironment>)comboBoxEnvironments.SelectedItem;
+            VdwConfigurationSettings.TeamSelectedEnvironmentInternalId = selectedEnvironment.Value.environmentInternalId;
+            VdwConfigurationSettings.ActiveEnvironment = selectedEnvironment.Value;
+
+            if (startUpIndicator != true)
+            {
+                // Reload the configuration and connections file associated with this new environment.
+                VdwUtility.LoadTeamConfigurations(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
+                richTextBoxInformationMain.AppendText($"The {VdwConfigurationSettings.ActiveEnvironment.environmentKey} environment is now active (not saved yet though).\r\n");
+            }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // Specify that the link was visited. 
+            linkLabelVdwGithub.LinkVisited = true;
+            // Navigate to a URL.
+            Process.Start("https://github.com/RoelantVos/Virtual-Data-Warehouse");
+        }
+
+        private void linkLabelWebLog_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // Specify that the link was visited. 
+            linkLabelWebLog.LinkVisited = true;
+            // Navigate to a URL.
+            Process.Start("http://www.roelantvos.com");
         }
     }
 }

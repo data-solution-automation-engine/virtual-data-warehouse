@@ -7,7 +7,7 @@ namespace Virtual_Data_Warehouse
     /// The parent object containing the list of source-to-target mappings. This is the highest level and contains the list of mappings (as individual objects
     /// but also the parameters inherited from TEAM and VDW.
     /// </summary>
-    class VDW_DataObjectMappingList : DataObjectMappingList
+    class VDW_DataObjectMappingList : DataObjectMappings
     {
         // Generic interface definitions
         //public List<DataObjectMapping> dataObjectMapping { get; set; }
@@ -33,17 +33,17 @@ namespace Virtual_Data_Warehouse
     class MetadataConfiguration
     {
         // Databases
-        public string sourceDatabaseName { get; set; }
-        public string sourceDatabaseConnection { get; set; }
-        public string stagingAreaDatabaseName { get; set; }
-        public string stagingAreaDatabaseConnection { get; set; }
-        public string persistentStagingDatabaseName { get; set; }
-        public string persistentStagingDatabaseConnection { get; set; }
-        public string persistentStagingSchemaName { get; set; }
-        public string integrationDatabaseName { get; set; }
-        public string integrationDatabaseConnection { get; set; }
-        public string presentationDatabaseName { get; set; }
-        public string presentationDatabaseConnection { get; set; }
+        //public string sourceDatabaseName { get; set; }
+        //public string sourceDatabaseConnection { get; set; }
+        //public string stagingAreaDatabaseName { get; set; }
+        //public string stagingAreaDatabaseConnection { get; set; }
+        //public string persistentStagingDatabaseName { get; set; }
+        //public string persistentStagingDatabaseConnection { get; set; }
+        //public string persistentStagingSchemaName { get; set; }
+        //public string integrationDatabaseName { get; set; }
+        //public string integrationDatabaseConnection { get; set; }
+        //public string presentationDatabaseName { get; set; }
+        //public string presentationDatabaseConnection { get; set; }
         public string vdwSchemaName { get; set; } = FormBase.VdwConfigurationSettings.VdwSchema;
 
         // Attributes

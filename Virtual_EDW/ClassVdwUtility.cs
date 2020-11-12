@@ -36,7 +36,7 @@ namespace Virtual_Data_Warehouse
             localEvent = FileHandling.CreateConfigurationFile(vdwConfigurationFileName, initialConfigurationFile);
             if (localEvent.eventDescription != null)
             {
-                FormBase.GlobalParameters.TeamEventLog.Add(localEvent);
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(localEvent);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Virtual_Data_Warehouse
                             FormBase.VdwConfigurationSettings.TeamConfigurationPath = configList[configuration];
                             break;
                         case "TeamSelectedEnvironment":
-                            FormBase.VdwConfigurationSettings.TeamSelectedEnvironment = configList[configuration];
+                            FormBase.VdwConfigurationSettings.TeamSelectedEnvironmentInternalId = configList[configuration];
                             break;
                         case "InputPath":
                             FormBase.VdwConfigurationSettings.VdwInputPath = configList[configuration];
@@ -79,20 +79,20 @@ namespace Virtual_Data_Warehouse
                             FormBase.VdwConfigurationSettings.VdwSchema = configList[configuration];
                             break;
                         default:
-                            FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"Incorrect configuration '{configuration}' encountered."));
+                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"Incorrect configuration '{configuration}' encountered."));
                             break;
                     }
 
-                    FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
 
                 }
                 else
                 {
-                    FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
                 }
             }
 
-            FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The VDW configuration has been updated in memory" + $"."));
+            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The VDW configuration has been updated in memory" + $"."));
 
         }
 
@@ -104,6 +104,7 @@ namespace Virtual_Data_Warehouse
         {
             if (environmentName != null)
             {
+                // Connection information (TEAM_connections).
                 var connectionFileName = FormBase.VdwConfigurationSettings.TeamConfigurationPath +
                                          FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName +
                                          FormBase.GlobalParameters.JsonExtension;
@@ -112,19 +113,34 @@ namespace Virtual_Data_Warehouse
 
                 if (FormBase.TeamConfigurationSettings.ConnectionDictionary is null)
                 {
-                    FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, $"The connection dictionary is empty."));
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, $"The connection dictionary is empty."));
+                }
+                else
+                {
+                    foreach (var localConnection in FormBase.TeamConfigurationSettings.ConnectionDictionary)
+                    {
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The connection key {localConnection.Value.ConnectionKey} is available as part of the {FormBase.VdwConfigurationSettings.ActiveEnvironment.environmentKey} environment."));
+
+                    }
                 }
 
+                // Configuration information (TEAM_configuration).
                 var configurationFileName = FormBase.VdwConfigurationSettings.TeamConfigurationPath +
                                             FormBase.GlobalParameters.TeamConfigurationFileName + '_' +
                                             environmentName +
                                             FormBase.GlobalParameters.ConfigurationFileExtension;
 
                 FormBase.TeamConfigurationSettings.LoadTeamConfigurationFile(configurationFileName);
+                
+                // Report back any events that may have happened while loading the TEAM information, by adding events to the global VDW event log.
+                foreach (var localEvent in FormBase.TeamConfigurationSettings.ConfigurationSettingsEventLog)
+                {
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(localEvent);
+                }
             }
             else
             {
-                FormBase.GlobalParameters.TeamEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The working environment has not been set, no configurations have been loaded."));
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The working environment has not been set, no configurations have been loaded."));
             }
         }
 

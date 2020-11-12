@@ -33,7 +33,6 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         internal static class GlobalParameters
         {
-            internal static EventLog TeamEventLog { get; set; } = new EventLog();
 
             // VDW core path parameters, not meant to be updated
             public static string RootPath { get; } = Application.StartupPath;
@@ -59,6 +58,8 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         internal static class VdwConfigurationSettings
         {
+            internal static EventLog VdwEventLog { get; set; } = new EventLog();
+
             public static string VdwSchema { get; set; } = "dbo";
             public static string LoadPatternPath { get; set; } = GlobalParameters.RootPath + @"\LoadPatterns\";
             public static string VdwInputPath { get; set; } = Application.StartupPath + @"\Output\";
@@ -80,7 +81,7 @@ namespace Virtual_Data_Warehouse
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\" + GlobalParameters.JsonEnvironmentFileName + GlobalParameters.JsonExtension;
 
-            public static string TeamSelectedEnvironment { get; set; } = "";
+            public static string TeamSelectedEnvironmentInternalId { get; set; } = "";
 
             // TEAM active working environment
             public static TeamWorkingEnvironment ActiveEnvironment { get; set; } = new TeamWorkingEnvironment();

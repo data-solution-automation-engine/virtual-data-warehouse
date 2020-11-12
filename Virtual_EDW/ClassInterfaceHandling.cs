@@ -19,13 +19,7 @@ namespace Virtual_Data_Warehouse
 
             foreach (string keyPart in sourceBusinessKeyComponentList)
             {
-                bool businessKeyEval = false;
-
-                if (keyPart.StartsWith("'") && keyPart.EndsWith("'"))
-                {
-                    //businessKeyEval = "HardCoded";
-                    businessKeyEval = true;
-                }
+                bool businessKeyEval = keyPart.StartsWith("'") && keyPart.EndsWith("'");
 
                 DataItemMapping keyComponent = new DataItemMapping();
 
@@ -35,7 +29,7 @@ namespace Virtual_Data_Warehouse
                 sourceColumn.name = keyPart;
                 sourceColumn.isHardCodedValue = businessKeyEval;
 
-                keyComponent.sourceDataItem = sourceColumn;
+                keyComponent.sourceDataItems[0] = sourceColumn;
 
                 var indexExists = targetBusinessKeyComponentList.ElementAtOrDefault(counter) != null;
                 if (indexExists)
@@ -99,14 +93,17 @@ namespace Virtual_Data_Warehouse
         internal static string EvaluateBusinessKey(DataItemMapping businessKey)
         {
             var businessKeyEval = "";
-            if (businessKey.sourceDataItem.name.Contains("'"))
-            {
-                businessKeyEval = businessKey.sourceDataItem.name;
-            }
-            else
-            {
-                businessKeyEval = "[" + businessKey.sourceDataItem.name + "]";
-            }
+            //foreach (DataItemMapping sourceDataItem in businessKey.sourceDataItems)
+            //{
+            //    if (sourceDataItem..name.Contains("'"))
+            //    {
+            //        businessKeyEval = sourceDataItem.name;
+            //    }
+            //    else
+            //    {
+            //        businessKeyEval = "[" + sourceDataItem.name + "]";
+            //    }
+            //}
 
             return businessKeyEval;
         }

@@ -26,8 +26,7 @@ namespace Virtual_Data_Warehouse
 
     // Delegate to control main form text box (clear)
     public class MyClearArgs : EventArgs
-    {
-        public MyClearArgs()
+    {        public MyClearArgs()
         {
         }
     }
@@ -173,7 +172,6 @@ namespace Virtual_Data_Warehouse
             localRichTextBox.Size = new Size(393, 115);
             localRichTextBox.BorderStyle = BorderStyle.None;
             localRichTextBox.BackColor = SystemColors.Window;
-            //localRichTextBox.Text = $"{input.LoadPatternNotes}";
             localRichTextBox.TextChanged += new EventHandler(ScrollToCaret);
 
             // Add 'Filter' Group Box
@@ -517,6 +515,9 @@ namespace Virtual_Data_Warehouse
                         EventLog databaseEventLog = new EventLog();
                         if (generateInDatabaseFlag)
                         {
+
+
+
                             //var localConn = VdwUtility.MatchConnectionKey(connectionString);
                             var localConn = FormBase.TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false);
                             var conn = new SqlConnection { ConnectionString = localConn};

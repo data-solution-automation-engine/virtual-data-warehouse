@@ -99,6 +99,27 @@ namespace Virtual_Data_Warehouse
             //        return opts.inverse(this)
             //    }
             //})
+
+            // Accept two values, and see if they are the same, use as block helper.
+            // Usage {{#StringCompare string1 string2}} do something {{else}} do something else {{/StringCompare}
+            Handlebars.RegisterHelper("StringCompare", (TextWriter output, HelperOptions options, dynamic context, object[] arguments) =>
+            {
+                if (arguments.Length != 2) throw new HandlebarsException("The {{StringCompare}} functions required two arguments.");
+
+                string leftString = arguments[0] as string;
+                string rightString = arguments[1] as string;
+
+                if (leftString == rightString)
+                {
+                    //options.Template(output, null);
+                    options.Template(output, (object)context);
+                }
+                else
+                {
+                    //options.Inverse(output, null
+                    options.Inverse(output, (object)context);
+                }
+            });
         }
 
     }
