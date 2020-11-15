@@ -295,9 +295,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Content Include="LoadPatterns\loadPatternCollection.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="LoadPatterns\loadPatternCollection.json" />
     <Content Include="LoadPatterns\loadPatternHubDeltaSelect.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

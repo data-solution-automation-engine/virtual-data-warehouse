@@ -1,4 +1,4 @@
-{{#each dataObjectMappingList}}
+{{#each dataObjectMappings}}
 --
 -- Staging Area Insert Into statement for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
@@ -16,7 +16,7 @@ INSERT INTO [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{targ
    [{{../metadataConfiguration.recordSourceAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
-   {{#each dataItemMapping}}
+   {{#each dataItemMappings}}
    [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
 )
@@ -26,8 +26,8 @@ SELECT
    [{{../metadataConfiguration.recordSourceAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
-   {{#each dataItemMapping}}
+   {{#each dataItemMappings}}
    [{{sourceDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
+FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
 {{/each}}

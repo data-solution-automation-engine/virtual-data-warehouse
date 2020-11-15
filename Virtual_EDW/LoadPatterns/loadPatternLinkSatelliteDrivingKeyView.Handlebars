@@ -1,4 +1,4 @@
-{{#each dataObjectMappingList}}
+{{#each dataObjectMappings}}
 --
 -- Link Satellite View definition for {{../generationSpecificMetadata.selectedDataObject}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
@@ -7,25 +7,25 @@ GO
 USE [{{../metadataConfiguration.persistentStagingdatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject}}]
 GO
 
-CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
+CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
 SELECT 
-    HASHBYTES('MD5', {{#each businessKey}}{{#unless @first}} +{{/unless}}{{!-- Create the Surrogate Key using the Business Key and components --}}{{#each businessKeyComponentMapping}}
-       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{/each}}{{#each businessKey}}{{#if @first}}
+    HASHBYTES('MD5', {{#each businessKeys}}{{#unless @first}} +{{/unless}}{{!-- Create the Surrogate Key using the Business Key and components --}}{{#each businessKeyComponentMapping}}
+       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{/each}}{{#each businessKeys}}{{#if @first}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
-    {{#each businessKey}}{{#each BusinessKeyComponentMapping}}--{{targetDataItem.name}}{{#unless @last}},{{/unless}}
+    {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}--{{targetDataItem.name}}{{#unless @last}},{{/unless}}
     {{/each}}{{/each}}DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
     COALESCE (
       LEAD (DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) ) OVER
-      ( PARTITION BY {{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{targetDataItem.name}}{{/if}}{{/each}}{{/each}}
+      ( PARTITION BY {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{targetDataItem.name}}{{/if}}{{/each}}{{/each}}
        ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
        CAST( '9999-12-31' AS DATETIME)
     ) AS LOAD_END_DATETIME,
     CASE
-      WHEN ( LEAD ({{../metadataConfiguration.loadDateTimeAttribute}}) OVER (PARTITION BY {{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{targetDataItem.name}}{{/if}}{{/each}}{{/each}}
+      WHEN ( LEAD ({{../metadataConfiguration.loadDateTimeAttribute}}) OVER (PARTITION BY {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{targetDataItem.name}}{{/if}}{{/each}}{{/each}}
          ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}})) IS NULL
        THEN 'Y'
        ELSE 'N'
@@ -40,11 +40,11 @@ SELECT
     END AS [DELETED_RECORD_INDICATOR],
     HASHBYTES('MD5',
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +
-      {{#each businessKey}}{{#each BusinessKeyComponentMapping}}ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
+      {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
       {{/each}}{{/each}}) AS {{../metadataConfiguration.recordChecksumAttribute}},
     CAST (
-       ROW_NUMBER() OVER (PARTITION BY {{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{targetDataItem.name}}{{/if}}{{/each}}{{/each}}
-       ORDER BY {{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{targetDataItem.name}}{{/if}}{{/each}}{{/each}},  {{../metadataConfiguration.loadDateTimeAttribute}}
+       ROW_NUMBER() OVER (PARTITION BY {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{targetDataItem.name}}{{/if}}{{/each}}{{/each}}
+       ORDER BY {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{targetDataItem.name}}{{/if}}{{/each}}{{/each}},  {{../metadataConfiguration.loadDateTimeAttribute}}
       ) AS INT)
     AS ROW_NUMBER
 FROM
@@ -54,9 +54,9 @@ FROM
     [{{../metadataConfiguration.eventDateTimeAttribute}}],
     [{{../metadataConfiguration.recordSourceAttribute}}],
     [{{../metadataConfiguration.sourceRowIdAttribute}}],
-    [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKey}}{{#each businessKeyComponentMapping}}
+    [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}}{{#each businessKeyComponentMapping}}
     [{{sourceDataItem.name}}] AS [{{targetDataItem.name}}],{{/each}}{{/each}}
-    LAG({{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#unless sourceDataItem.dataItemclassification}} [{{sourceDataItem.name}}], 1, '0')  OVER (PARTITION BY {{#each ../../businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}}  ORDER BY [{{../../../metadataConfiguration.loadDateTimeAttribute}}]) AS PREVIOUS_FOLLOWER_KEY{{@index}}{{/unless}}{{/each}}{{/each}}
+    LAG({{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#unless sourceDataItem.dataItemclassification}} [{{sourceDataItem.name}}], 1, '0')  OVER (PARTITION BY {{#each ../../businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}[{{sourceDataItem.name}}]{{/if}}{{/each}}{{/each}}  ORDER BY [{{../../../metadataConfiguration.loadDateTimeAttribute}}]) AS PREVIOUS_FOLLOWER_KEY{{@index}}{{/unless}}{{/each}}{{/each}}
   FROM {{sourceDataObject.name}}
   WHERE NOT
   ([{{../metadataConfiguration.sourceRowIdAttribute}}]>1 AND [{{../metadataConfiguration.changeDataCaptureAttribute}}] ='Delete')
@@ -67,9 +67,9 @@ FROM
     [{{../metadataConfiguration.eventDateTimeAttribute}}],
     [{{../metadataConfiguration.recordSourceAttribute}}],
     [{{../metadataConfiguration.sourceRowIdAttribute}}],
-    [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKey}}{{#each businessKeyComponentMapping}}
+    [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}}{{#each businessKeyComponentMapping}}
     [{{targetDataItem.name}}],{{/each}}{{/each}}
-    {{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#unless sourceDataItem.dataItemclassification}}'{{@index}}' AS PREVIOUS_FOLLOWER_KEY{{@index}}{{/unless}}{{/each}}{{/each}}
+    {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#unless sourceDataItem.dataItemclassification}}'{{@index}}' AS PREVIOUS_FOLLOWER_KEY{{@index}}{{/unless}}{{/each}}{{/each}}
   FROM 
   (
      SELECT
@@ -77,19 +77,19 @@ FROM
           '1900-01-01' AS [{{../metadataConfiguration.eventDateTimeAttribute}}],
           'Data Warehouse' AS [{{../metadataConfiguration.recordSourceAttribute}}],
           0 AS [{{../metadataConfiguration.sourceRowIdAttribute}}],
-          'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKey}}
+          'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}}
           {{#each businessKeyComponentMapping}}[{{sourceDataItem.name}}] AS [{{targetDataItem.name}}],
           {{/each}}          {{/each}}
-          DENSE_RANK() OVER (PARTITION BY {{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
-            ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}], {{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{sourceDataItem.name}}{{/if}}{{/each}}{{/each}} ASC) AS ROWVERSION
+          DENSE_RANK() OVER (PARTITION BY {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{sourceDataItem.name}}{{/if}}{{/each}}{{/each}}
+            ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}], {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}{{sourceDataItem.name}}{{/if}}{{/each}}{{/each}} ASC) AS ROWVERSION
 
         FROM {{sourceDataObject.name}}
    ) dummysub
 WHERE ROWVERSION=1
 ) sub
 WHERE 
-    {{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#unless sourceDataItem.dataItemclassification}}[{{targetDataItem.name}}] != PREVIOUS_FOLLOWER_KEY{{@index}}{{/unless}}{{/each}}{{/each}}
+    {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#unless sourceDataItem.dataItemclassification}}[{{targetDataItem.name}}] != PREVIOUS_FOLLOWER_KEY{{@index}}{{/unless}}{{/each}}{{/each}}
 -- ORDER BY 
-{{#each businessKey}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}--   [{{targetDataItem.name}}]{{/if}}{{/each}}{{/each}}
+{{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#if sourceDataItem.dataItemclassification}}--   [{{targetDataItem.name}}]{{/if}}{{/each}}{{/each}}
 --   [{{../metadataConfiguration.loadDateTimeAttribute}}]
 {{/each}}

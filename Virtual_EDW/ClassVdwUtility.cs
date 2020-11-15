@@ -179,10 +179,8 @@ namespace Virtual_Data_Warehouse
             return returnMessage;
         }
 
-        public static EventLog ExecuteOutputInDatabase(SqlConnection sqlConnection, string query)
+        public static void ExecuteOutputInDatabase(SqlConnection sqlConnection, string query)
         {
-            EventLog eventLog = new EventLog();
-
             {
                 try
                 {
@@ -194,28 +192,24 @@ namespace Virtual_Data_Warehouse
                         {
                             server.ConnectionContext.ExecuteNonQuery(query);
 
-                            eventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully.\r\n"));
+                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully.\r\n"));
 
                         }
                         catch (Exception ex)
                         {
-                            eventLog.Add(Event.CreateNewEvent(EventTypes.Error, "Issues occurred executing the SQL statement.\r\n. SQL error: " + ex.Message + "\r\n\r\n"));
+                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, "Issues occurred executing the SQL statement. SQL error: " + ex.Message + ""));
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue executing the code against the database. The message is: " + ex.Message + "\r\n\r\n"));
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue executing the code against the database. The message is: " + ex.Message + ""));
                 }
-
-                return eventLog;
             }
         }
 
-        public static EventLog SaveOutputToDisk(string targetFile, string textContent)
+        public static void SaveOutputToDisk(string targetFile, string textContent)
         {
-            EventLog eventLog = new EventLog();
-
             try
             {
                 //Output to file
@@ -227,38 +221,10 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                eventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue saving the output to disk. The message is: " + ex.Message + "\r\n\r\n"));
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue saving the output to disk. The message is: " + ex.Message + "\r\n\r\n"));
             }
 
-            return eventLog;
+  
         }
-
-        //internal static Dictionary<String, String> MatchConnectionKey(string connectionKey)
-        //{
-        //    Dictionary<string, string> returnValue = new Dictionary<string, string>();
-
-        //    if (connectionKey == "SourceDatabase")
-        //    {
-        //        returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringSource);
-        //    }
-        //    else if (connectionKey == "StagingDatabase")
-        //    {
-        //        returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringStg);
-        //    }
-        //    else if (connectionKey == "PersistentStagingDatabase")
-        //    {
-        //        returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringHstg);
-        //    }
-        //    else if (connectionKey == "IntegrationDatabase")
-        //    {
-        //        returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringInt);
-        //    }
-        //    else if (connectionKey == "PresentationDatabase")
-        //    {
-        //        returnValue.Add(connectionKey, FormBase.TeamConfigurationSettings.ConnectionStringPres);
-        //    }
-
-        //    return returnValue;
-        //}
     }
 }

@@ -26,6 +26,8 @@ namespace Virtual_Data_Warehouse
 
         private DatabaseHandling databaseHandling;
         FormAlert _alertEventLog;
+
+
         public FormMain()
         {
             databaseHandling = new DatabaseHandling();
@@ -106,12 +108,6 @@ namespace Virtual_Data_Warehouse
 
             checkBoxGenerateInDatabase.Checked = false;
 
-            // Load Pattern definition in memory
-            if ((VdwConfigurationSettings.patternDefinitionList != null) && (!VdwConfigurationSettings.patternDefinitionList.Any()))
-            {
-                SetTextMain("There are no pattern definitions / types found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternDefinitionFileName + " in the " + VdwConfigurationSettings.LoadPatternPath + " directory, and if the file contains pattern types.");
-            }
-
             // Load Pattern metadata & update in memory
             var patternCollection = new LoadPatternCollectionFileHandling();
             VdwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
@@ -122,6 +118,7 @@ namespace Virtual_Data_Warehouse
             }
 
             // Populate the data grid.
+            CreateLoadPatternCollectionDataGrid();
             PopulateLoadPatternCollectionDataGrid();
             GridAutoLayoutLoadPatternCollection();
 
@@ -140,40 +137,106 @@ namespace Virtual_Data_Warehouse
 
         public void PopulateLoadPatternCollectionDataGrid()
         {
-            // Create a datatable. 
+            // Convert into data table
             DataTable dt = VdwConfigurationSettings.patternList.ToDataTable();
 
-            dt.AcceptChanges(); //Make sure the changes are seen as committed, so that changes can be detected later on
+            // Accept changes
+            dt.AcceptChanges();
+
+            // Handle unknown combobox values, by setting them to empty.
+            var localConnectionKeyList = LocalTeamConnection.TeamConnectionKeyList(TeamConfigurationSettings.ConnectionDictionary);
+            List<string> userFeedbackList = new List<string>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var comboBoxValueConnectionKey = row["LoadPatternConnectionKey"].ToString();
+
+                if (!localConnectionKeyList.Contains(comboBoxValueConnectionKey))
+                {
+                    if (!userFeedbackList.Contains(comboBoxValueConnectionKey) && comboBoxValueConnectionKey!="")
+                    {
+                        userFeedbackList.Add(comboBoxValueConnectionKey);
+                    }
+
+                    row["LoadPatternConnectionKey"] = DBNull.Value;
+                }
+            }
+
+            // Provide user feedback is any of the connections have been invalidated.
+            if (userFeedbackList.Count > 0)
+            {
+                foreach (string issue in userFeedbackList)
+                {
+                    richTextBoxInformationMain.AppendText($"The connection '{issue}' found in the metadata file does not seem to exist in TEAM. The value has been defaulted in the grid, but not saved yet.\r\n");
+                }
+            }
+
+            //Make sure the changes are seen as committed, so that changes can be detected later on.
+            dt.AcceptChanges();
+
+            // Tidy-up headers
             dt.Columns[0].ColumnName = "Name";
             dt.Columns[1].ColumnName = "Type";
-            dt.Columns[2].ColumnName = "Path";
-            dt.Columns[3].ColumnName = "Notes";
+            dt.Columns[2].ColumnName = "Connection Key";
+            dt.Columns[3].ColumnName = "Path";
+            dt.Columns[4].ColumnName = "Notes";
+
             _bindingSourceLoadPatternCollection.DataSource = dt;
+            dataGridViewLoadPatternCollection.DataSource = _bindingSourceLoadPatternCollection;
+        }
 
-            if (VdwConfigurationSettings.patternList != null)
+        /// <summary>
+        /// Add the grid view for the load pattern collection to the form
+        /// </summary>
+        public void CreateLoadPatternCollectionDataGrid()
+        {
+            dataGridViewLoadPatternCollection.AutoGenerateColumns = false;
+            dataGridViewLoadPatternCollection.ColumnHeadersVisible = true;
+            dataGridViewLoadPatternCollection.EditMode = DataGridViewEditMode.EditOnEnter;
+
+            DataGridViewTextBoxColumn loadPatternName = new DataGridViewTextBoxColumn
             {
-                
-                // Set the column header names.
-                dataGridViewLoadPatternCollection.DataSource = _bindingSourceLoadPatternCollection;
-                dataGridViewLoadPatternCollection.ColumnHeadersVisible = true;
-                dataGridViewLoadPatternCollection.Columns[0].HeaderText = "Name";
-                dataGridViewLoadPatternCollection.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
-                //dataGridViewLoadPatternCollection.Columns[0].FillWeight = 100;
+                Name = "LoadPatternName",
+                HeaderText = "Name",
+                DataPropertyName = "Name"
+            };
+            dataGridViewLoadPatternCollection.Columns.Add(loadPatternName);
 
-                dataGridViewLoadPatternCollection.Columns[1].HeaderText = "Type";
-                dataGridViewLoadPatternCollection.Columns[1].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
-                //dataGridViewLoadPatternCollection.Columns[1].FillWeight = 400;
+            DataGridViewTextBoxColumn loadPatternType = new DataGridViewTextBoxColumn
+            {
+                Name = "LoadPatternType",
+                HeaderText = "Type",
+                DataPropertyName = "Type"
+            };
+            dataGridViewLoadPatternCollection.Columns.Add(loadPatternType);
 
-                dataGridViewLoadPatternCollection.Columns[2].HeaderText = "Path";
-                dataGridViewLoadPatternCollection.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
-                //dataGridViewLoadPatternCollection.Columns[2].FillWeight = 300;
+            DataGridViewComboBoxColumn loadPatternConnectionKey = new DataGridViewComboBoxColumn
+            {
+                Name = "LoadPatternConnectionKey",
+                HeaderText = "Connection Key",
+                DataPropertyName = "Connection Key",
+                DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing,
+                DataSource = LocalTeamConnection.GetConnections(TeamConfigurationSettings.ConnectionDictionary),
+                DisplayMember = "ConnectionKey",
+                ValueMember = "ConnectionId",
+                ValueType = typeof(string)
+            };
+            dataGridViewLoadPatternCollection.Columns.Add(loadPatternConnectionKey);
 
-                dataGridViewLoadPatternCollection.Columns[3].HeaderText = "Notes";
-                dataGridViewLoadPatternCollection.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                dataGridViewLoadPatternCollection.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
-                //dataGridViewLoadPatternCollection.Columns[3].FillWeight = 200;
+            DataGridViewTextBoxColumn loadPatternPath = new DataGridViewTextBoxColumn
+            {
+                Name = "LoadPatternPath",
+                HeaderText = "Path",
+                DataPropertyName = "Path"
+            };
+            dataGridViewLoadPatternCollection.Columns.Add(loadPatternPath);
 
-            }
+            DataGridViewTextBoxColumn loadPatternNotes = new DataGridViewTextBoxColumn
+            {
+                Name = "LoadPatternNotes",
+                HeaderText = "Notes",
+                DataPropertyName = "Notes"
+            };
+            dataGridViewLoadPatternCollection.Columns.Add(loadPatternNotes);
         }
 
         private void GridAutoLayoutLoadPatternCollection()
@@ -737,33 +800,6 @@ namespace Virtual_Data_Warehouse
                                               GlobalParameters.VdwConfigurationPath+"\r\n\r\n";
         }
 
-        private void openConfigurationDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start(Path.GetDirectoryName(VdwConfigurationSettings.TeamEnvironmentFilePath));
-            }
-            catch (Exception ex)
-            {
-                richTextBoxInformationMain.Text =
-                    DateTime.Now + "- an error has occured while attempting to open the configuration directory. The error message is: " +
-                    ex;
-            }
-        }
-
-        private void openTEAMToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start("Team.exe");
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("The TEAM application cannot be found. Is it installed?");
-            }
-
-        }
-
         private void openTEAMConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -843,9 +879,12 @@ namespace Virtual_Data_Warehouse
             internal string classification { get; set; }
             internal string notes { get; set; }
             internal Dictionary<string,VDW_DataObjectMappingList> itemList { get; set; }
-            internal string connectionString { get; set; }
         }
 
+        /// <summary>
+        /// Load all the metadata into a single list and associate with a pattern, based on the classification of the mapping (i.e. CoreBusinessConcept).
+        /// </summary>
+        /// <returns></returns>
         internal List<LocalPattern> Patternlist()
         {
             // Deserialise the Json files for further use
@@ -935,7 +974,6 @@ namespace Virtual_Data_Warehouse
                 localPatternMapping.classification = classification.Key;
                 localPatternMapping.notes = classification.Value;
                 localPatternMapping.itemList = itemList;
-                localPatternMapping.connectionString = localConnectionString;
 
                 finalMappingList.Add(localPatternMapping);
 
@@ -970,7 +1008,7 @@ namespace Virtual_Data_Warehouse
             // Add the Custom Tab Pages
             foreach (var pattern in sortedMappingList)
             {
-                CustomTabPage localCustomTabPage = new CustomTabPage(pattern.classification, pattern.notes, pattern.itemList, pattern.connectionString);
+                CustomTabPage localCustomTabPage = new CustomTabPage(pattern.classification, pattern.notes, pattern.itemList);
                 localCustomTabPage.OnChangeMainText += UpdateMainInformationTextBox;
                 localCustomTabPage.OnClearMainText += ClearMainInformationTextBox;
 
@@ -1320,7 +1358,7 @@ namespace Virtual_Data_Warehouse
                 DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
 
                 // Make sure the output is sorted
-                gridDataTable.DefaultView.Sort = "[NAME] ASC";
+                gridDataTable.DefaultView.Sort = "[Name] ASC";
 
                 gridDataTable.TableName = "LoadPatternCollection";
 
@@ -1331,8 +1369,9 @@ namespace Virtual_Data_Warehouse
                     {
                         loadPatternName = singleRow[0].ToString(),
                         loadPatternType = singleRow[1].ToString(),
-                        loadPatternFilePath = singleRow[2].ToString(),
-                        loadPatternNotes = singleRow[3].ToString()
+                        loadPatternConnectionKey = singleRow[2].ToString(),
+                        loadPatternFilePath = singleRow[3].ToString(),
+                        loadPatternNotes = singleRow[4].ToString()
                     });
                     outputFileArray.Add(individualRow);
                 }

@@ -74,7 +74,6 @@ namespace Virtual_Data_Warehouse
             public static string hashingZeroKey { get; set; } = "0x00000000000000000000000000000000";
 
             public static List<LoadPattern> patternList { get; set; }
-            public static List<LoadPatternDefinition> patternDefinitionList { get; set; }
 
             // Related to TEAM configuration settings
             //public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\";

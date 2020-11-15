@@ -1,4 +1,4 @@
-{{#each dataObjectMappingList}}
+{{#each dataObjectMappings}}
 --
 -- Staging Area table creation statement for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
@@ -19,7 +19,7 @@ CREATE TABLE [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].
    [{{../metadataConfiguration.sourceRowIdAttribute}}] int NOT NULL,
    [{{../metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
    [{{../metadataConfiguration.recordChecksumAttribute}}] binary(16) NOT NULL,
-   {{#each dataItemMapping}}
+   {{#each dataItemMappings}}
    [{{sourceDataItem.name}}] [varchar](100){{#unless @last}},{{/unless}}
    {{/each}}
 )

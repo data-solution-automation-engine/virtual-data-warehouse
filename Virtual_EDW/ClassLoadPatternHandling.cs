@@ -5,51 +5,6 @@ using Newtonsoft.Json;
 
 namespace Virtual_Data_Warehouse
 {
-    class LoadPatternDefinition
-    {
-        public int LoadPatternKey { get; set; }
-        public string LoadPatternType { get; set; }
-        public string LoadPatternSelectionQuery { get; set; }
-        public string LoadPatternBaseQuery { get; set; }
-        public string LoadPatternAttributeQuery { get; set; }
-        public string LoadPatternAdditionalBusinessKeyQuery { get; set; }
-        public string LoadPatternNotes { get; set; }
-        public string LoadPatternConnectionKey { get; set; }
-
-       
-    
-
-        /// <summary>
-        /// The method that backs-up and saves a specific pattern (based on its path) with whatever is passed as contents.
-        /// </summary>
-        /// <param name="loadPatternFilePath"></param>
-        /// <param name="fileContent"></param>
-        /// <returns></returns>
-        internal static string SaveLoadPattern(string loadPatternDefinitionFilePath, string fileContent)
-        {
-            string returnMessage = "";
-
-            try
-            {
-                using (var outfile = new StreamWriter(loadPatternDefinitionFilePath))
-                {
-                    outfile.Write(fileContent);
-                    outfile.Close();
-                }
-
-                returnMessage = "The file has been updated.";
-            }
-            catch (Exception ex)
-            {
-                returnMessage = ("An error has occured while creating saving the file. The error message is " + ex);
-            }
-
-
-            return returnMessage;
-        }
-
-
-    }
 
     /// <summary>
     ///   This class contains the basic information for a load pattern, such as name, type and location.
@@ -58,6 +13,7 @@ namespace Virtual_Data_Warehouse
     {
         public string LoadPatternName { get; set; }
         public string LoadPatternType { get; set; }
+        public string LoadPatternConnectionKey { get; set; }
         public string LoadPatternFilePath { get; set; }
         public string LoadPatternNotes { get; set; }
 
@@ -118,7 +74,6 @@ namespace Virtual_Data_Warehouse
 
             return returnMessage;
         }
-
     }
 
     class LoadPatternCollectionFileHandling
