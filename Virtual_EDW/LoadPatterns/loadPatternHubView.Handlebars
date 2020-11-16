@@ -2,15 +2,12 @@
 -- Hub View definition for {{generationSpecificMetadata.selectedDataObject}}
 -- Generated at {{generationSpecificMetadata.generationDateTime}}
 --
-GO
-USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
-GO
-
-CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
+CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
 SELECT hub.*
 FROM (
 {{#each dataObjectMappings}}{{#if @first}}
@@ -33,17 +30,17 @@ SELECT
     ) AS ROW_NR
 FROM 
 ( {{/if}}{{/each}}
-    {{#each dataObjectMappingList }}
+    {{#each dataObjectMappings }}
     SELECT {{#each businessKeys}}{{#each businessKeyComponentMapping}}
-        CAST({{sourceDataItem.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
+        CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}]
+    FROM [{{sourceDataObjects.0.name}}]
     WHERE {{#each businessKeys}}{{#each businessKeyComponentMapping}}
-        {{sourceDataItem.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
+        {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
-    GROUP BY {{#each businessKeys}}{{#each businessKeyComponentMapping}}
-        {{#unless sourceDataItem.isHardCodedValue}}{{sourceDataItem.name}},{{/unless}}{{/each}}{{/each}}
+    GROUP BY 
+        {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringdiff isHardCodedValue "True"}}{{name}},{{/stringdiff}}{{/each}}{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}

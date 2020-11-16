@@ -1,0 +1,120 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "SAT_MEMBERSHIP_PLAN_VALUATION",
+    "generationDateTime": "2020-11-12T18:27:39.179481+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "SAT_MEMBERSHIP_PLAN_VALUATION",
+      "mappingClassifications": [
+        {
+          "id": 5,
+          "classification": "Context",
+          "notes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_ESTIMATED_WORTH",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "SAT_MEMBERSHIP_PLAN_VALUATION",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "SAT_MEMBERSHIP_PLAN_VALUATION",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Value_Amount",
+              "dataType": "numeric",
+              "numericPrecision": 38,
+              "numericScale": 20,
+              "ordinalPosition": 10
+            }
+          ],
+          "targetDataItem": {
+            "name": "PLAN_VALUATION_AMOUNT"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Date_effective",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 9
+            }
+          ],
+          "targetDataItem": {
+            "name": "PLAN_VALUATION_DATE",
+            "dataItemClassification": [
+              {
+                "classification": "MultiActive",
+                "notes": "A multi-active attribute is part of the target table key."
+              }
+            ]
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        }
+      ],
+      "filterCriterion": "13=13",
+      "enabled": true
+    }
+  ]
+}

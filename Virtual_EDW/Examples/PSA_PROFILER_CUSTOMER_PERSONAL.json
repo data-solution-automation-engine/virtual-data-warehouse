@@ -1,0 +1,247 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "PSA_PROFILER_CUSTOMER_PERSONAL",
+    "generationDateTime": "2020-11-12T18:27:39.4794813+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "PSA_PROFILER_CUSTOMER_PERSONAL",
+      "mappingClassifications": [
+        {
+          "id": 2,
+          "classification": "PersistentStagingArea",
+          "notes": "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts. Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "STG_PROFILER_CUSTOMER_PERSONAL",
+          "dataObjectConnection": {
+            "dataConnectionString": "Staging"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+        "dataObjectConnection": {
+          "dataConnectionString": "PSA"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Contact_Number",
+              "dataType": "int",
+              "ordinalPosition": 17
+            }
+          ],
+          "targetDataItem": {
+            "name": "Contact_Number",
+            "dataType": "int",
+            "ordinalPosition": 17
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Country",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 14
+            }
+          ],
+          "targetDataItem": {
+            "name": "Country",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 14
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 8
+            }
+          ],
+          "targetDataItem": {
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 8
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "DOB",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 16
+            }
+          ],
+          "targetDataItem": {
+            "name": "DOB",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 16
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Gender",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 15
+            }
+          ],
+          "targetDataItem": {
+            "name": "Gender",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 15
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Given",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            }
+          ],
+          "targetDataItem": {
+            "name": "Given",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 9
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Postcode",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 13
+            }
+          ],
+          "targetDataItem": {
+            "name": "Postcode",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 13
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Referee_Offer_Made",
+              "dataType": "int",
+              "ordinalPosition": 18
+            }
+          ],
+          "targetDataItem": {
+            "name": "Referee_Offer_Made",
+            "dataType": "int",
+            "ordinalPosition": 18
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "State",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 12
+            }
+          ],
+          "targetDataItem": {
+            "name": "State",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 12
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Suburb",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 11
+            }
+          ],
+          "targetDataItem": {
+            "name": "Suburb",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 11
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Surname",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 10
+            }
+          ],
+          "targetDataItem": {
+            "name": "Surname",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 10
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CustomerID",
+                "dataType": "int",
+                "ordinalPosition": 8
+              }
+            }
+          ],
+          "surrogateKey": "Not applicable"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    }
+  ]
+}

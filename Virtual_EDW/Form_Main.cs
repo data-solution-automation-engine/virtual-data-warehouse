@@ -27,7 +27,6 @@ namespace Virtual_Data_Warehouse
         private DatabaseHandling databaseHandling;
         FormAlert _alertEventLog;
 
-
         public FormMain()
         {
             databaseHandling = new DatabaseHandling();
@@ -41,19 +40,17 @@ namespace Virtual_Data_Warehouse
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
-            Event localEvent;
 
             #region Root Paths
             // Make sure the root directories exist, based on (tool) parameters
 
             // Configuration Path
-            localEvent = FileHandling.InitialisePath(GlobalParameters.VdwConfigurationPath);
+            var localEvent = FileHandling.InitialisePath(GlobalParameters.VdwConfigurationPath);
             if (localEvent.eventDescription != null)
             {
                 VdwConfigurationSettings.VdwEventLog.Add(localEvent);
             }
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Configuration path initialised for {GlobalParameters.VdwConfigurationPath}."));
-            
             
             // Input Path
             localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwInputPath);
@@ -70,6 +67,14 @@ namespace Virtual_Data_Warehouse
                 VdwConfigurationSettings.VdwEventLog.Add(localEvent);
             }
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Output path set for {VdwConfigurationSettings.VdwOutputPath}."));
+
+            // Examples Path
+            localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwExamplesPath);
+            if (localEvent.eventDescription != null)
+            {
+                VdwConfigurationSettings.VdwEventLog.Add(localEvent);
+            }
+            VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Examples path set for {VdwConfigurationSettings.VdwOutputPath}."));
             #endregion
 
             // Create the initial VDW configuration file, if it doesn't exist (first time use or change of directory).
@@ -81,8 +86,9 @@ namespace Virtual_Data_Warehouse
             // Update the values on the form.
             textBoxOutputPath.Text = VdwConfigurationSettings.VdwOutputPath;
             textBoxLoadPatternPath.Text = VdwConfigurationSettings.LoadPatternPath;
-            textBoxTeamEnvironmentsPath.Text = VdwConfigurationSettings.TeamEnvironmentFilePath;
+            textBoxTeamEnvironmentsFilePath.Text = VdwConfigurationSettings.TeamEnvironmentFilePath;
             textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.TeamConfigurationPath;
+            textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.TeamConnectionsPath;
             textBoxInputPath.Text = VdwConfigurationSettings.VdwInputPath;
             textBoxSchemaName.Text = VdwConfigurationSettings.VdwSchema;
 
@@ -93,7 +99,8 @@ namespace Virtual_Data_Warehouse
             VdwConfigurationSettings.ActiveEnvironment = TeamEnvironmentCollection.GetEnvironmentByKey(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
 
             // Load the configuration and connection information from file, based on the selected environment and input path.
-            VdwUtility.LoadTeamConfigurations(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
+            VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
+            VdwUtility.LoadTeamConfigurationFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
 
             PopulateEnvironmentComboBox();
             comboBoxEnvironments.SelectedIndex = comboBoxEnvironments.FindStringExact(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
@@ -109,8 +116,7 @@ namespace Virtual_Data_Warehouse
             checkBoxGenerateInDatabase.Checked = false;
 
             // Load Pattern metadata & update in memory
-            var patternCollection = new LoadPatternCollectionFileHandling();
-            VdwConfigurationSettings.patternList = patternCollection.DeserializeLoadPatternCollection();
+            VdwConfigurationSettings.patternList = LoadPatternCollectionFileHandling.DeserializeLoadPatternCollection();
 
             if ((VdwConfigurationSettings.patternList != null) && (!VdwConfigurationSettings.patternList.Any()))
             {
@@ -133,6 +139,12 @@ namespace Virtual_Data_Warehouse
             }
 
             startUpIndicator = false;
+        }
+
+        public sealed override string Text
+        {
+            get { return base.Text; }
+            set { base.Text = value; }
         }
 
         public void PopulateLoadPatternCollectionDataGrid()
@@ -722,9 +734,9 @@ namespace Virtual_Data_Warehouse
         private void saveConfigurationFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Make sure the paths contain a backslash
-            if (textBoxTeamEnvironmentsPath.Text.EndsWith(@"\"))
+            if (textBoxTeamEnvironmentsFilePath.Text.EndsWith(@"\"))
             {
-                textBoxTeamEnvironmentsPath.Text = textBoxTeamEnvironmentsPath.Text.Replace(@"\", "");
+                textBoxTeamEnvironmentsFilePath.Text = textBoxTeamEnvironmentsFilePath.Text.Replace(@"\", "");
             }
 
             if (!textBoxTeamConfigurationPath.Text.EndsWith(@"\"))
@@ -760,8 +772,9 @@ namespace Virtual_Data_Warehouse
             }
 
             // Make sure that the updated paths are accessible from anywhere in the app (global parameters)
-            VdwConfigurationSettings.TeamEnvironmentFilePath = textBoxTeamEnvironmentsPath.Text;
+            VdwConfigurationSettings.TeamEnvironmentFilePath = textBoxTeamEnvironmentsFilePath.Text;
             VdwConfigurationSettings.TeamConfigurationPath = textBoxTeamConfigurationPath.Text;
+            VdwConfigurationSettings.TeamConnectionsPath = textBoxTeamConnectionsPath.Text;
             VdwConfigurationSettings.LoadPatternPath = textBoxLoadPatternPath.Text;
             VdwConfigurationSettings.VdwInputPath = textBoxInputPath.Text;
             VdwConfigurationSettings.VdwOutputPath = textBoxOutputPath.Text;
@@ -773,6 +786,7 @@ namespace Virtual_Data_Warehouse
             rootPathConfigurationFile.AppendLine("/* Saved at " + DateTime.Now + " */");
             rootPathConfigurationFile.AppendLine("TeamEnvironmentFilePath|" + VdwConfigurationSettings.TeamEnvironmentFilePath + "");
             rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VdwConfigurationSettings.TeamConfigurationPath + "");
+            rootPathConfigurationFile.AppendLine("TeamConnectionsPath|" + VdwConfigurationSettings.TeamConnectionsPath + "");
             rootPathConfigurationFile.AppendLine("TeamSelectedEnvironment|" + VdwConfigurationSettings.TeamSelectedEnvironmentInternalId + "");
             rootPathConfigurationFile.AppendLine("InputPath|" + VdwConfigurationSettings.VdwInputPath + "");
             rootPathConfigurationFile.AppendLine("OutputPath|" + VdwConfigurationSettings.VdwOutputPath + "");
@@ -794,6 +808,9 @@ namespace Virtual_Data_Warehouse
 
             // Reset / reload the checkbox lists
             SetDatabaseConnections();
+
+            // Recreate the in-memory patterns (to make sure MetadataGeneration object details are also added).
+            CreateCustomTabPages();
 
             richTextBoxInformationMain.Text = DateTime.Now+" - the global parameter file (" +
                                               GlobalParameters.VdwConfigurationFileName + ") has been updated in: " +
@@ -1015,6 +1032,18 @@ namespace Virtual_Data_Warehouse
                 localCustomTabPageList.Add(localCustomTabPage);
                 tabControlMain.TabPages.Add(localCustomTabPage);
             }
+
+            // Work around issue related to incorrectly enabled metadata extract
+            if (checkBoxGenerateJsonSchema.Checked)
+            {
+                checkBoxGenerateJsonSchema.Checked = false;
+                checkBoxGenerateJsonSchema.Checked = true;
+            }
+            else
+            {
+                checkBoxGenerateJsonSchema.Checked = true;
+                checkBoxGenerateJsonSchema.Checked = false;
+            }
         }
 
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
@@ -1083,56 +1112,6 @@ namespace Virtual_Data_Warehouse
                     }
                 }
             }
-        }
-
-        private void pictureBox3_Click(object sender, EventArgs e)
-        {
-            var fileBrowserDialog = new OpenFileDialog
-            {
-                InitialDirectory = Path.GetDirectoryName(textBoxTeamEnvironmentsPath.Text)
-            };
-
-            DialogResult result = fileBrowserDialog.ShowDialog();
-
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.FileName))
-            {
-                string[] files = Directory.GetFiles(Path.GetDirectoryName(fileBrowserDialog.FileName));
-
-                int teamFileCounter = 0;
-                foreach (string file in files)
-                {
-                    if (file.Contains(GlobalParameters.JsonEnvironmentFileName))
-                    {
-                        teamFileCounter++;
-                    }
-                }
-
-                if (teamFileCounter == 0)
-                {
-                    string userFeedback = "The selected directory does not seem to contain a TEAM environments file. You are looking for the file TEAM_environments.json";
-                    richTextBoxInformationMain.Text = userFeedback;
-                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, userFeedback));
-                }
-                else
-                {
-                    richTextBoxInformationMain.Clear();
-
-                    // Ensuring the path is set in memory also and reload the configuration
-                    FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath = fileBrowserDialog.FileName;
-                    textBoxTeamEnvironmentsPath.Text = fileBrowserDialog.FileName;
-
-                    richTextBoxInformationMain.AppendText("\r\nThe path now points to a valid TEAM environment file. Please save this configuration to activate these settings.");
-                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file path updated to {FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath}."));
-
-                    // Load the file.
-                    FormBase.TeamEnvironmentCollection.LoadTeamEnvironmentCollection(fileBrowserDialog.FileName);
-                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file {FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath} has been loaded to memory."));
-
-                    comboBoxEnvironments.Items.Clear();
-                    PopulateEnvironmentComboBox();
-                }
-            }
-
         }
 
         public void PopulateEnvironmentComboBox()
@@ -1257,7 +1236,7 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void pictureBox6_Click(object sender, EventArgs e)
+        private void pictureBoxUpdateLoadPatternPath_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
             fileBrowserDialog.SelectedPath = textBoxLoadPatternPath.Text;
@@ -1299,6 +1278,20 @@ namespace Virtual_Data_Warehouse
                 {
                     richTextBoxInformationMain.Text = "The path now points to a directory that contains the loadPatternCollection.json Load Pattern Collection file.";
                 }
+
+
+                // Update the parameters in memory.
+                VdwConfigurationSettings.LoadPatternPath = finalPath; ;
+                textBoxLoadPatternPath.Text = finalPath;
+
+                // Report back to the user.
+                richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains load patterns. Please save this configuration to retain these settings.");
+                VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Load pattern path has been updated to {VdwConfigurationSettings.LoadPatternPath}."));
+
+                // Reload the files into the grid
+                VdwConfigurationSettings.patternList.Clear();
+                VdwConfigurationSettings.patternList = LoadPatternCollectionFileHandling.DeserializeLoadPatternCollection();
+                PopulateLoadPatternCollectionDataGrid();
 
             }
         }
@@ -1517,16 +1510,14 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void pictureBox10_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox7_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Set the path to the TEAM configuration file and load it.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void pictureOpenTeamConfigurationFile_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
-
-            var originalPath = textBoxTeamConfigurationPath.Text;
             fileBrowserDialog.SelectedPath = textBoxTeamConfigurationPath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
@@ -1538,39 +1529,93 @@ namespace Virtual_Data_Warehouse
                 int fileCounter = 0;
                 foreach (string file in files)
                 {
-                    if (Path.GetFileName(file).StartsWith("TEAM_con"))
+                    if (Path.GetFileName(file).StartsWith(GlobalParameters.TeamConfigurationFileName))
                     {
                         fileCounter++;
                     }
                 }
 
-                string finalPath;
-                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
-                {
-                    finalPath = fileBrowserDialog.SelectedPath;
-                }
-                else
-                {
-                    finalPath = fileBrowserDialog.SelectedPath + @"\";
-                }
-
-
-                textBoxTeamConfigurationPath.Text = finalPath;
-
                 if (fileCounter == 0)
                 {
-                    richTextBoxInformationMain.Text = "There are no TEAM configuration files in this location. Can you check if the selected directory contains TEAM files?";
-                    textBoxTeamConfigurationPath.Text = originalPath;
+                    string userFeedback = "The selected directory does not seem to contain a TEAM configuration file (TEAM_configuration.txt).";
+                    richTextBoxInformationMain.Text = userFeedback;
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, userFeedback));
                 }
                 else
                 {
-                    richTextBoxInformationMain.Text = "The path now points to a directory that contains TEAM configuration files.\r\n";
+                    string finalPath;
+                    if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                    {
+                        finalPath = fileBrowserDialog.SelectedPath;
+                    }
+                    else
+                    {
+                        finalPath = fileBrowserDialog.SelectedPath + @"\";
+                    }
 
-                    // (Re)Create the tab pages based on available content.
-                    VdwConfigurationSettings.TeamConfigurationPath = finalPath; 
-                    CreateCustomTabPages();
+
+                    // Update the parameters in memory.
+                    VdwConfigurationSettings.TeamConfigurationPath = finalPath; ;
+                    textBoxTeamConfigurationPath.Text = finalPath;
+
+                    // Report back to the user.
+                    richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains TEAM configuration files. Please save this configuration to retain these settings.");
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM configuration path updated to {VdwConfigurationSettings.TeamConfigurationPath}."));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set a new path for the TEAM environments file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void pictureBoxOpenEnvironmentFile_Click(object sender, EventArgs e)
+        {
+            var fileBrowserDialog = new OpenFileDialog
+            {
+                InitialDirectory = Path.GetDirectoryName(textBoxTeamEnvironmentsFilePath.Text)
+            };
+
+            DialogResult result = fileBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.FileName))
+            {
+                string[] files = Directory.GetFiles(Path.GetDirectoryName(fileBrowserDialog.FileName));
+
+                int teamFileCounter = 0;
+                foreach (string file in files)
+                {
+                    if (file.Contains(GlobalParameters.JsonEnvironmentFileName))
+                    {
+                        teamFileCounter++;
+                    }
                 }
 
+                if (teamFileCounter == 0)
+                {
+                    string userFeedback = "The selected directory does not seem to contain a TEAM environments file (TEAM_environments.json)";
+                    richTextBoxInformationMain.Text = userFeedback;
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, userFeedback));
+                }
+                else
+                {
+                    richTextBoxInformationMain.Clear();
+
+                    // Ensuring the path is set in memory also and reload the configuration
+                    VdwConfigurationSettings.TeamEnvironmentFilePath = fileBrowserDialog.FileName;
+                    textBoxTeamEnvironmentsFilePath.Text = fileBrowserDialog.FileName;
+
+                    richTextBoxInformationMain.AppendText("\r\nThe path now points to a valid TEAM environment file. Please save this configuration to activate these settings.");
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file path updated to {VdwConfigurationSettings.TeamEnvironmentFilePath}."));
+
+                    // Load the file.
+                    TeamEnvironmentCollection.LoadTeamEnvironmentCollection(fileBrowserDialog.FileName);
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM environments file {VdwConfigurationSettings.TeamEnvironmentFilePath} has been loaded to memory."));
+
+                    comboBoxEnvironments.Items.Clear();
+                    PopulateEnvironmentComboBox();
+                }
             }
         }
 
@@ -1584,7 +1629,8 @@ namespace Virtual_Data_Warehouse
             if (startUpIndicator != true)
             {
                 // Reload the configuration and connections file associated with this new environment.
-                VdwUtility.LoadTeamConfigurations(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
+                VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
+                VdwUtility.LoadTeamConfigurationFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
                 richTextBoxInformationMain.AppendText($"The {VdwConfigurationSettings.ActiveEnvironment.environmentKey} environment is now active (not saved yet though).\r\n");
             }
         }
@@ -1604,5 +1650,61 @@ namespace Virtual_Data_Warehouse
             // Navigate to a URL.
             Process.Start("http://www.roelantvos.com");
         }
+
+        /// <summary>
+        /// Set the TEAM Connections File Path.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void pictureBoxOpenConnectionFile_Click(object sender, EventArgs e)
+        {
+            var fileBrowserDialog = new FolderBrowserDialog();
+            fileBrowserDialog.SelectedPath = textBoxTeamConnectionsPath.Text;
+
+            DialogResult result = fileBrowserDialog.ShowDialog();
+
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
+            {
+                string[] files = Directory.GetFiles(fileBrowserDialog.SelectedPath);
+
+                int fileCounter = 0;
+                foreach (string file in files)
+                {
+                    if (Path.GetFileName(file).StartsWith(GlobalParameters.JsonConnectionFileName))
+                    {
+                        fileCounter++;
+                    }
+                }
+
+                if (fileCounter == 0)
+                {
+                    string userFeedback = "The selected directory does not seem to contain a TEAM connections file (TEAM_connections.json).";
+                    richTextBoxInformationMain.Text = userFeedback;
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, userFeedback));
+                }
+                else
+                {
+                    string finalPath;
+                    if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                    {
+                        finalPath = fileBrowserDialog.SelectedPath;
+                    }
+                    else
+                    {
+                        finalPath = fileBrowserDialog.SelectedPath + @"\";
+                    }
+
+
+                    // Update the parameters in memory.
+                    VdwConfigurationSettings.TeamConnectionsPath = finalPath; ;
+                    textBoxTeamConnectionsPath.Text = finalPath;
+
+                    // Report back to the user.
+                    richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains TEAM connections files. Please save this configuration to retain these settings.");
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM connections path updated to {VdwConfigurationSettings.TeamConnectionsPath}."));
+                }
+            }
+        }
+
     }
 }

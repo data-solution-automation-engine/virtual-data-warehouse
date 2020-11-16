@@ -20,7 +20,7 @@ CREATE TABLE [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{tar
    [{{../metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
    [{{../metadataConfiguration.recordChecksumAttribute}}] binary(16) NOT NULL,
    {{#each dataItemMappings}}
-   [{{sourceDataItem.name}}] [varchar](100){{#unless @last}},{{/unless}}
+   [{{sourceDataItems.0.name}}] [varchar](100){{#unless @last}},{{/unless}}
    {{/each}}
 )
 {{/each}}

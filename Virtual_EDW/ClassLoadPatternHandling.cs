@@ -78,7 +78,7 @@ namespace Virtual_Data_Warehouse
 
     class LoadPatternCollectionFileHandling
     {
-        internal List<LoadPattern> DeserializeLoadPatternCollection()
+        internal static List<LoadPattern> DeserializeLoadPatternCollection()
         {
             List<LoadPattern> loadPatternList = new List<LoadPattern>();
             // Retrieve the file contents and store in a string

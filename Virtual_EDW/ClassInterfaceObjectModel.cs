@@ -32,18 +32,6 @@ namespace Virtual_Data_Warehouse
     /// </summary>
     class MetadataConfiguration
     {
-        // Databases
-        //public string sourceDatabaseName { get; set; }
-        //public string sourceDatabaseConnection { get; set; }
-        //public string stagingAreaDatabaseName { get; set; }
-        //public string stagingAreaDatabaseConnection { get; set; }
-        //public string persistentStagingDatabaseName { get; set; }
-        //public string persistentStagingDatabaseConnection { get; set; }
-        //public string persistentStagingSchemaName { get; set; }
-        //public string integrationDatabaseName { get; set; }
-        //public string integrationDatabaseConnection { get; set; }
-        //public string presentationDatabaseName { get; set; }
-        //public string presentationDatabaseConnection { get; set; }
         public string vdwSchemaName { get; set; } = FormBase.VdwConfigurationSettings.VdwSchema;
 
         // Attributes

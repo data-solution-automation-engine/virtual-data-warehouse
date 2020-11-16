@@ -1,0 +1,107 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "STG_PROFILER_OFFER",
+    "generationDateTime": "2020-11-12T18:27:38.7254819+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "STG_PROFILER_OFFER",
+      "mappingClassifications": [
+        {
+          "id": 1,
+          "classification": "StagingArea",
+          "notes": "The mappings from source to the landing (staging) area."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "OFFER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Source"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "STG_PROFILER_OFFER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Staging"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "PSA_PROFILER_OFFER",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Offer_Long_Description",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 2
+            }
+          ],
+          "targetDataItem": {
+            "name": "Offer_Long_Description",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 9
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "OfferID",
+              "dataType": "int",
+              "ordinalPosition": 1
+            }
+          ],
+          "targetDataItem": {
+            "name": "OfferID",
+            "dataType": "int",
+            "ordinalPosition": 8
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "OfferID",
+                  "dataType": "int",
+                  "ordinalPosition": 1
+                }
+              ],
+              "targetDataItem": {
+                "name": "OfferID",
+                "dataType": "int",
+                "ordinalPosition": 8
+              }
+            }
+          ],
+          "surrogateKey": "Not applicable"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    }
+  ]
+}

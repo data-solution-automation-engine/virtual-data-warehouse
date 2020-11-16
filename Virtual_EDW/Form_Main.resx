@@ -853,13 +853,29 @@
 </value>
   </data>
   <metadata name="backgroundWorkerActivateMetadata.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>460, 17</value>
+    <value>302, 13</value>
   </metadata>
+  <metadata name="toolTipVdw.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>188, 13</value>
+  </metadata>
+  <data name="textBoxTeamConnectionsPath.ToolTip" xml:space="preserve">
+    <value>This is the path pointing to the selection of connection files created / managed by TEAM. There are typically more than one connection file, because each environment will have its own connection details.
+</value>
+  </data>
+  <data name="textBoxTeamConfigurationPath.ToolTip" xml:space="preserve">
+    <value>This is the path pointing to the selection of configuration files created / managed by TEAM. There are typically more than one configuration file, because each environment will have its own configuration.</value>
+  </data>
+  <data name="textBoxTeamEnvironmentsFilePath.ToolTip" xml:space="preserve">
+    <value>This is the file path to the TEAM environments file, which contains an overview of the available environments.
+By default, upon start, a sample Development and Production environment are created by VDW. However, this path can also be set to point at an existing environments file managed by the TEAM application.
+
+The environments file will populate the 'Active environment' combo box, and will drive selection of the configuration and connections file as these are dependent on the selected environment.</value>
+  </data>
   <metadata name="backgroundWorkerEventLog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>713, 17</value>
+    <value>555, 13</value>
   </metadata>
   <metadata name="backgroundWorker1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>920, 17</value>
+    <value>762, 13</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>52</value>

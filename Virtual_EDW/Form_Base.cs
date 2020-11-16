@@ -62,8 +62,9 @@ namespace Virtual_Data_Warehouse
 
             public static string VdwSchema { get; set; } = "dbo";
             public static string LoadPatternPath { get; set; } = GlobalParameters.RootPath + @"\LoadPatterns\";
-            public static string VdwInputPath { get; set; } = Application.StartupPath + @"\Output\";
+            public static string VdwInputPath { get; set; } = Application.StartupPath + @"\Input\";
             public static string VdwOutputPath { get; set; } = Application.StartupPath + @"\Output\";
+            public static string VdwExamplesPath { get; set; } = Application.StartupPath + @"\Examples\";
 
 
 
@@ -78,6 +79,7 @@ namespace Virtual_Data_Warehouse
             // Related to TEAM configuration settings
             //public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\";
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
+            public static string TeamConnectionsPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\" + GlobalParameters.JsonEnvironmentFileName + GlobalParameters.JsonExtension;
 
             public static string TeamSelectedEnvironmentInternalId { get; set; } = "";

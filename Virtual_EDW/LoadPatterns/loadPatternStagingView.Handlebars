@@ -4,15 +4,11 @@
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 
-GO
-USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
-GO
-
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
 GO
 
-CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
+CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
 WITH STG_CTE AS
 (
 SELECT
@@ -24,7 +20,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
    {{/each}}
    ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{../metadataConfiguration.sourceDatabaseName}}].[dbo].[{{sourceDataObject.name}}]
+FROM [dbo].[{{sourceDataObjects.0.name}}]
 ),
 PSA_CTE AS
 (
@@ -33,13 +29,13 @@ SELECT
    {{#each dataItemMappings}}
    A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{#each relatedDataObject}}{{#each dataObjectClassification}}{{#if classification}}{{../name}}{{/if}}{{/each}}{{/each}}] A
+FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{#if relatedDataObjects.0.dataObjectClassification.0}}{{relatedDataObjects.0.name}}{{/if}}] A
 JOIN
    (
    SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
       [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
       MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-   FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{#each relatedDataObject}}{{#each dataObjectClassification}}{{#if classification}}{{../name}}{{/if}}{{/each}}{{/each}}]
+   FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{#if relatedDataObjects.0.dataObjectClassification.0}}{{relatedDataObjects.0.name}}{{/if}}]
    GROUP BY {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
       [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
    ) B ON {{#each businessKeys}}  {{#each businessKeyComponentMapping}}

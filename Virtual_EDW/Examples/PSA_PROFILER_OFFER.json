@@ -1,0 +1,107 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "PSA_PROFILER_OFFER",
+    "generationDateTime": "2020-11-12T18:27:39.5094821+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "PSA_PROFILER_OFFER",
+      "mappingClassifications": [
+        {
+          "id": 2,
+          "classification": "PersistentStagingArea",
+          "notes": "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts. Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "STG_PROFILER_OFFER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Staging"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "PSA_PROFILER_OFFER",
+        "dataObjectConnection": {
+          "dataConnectionString": "PSA"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "PSA_PROFILER_OFFER",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Offer_Long_Description",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            }
+          ],
+          "targetDataItem": {
+            "name": "Offer_Long_Description",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 9
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "OfferID",
+              "dataType": "int",
+              "ordinalPosition": 8
+            }
+          ],
+          "targetDataItem": {
+            "name": "OfferID",
+            "dataType": "int",
+            "ordinalPosition": 8
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "OfferID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "OfferID",
+                "dataType": "int",
+                "ordinalPosition": 8
+              }
+            }
+          ],
+          "surrogateKey": "Not applicable"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    }
+  ]
+}

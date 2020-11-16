@@ -126,7 +126,7 @@ namespace Virtual_Data_Warehouse
             localPanel.Controls.Add(localButtonGenerate);
             localButtonGenerate.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             localButtonGenerate.Location = new Point(17, 542);
-            localButtonGenerate.Name = $"enerate{classification}";
+            localButtonGenerate.Name = $"Generate{classification}";
             localButtonGenerate.Size = new Size(109, 40);
             localButtonGenerate.Text = $"Generate {_inputNiceName}";
             localButtonGenerate.Click += new EventHandler(Generate);
@@ -290,7 +290,7 @@ namespace Virtual_Data_Warehouse
             localSavePattern.Location = new Point(610, 7);
             localSavePattern.Size = new Size(101, 23);
             localSavePattern.Text = $"Save updates";
-            localSavePattern.Name = $"Generate{classification}";
+            localSavePattern.Name = $"Save{classification}";
             localSavePattern.Click += (SavePattern);
 
             // Add 'Generation Pattern' RichTextBox to Pattern tab
@@ -398,8 +398,6 @@ namespace Virtual_Data_Warehouse
             localLabelFullFilePath.Text = localFullPath;
             localLabelActiveConnectionKeyValue.Text = loadPattern.LoadPatternConnectionKey;
 
-            //Path.Combine(Environment.CurrentDirectory, "Some\\Path.txt"));
-
             // Read the file from the path
             string loadPatternTemplate ="";
             try
@@ -478,6 +476,9 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         private void GenerateFromPattern()
         {
+            // Establish the current time at the start of generation, to display only messages related to the current generation run.
+            var currentTime = DateTime.Now;
+
             localRichTextBoxGenerationOutput.Clear();
             RaiseOnClearMainText();
             localTabControl.SelectedIndex = 0;
@@ -529,15 +530,23 @@ namespace Virtual_Data_Warehouse
                             // Find the right connection for the pattern connection key
                             var localConnection = TeamConfiguration.GetTeamConnectionByInternalId(localLabelActiveConnectionKeyValue.Text, FormBase.TeamConfigurationSettings.ConnectionDictionary);
 
-                            var conn = new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) };
+                            if (localConnection != null)
+                            {
+                                var conn = new SqlConnection {ConnectionString = localConnection.CreateSqlServerConnectionString(false)};
 
-                            VdwUtility.ExecuteOutputInDatabase(conn, result);
+                                VdwUtility.CreateVdwSchema(conn);
+                                VdwUtility.ExecuteOutputInDatabase(conn, result);
+                            }
+                            else
+                            {
+                                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue establishing a connection to generate the output for {targetTableName}. Is there a TEAM connections file in the configuration directory?"));
+                            }
                         }
 
                     }
                     catch (Exception ex)
                     {
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, "The template could not be compiled. The message is: " + ex.Message + "\r\n\r\n"));
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"The template could not be compiled. The error message is: {ex.Message}"));
                     }
                 }
             }
@@ -546,17 +555,14 @@ namespace Virtual_Data_Warehouse
                 _localRichTextBox.AppendText($"There was no metadata selected to generate {_inputNiceName} code. Please check the metadata schema - are there any {_inputNiceName} objects selected?");
             }
 
-            //connOmd.Close();
-            //connOmd.Dispose();
-
             // Report back to the user
             int errorCounter = 0;
             foreach (Event individualEvent in FormBase.VdwConfigurationSettings.VdwEventLog)
             {
-                if (individualEvent.eventCode == 1)
+                if (individualEvent.eventCode == 1 && individualEvent.eventTime>currentTime)
                 {
                     errorCounter++;
-                    RaiseOnChangeMainText(individualEvent.eventDescription);
+                    RaiseOnChangeMainText(individualEvent.eventDescription+"\r\n");
                 }
             }
 

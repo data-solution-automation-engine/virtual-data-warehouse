@@ -1,0 +1,253 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "HUB_CUSTOMER",
+    "generationDateTime": "2020-11-12T18:27:39.2404814+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "HUB_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUST_MEMBERSHIP",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_CUSTOMER",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_HSH"
+        }
+      ],
+      "filterCriterion": "15=15",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_OFFER",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_CUSTOMER",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_HSH"
+        }
+      ],
+      "filterCriterion": "5=5",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_CUSTOMER",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_HSH"
+        }
+      ],
+      "filterCriterion": "1=1",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_PERSONALISED_COSTING",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_CUSTOMER",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Member",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_HSH"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    }
+  ]
+}

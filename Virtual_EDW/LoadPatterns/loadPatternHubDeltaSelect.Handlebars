@@ -1,6 +1,6 @@
-{{#each dataObjectMappingList }}
+{{#each dataObjectMappings }}
 --
--- Working on mapping to {{targetDataObject.name}} from source table {{sourceDataObject.name}}
+-- Working on mapping to {{targetDataObject.name}} from source table {{sourceDataObjects.0.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
 SELECT
@@ -24,17 +24,17 @@ FROM
         FROM
         (
           SELECT {{#each businessKeys}}{{#each businessKeyComponentMapping}}
-            {{sourceDataItem.name}} AS [{{targetDataItem.name}}],{{/each}}{{/each}}
+            {{sourceDataItems.0.name}} AS [{{targetDataItem.name}}],{{/each}}{{/each}}
             stg.[{{../metadataConfiguration.loadDateTimeAttribute}}],
             -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
             stg.[{{../metadataConfiguration.recordSourceAttribute}}]
-          FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}] stg
+          FROM [{{sourceDataObjects.0.name}}] stg
           WHERE NOT EXISTS
           (
              SELECT 1
              FROM [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] hub
              WHERE {{#each businessKeys}}{{#each businessKeyComponentMapping}}
-                {{sourceDataItem.name}} = hub.{{targetDataItem.name}}{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
+                {{sourceDataItems.0.name}} = hub.{{targetDataItem.name}}{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         )
     ) sub
 ) supersub

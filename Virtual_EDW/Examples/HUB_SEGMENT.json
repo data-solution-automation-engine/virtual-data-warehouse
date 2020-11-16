@@ -1,0 +1,131 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "HUB_SEGMENT",
+    "generationDateTime": "2020-11-12T18:27:39.4104816+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "HUB_SEGMENT",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_PERSONALISED_COSTING",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_SEGMENT",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_SEGMENT",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Segment+'TEST'"
+                }
+              ],
+              "targetDataItem": {
+                "name": "SEGMENT_CODE",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            }
+          ],
+          "surrogateKey": "SEGMENT_HSH"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_SEGMENT",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_USERMANAGED_SEGMENT",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_SEGMENT",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_SEGMENT",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Demographic_Segment_Code+'TEST'"
+                }
+              ],
+              "targetDataItem": {
+                "name": "SEGMENT_CODE",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            }
+          ],
+          "surrogateKey": "SEGMENT_HSH"
+        }
+      ],
+      "filterCriterion": "8=8",
+      "enabled": true
+    }
+  ]
+}

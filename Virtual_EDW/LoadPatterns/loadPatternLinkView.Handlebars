@@ -6,11 +6,11 @@ GO
 USE [{{metadataConfiguration.persistentStagingdatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
 GO
 
-CREATE VIEW [{{metadataConfiguration.vedwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
+CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
 SELECT link.*
 FROM 
 ( {{#each dataObjectMappings}}{{#if @first}}
@@ -36,21 +36,21 @@ SELECT
     ) AS ROW_NR
 FROM 
 ({{/if}}{{/each}}
-    {{#each dataObjectMappingList }}
+    {{#each dataObjectMappings }}
     SELECT {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-        CAST({{sourceDataItem.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}}{{../../@index}},{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}
-        [{{sourceDataItem.name}}] AS [{{targetDataItem.name}}],{{/each}}
+        CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}}{{../../@index}},{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}
+        [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM [{{../metadataConfiguration.persistentStagingdatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{sourceDataObject.name}}]
+    FROM [{{sourceDataObjects.0.name}}]
     WHERE {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-       {{sourceDataItem.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{#unless @last}} AND{{/unless}}{{/unless}} {{/each}}
+       {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{#unless @last}} AND{{/unless}}{{/unless}} {{/each}}
        {{#each dataItemMappings}}
-       AND [{{sourceDataItem.name}}] IS NOT NULL
+       AND [{{sourceDataItems.0.name}}] IS NOT NULL
        {{/each}}
        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
-    GROUP BY {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-       {{#unless sourceDataItem.isHardCodedValue}}{{sourceDataItem.name}},{{/unless}}{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}[{{sourceDataItem.name}}],{{/each}}
+    GROUP BY
+       {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringdiff isHardCodedValue "True"}}{{name}},{{/stringdiff}}{{/each}}{{/each}}{{/each}}{{#each dataItemMappings}}[{{sourceDataItems.0.name}}],{{/each}}
        {{../metadataConfiguration.recordSourceAttribute}}{{#unless @last}}UNION{{/unless}}
   ) LINK_selection
   GROUP BY {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}

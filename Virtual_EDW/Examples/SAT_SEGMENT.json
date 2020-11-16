@@ -1,0 +1,86 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "SAT_SEGMENT",
+    "generationDateTime": "2020-11-12T18:27:39.4264898+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "SAT_SEGMENT",
+      "mappingClassifications": [
+        {
+          "id": 5,
+          "classification": "Context",
+          "notes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_USERMANAGED_SEGMENT",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "SAT_SEGMENT",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "SAT_SEGMENT",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Demographic_Segment_Description",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            }
+          ],
+          "targetDataItem": {
+            "name": "SEGMENT_DESCRIPTION"
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Demographic_Segment_Code+'TEST'"
+                }
+              ],
+              "targetDataItem": {
+                "name": "SEGMENT_CODE"
+              }
+            }
+          ],
+          "surrogateKey": "SEGMENT_HSH"
+        }
+      ],
+      "filterCriterion": "9=9",
+      "enabled": true
+    }
+  ]
+}

@@ -26,17 +26,17 @@ SELECT
     ) AS ROW_NR
 FROM 
 ( {{/if}}{{/each}}
-    {{#each dataObjectMappingList }}
+    {{#each dataObjectMappings }}
     SELECT {{#each businessKeys}}{{#each businessKeyComponentMapping}}
-        CAST({{sourceDataItem.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
+        CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM VDW.{{sourceDataObject.name}}
+    FROM VDW.{{sourceDataObjects.0.name}}
     WHERE {{#each businessKeys}}{{#each businessKeyComponentMapping}}
-        {{sourceDataItem.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
+        {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
-    GROUP BY {{#each businessKeys}}{{#each businessKeyComponentMapping}}
-        {{#unless sourceDataItem.isHardCodedValue}}{{sourceDataItem.name}},{{/unless}}{{/each}}{{/each}}
+    GROUP BY         
+        {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringdiff isHardCodedValue "True"}}{{name}},{{/stringdiff}}{{/each}}{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}

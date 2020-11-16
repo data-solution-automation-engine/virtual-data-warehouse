@@ -1,0 +1,387 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "HUB_MEMBERSHIP_PLAN",
+    "generationDateTime": "2020-11-12T18:27:39.353481+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "HUB_MEMBERSHIP_PLAN",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUST_MEMBERSHIP",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_MEMBERSHIP_PLAN",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_MEMBERSHIP_PLAN",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 9
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 6
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        }
+      ],
+      "filterCriterion": "14=14",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_MEMBERSHIP_PLAN",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_ESTIMATED_WORTH",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_MEMBERSHIP_PLAN",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_MEMBERSHIP_PLAN",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 6
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        }
+      ],
+      "filterCriterion": "12=12",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_MEMBERSHIP_PLAN",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_PERSONALISED_COSTING",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_MEMBERSHIP_PLAN",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_MEMBERSHIP_PLAN",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 10
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 6
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        }
+      ],
+      "filterCriterion": "18=18",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_MEMBERSHIP_PLAN",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_PLAN",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_MEMBERSHIP_PLAN",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_MEMBERSHIP_PLAN",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 6
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        }
+      ],
+      "filterCriterion": "10=10",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_MEMBERSHIP_PLAN",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_PLAN",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_MEMBERSHIP_PLAN",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_MEMBERSHIP_PLAN",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Renewal_Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 10
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 6
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        }
+      ],
+      "filterCriterion": "1=1",
+      "enabled": true
+    }
+  ]
+}

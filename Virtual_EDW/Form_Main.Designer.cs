@@ -29,10 +29,11 @@
         /// 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,13 +78,16 @@
             this.dataGridViewLoadPatternCollection = new System.Windows.Forms.DataGridView();
             this.checkBoxBackupFiles = new System.Windows.Forms.CheckBox();
             this.groupBoxConfigurationPaths = new System.Windows.Forms.GroupBox();
+            this.pictureBox8 = new System.Windows.Forms.PictureBox();
+            this.textBoxTeamConnectionsPath = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.textBoxTeamConfigurationPath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxEnvironments = new System.Windows.Forms.ComboBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.textBoxTeamEnvironmentsPath = new System.Windows.Forms.TextBox();
+            this.textBoxTeamEnvironmentsFilePath = new System.Windows.Forms.TextBox();
             this.labelTEAMConfigurationFile = new System.Windows.Forms.Label();
             this.groupBoxOutputOptions = new System.Windows.Forms.GroupBox();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
@@ -99,6 +103,7 @@
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.backgroundWorkerEventLog = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.toolTipVdw = new System.Windows.Forms.ToolTip(this.components);
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -109,6 +114,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternCollection)).BeginInit();
             this.groupBoxConfigurationPaths.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.groupBoxOutputOptions.SuspendLayout();
@@ -223,7 +229,7 @@
             this.savePatternCollectionFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.SaveFile;
             this.savePatternCollectionFileToolStripMenuItem.Name = "savePatternCollectionFileToolStripMenuItem";
             this.savePatternCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.savePatternCollectionFileToolStripMenuItem.Text = "Save Pattern Collection File";
+            this.savePatternCollectionFileToolStripMenuItem.Text = "Save Pattern Collection Grid";
             this.savePatternCollectionFileToolStripMenuItem.Click += new System.EventHandler(this.savePatternCollectionFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
@@ -361,9 +367,9 @@
             this.checkBoxGenerateJsonSchema.AutoSize = true;
             this.checkBoxGenerateJsonSchema.Location = new System.Drawing.Point(6, 43);
             this.checkBoxGenerateJsonSchema.Name = "checkBoxGenerateJsonSchema";
-            this.checkBoxGenerateJsonSchema.Size = new System.Drawing.Size(188, 17);
+            this.checkBoxGenerateJsonSchema.Size = new System.Drawing.Size(182, 17);
             this.checkBoxGenerateJsonSchema.TabIndex = 8;
-            this.checkBoxGenerateJsonSchema.Text = "Generate JSON metadata schema";
+            this.checkBoxGenerateJsonSchema.Text = "Generate Json metadata schema";
             this.checkBoxGenerateJsonSchema.UseVisualStyleBackColor = true;
             this.checkBoxGenerateJsonSchema.CheckedChanged += new System.EventHandler(this.checkBoxGenerateJsonSchema_CheckedChanged);
             // 
@@ -508,7 +514,7 @@
             this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox6.TabIndex = 99;
             this.pictureBox6.TabStop = false;
-            this.pictureBox6.Click += new System.EventHandler(this.pictureBox6_Click);
+            this.pictureBox6.Click += new System.EventHandler(this.pictureBoxUpdateLoadPatternPath_Click);
             // 
             // dataGridViewLoadPatternCollection
             // 
@@ -516,27 +522,27 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLoadPatternCollection.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridViewLoadPatternCollection.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewLoadPatternCollection.Location = new System.Drawing.Point(3, 191);
             this.dataGridViewLoadPatternCollection.Name = "dataGridViewLoadPatternCollection";
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(1665, 521);
             this.dataGridViewLoadPatternCollection.TabIndex = 104;
             // 
@@ -555,13 +561,16 @@
             // 
             // groupBoxConfigurationPaths
             // 
+            this.groupBoxConfigurationPaths.Controls.Add(this.pictureBox8);
+            this.groupBoxConfigurationPaths.Controls.Add(this.textBoxTeamConnectionsPath);
+            this.groupBoxConfigurationPaths.Controls.Add(this.label3);
             this.groupBoxConfigurationPaths.Controls.Add(this.pictureBox7);
             this.groupBoxConfigurationPaths.Controls.Add(this.textBoxTeamConfigurationPath);
             this.groupBoxConfigurationPaths.Controls.Add(this.label2);
             this.groupBoxConfigurationPaths.Controls.Add(this.label1);
             this.groupBoxConfigurationPaths.Controls.Add(this.comboBoxEnvironments);
             this.groupBoxConfigurationPaths.Controls.Add(this.pictureBox3);
-            this.groupBoxConfigurationPaths.Controls.Add(this.textBoxTeamEnvironmentsPath);
+            this.groupBoxConfigurationPaths.Controls.Add(this.textBoxTeamEnvironmentsFilePath);
             this.groupBoxConfigurationPaths.Controls.Add(this.labelTEAMConfigurationFile);
             this.groupBoxConfigurationPaths.Location = new System.Drawing.Point(3, 3);
             this.groupBoxConfigurationPaths.Name = "groupBoxConfigurationPaths";
@@ -570,39 +579,70 @@
             this.groupBoxConfigurationPaths.TabStop = false;
             this.groupBoxConfigurationPaths.Text = "Configuration paths";
             // 
+            // pictureBox8
+            // 
+            this.pictureBox8.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.pictureBox8.Location = new System.Drawing.Point(796, 145);
+            this.pictureBox8.Name = "pictureBox8";
+            this.pictureBox8.Size = new System.Drawing.Size(19, 20);
+            this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox8.TabIndex = 119;
+            this.pictureBox8.TabStop = false;
+            this.pictureBox8.Click += new System.EventHandler(this.pictureBoxOpenConnectionFile_Click);
+            // 
+            // textBoxTeamConnectionsPath
+            // 
+            this.textBoxTeamConnectionsPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxTeamConnectionsPath.Location = new System.Drawing.Point(137, 145);
+            this.textBoxTeamConnectionsPath.Multiline = true;
+            this.textBoxTeamConnectionsPath.Name = "textBoxTeamConnectionsPath";
+            this.textBoxTeamConnectionsPath.Size = new System.Drawing.Size(653, 20);
+            this.textBoxTeamConnectionsPath.TabIndex = 117;
+            this.toolTipVdw.SetToolTip(this.textBoxTeamConnectionsPath, resources.GetString("textBoxTeamConnectionsPath.ToolTip"));
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 148);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(122, 13);
+            this.label3.TabIndex = 118;
+            this.label3.Text = "TEAM connections path";
+            // 
             // pictureBox7
             // 
             this.pictureBox7.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox7.Location = new System.Drawing.Point(796, 49);
+            this.pictureBox7.Location = new System.Drawing.Point(796, 118);
             this.pictureBox7.Name = "pictureBox7";
             this.pictureBox7.Size = new System.Drawing.Size(19, 20);
             this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox7.TabIndex = 116;
             this.pictureBox7.TabStop = false;
-            this.pictureBox7.Click += new System.EventHandler(this.pictureBox7_Click);
+            this.pictureBox7.Click += new System.EventHandler(this.pictureOpenTeamConfigurationFile_Click);
             // 
             // textBoxTeamConfigurationPath
             // 
             this.textBoxTeamConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxTeamConfigurationPath.Location = new System.Drawing.Point(137, 49);
+            this.textBoxTeamConfigurationPath.Location = new System.Drawing.Point(137, 118);
             this.textBoxTeamConfigurationPath.Multiline = true;
             this.textBoxTeamConfigurationPath.Name = "textBoxTeamConfigurationPath";
             this.textBoxTeamConfigurationPath.Size = new System.Drawing.Size(653, 20);
             this.textBoxTeamConfigurationPath.TabIndex = 114;
+            this.toolTipVdw.SetToolTip(this.textBoxTeamConfigurationPath, resources.GetString("textBoxTeamConfigurationPath.ToolTip"));
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 52);
+            this.label2.Location = new System.Drawing.Point(6, 121);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(112, 13);
+            this.label2.Size = new System.Drawing.Size(125, 13);
             this.label2.TabIndex = 115;
-            this.label2.Text = "TEAM config directory";
+            this.label2.Text = "TEAM configuration path";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 79);
+            this.label1.Location = new System.Drawing.Point(6, 51);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(98, 13);
             this.label1.TabIndex = 113;
@@ -612,7 +652,7 @@
             // 
             this.comboBoxEnvironments.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxEnvironments.FormattingEnabled = true;
-            this.comboBoxEnvironments.Location = new System.Drawing.Point(137, 76);
+            this.comboBoxEnvironments.Location = new System.Drawing.Point(137, 48);
             this.comboBoxEnvironments.Name = "comboBoxEnvironments";
             this.comboBoxEnvironments.Size = new System.Drawing.Size(653, 21);
             this.comboBoxEnvironments.TabIndex = 112;
@@ -627,16 +667,17 @@
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox3.TabIndex = 95;
             this.pictureBox3.TabStop = false;
-            this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
+            this.pictureBox3.Click += new System.EventHandler(this.pictureBoxOpenEnvironmentFile_Click);
             // 
-            // textBoxTeamEnvironmentsPath
+            // textBoxTeamEnvironmentsFilePath
             // 
-            this.textBoxTeamEnvironmentsPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxTeamEnvironmentsPath.Location = new System.Drawing.Point(137, 22);
-            this.textBoxTeamEnvironmentsPath.Multiline = true;
-            this.textBoxTeamEnvironmentsPath.Name = "textBoxTeamEnvironmentsPath";
-            this.textBoxTeamEnvironmentsPath.Size = new System.Drawing.Size(653, 20);
-            this.textBoxTeamEnvironmentsPath.TabIndex = 83;
+            this.textBoxTeamEnvironmentsFilePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxTeamEnvironmentsFilePath.Location = new System.Drawing.Point(137, 22);
+            this.textBoxTeamEnvironmentsFilePath.Multiline = true;
+            this.textBoxTeamEnvironmentsFilePath.Name = "textBoxTeamEnvironmentsFilePath";
+            this.textBoxTeamEnvironmentsFilePath.Size = new System.Drawing.Size(653, 20);
+            this.textBoxTeamEnvironmentsFilePath.TabIndex = 83;
+            this.toolTipVdw.SetToolTip(this.textBoxTeamEnvironmentsFilePath, resources.GetString("textBoxTeamEnvironmentsFilePath.ToolTip"));
             // 
             // labelTEAMConfigurationFile
             // 
@@ -782,6 +823,12 @@
             this.backgroundWorkerEventLog.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerEventLog_ProgressChanged);
             this.backgroundWorkerEventLog.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerEventLog_RunWorkerCompleted);
             // 
+            // toolTipVdw
+            // 
+            this.toolTipVdw.AutoPopDelay = 5000;
+            this.toolTipVdw.InitialDelay = 300;
+            this.toolTipVdw.ReshowDelay = 100;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -815,6 +862,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternCollection)).EndInit();
             this.groupBoxConfigurationPaths.ResumeLayout(false);
             this.groupBoxConfigurationPaths.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.groupBoxOutputOptions.ResumeLayout(false);
@@ -856,7 +904,7 @@
         private System.Windows.Forms.ToolStripMenuItem openVDWConfigurationSettingsFileToolStripMenuItem;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.TabPage tabPageSettings;
-        internal System.Windows.Forms.TextBox textBoxTeamEnvironmentsPath;
+        internal System.Windows.Forms.TextBox textBoxTeamEnvironmentsFilePath;
         internal System.Windows.Forms.TextBox textBoxOutputPath;
         internal System.Windows.Forms.GroupBox groupBoxOutputOptions;
         internal System.Windows.Forms.TextBox textBoxSchemaName;
@@ -896,6 +944,10 @@
         private System.Windows.Forms.Label labelPatternPath;
         internal System.Windows.Forms.TextBox textBoxLoadPatternPath;
         private System.Windows.Forms.PictureBox pictureBox6;
+        private System.Windows.Forms.PictureBox pictureBox8;
+        internal System.Windows.Forms.TextBox textBoxTeamConnectionsPath;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolTip toolTipVdw;
     }
 }
 

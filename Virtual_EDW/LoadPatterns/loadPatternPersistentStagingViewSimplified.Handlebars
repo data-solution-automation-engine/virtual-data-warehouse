@@ -8,11 +8,11 @@ GO
 USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
 GO
 
-CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
+CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
 
 SELECT
    {{#each dataItemMappings}}
@@ -24,12 +24,12 @@ SELECT
    STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
    STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
    STG.[{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{sourceDataObject.name}}] STG
+FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{sourceDataObjects.0.name}}] STG
 LEFT OUTER JOIN -- Prevent reprocessing
   [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetDataObject.name}}] HSTG
   ON
      {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
-     HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItem.name}}] AND{{/each}} {{/each}}
+     HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItems.0.name}}] AND{{/each}} {{/each}}
      HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
      HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
 WHERE {{#each businessKeys}}  {{#each businessKeyComponentMapping}} {{#if @first}}

@@ -1,0 +1,246 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "STG_PROFILER_CUSTOMER_PERSONAL",
+    "generationDateTime": "2020-11-12T18:27:38.6934816+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "STG_PROFILER_CUSTOMER_PERSONAL",
+      "mappingClassifications": [
+        {
+          "id": 1,
+          "classification": "StagingArea",
+          "notes": "The mappings from source to the landing (staging) area."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "CUSTOMER_PERSONAL",
+          "dataObjectConnection": {
+            "dataConnectionString": "Source"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "STG_PROFILER_CUSTOMER_PERSONAL",
+        "dataObjectConnection": {
+          "dataConnectionString": "Staging"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Contact_Number",
+              "dataType": "int",
+              "ordinalPosition": 10
+            }
+          ],
+          "targetDataItem": {
+            "name": "Contact_Number",
+            "dataType": "int",
+            "ordinalPosition": 17
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Country",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 7
+            }
+          ],
+          "targetDataItem": {
+            "name": "Country",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 14
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
+            }
+          ],
+          "targetDataItem": {
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 8
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "DOB",
+              "dataType": "date",
+              "ordinalPosition": 9
+            }
+          ],
+          "targetDataItem": {
+            "name": "DOB",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 16
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Gender",
+              "dataType": "varchar",
+              "characterLength": 1,
+              "ordinalPosition": 8
+            }
+          ],
+          "targetDataItem": {
+            "name": "Gender",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 15
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Given",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 2
+            }
+          ],
+          "targetDataItem": {
+            "name": "Given",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 9
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Postcode",
+              "dataType": "varchar",
+              "characterLength": 6,
+              "ordinalPosition": 6
+            }
+          ],
+          "targetDataItem": {
+            "name": "Postcode",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 13
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Referee_Offer_Made",
+              "dataType": "int",
+              "ordinalPosition": 11
+            }
+          ],
+          "targetDataItem": {
+            "name": "Referee_Offer_Made",
+            "dataType": "int",
+            "ordinalPosition": 18
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "State",
+              "dataType": "varchar",
+              "characterLength": 3,
+              "ordinalPosition": 5
+            }
+          ],
+          "targetDataItem": {
+            "name": "State",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 12
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Suburb",
+              "dataType": "varchar",
+              "characterLength": 50,
+              "ordinalPosition": 4
+            }
+          ],
+          "targetDataItem": {
+            "name": "Suburb",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 11
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Surname",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 3
+            }
+          ],
+          "targetDataItem": {
+            "name": "Surname",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 10
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 1
+                }
+              ],
+              "targetDataItem": {
+                "name": "CustomerID",
+                "dataType": "int",
+                "ordinalPosition": 8
+              }
+            }
+          ],
+          "surrogateKey": "Not applicable"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    }
+  ]
+}

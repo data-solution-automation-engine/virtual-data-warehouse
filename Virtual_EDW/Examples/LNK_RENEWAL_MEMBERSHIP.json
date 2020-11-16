@@ -1,0 +1,161 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "LNK_RENEWAL_MEMBERSHIP",
+    "generationDateTime": "2020-11-12T18:27:39.370481+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "LNK_RENEWAL_MEMBERSHIP",
+      "mappingClassifications": [
+        {
+          "id": 4,
+          "classification": "NaturalBusinessRelationship",
+          "notes": "The Link type entities record the relationships between the Business Entities (Hubs). Similar to Hubs they are subject to potentially being populated from multiple Staging Area tables. The Link views therefore present an integrated view of all relationships across these tables."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_PLAN",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "LNK_RENEWAL_MEMBERSHIP",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "LNK_RENEWAL_MEMBERSHIP",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Renewal_Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 10
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            }
+          ],
+          "surrogateKey": "RENEWAL_MEMBERSHIP_HSH"
+        },
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code"
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        },
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Renewal_Plan_Code"
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            }
+          ],
+          "surrogateKey": "RENEWAL_PLAN_HSH"
+        }
+      ],
+      "filterCriterion": "1=1",
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "LSAT_CUSTOMER_OFFER",
+    "generationDateTime": "2020-11-12T18:27:39.074481+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "LSAT_CUSTOMER_OFFER",
+      "mappingClassifications": [
+        {
+          "id": 7,
+          "classification": "NaturalBusinessRelationshipContextDrivingKey",
+          "notes": "The Driving Key pattern for Link Satellites is an implementation of effective-dating relationships."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_OFFER",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA"
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "LSAT_CUSTOMER_OFFER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration"
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "LSAT_CUSTOMER_OFFER",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8,
+                  "dataItemClassification": [
+                    {
+                      "classification": "DrivingKey",
+                      "notes": "The attribute that triggers (drives) the closing of a relationship."
+                    }
+                  ]
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "OfferID",
+                  "dataType": "int",
+                  "ordinalPosition": 9
+                }
+              ],
+              "targetDataItem": {
+                "name": "OFFER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_OFFER_HSH"
+        }
+      ],
+      "filterCriterion": "7=7",
+      "enabled": true
+    }
+  ]
+}

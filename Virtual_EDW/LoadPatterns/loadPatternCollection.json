@@ -2,161 +2,161 @@
   {
     "loadPatternName": "Data Vault Hub 001 View Pattern",
     "loadPatternType": "CoreBusinessConcept",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternHubView.handlebars",
     "loadPatternNotes": "Standard Hub pattern - display the distinct list of Business Keys for a Core Business Concept."
   },
   {
     "loadPatternName": "Data Vault Hub 002 Insert Into Pattern",
     "loadPatternType": "CoreBusinessConcept",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
     "loadPatternFilePath": "loadPatternHubInsertInto.handlebars",
     "loadPatternNotes": "Pattern to load a Hub view into a physical table (persistence)."
   },
   {
     "loadPatternName": "Data Vault Hub 003 Delta Select From Pattern",
     "loadPatternType": "CoreBusinessConcept",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
     "loadPatternFilePath": "loadPatternHubDeltaSelect.handlebars",
     "loadPatternNotes": "Pattern to perform a delta load from the Staging Layer to the target Hub table as an ETL process."
   },
   {
     "loadPatternName": "Data Vault Hub 004 View using DBT and Snowflake syntax",
     "loadPatternType": "CoreBusinessConcept",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternHubView_DBT_Snowflake.handlebars",
     "loadPatternNotes": "Standard Hub pattern - display the distinct list of Business Keys for a Core Business Concept."
   },
   {
     "loadPatternName": "Data Vault Link 001 View Pattern",
     "loadPatternType": "NaturalBusinessRelationship",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternLinkView.handlebars",
     "loadPatternNotes": "Standard Link pattern - display the distinct list of Natural Business Relationships between Core Business Concepts."
   },
   {
     "loadPatternName": "Data Vault Link 001 View Pattern without Hash Keys",
     "loadPatternType": "NaturalBusinessRelationship",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternLinkViewNoHash.Handlebars",
+    "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Data Vault Link 002 Insert Into Pattern",
+    "loadPatternType": "NaturalBusinessRelationship",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
+    "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Data Vault Link Satellite 001 View Pattern",
     "loadPatternType": "NaturalBusinessRelationshipContext",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternLinkSatelliteView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Data Vault LinkSatellite 002 Insert Into Pattern",
     "loadPatternType": "NaturalBusinessRelationshipContext",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
     "loadPatternFilePath": "loadPatternLinkSatelliteInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Data Vault LinkSatellite Driving Key 001 View Pattern",
     "loadPatternType": "NaturalBusinessRelationshipContextDrivingKey",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternLinkSatelliteDrivingKeyView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Data Vault LinkSatellite Driving Key 002 Insert Into Pattern",
     "loadPatternType": "NaturalBusinessRelationshipContextDrivingKey",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
     "loadPatternFilePath": "loadPatternLinkSatelliteDrivingKeyInsertInto.handlebars",
-    "loadPatternNotes": ""
-  },
-  {
-    "loadPatternName": "Link 002 Insert Into Pattern",
-    "loadPatternType": "NaturalBusinessRelationship",
-    "loadPatternConnectionKey": "",
-    "loadPatternFilePath": "loadPatternLinkInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Persistent Staging Area 001 Full Outer Join Insert Pattern",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternPersistentStagingFullOuterJoin.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Persistent Staging Area 001 Simplified View Pattern",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternPersistentStagingViewSimplified.handlebars",
     "loadPatternNotes": "This PSA pattern does not contain a full row checksum and CDC operation check, but just inserts STG records if they haven't been processed already."
   },
   {
     "loadPatternName": "Persistent Staging Area 001 View Pattern",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternPersistentStagingView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Persistent Staging Area 001 View Pattern With Deduplication",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternPersistentStagingViewWithDedup.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Persistent Staging Area 002 Insert Into Pattern",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternPersistentStagingInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Persistent Staging Area 003 Generate Tables",
     "loadPatternType": "PersistentStagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternPersistentStagingGenerateTables.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Satellite 001 View Pattern",
     "loadPatternType": "Context",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternSatelliteView.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Satellite 001 View Pattern With Zero Record",
     "loadPatternType": "Context",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternSatelliteViewZeroRecord.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Satellite 002 Insert Into Pattern",
     "loadPatternType": "Context",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
     "loadPatternFilePath": "loadPatternSatelliteInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Staging Area 001 View Pattern",
     "loadPatternType": "StagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "StagingConnectionInternalId",
     "loadPatternFilePath": "loadPatternStagingView.handlebars",
     "loadPatternNotes": "This Staging Area pattern is an example of delta detection using a Full Outer Join (FOJ) type interface.In most cases the data delta from the source into the Staging Area is handled by a dedicated ETL tool, or at the very least using different techniques (of which this is only one example)."
   },
   {
     "loadPatternName": "Staging Area 002 Insert Into Pattern",
     "loadPatternType": "StagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "StagingConnectionInternalId",
     "loadPatternFilePath": "loadPatternStagingInsertInto.handlebars",
     "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Staging Area 003 Generate Tables",
     "loadPatternType": "StagingArea",
-    "loadPatternConnectionKey": "",
+    "loadPatternConnectionKey": "StagingConnectionInternalId",
     "loadPatternFilePath": "loadPatternStagingGenerateTables.handlebars",
     "loadPatternNotes": ""
   }

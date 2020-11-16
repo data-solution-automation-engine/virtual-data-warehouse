@@ -22,8 +22,9 @@ namespace Virtual_Data_Warehouse
             initialConfigurationFile.AppendLine("/* Virtual Data Warehouse (VDW) Core Settings */");
             initialConfigurationFile.AppendLine("TeamEnvironmentFilePath|" + FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath);
             initialConfigurationFile.AppendLine("TeamConfigurationPath|" + FormBase.VdwConfigurationSettings.TeamConfigurationPath);
-            initialConfigurationFile.AppendLine("TeamSelectedEnvironment|" + "");
-            initialConfigurationFile.AppendLine("InputPath|" + FormBase.VdwConfigurationSettings.VdwInputPath);
+            initialConfigurationFile.AppendLine("TeamConnectionsPath|" + FormBase.VdwConfigurationSettings.TeamConnectionsPath);
+            initialConfigurationFile.AppendLine("TeamSelectedEnvironment|" + "F3958C0634E41306A16639B9445CD0B3");
+            initialConfigurationFile.AppendLine("InputPath|" + FormBase.VdwConfigurationSettings.VdwExamplesPath);
             initialConfigurationFile.AppendLine("OutputPath|" + FormBase.VdwConfigurationSettings.VdwOutputPath);
             initialConfigurationFile.AppendLine("LoadPatternPath|" + FormBase.VdwConfigurationSettings.LoadPatternPath);
             initialConfigurationFile.AppendLine("VdwSchema|vdw");
@@ -49,7 +50,7 @@ namespace Virtual_Data_Warehouse
                 FormBase.GlobalParameters.VdwConfigurationPath +
                 FormBase.GlobalParameters.VdwConfigurationFileName);
 
-            string[] configurationArray = new[] { "TeamEnvironmentFilePath", "TeamConfigurationPath", "TeamSelectedEnvironment", "InputPath", "OutputPath", "LoadPatternPath", "VdwSchema" };
+            string[] configurationArray = new[] { "TeamEnvironmentFilePath", "TeamConfigurationPath", "TeamConnectionsPath", "TeamSelectedEnvironment", "InputPath", "OutputPath", "LoadPatternPath", "VdwSchema" };
 
             foreach (string configuration in configurationArray)
             {
@@ -62,6 +63,9 @@ namespace Virtual_Data_Warehouse
                             break;
                         case "TeamConfigurationPath":
                             FormBase.VdwConfigurationSettings.TeamConfigurationPath = configList[configuration];
+                            break;
+                        case "TeamConnectionsPath":
+                            FormBase.VdwConfigurationSettings.TeamConnectionsPath = configList[configuration];
                             break;
                         case "TeamSelectedEnvironment":
                             FormBase.VdwConfigurationSettings.TeamSelectedEnvironmentInternalId = configList[configuration];
@@ -97,15 +101,16 @@ namespace Virtual_Data_Warehouse
         }
 
         /// <summary>
-        /// Load the configuration and connection information from file, based on the selected environment and input path.
+        /// Load the connection information from file, based on the selected environment.
         /// </summary>
         /// <param name="environmentName"></param>
-        public static void LoadTeamConfigurations(string environmentName)
+        public static void LoadTeamConnectionsFileForVdw(string environmentName)
         {
             if (environmentName != null)
             {
                 // Connection information (TEAM_connections).
-                var connectionFileName = FormBase.VdwConfigurationSettings.TeamConfigurationPath +
+                var connectionFileName = 
+                                         FormBase.VdwConfigurationSettings.TeamConnectionsPath +
                                          FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName +
                                          FormBase.GlobalParameters.JsonExtension;
 
@@ -123,12 +128,43 @@ namespace Virtual_Data_Warehouse
 
                     }
                 }
+            }
+            else
+            {
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The working environment has not been set, no connections have been loaded."));
+            }
+        }
 
-                // Configuration information (TEAM_configuration).
-                var configurationFileName = FormBase.VdwConfigurationSettings.TeamConfigurationPath +
-                                            FormBase.GlobalParameters.TeamConfigurationFileName + '_' +
-                                            environmentName +
+        /// <summary>
+        /// Load the configuration information from file, based on the selected environment.
+        /// </summary>
+        /// <param name="environmentName"></param>
+        public static void LoadTeamConfigurationFileForVdw(string environmentName)
+        {
+            if (environmentName != null)
+            {
+                // Configuration information (TEAM_configuration.txt).
+                var configurationFileName = 
+                                            FormBase.VdwConfigurationSettings.TeamConfigurationPath +
+                                            FormBase.GlobalParameters.TeamConfigurationFileName + '_' + environmentName +
                                             FormBase.GlobalParameters.ConfigurationFileExtension;
+
+                try
+                {
+                    if (!File.Exists(configurationFileName))
+                    {
+                        FormBase.TeamConfigurationSettings.CreateDummyEnvironmentConfigurationFile(configurationFileName);
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"A new configuration file {configurationFileName} was created."));
+                    }
+                    else
+                    {
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The existing configuration file {configurationFileName} was detected."));
+                    }
+                }
+                catch
+                {
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An issue was encountered creating or detecting the configuration paths for {configurationFileName}."));
+                }
 
                 FormBase.TeamConfigurationSettings.LoadTeamConfigurationFile(configurationFileName);
                 
@@ -144,39 +180,54 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-
-        public static string CreateSchema(string connString)
+        /// <summary>
+        /// Create the designated VDW schema, if it doesn't exist already.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <returns></returns>
+        public static void CreateVdwSchema(SqlConnection connection)
         {
-            string returnMessage ="";
-
-            var createStatement = new StringBuilder();
-
-            createStatement.AppendLine("-- Creating the schema");
-            createStatement.AppendLine("IF NOT EXISTS (");
-            createStatement.AppendLine("SELECT SCHEMA_NAME");
-            createStatement.AppendLine("FROM INFORMATION_SCHEMA.SCHEMATA");
-            createStatement.AppendLine("WHERE SCHEMA_NAME = '" + FormBase.VdwConfigurationSettings.VdwSchema + "')");
-            createStatement.AppendLine("");
-            createStatement.AppendLine("BEGIN");
-            createStatement.AppendLine(" EXEC sp_executesql N'CREATE SCHEMA [" + FormBase.VdwConfigurationSettings.VdwSchema + "]'");
-            createStatement.AppendLine("END");
-
-            using (var connectionVersion = new SqlConnection(connString))
+            try
             {
-                var commandVersion = new SqlCommand(createStatement.ToString(), connectionVersion);
+                connection.Open();
 
-                try
+                // Execute the check to see if the schema exists or not
+                var checkCommand =
+                    new SqlCommand(
+                        $"SELECT CASE WHEN EXISTS (SELECT * FROM sys.schemas WHERE name = '{FormBase.VdwConfigurationSettings.VdwSchema}') THEN 1 ELSE 0 END",
+                        connection);
+                var exists = (int) checkCommand.ExecuteScalar() == 1;
+
+                if (exists == false)
                 {
-                    connectionVersion.Open();
+                    var createStatement = new StringBuilder();
+
+                    createStatement.AppendLine("-- Creating the schema");
+                    createStatement.AppendLine("IF NOT EXISTS (");
+                    createStatement.AppendLine("SELECT SCHEMA_NAME");
+                    createStatement.AppendLine("FROM INFORMATION_SCHEMA.SCHEMATA");
+                    createStatement.AppendLine("WHERE SCHEMA_NAME = '" + FormBase.VdwConfigurationSettings.VdwSchema +
+                                               "')");
+                    createStatement.AppendLine("");
+                    createStatement.AppendLine("BEGIN");
+                    createStatement.AppendLine(" EXEC sp_executesql N'CREATE SCHEMA [" +
+                                               FormBase.VdwConfigurationSettings.VdwSchema + "]'");
+                    createStatement.AppendLine("END");
+
+                    var commandVersion = new SqlCommand(createStatement.ToString(), connection);
+
                     commandVersion.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    returnMessage = "An issue occured creating the VDW schema '" + FormBase.VdwConfigurationSettings.VdwSchema + "'. The reported error is " + ex;
+
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
+                        $"The VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}' was created for database '{connection.Database}'."));
+
                 }
             }
-
-            return returnMessage;
+            catch (Exception ex)
+            {
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
+                    $"An issue occured creating the VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}'. The reported error is {ex}"));
+            }
         }
 
         public static void ExecuteOutputInDatabase(SqlConnection sqlConnection, string query)
@@ -192,7 +243,7 @@ namespace Virtual_Data_Warehouse
                         {
                             server.ConnectionContext.ExecuteNonQuery(query);
 
-                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully.\r\n"));
+                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully."));
 
                         }
                         catch (Exception ex)
