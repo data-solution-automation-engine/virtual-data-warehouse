@@ -159,5 +159,12 @@
     "loadPatternConnectionKey": "StagingConnectionInternalId",
     "loadPatternFilePath": "loadPatternStagingGenerateTables.handlebars",
     "loadPatternNotes": ""
+  },
+  {
+    "loadPatternName": "Staging Area 999 Generate Test Data",
+    "loadPatternType": "StagingArea",
+    "loadPatternConnectionKey": "StagingConnectionInternalId",
+    "loadPatternFilePath": "loadPatternStagingTestData.handlebars",
+    "loadPatternNotes": ""
   }
 ]

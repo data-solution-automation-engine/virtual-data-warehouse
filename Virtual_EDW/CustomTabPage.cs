@@ -93,7 +93,7 @@ namespace Virtual_Data_Warehouse
         public CustomTabPage(string classification, string notes, Dictionary<string, VDW_DataObjectMappingList> itemList)
         {
             // Register the Handlebars helpers (extensions)
-            ClassHandlebarsHelpers.RegisterHandleBarsHelpers();
+            HandlebarsHelpers.RegisterHandleBarsHelpers();
 
             this.ItemList = itemList;
 

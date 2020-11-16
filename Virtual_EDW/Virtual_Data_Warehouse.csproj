@@ -210,16 +210,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassExtensionMethods.cs" />
-    <Compile Include="ClassHandlebarsHelpers.cs" />
-    <Compile Include="ClassInterfaceObjectModel.cs" />
-    <Compile Include="ClassVdwUtility.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="HandlebarsHelpers.cs" />
+    <Compile Include="InterfaceObjectModel.cs" />
+    <Compile Include="VdwUtility.cs" />
     <Compile Include="CustomTabPage.cs" />
-    <Compile Include="ClassInterfaceHandling.cs" />
-    <Compile Include="ClassJsonHandling.cs" />
-    <Compile Include="ClassTextHandling.cs" />
-    <Compile Include="ClassLoadPatternHandling.cs" />
-    <Compile Include="ClassDatabaseHandling.cs" />
+    <Compile Include="InterfaceHandling.cs" />
+    <Compile Include="JsonHandling.cs" />
+    <Compile Include="TextHandling.cs" />
+    <Compile Include="LoadPatternHandling.cs" />
+    <Compile Include="DatabaseHandling.cs" />
     <Compile Include="Form_Base.cs">
       <SubType>Form</SubType>
     </Compile>

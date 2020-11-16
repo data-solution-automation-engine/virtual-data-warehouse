@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Virtual_Data_Warehouse
 {
-    class ClassJsonHandling
+    class JsonHandling
     {
 
         /// <summary>

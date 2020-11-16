@@ -1376,7 +1376,7 @@ namespace Virtual_Data_Warehouse
                 {
                     try
                     {
-                        var backupFile = new ClassJsonHandling();
+                        var backupFile = new JsonHandling();
                         var targetFileName = backupFile.BackupJsonFile(chosenFile);
                         SetTextMain("A backup of the in-use JSON file was created as " + targetFileName + ".\r\n\r\n");
                     }
