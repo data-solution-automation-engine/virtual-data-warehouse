@@ -3,10 +3,8 @@
 -- Hub Insert Into statement for {{targetDataObject.name}}
 -- Generated at {{../generationSpecificMetadata.generationDateTime}}
 --
-USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
-GO
 
-INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+INSERT INTO [{{targetDataObject.name}}]
 (
    [{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
    [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
@@ -22,7 +20,7 @@ SELECT
    hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
 FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
 LEFT OUTER JOIN
-   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] hub_table
+   [{{targetDataObject.name}}] hub_table
    ON hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
 WHERE hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}{{/each}}

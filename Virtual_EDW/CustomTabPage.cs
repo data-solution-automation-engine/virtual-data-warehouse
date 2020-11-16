@@ -298,7 +298,7 @@ namespace Virtual_Data_Warehouse
             tabPageGenerationPattern.Controls.Add(localRichTextBoxGenerationPattern);
             localRichTextBoxGenerationPattern.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
             localRichTextBoxGenerationPattern.Location = new Point(3, 82);
-            localRichTextBoxGenerationPattern.Size = new Size(195, 35);
+            localRichTextBoxGenerationPattern.Size = new Size(195, 30);
             localRichTextBoxGenerationPattern.BorderStyle = BorderStyle.None;
             #endregion
 
