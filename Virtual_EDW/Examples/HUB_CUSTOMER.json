@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "HUB_CUSTOMER",
-    "generationDateTime": "2020-11-12T18:27:39.2404814+10:00"
+    "generationDateTime": "2020-11-16T21:34:26.6383366+10:00"
   },
   "dataObjectMappings": [
     {
@@ -26,14 +26,38 @@
         {
           "name": "PSA_PROFILER_CUST_MEMBERSHIP",
           "dataObjectConnection": {
-            "dataConnectionString": "PSA"
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "HUB_CUSTOMER",
         "dataObjectConnection": {
-          "dataConnectionString": "Integration"
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [
@@ -85,14 +109,38 @@
         {
           "name": "PSA_PROFILER_CUSTOMER_OFFER",
           "dataObjectConnection": {
-            "dataConnectionString": "PSA"
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "HUB_CUSTOMER",
         "dataObjectConnection": {
-          "dataConnectionString": "Integration"
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [
@@ -144,14 +192,38 @@
         {
           "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
           "dataObjectConnection": {
-            "dataConnectionString": "PSA"
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "HUB_CUSTOMER",
         "dataObjectConnection": {
-          "dataConnectionString": "Integration"
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [
@@ -203,14 +275,38 @@
         {
           "name": "PSA_PROFILER_PERSONALISED_COSTING",
           "dataObjectConnection": {
-            "dataConnectionString": "PSA"
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "HUB_CUSTOMER",
         "dataObjectConnection": {
-          "dataConnectionString": "Integration"
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [

@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LSAT_MEMBERSHIP",
-    "generationDateTime": "2020-11-12T18:27:38.9564808+10:00"
+    "generationDateTime": "2020-11-16T21:34:26.3703662+10:00"
   },
   "dataObjectMappings": [
     {
@@ -26,14 +26,38 @@
         {
           "name": "PSA_PROFILER_CUST_MEMBERSHIP",
           "dataObjectConnection": {
-            "dataConnectionString": "PSA"
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "LSAT_MEMBERSHIP",
         "dataObjectConnection": {
-          "dataConnectionString": "Integration"
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [

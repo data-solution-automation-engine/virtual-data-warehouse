@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "SAT_INCENTIVE_OFFER",
-    "generationDateTime": "2020-11-12T18:27:39.2144814+10:00"
+    "generationDateTime": "2020-11-16T21:34:26.6133381+10:00"
   },
   "dataObjectMappings": [
     {
@@ -26,14 +26,38 @@
         {
           "name": "PSA_PROFILER_OFFER",
           "dataObjectConnection": {
-            "dataConnectionString": "PSA"
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "SAT_INCENTIVE_OFFER",
         "dataObjectConnection": {
-          "dataConnectionString": "Integration"
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [

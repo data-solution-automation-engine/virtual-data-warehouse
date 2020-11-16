@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "STG_PROFILER_PERSONALISED_COSTING",
-    "generationDateTime": "2020-11-12T18:27:38.7444812+10:00"
+    "generationDateTime": "2020-11-16T21:34:26.173363+10:00"
   },
   "dataObjectMappings": [
     {
@@ -26,14 +26,38 @@
         {
           "name": "PERSONALISED_COSTING",
           "dataObjectConnection": {
-            "dataConnectionString": "Source"
+            "dataConnectionString": "Source",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "000_Source",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "STG_PROFILER_PERSONALISED_COSTING",
         "dataObjectConnection": {
-          "dataConnectionString": "Staging"
+          "dataConnectionString": "Staging",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "100_Staging_Area",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [

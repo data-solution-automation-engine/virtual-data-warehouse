@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "PSA_PROFILER_CUSTOMER_OFFER",
-    "generationDateTime": "2020-11-12T18:27:39.4654817+10:00"
+    "generationDateTime": "2020-11-16T21:34:26.8633376+10:00"
   },
   "dataObjectMappings": [
     {
@@ -31,12 +31,12 @@
               {
                 "key": "database",
                 "value": "100_Staging_Area",
-                "description": "Database name"
+                "description": "database name"
               },
               {
                 "key": "schema",
                 "value": "dbo",
-                "description": "Schema name"
+                "description": "schema name"
               }
             ]
           }
@@ -47,18 +47,18 @@
         "dataObjectConnection": {
           "dataConnectionString": "PSA",
           "extensions": [
-              {
-                "key": "database",
-                "value": "150_Persistent_Staging_Area",
-                "description": "Database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "Schema name"
-              }
-            ]
-        }        
+            {
+              "key": "database",
+              "value": "150_Persistent_Staging_Area",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
       },
       "relatedDataObjects": [
         {

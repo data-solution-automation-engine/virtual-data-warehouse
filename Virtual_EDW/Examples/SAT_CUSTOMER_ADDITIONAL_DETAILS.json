@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-    "generationDateTime": "2020-11-12T18:27:39.140482+10:00"
+    "generationDateTime": "2020-11-16T21:34:26.5283664+10:00"
   },
   "dataObjectMappings": [
     {
@@ -26,14 +26,38 @@
         {
           "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
           "dataObjectConnection": {
-            "dataConnectionString": "PSA"
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
         "dataObjectConnection": {
-          "dataConnectionString": "Integration"
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [

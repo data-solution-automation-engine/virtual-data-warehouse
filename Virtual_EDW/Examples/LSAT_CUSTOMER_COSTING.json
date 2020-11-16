@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LSAT_CUSTOMER_COSTING",
-    "generationDateTime": "2020-11-12T18:27:39.3094821+10:00"
+    "generationDateTime": "2020-11-16T21:34:26.7113369+10:00"
   },
   "dataObjectMappings": [
     {
@@ -26,14 +26,38 @@
         {
           "name": "PSA_PROFILER_PERSONALISED_COSTING",
           "dataObjectConnection": {
-            "dataConnectionString": "PSA"
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
           }
         }
       ],
       "targetDataObject": {
         "name": "LSAT_CUSTOMER_COSTING",
         "dataObjectConnection": {
-          "dataConnectionString": "Integration"
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         }
       },
       "relatedDataObjects": [
