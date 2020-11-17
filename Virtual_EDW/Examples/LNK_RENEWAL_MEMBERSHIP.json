@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LNK_RENEWAL_MEMBERSHIP",
-    "generationDateTime": "2020-11-16T21:34:26.776363+10:00"
+    "generationDateTime": "2020-11-17T14:18:43.0483303+10:00"
   },
   "dataObjectMappings": [
     {
@@ -62,13 +62,13 @@
       },
       "relatedDataObjects": [
         {
-          "name": "LNK_RENEWAL_MEMBERSHIP",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "HUB_MEMBERSHIP_PLAN"
+        },
+        {
+          "name": "SAT_MEMBERSHIP_PLAN_DETAIL"
+        },
+        {
+          "name": "HUB_MEMBERSHIP_PLAN"
         }
       ],
       "businessKeys": [

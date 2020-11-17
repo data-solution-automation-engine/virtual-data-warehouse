@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "HUB_INCENTIVE_OFFER",
-    "generationDateTime": "2020-11-16T21:34:26.5993678+10:00"
+    "generationDateTime": "2020-11-17T14:18:42.8933303+10:00"
   },
   "dataObjectMappings": [
     {
@@ -60,17 +60,6 @@
           ]
         }
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_INCENTIVE_OFFER",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -145,13 +134,7 @@
       },
       "relatedDataObjects": [
         {
-          "name": "HUB_INCENTIVE_OFFER",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "SAT_INCENTIVE_OFFER"
         }
       ],
       "businessKeys": [

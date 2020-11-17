@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "SAT_MEMBERSHIP_PLAN_DETAIL",
-    "generationDateTime": "2020-11-16T21:34:26.7913701+10:00"
+    "generationDateTime": "2020-11-17T14:18:43.0663294+10:00"
   },
   "dataObjectMappings": [
     {
@@ -62,13 +62,7 @@
       },
       "relatedDataObjects": [
         {
-          "name": "SAT_MEMBERSHIP_PLAN_DETAIL",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "HUB_MEMBERSHIP_PLAN"
         }
       ],
       "dataItemMappings": [

@@ -29,7 +29,10 @@ namespace Virtual_Data_Warehouse
                 sourceColumn.name = keyPart;
                 sourceColumn.isHardCodedValue = businessKeyEval;
 
-                keyComponent.sourceDataItems[0] = sourceColumn;
+                //if (sourceColumn != null)
+                //{
+                //    keyComponent.sourceDataItems.Add(sourceColumn);
+                //}
 
                 var indexExists = targetBusinessKeyComponentList.ElementAtOrDefault(counter) != null;
                 if (indexExists)

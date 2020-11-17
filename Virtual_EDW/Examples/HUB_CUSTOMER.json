@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "HUB_CUSTOMER",
-    "generationDateTime": "2020-11-16T21:34:26.6383366+10:00"
+    "generationDateTime": "2020-11-17T14:18:42.9293307+10:00"
   },
   "dataObjectMappings": [
     {
@@ -60,17 +60,6 @@
           ]
         }
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -143,17 +132,6 @@
           ]
         }
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -228,13 +206,10 @@
       },
       "relatedDataObjects": [
         {
-          "name": "HUB_CUSTOMER",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "SAT_CUSTOMER"
+        },
+        {
+          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS"
         }
       ],
       "businessKeys": [
@@ -309,17 +284,6 @@
           ]
         }
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [

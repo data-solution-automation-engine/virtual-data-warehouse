@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "HUB_MEMBERSHIP_PLAN",
-    "generationDateTime": "2020-11-16T21:34:26.7593697+10:00"
+    "generationDateTime": "2020-11-17T14:18:43.0333301+10:00"
   },
   "dataObjectMappings": [
     {
@@ -60,17 +60,6 @@
           ]
         }
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -160,13 +149,7 @@
       },
       "relatedDataObjects": [
         {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "SAT_MEMBERSHIP_PLAN_VALUATION"
         }
       ],
       "businessKeys": [
@@ -256,17 +239,6 @@
           ]
         }
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -356,13 +328,7 @@
       },
       "relatedDataObjects": [
         {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "SAT_MEMBERSHIP_PLAN_DETAIL"
         }
       ],
       "businessKeys": [
@@ -452,17 +418,6 @@
           ]
         }
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [

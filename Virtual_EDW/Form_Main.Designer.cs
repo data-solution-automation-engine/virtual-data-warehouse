@@ -425,7 +425,7 @@
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(109, 40);
             this.button12.TabIndex = 23;
-            this.button12.Text = "Repopulate Metadata Selection";
+            this.button12.Text = "Refresh Metadata";
             this.button12.UseVisualStyleBackColor = true;
             this.button12.Click += new System.EventHandler(this.button12_Click);
             // 

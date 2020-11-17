@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LSAT_MEMBERSHIP",
-    "generationDateTime": "2020-11-16T21:34:26.3703662+10:00"
+    "generationDateTime": "2020-11-17T14:18:42.4743304+10:00"
   },
   "dataObjectMappings": [
     {
@@ -62,13 +62,10 @@
       },
       "relatedDataObjects": [
         {
-          "name": "LSAT_MEMBERSHIP",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "HUB_CUSTOMER"
+        },
+        {
+          "name": "HUB_MEMBERSHIP_PLAN"
         }
       ],
       "dataItemMappings": [

@@ -127,7 +127,7 @@ namespace Virtual_Data_Warehouse
             localButtonGenerate.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
             localButtonGenerate.Location = new Point(17, 542);
             localButtonGenerate.Name = $"Generate{classification}";
-            localButtonGenerate.Size = new Size(109, 40);
+            localButtonGenerate.Size = new Size(170, 40);
             localButtonGenerate.Text = $"Generate {_inputNiceName}";
             localButtonGenerate.Click += new EventHandler(Generate);
 

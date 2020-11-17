@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-    "generationDateTime": "2020-11-16T21:34:26.5283664+10:00"
+    "generationDateTime": "2020-11-17T14:18:42.8213315+10:00"
   },
   "dataObjectMappings": [
     {
@@ -62,13 +62,10 @@
       },
       "relatedDataObjects": [
         {
-          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "HUB_CUSTOMER"
+        },
+        {
+          "name": "SAT_CUSTOMER"
         }
       ],
       "dataItemMappings": [

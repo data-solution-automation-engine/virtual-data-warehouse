@@ -10,7 +10,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LSAT_CUSTOMER_OFFER",
-    "generationDateTime": "2020-11-16T21:34:26.4683366+10:00"
+    "generationDateTime": "2020-11-17T14:18:42.7043304+10:00"
   },
   "dataObjectMappings": [
     {
@@ -62,13 +62,10 @@
       },
       "relatedDataObjects": [
         {
-          "name": "LSAT_CUSTOMER_OFFER",
-          "dataObjectClassification": [
-            {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
-            }
-          ]
+          "name": "HUB_CUSTOMER"
+        },
+        {
+          "name": "HUB_INCENTIVE_OFFER"
         }
       ],
       "businessKeys": [
