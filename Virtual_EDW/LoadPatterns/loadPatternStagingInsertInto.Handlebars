@@ -1,15 +1,12 @@
 {{#each dataObjectMappings}}
 --
 -- Staging Area Insert Into statement for {{targetDataObject.name}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
 
-USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
-GO
+TRUNCATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 
-TRUNCATE TABLE [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{targetDataObject.name}}]
-
-INSERT INTO [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 (
    [{{../metadataConfiguration.etlProcessAttribute}}], 
    [{{../metadataConfiguration.eventDateTimeAttribute}}],

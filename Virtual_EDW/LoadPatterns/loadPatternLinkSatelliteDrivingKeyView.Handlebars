@@ -1,7 +1,7 @@
 {{#each dataObjectMappings}}
 --
 -- Link Satellite View definition for {{../generationSpecificMetadata.selectedDataObject}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))

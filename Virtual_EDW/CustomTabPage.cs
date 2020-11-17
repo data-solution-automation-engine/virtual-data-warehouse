@@ -165,9 +165,9 @@ namespace Virtual_Data_Warehouse
             // Add User feedback RichTextBox (left hand side of form)
             _localRichTextBox = new RichTextBox();
             localPanel.Controls.Add(_localRichTextBox);
-            _localRichTextBox.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
-            _localRichTextBox.Location = new Point(17, 418);
-            _localRichTextBox.Size = new Size(393, 115);
+            _localRichTextBox.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
+            _localRichTextBox.Location = new Point(17, 402);
+            _localRichTextBox.Size = new Size(393, 120);
             _localRichTextBox.BorderStyle = BorderStyle.None;
             _localRichTextBox.BackColor = SystemColors.Window;
             _localRichTextBox.TextChanged += new EventHandler(ScrollToCaret);

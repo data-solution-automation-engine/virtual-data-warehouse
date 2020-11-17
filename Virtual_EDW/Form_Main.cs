@@ -194,6 +194,8 @@ namespace Virtual_Data_Warehouse
 
             _bindingSourceLoadPatternCollection.DataSource = dt;
             dataGridViewLoadPatternCollection.DataSource = _bindingSourceLoadPatternCollection;
+
+
         }
 
         /// <summary>
@@ -249,6 +251,13 @@ namespace Virtual_Data_Warehouse
                 DataPropertyName = "Notes"
             };
             dataGridViewLoadPatternCollection.Columns.Add(loadPatternNotes);
+
+            //// Ensure editing is committed straight away.
+            //foreach (Binding item in dataGridViewLoadPatternCollection.DataBindings)
+            //{
+            //    item.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            //}
+
         }
 
         private void GridAutoLayoutLoadPatternCollection()
@@ -1706,5 +1715,17 @@ namespace Virtual_Data_Warehouse
             }
         }
 
+        /// <summary>
+        /// Ensure changes, especially in the combobox are managed straight away and not require leaving the cell to commit.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridViewLoadPatternCollection_CurrentCellDirtyStateChanged_1(object sender, EventArgs e)
+        {
+            if (dataGridViewLoadPatternCollection.IsCurrentCellDirty)
+            {
+                dataGridViewLoadPatternCollection.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
     }
 }

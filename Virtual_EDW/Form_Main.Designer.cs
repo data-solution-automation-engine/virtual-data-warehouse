@@ -545,6 +545,7 @@
             this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(1665, 521);
             this.dataGridViewLoadPatternCollection.TabIndex = 104;
+            this.dataGridViewLoadPatternCollection.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridViewLoadPatternCollection_CurrentCellDirtyStateChanged_1);
             // 
             // checkBoxBackupFiles
             // 

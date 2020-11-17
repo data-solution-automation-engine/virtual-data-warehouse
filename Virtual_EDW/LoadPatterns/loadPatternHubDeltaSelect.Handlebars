@@ -1,7 +1,7 @@
 {{#each dataObjectMappings }}
 --
 -- Working on mapping to {{targetDataObject.name}} from source table {{sourceDataObjects.0.name}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
 SELECT
     HASHBYTES('MD5', {{#each businessKeys}} {{#if @first}}

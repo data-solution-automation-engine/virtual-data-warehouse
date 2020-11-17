@@ -1,13 +1,10 @@
 {{#each dataObjectMappings}}
 --
 -- Persistent Staging Area Insert Into statement for {{targetDataObject.name}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
 
-USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
-GO
-
-INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 (
    [{{../metadataConfiguration.etlProcessAttribute}}], 
    [{{../metadataConfiguration.loadDateTimeAttribute}}],

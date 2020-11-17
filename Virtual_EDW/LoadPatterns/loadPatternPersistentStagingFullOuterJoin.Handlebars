@@ -1,12 +1,8 @@
 {{#each dataObjectMappings}}
 --
 -- Landing <=> PSA full outer join query for {{targetDataObject.name}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
-
-GO
-USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
-GO
 
 PRINT 'Working on {{targetDataObject.name}}';
 PRINT GETDATE();
@@ -16,6 +12,7 @@ WITH STG_CTE AS
 SELECT  
    [{{../metadataConfiguration.loadDateTimeAttribute}}], 
    [{{../metadataConfiguration.eventDateTimeAttribute}}], 
+   [{{../metadataConfiguration.recordSourceAttribute}}],
    {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
    {{/each}}
@@ -24,7 +21,7 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
    {{/each}}
    ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[landing].[{{sourceDataObjects.0.name}}]
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] 
 ),
 PSA_CTE AS
 (
@@ -32,16 +29,17 @@ SELECT
    A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
    A.[{{../metadataConfiguration.loadDateTimeAttribute}}] AS [{{../metadataConfiguration.loadDateTimeAttribute}}], 
    A.[{{../metadataConfiguration.eventDateTimeAttribute}}] AS [{{../metadataConfiguration.eventDateTimeAttribute}}], 
+   A.[{{../metadataConfiguration.recordSourceAttribute}}] AS [{{../metadataConfiguration.recordSourceAttribute}}], 
    {{#each dataItemMappings}}
    A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{#if relatedDataObjects.0.dataObjectClassification.0}}{{relatedDataObjects.0.name}}{{/if}}] A
+FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] A
 JOIN
    (
    SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
       [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
       MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-   FROM [{{../metadataConfiguration.persistentStagingDatabaseName}}].[{{../metadataConfiguration.persistentStagingSchemaName}}].[{{#if relatedDataObjects.0.dataObjectClassification.0}}{{relatedDataObjects.0.name}}{{/if}}]
+   FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] B
    GROUP BY {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
       [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
    ) B ON {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
@@ -77,9 +75,14 @@ SELECT
      THEN PSA_CTE.[{{../metadataConfiguration.eventDateTimeAttribute}}]
      ELSE STG_CTE.[{{../metadataConfiguration.eventDateTimeAttribute}}]
    END AS [{{../metadataConfiguration.eventDateTimeAttribute}}], 
+   CASE 
+     WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL
+     THEN PSA_CTE.[{{../metadataConfiguration.recordSourceAttribute}}]
+     ELSE STG_CTE.[{{../metadataConfiguration.recordSourceAttribute}}]
+   END AS [{{../metadataConfiguration.recordSourceAttribute}}], 
    {{#each dataItemMappings}}
    CASE 
-     WHEN STG_CTE.{{#each ../businessKey}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
+     WHEN STG_CTE.{{#each ../businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
      THEN PSA_CTE.[{{sourceDataItems.0.name}}]
      ELSE STG_CTE.[{{sourceDataItems.0.name}}] 
    END AS [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
@@ -97,11 +100,12 @@ WHERE
    END
 ) != 'No Change'
 )
-INSERT INTO [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 (
    [{{../metadataConfiguration.etlProcessAttribute}}], 
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}],
    [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
@@ -113,6 +117,7 @@ SELECT
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}], 
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}],
    [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],

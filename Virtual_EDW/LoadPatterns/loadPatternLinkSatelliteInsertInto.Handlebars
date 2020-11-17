@@ -1,7 +1,7 @@
 {{#each dataObjectMappings}}{{#if @first}}
 --
 -- Link Satellite Insert Into statement for {{targetDataObject.name}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
 USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
 GO
