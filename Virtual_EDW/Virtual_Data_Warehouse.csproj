@@ -463,6 +463,8 @@
     <None Include="Examples\STG_PROFILER_PLAN.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="LoadPatterns\loadPatternSatelliteReferentialIntegrity.Handlebars" />
+    <None Include="LoadPatterns\loadPatternStagingTestData.Handlebars" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
