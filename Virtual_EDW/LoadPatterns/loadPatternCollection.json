@@ -1,5 +1,12 @@
 [
   {
+    "loadPatternName": "Dimension / PIT 001 Select Pattern",
+    "loadPatternType": "Point-in-Time / Dimension",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
+    "loadPatternFilePath": "loadPatternDimSelect.handlebars",
+    "loadPatternNotes": "Taken from earlier VDW versions, demonstrating one possible DIM / PIT template."
+  },
+  {
     "loadPatternName": "Data Vault Hub 001 View Pattern",
     "loadPatternType": "CoreBusinessConcept",
     "loadPatternConnectionKey": "PsaConnectionInternalId",

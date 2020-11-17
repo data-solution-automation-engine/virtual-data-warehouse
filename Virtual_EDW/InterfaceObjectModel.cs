@@ -38,6 +38,7 @@ namespace Virtual_Data_Warehouse
         public string changeDataCaptureAttribute { get; set; }
         public string recordSourceAttribute { get; set; }
         public string loadDateTimeAttribute { get; set; }
+        public string expiryDateTimeAttribute { get; set; }
         public string eventDateTimeAttribute { get; set; }
         public string recordChecksumAttribute { get; set; }
         public string etlProcessAttribute { get; set; }

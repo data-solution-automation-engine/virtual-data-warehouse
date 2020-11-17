@@ -367,6 +367,9 @@
     <Content Include="LoadPatterns\loadPatternStagingView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Examples\DIM_CUSTOMER.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Examples\HUB_CUSTOMER.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

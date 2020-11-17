@@ -1,0 +1,88 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "DIM_CUSTOMER",
+    "generationDateTime": "2020-11-17T14:18:42.9293307+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "DIM_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "classification": "Point-in-Time / Dimension"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "HUB_CUSTOMER",
+          "dataObjectClassifications": [
+            {
+              "classification": "CoreBusinessConcept"
+            }
+          ]
+        },
+        {
+          "name": "SAT_CUSTOMER",
+          "dataObjectClassifications": [
+            {
+              "classification": "Context"
+            }
+          ]
+        },
+        {
+          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
+          "dataObjectClassifications": [
+            {
+              "classification": "Context"
+            }
+          ]
+        }
+      ],
+      "targetDataObject": {
+        "name": "DIM_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "PSA",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "150_Persistent_Staging_Area",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_HSH"
+        }
+      ],
+      "enabled": true
+    }
+  ]
+}

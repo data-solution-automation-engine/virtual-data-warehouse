@@ -318,7 +318,10 @@ namespace Virtual_Data_Warehouse
             }
 
             // Initial documentation as per the definition notes
-            _localRichTextBox.AppendText(notes);
+            if (notes != null)
+            {
+                _localRichTextBox.AppendText(notes);
+            }
 
             // Prevention of double hitting of some event handlers
             StartUpIndicator = false;
