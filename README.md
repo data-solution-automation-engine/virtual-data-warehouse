@@ -1,4 +1,4 @@
-# Virtual-Data-Warehouse
+# Virtual Data Warehouse
 
 The Virtual Data Warehouse (VDW) and the associated metadata management software TEAM are free tools to quickly prototype your Data Warehouse model (output), validate your metadata and generally get insight in the your Data Warehouse patterns.
 
