@@ -10,6 +10,9 @@ SELECT
   COALESCE([{{name}}.{{../../businessKeys.0.surrogateKey}}],0x00000000000000000000000000000000) AS [{{name}}.{{../../businessKeys.0.surrogateKey}}],
 {{else}}
   COALESCE([{{name}}.{{../../businessKeys.0.surrogateKey}}],0x00000000000000000000000000000000) AS [{{name}}.{{../../businessKeys.0.surrogateKey}}],
+{{#each dataItems}} 
+  [{{../name}}.{{name}}],
+{{/each}}
   COALESCE([{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}}],'1900-01-01') AS [{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}}]{{#unless @last}},{{/unless}}
 {{/stringcompare}}
 {{/each}}
@@ -27,6 +30,9 @@ FROM
             ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{name}}.{{../../businessKeys.0.surrogateKey}}])),'NA')+'|'+
 {{else}}
             ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{name}}.{{../../businessKeys.0.surrogateKey}}])),'NA')+'|'+
+{{#each dataItems}} 
+            ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{../name}}.{{name}}])),'NA')+'|'+
+{{/each}}
             ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}}])),'NA')+'|'{{#unless @last}}+{{/unless}}
 {{/stringcompare}}
 {{/each}}
@@ -38,6 +44,9 @@ FROM
 {{else}}
          {{name}}.{{../../businessKeys.0.surrogateKey}} AS [{{name}}.{{../../businessKeys.0.surrogateKey}}],
          {{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}} AS [{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}}],
+{{#each dataItems}} 
+         {{../name}}.{{name}} AS [{{../name}}.{{name}}],
+{{/each}}
 {{/stringcompare}}
 {{/each}}
          PIT_EFFECTIVE_DATETIME

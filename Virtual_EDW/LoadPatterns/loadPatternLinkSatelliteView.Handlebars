@@ -116,7 +116,7 @@ FROM
           'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}} {{#each businessKeyComponentMapping}}
           CAST ({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}],{{/each}}{{/each}}        
           {{#each dataItemMappings}}
-          NULL AS [{{sourceDataItems.0.name}}],
+          {{stringcompare targetDataItem.dataItemClassification.0.classification 'MultiActive'}}[{{sourceDataItems.0.name}}]{{else}}NULL{{/stringcompare}} AS [{{sourceDataItems.0.name}}],
           {{/each}}
           0x00000000000000000000000000000000 AS COMBINED_VALUE
         FROM {{sourceDataObjects.0.name}}

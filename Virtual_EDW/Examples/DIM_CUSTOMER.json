@@ -36,6 +36,17 @@
             {
               "classification": "Context"
             }
+          ],
+          "dataItems": [
+            {
+              "name": "DATE_OF_BIRTH"
+            },
+            {
+              "name": "GIVEN_NAME"
+            },
+            {
+              "name": "SUBURB"
+            }
           ]
         },
         {
@@ -43,6 +54,11 @@
           "dataObjectClassifications": [
             {
               "classification": "Context"
+            }
+          ],
+          "dataItems": [
+            {
+              "name": "CONTACT_NUMBER"
             }
           ]
         }
@@ -65,6 +81,48 @@
           ]
         }
       },
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "DATE_OF_BIRTH"
+            }
+          ],
+          "targetDataItem": {
+            "name": "DATE_OF_BIRTH"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "GIVEN_NAME"
+            }
+          ],
+          "targetDataItem": {
+            "name": "GIVEN_NAME"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "SUBURB"
+            }
+          ],
+          "targetDataItem": {
+            "name": "SUBURB"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "CONTACT_NUMBER"
+            }
+          ],
+          "targetDataItem": {
+            "name": "CONTACT_NUMBER"
+          }
+        }
+      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [

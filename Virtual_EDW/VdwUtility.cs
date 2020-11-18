@@ -202,17 +202,18 @@ namespace Virtual_Data_Warehouse
                 {
                     var createStatement = new StringBuilder();
 
-                    createStatement.AppendLine("-- Creating the schema");
-                    createStatement.AppendLine("IF NOT EXISTS (");
-                    createStatement.AppendLine("SELECT SCHEMA_NAME");
-                    createStatement.AppendLine("FROM INFORMATION_SCHEMA.SCHEMATA");
-                    createStatement.AppendLine("WHERE SCHEMA_NAME = '" + FormBase.VdwConfigurationSettings.VdwSchema +
-                                               "')");
-                    createStatement.AppendLine("");
-                    createStatement.AppendLine("BEGIN");
-                    createStatement.AppendLine(" EXEC sp_executesql N'CREATE SCHEMA [" +
-                                               FormBase.VdwConfigurationSettings.VdwSchema + "]'");
-                    createStatement.AppendLine("END");
+                    //createStatement.AppendLine("-- Creating the schema");
+                    //createStatement.AppendLine("IF NOT EXISTS (");
+                    //createStatement.AppendLine("SELECT SCHEMA_NAME");
+                    //createStatement.AppendLine("FROM INFORMATION_SCHEMA.SCHEMATA");
+                    //createStatement.AppendLine("WHERE SCHEMA_NAME = '" + FormBase.VdwConfigurationSettings.VdwSchema + "')");
+                    //createStatement.AppendLine("");
+                    //createStatement.AppendLine("BEGIN");
+                    //createStatement.AppendLine(" EXEC sp_executesql N'CREATE SCHEMA " + FormBase.VdwConfigurationSettings.VdwSchema + "'");
+                    //createStatement.AppendLine("END");
+
+                    createStatement.AppendLine("IF SCHEMA_ID('" + FormBase.VdwConfigurationSettings.VdwSchema + "') IS NULL EXEC('CREATE SCHEMA " + FormBase.VdwConfigurationSettings.VdwSchema + "')");
+                    
 
                     var commandVersion = new SqlCommand(createStatement.ToString(), connection);
 

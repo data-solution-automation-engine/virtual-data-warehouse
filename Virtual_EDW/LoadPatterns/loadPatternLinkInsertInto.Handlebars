@@ -3,10 +3,8 @@
 -- Link Insert Into statement for {{targetDataObject.name}}
 -- Generated at {{now}}
 --
-USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
-GO
 
-INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+INSERT INTO [{{targetDataObject.name}}]
 (  {{#each businessKeys}}
    [{{surrogateKey}}],{{/each}}
    {{#each dataItemMappings}}
@@ -22,9 +20,8 @@ SELECT {{#each businessKeys}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
    link_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] link_view
-LEFT OUTER JOIN
-   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] link_table
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] link_view
+LEFT OUTER JOIN [{{targetDataObject.name}}] link_table
    ON link_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = link_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
 WHERE link_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}{{/each}}

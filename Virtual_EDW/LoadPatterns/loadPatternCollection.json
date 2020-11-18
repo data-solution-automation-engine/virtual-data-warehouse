@@ -149,7 +149,7 @@
   {
     "loadPatternName": "Satellite 800 Referential Integriry",
     "loadPatternType": "Context",
-    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternSatelliteReferentialIntegrity.handlebars",
     "loadPatternNotes": ""
   },
