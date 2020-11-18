@@ -442,36 +442,9 @@ namespace Virtual_Data_Warehouse
             Application.Exit();
         }
 
-
-
-
-
-        private void CloseTestRiForm(object sender, FormClosedEventArgs e)
-        {
-            _myTestRiForm = null;
-        }
-
-        private void CloseTestDataForm(object sender, FormClosedEventArgs e)
-        {
-            _myTestDataForm = null;
-        }
-
         private void CloseAboutForm(object sender, FormClosedEventArgs e)
         {
             _myAboutForm = null;
-        }
-
-        private void ClosePitForm(object sender, FormClosedEventArgs e)
-        {
-            _myPitForm = null;
-        }
-
-        private void pointInTimeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            var t = new Thread(ThreadProcPit);
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
         }
 
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -479,127 +452,7 @@ namespace Virtual_Data_Warehouse
             Process.Start(ExtensionMethod.GetDefaultBrowserPath(),
                 "http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
         }
-
-   
-
-        // Threads starting for other (sub) forms
-        private FormTestRi _myTestRiForm;
-
-        public void ThreadProcTestRi()
-        {
-            if (_myTestRiForm == null)
-            {
-                _myTestRiForm = new FormTestRi(this);
-                _myTestRiForm.Show();
-
-                Application.Run();
-            }
-
-            else
-            {
-                if (_myTestRiForm.InvokeRequired)
-                {
-                    // Thread Error
-                    _myTestRiForm.Invoke((MethodInvoker) delegate { _myTestRiForm.Close(); });
-                    _myTestRiForm.FormClosed += CloseTestRiForm;
-
-                    _myTestRiForm = new FormTestRi(this);
-                    _myTestRiForm.Show();
-                    Application.Run();
-                }
-                else
-                {
-                    // No invoke required - same thread
-                    _myTestRiForm.FormClosed += CloseTestRiForm;
-
-                    _myTestRiForm = new FormTestRi(this);
-                    _myTestRiForm.Show();
-                    Application.Run();
-                }
-            }
-        }
-
-        private FormTestData _myTestDataForm;
-
-        public void ThreadProcTestData()
-        {
-            if (_myTestDataForm == null)
-            {
-                _myTestDataForm = new FormTestData(this);
-                _myTestDataForm.Show();
-
-                Application.Run();
-            }
-
-            else
-            {
-                if (_myTestDataForm.InvokeRequired)
-                {
-                    // Thread Error
-                    _myTestDataForm.Invoke((MethodInvoker) delegate { _myTestDataForm.Close(); });
-                    _myTestDataForm.FormClosed += CloseTestDataForm;
-
-                    _myTestDataForm = new FormTestData(this);
-                    _myTestDataForm.Show();
-                    Application.Run();
-                }
-                else
-                {
-                    // No invoke required - same thread
-                    _myTestDataForm.FormClosed += CloseTestDataForm;
-
-                    _myTestDataForm = new FormTestData(this);
-                    _myTestDataForm.Show();
-                    Application.Run();
-                }
-
-            }
-        }
-
-
-
-
-        private FormPit _myPitForm;
-
-        public void ThreadProcPit()
-        {
-            if (_myPitForm == null)
-            {
-                _myPitForm = new FormPit(this);
-                _myPitForm.Show();
-
-                Application.Run();
-            }
-
-            else
-            {
-                if (_myPitForm.InvokeRequired)
-                {
-                    // Thread Error
-                    _myPitForm.Invoke((MethodInvoker) delegate { _myPitForm.Close(); });
-                    _myPitForm.FormClosed += ClosePitForm;
-
-                    _myPitForm = new FormPit(this);
-                    _myPitForm.Show();
-                    Application.Run();
-                }
-                else
-                {
-                    // No invoke required - same thread
-                    _myPitForm.FormClosed += ClosePitForm;
-
-                    _myPitForm = new FormPit(this);
-                    _myPitForm.Show();
-                    Application.Run();
-                }
-            }
-        }
-
-
-
-
-
-
+        
         private FormAbout _myAboutForm;
 
         public void ThreadProcAbout()
@@ -637,22 +490,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-
-        private void generateTestDataToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var t = new Thread(ThreadProcTestData);
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
-        }
-
-        private void generateRIValidationToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var t = new Thread(ThreadProcTestRi);
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
-        }
-
-
         #region Multi-threading delegates for text boxes
 
         /// <summary>
@@ -675,12 +512,7 @@ namespace Virtual_Data_Warehouse
         }
 
         #endregion
-
-
-
-
-
-
+        
         #region Background worker
 
         // This event handler deals with the results of the background operation.

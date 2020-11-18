@@ -238,29 +238,11 @@
     <Compile Include="Form_Alert.Designer.cs">
       <DependentUpon>Form_Alert.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form_PIT.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_PIT.Designer.cs">
-      <DependentUpon>Form_PIT.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form_Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form_Main.Designer.cs">
       <DependentUpon>Form_Main.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form_Test_Data.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_Test_Data.Designer.cs">
-      <DependentUpon>Form_Test_Data.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form_Test_RI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_Test_RI.Designer.cs">
-      <DependentUpon>Form_Test_RI.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -273,17 +255,8 @@
     <EmbeddedResource Include="Form_Base.resx">
       <DependentUpon>Form_Base.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form_PIT.resx">
-      <DependentUpon>Form_PIT.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Form_Main.resx">
       <DependentUpon>Form_Main.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_Test_Data.resx">
-      <DependentUpon>Form_Test_Data.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_Test_RI.resx">
-      <DependentUpon>Form_Test_RI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

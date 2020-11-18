@@ -30,10 +30,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,11 +50,6 @@
             this.saveConfigurationFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dimensionalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pointInTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateTestDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateRIValidationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.displayEventLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,8 +123,6 @@
             // 
             this.menuStripMainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.dimensionalToolStripMenuItem,
-            this.testingToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStripMainMenu.Location = new System.Drawing.Point(0, 0);
             this.menuStripMainMenu.Name = "menuStripMainMenu";
@@ -259,47 +252,6 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // dimensionalToolStripMenuItem
-            // 
-            this.dimensionalToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pointInTimeToolStripMenuItem});
-            this.dimensionalToolStripMenuItem.Name = "dimensionalToolStripMenuItem";
-            this.dimensionalToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.dimensionalToolStripMenuItem.Text = "Delivery";
-            // 
-            // pointInTimeToolStripMenuItem
-            // 
-            this.pointInTimeToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.Time;
-            this.pointInTimeToolStripMenuItem.Name = "pointInTimeToolStripMenuItem";
-            this.pointInTimeToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-            this.pointInTimeToolStripMenuItem.Text = "Point In Time";
-            this.pointInTimeToolStripMenuItem.Click += new System.EventHandler(this.pointInTimeToolStripMenuItem_Click);
-            // 
-            // testingToolStripMenuItem
-            // 
-            this.testingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.generateTestDataToolStripMenuItem,
-            this.generateRIValidationToolStripMenuItem});
-            this.testingToolStripMenuItem.Name = "testingToolStripMenuItem";
-            this.testingToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
-            this.testingToolStripMenuItem.Text = "Testing";
-            // 
-            // generateTestDataToolStripMenuItem
-            // 
-            this.generateTestDataToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateTestDataToolStripMenuItem.Image")));
-            this.generateTestDataToolStripMenuItem.Name = "generateTestDataToolStripMenuItem";
-            this.generateTestDataToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
-            this.generateTestDataToolStripMenuItem.Text = "Generate Test Data";
-            this.generateTestDataToolStripMenuItem.Click += new System.EventHandler(this.generateTestDataToolStripMenuItem_Click);
-            // 
-            // generateRIValidationToolStripMenuItem
-            // 
-            this.generateRIValidationToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("generateRIValidationToolStripMenuItem.Image")));
-            this.generateRIValidationToolStripMenuItem.Name = "generateRIValidationToolStripMenuItem";
-            this.generateRIValidationToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
-            this.generateRIValidationToolStripMenuItem.Text = "Generate Referential Integrity Validation";
-            this.generateRIValidationToolStripMenuItem.Click += new System.EventHandler(this.generateRIValidationToolStripMenuItem_Click);
-            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -313,7 +265,7 @@
             // 
             this.helpToolStripMenuItem1.Image = global::Virtual_Data_Warehouse.Properties.Resources.HelpIconSmall;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -321,7 +273,7 @@
             // 
             this.displayEventLogToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.log_file;
             this.displayEventLogToolStripMenuItem.Name = "displayEventLogToolStripMenuItem";
-            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.displayEventLogToolStripMenuItem.Text = "Display Event Log";
             this.displayEventLogToolStripMenuItem.Click += new System.EventHandler(this.displayEventLogToolStripMenuItem_Click);
             // 
@@ -885,14 +837,9 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.CheckBox checkBoxGenerateInDatabase;
         private System.Windows.Forms.GroupBox SQLGenerationGroupBox;
-        private System.Windows.Forms.ToolStripMenuItem dimensionalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.ToolStripMenuItem testingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem generateTestDataToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem generateRIValidationToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pointInTimeToolStripMenuItem;
         public System.ComponentModel.BackgroundWorker backgroundWorkerActivateMetadata;
         private System.Windows.Forms.ToolStripMenuItem saveConfigurationFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
