@@ -1,0 +1,211 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "STG_PROFILER_CUST_MEMBERSHIP",
+    "generationDateTime": "2020-11-17T14:18:41.84833+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "STG_PROFILER_CUST_MEMBERSHIP",
+      "mappingClassifications": [
+        {
+          "id": 1,
+          "classification": "StagingArea",
+          "notes": "The mappings from source to the landing (staging) area."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "CUST_MEMBERSHIP",
+          "dataObjectConnection": {
+            "dataConnectionString": "Source",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "000_Source",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "STG_PROFILER_CUST_MEMBERSHIP",
+        "dataObjectConnection": {
+          "dataConnectionString": "Staging",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "100_Staging_Area",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUST_MEMBERSHIP",
+          "dataObjectClassification": [
+            {
+              "classification": "Lookup",
+              "notes": "Lookup table related to the source-to-target mapping"
+            }
+          ]
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Comment",
+              "dataType": "varchar",
+              "characterLength": 50,
+              "ordinalPosition": 6
+            }
+          ],
+          "targetDataItem": {
+            "name": "Comment",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 13
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
+            }
+          ],
+          "targetDataItem": {
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 8
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "End_Date",
+              "dataType": "datetime",
+              "numericScale": 3,
+              "ordinalPosition": 4
+            }
+          ],
+          "targetDataItem": {
+            "name": "End_Date",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 11
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Plan_Code",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 2
+            }
+          ],
+          "targetDataItem": {
+            "name": "Plan_Code",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 9
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Start_Date",
+              "dataType": "datetime",
+              "numericScale": 3,
+              "ordinalPosition": 3
+            }
+          ],
+          "targetDataItem": {
+            "name": "Start_Date",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 10
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Status",
+              "dataType": "varchar",
+              "characterLength": 10,
+              "ordinalPosition": 5
+            }
+          ],
+          "targetDataItem": {
+            "name": "Status",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 12
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 1
+                }
+              ],
+              "targetDataItem": {
+                "name": "CustomerID",
+                "dataType": "int",
+                "ordinalPosition": 8
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "varchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 2
+                }
+              ],
+              "targetDataItem": {
+                "name": "Plan_Code",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 9
+              }
+            }
+          ],
+          "surrogateKey": "Not applicable"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    }
+  ]
+}

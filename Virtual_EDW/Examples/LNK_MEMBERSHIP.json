@@ -1,0 +1,180 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "LNK_MEMBERSHIP",
+    "generationDateTime": "2020-11-17T14:18:42.4503299+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "LNK_MEMBERSHIP",
+      "mappingClassifications": [
+        {
+          "id": 4,
+          "classification": "NaturalBusinessRelationship",
+          "notes": "The Link type entities record the relationships between the Business Entities (Hubs). Similar to Hubs they are subject to potentially being populated from multiple Staging Area tables. The Link views therefore present an integrated view of all relationships across these tables."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUST_MEMBERSHIP",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "LNK_MEMBERSHIP",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_CUSTOMER"
+        },
+        {
+          "name": "HUB_MEMBERSHIP_PLAN"
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 9
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_HSH"
+        },
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_HSH"
+        },
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code"
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        },
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Status"
+                }
+              ],
+              "targetDataItem": {
+                "name": "SALES_CHANNEL"
+              }
+            }
+          ],
+          "surrogateKey": "SALES_CHANNEL",
+          "businessKeyClassification": [
+            {
+              "classification": "DegenerateAttribute",
+              "notes": "Non Core Business Concept attribute, though part of the Relationship Key."
+            }
+          ]
+        }
+      ],
+      "filterCriterion": "16=16",
+      "enabled": true
+    }
+  ]
+}

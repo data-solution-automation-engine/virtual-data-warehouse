@@ -1,28 +1,26 @@
-{{#each dataObjectMappingList}}{{#if @first}}
+{{#each dataObjectMappings}}{{#if @first}}
 --
 -- Hub Insert Into statement for {{targetDataObject.name}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
-USE [{{../metadataConfiguration.persistentStagingDatabaseName}}]
-GO
 
-INSERT INTO [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+INSERT INTO [{{targetDataObject.name}}]
 (
-   [{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
+   [{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
    [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.recordSourceAttribute}}]
 )
 SELECT
-   hub_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKey}}{{#if @first}}{{#each businessKeyComponentMapping}}
+   hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
    hub_view.[{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
    hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] hub_view
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
 LEFT OUTER JOIN
-   [{{../metadataConfiguration.integrationDatabaseName}}].[dbo].[{{targetDataObject.name}}] hub_table
-   ON hub_view.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
-WHERE hub_table.[{{#each businessKey}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
+   [{{targetDataObject.name}}] hub_table
+   ON hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+WHERE hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}{{/each}}

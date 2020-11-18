@@ -1,16 +1,13 @@
-{{#each dataObjectMappingList}}
+{{#each dataObjectMappings}}
 --
 -- Staging Area table creation statement for {{targetDataObject.name}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
-
-USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
-GO
 
 IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
 DROP TABLE [{{targetDataObject.name}}]
 
-CREATE TABLE [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{targetDataObject.name}}]
+CREATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 (
    [{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL, 
    [{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL DEFAULT (SYSDATETIME()),
@@ -19,8 +16,8 @@ CREATE TABLE [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{tar
    [{{../metadataConfiguration.sourceRowIdAttribute}}] int IDENTITY(1,1) NOT NULL,
    [{{../metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
    [{{../metadataConfiguration.recordChecksumAttribute}}] binary(16) NOT NULL,
-   {{#each dataItemMapping}}
-   [{{sourceDataItem.name}}] [varchar](100){{#unless @last}},{{/unless}}
+   {{#each dataItemMappings}}
+   [{{sourceDataItems.0.name}}] [varchar](100){{#unless @last}},{{/unless}}
    {{/each}}
 )
 {{/each}}

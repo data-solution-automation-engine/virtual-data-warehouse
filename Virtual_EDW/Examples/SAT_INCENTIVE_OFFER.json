@@ -1,0 +1,106 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "SAT_INCENTIVE_OFFER",
+    "generationDateTime": "2020-11-17T14:18:42.907331+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "SAT_INCENTIVE_OFFER",
+      "mappingClassifications": [
+        {
+          "id": 5,
+          "classification": "Context",
+          "notes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_OFFER",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "SAT_INCENTIVE_OFFER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_INCENTIVE_OFFER"
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Offer_Long_Description",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            }
+          ],
+          "targetDataItem": {
+            "name": "OFFER_DESCRIPTION"
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "OfferID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "OFFER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "INCENTIVE_OFFER_HSH"
+        }
+      ],
+      "filterCriterion": "4=4",
+      "enabled": true
+    }
+  ]
+}

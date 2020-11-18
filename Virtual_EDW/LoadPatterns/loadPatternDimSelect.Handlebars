@@ -1,0 +1,88 @@
+{{#each dataObjectMappings}}
+--
+-- Example PIT / Dimension select statement for {{targetDataObject.name}}
+-- Generated at {{now}}
+--
+
+SELECT
+  [PIT_EFFECTIVE_DATETIME],{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}
+  LEAD(PIT_EFFECTIVE_DATETIME,1,'9999-12-31') OVER (PARTITION BY [{{name}}.{{../../businessKeys.0.surrogateKey}}] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PIT_EXPIRY_DATETIME,
+  COALESCE([{{name}}.{{../../businessKeys.0.surrogateKey}}],0x00000000000000000000000000000000) AS [{{name}}.{{../../businessKeys.0.surrogateKey}}],
+{{else}}
+  COALESCE([{{name}}.{{../../businessKeys.0.surrogateKey}}],0x00000000000000000000000000000000) AS [{{name}}.{{../../businessKeys.0.surrogateKey}}],
+{{#each dataItems}} 
+  [{{../name}}.{{name}}],
+{{/each}}
+  COALESCE([{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}}],'1900-01-01') AS [{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}}]{{#unless @last}},{{/unless}}
+{{/stringcompare}}
+{{/each}}
+FROM
+(
+  SELECT
+     *,{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}
+     LAG(ATTRIBUTE_CHECKSUM, 1, 0x00000000000000000000000000000000) OVER(PARTITION BY [{{name}}.{{../../businessKeys.0.surrogateKey}}] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PREVIOUS_ATTRIBUTE_CHECKSUM
+{{/stringcompare}}
+{{/each}}
+  FROM
+  (
+     SELECT 
+            *,{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}
+            ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{name}}.{{../../businessKeys.0.surrogateKey}}])),'NA')+'|'+
+{{else}}
+            ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{name}}.{{../../businessKeys.0.surrogateKey}}])),'NA')+'|'+
+{{#each dataItems}} 
+            ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{../name}}.{{name}}])),'NA')+'|'+
+{{/each}}
+            ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}}])),'NA')+'|'{{#unless @last}}+{{/unless}}
+{{/stringcompare}}
+{{/each}}
+         AS ATTRIBUTE_CHECKSUM
+    FROM
+    (
+      SELECT{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}
+         {{name}}.{{../../businessKeys.0.surrogateKey}} AS [{{name}}.{{../../businessKeys.0.surrogateKey}}],
+{{else}}
+         {{name}}.{{../../businessKeys.0.surrogateKey}} AS [{{name}}.{{../../businessKeys.0.surrogateKey}}],
+         {{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}} AS [{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}}],
+{{#each dataItems}} 
+         {{../name}}.{{name}} AS [{{../name}}.{{name}}],
+{{/each}}
+{{/stringcompare}}
+{{/each}}
+         PIT_EFFECTIVE_DATETIME
+      FROM
+      (
+         SELECT
+            {{businessKeys.0.surrogateKey}},
+            PIT_EFFECTIVE_DATETIME,
+            LEAD(PIT_EFFECTIVE_DATETIME,1,'9999-12-31') OVER (PARTITION BY {{businessKeys.0.surrogateKey}} ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PIT_EXPIRY_DATETIME
+         FROM
+         (
+{{#each sourceDataObjects}}
+{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}
+            SELECT {{../../businessKeys.0.surrogateKey}}, CONVERT(DATETIME2(7), '1900-01-01') AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+            UNION
+            SELECT {{../../businessKeys.0.surrogateKey}}, {{../../../metadataConfiguration.loadDateTimeAttribute}} AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+{{else}}
+            SELECT {{../../businessKeys.0.surrogateKey}}, {{../../../metadataConfiguration.loadDateTimeAttribute}} AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+{{/stringcompare}}
+{{#unless @last}}            UNION{{/unless}}
+{{/each}}
+         ) PIT
+      ) TimeRanges
+{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}
+      INNER JOIN {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+         ON TimeRanges.{{../../businessKeys.0.surrogateKey}} = {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.[{{../../businessKeys.0.surrogateKey}}]
+{{else}}
+      LEFT OUTER JOIN {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+         ON TimeRanges.{{../../businessKeys.0.surrogateKey}} = {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.[{{../../businessKeys.0.surrogateKey}}]
+       AND {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}} <= TimeRanges.PIT_EFFECTIVE_DATETIME
+       AND {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.{{../../../metadataConfiguration.expiryDateTimeAttribute}} >= TimeRanges.PIT_EXPIRY_DATETIME
+{{/stringcompare}}
+{{/each}}
+{{/each}}
+    ) SUB_TIMELINES
+  ) SUB_CHECKSUM
+) SUB_FINAL
+WHERE ATTRIBUTE_CHECKSUM <> PREVIOUS_ATTRIBUTE_CHECKSUM
+{{/each}}

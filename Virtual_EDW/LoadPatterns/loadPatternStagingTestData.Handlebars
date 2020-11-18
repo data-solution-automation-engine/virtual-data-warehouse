@@ -1,0 +1,30 @@
+{{#each dataObjectMappings}}
+--
+-- Test data generation for: {{targetDataObject.name}}
+-- Generated at {{now}}
+--
+{{replicate 2}}
+INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+(
+   [{{../../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../../metadataConfiguration.recordSourceAttribute}}],
+   [{{../../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each dataItemMappings}}
+   [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}} -- Data Type is {{sourceDataItems.0.dataType}}
+   {{/each}}
+)
+VALUES
+(
+  -1,
+  GETDATE(),
+  'Test Cases',
+  'Insert',
+  0x00000000000000000000000000000000,
+  {{#each dataItemMappings}}
+  {{stringcompare sourceDataItems.0.dataType "int"}}{{randomnumber 100000}}{{/stringcompare}}{{stringcompare sourceDataItems.0.dataType "varchar"}}'{{randomstring 10}}'{{/stringcompare}}{{stringcompare sourceDataItems.0.dataType "date"}}'{{randomdate 2000}}'{{/stringcompare}}{{#unless @last}},{{/unless}}
+{{/each}}
+)
+{{/replicate}}
+{{/each}}

@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
-using Virtual_Data_Warehouse;
+using TEAM;
 
 namespace Virtual_Data_Warehouse
 {
@@ -26,11 +26,11 @@ namespace Virtual_Data_Warehouse
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var connHstg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
+            var conn = new SqlConnection {ConnectionString = TeamConfigurationSettings.MetadataConnection.CreateSqlServerConnectionString(false)};
 
             try
             {
-                connHstg.Open();
+                conn.Open();
 
                 var sqlForWorkCountDown = new StringBuilder();
 
@@ -62,7 +62,7 @@ namespace Virtual_Data_Warehouse
                 sqlForWorkCountDown.AppendLine(") as sub");
 
                 //  MessageBox.Show(sqlForWorkCountdDown.ToString());
-                var workCountDownDatatable = Utility.GetDataTable(ref connHstg, sqlForWorkCountDown.ToString());
+                var workCountDownDatatable = Utility.GetDataTable(ref conn, sqlForWorkCountDown.ToString());
 
                 //var workCountDownDatatable = _myParent.Invoke((MethodInvoker)delegate() { _myParent.GetDataTable(ref connHstg, sqlForWorkCountdDown.ToString()); });
 

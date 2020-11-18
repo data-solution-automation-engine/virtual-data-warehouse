@@ -1,0 +1,214 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "SAT_CUSTOMER",
+    "generationDateTime": "2020-11-17T14:18:42.7983298+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "SAT_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "id": 5,
+          "classification": "Context",
+          "notes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "SAT_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_CUSTOMER"
+        },
+        {
+          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS"
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "COUNTRY",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 14
+            }
+          ],
+          "targetDataItem": {
+            "name": "COUNTRY",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 12
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "DOB",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 16
+            }
+          ],
+          "targetDataItem": {
+            "name": "DATE_OF_BIRTH"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Gender",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 15
+            }
+          ],
+          "targetDataItem": {
+            "name": "Gender",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 13
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Given",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            }
+          ],
+          "targetDataItem": {
+            "name": "GIVEN_NAME"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "POSTCODE",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 13
+            }
+          ],
+          "targetDataItem": {
+            "name": "POSTCODE",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 11
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Referee_Offer_Made",
+              "dataType": "int",
+              "ordinalPosition": 18
+            }
+          ],
+          "targetDataItem": {
+            "name": "REFERRAL_OFFER_MADE_INDICATOR"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Suburb",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 11
+            }
+          ],
+          "targetDataItem": {
+            "name": "Suburb",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 10
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "SURNAME",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 10
+            }
+          ],
+          "targetDataItem": {
+            "name": "SURNAME",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 9
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_HSH"
+        }
+      ],
+      "filterCriterion": "2=2",
+      "enabled": true
+    }
+  ]
+}

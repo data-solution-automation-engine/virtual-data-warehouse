@@ -1,0 +1,118 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "SAT_MEMBERSHIP_PLAN_DETAIL",
+    "generationDateTime": "2020-11-17T14:18:43.0663294+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "SAT_MEMBERSHIP_PLAN_DETAIL",
+      "mappingClassifications": [
+        {
+          "id": 5,
+          "classification": "Context",
+          "notes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_PLAN",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "SAT_MEMBERSHIP_PLAN_DETAIL",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_MEMBERSHIP_PLAN"
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "Plan_Desc",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            }
+          ],
+          "targetDataItem": {
+            "name": "PLAN_DESCRIPTION"
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+        }
+      ],
+      "filterCriterion": "11=11",
+      "enabled": true
+    }
+  ]
+}

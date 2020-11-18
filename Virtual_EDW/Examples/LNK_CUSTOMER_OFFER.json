@@ -1,0 +1,136 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "LNK_CUSTOMER_OFFER",
+    "generationDateTime": "2020-11-17T14:18:42.6343305+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "LNK_CUSTOMER_OFFER",
+      "mappingClassifications": [
+        {
+          "id": 4,
+          "classification": "NaturalBusinessRelationship",
+          "notes": "The Link type entities record the relationships between the Business Entities (Hubs). Similar to Hubs they are subject to potentially being populated from multiple Staging Area tables. The Link views therefore present an integrated view of all relationships across these tables."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_OFFER",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "LNK_CUSTOMER_OFFER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_CUSTOMER"
+        },
+        {
+          "name": "HUB_INCENTIVE_OFFER"
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "OfferID",
+                  "dataType": "int",
+                  "ordinalPosition": 9
+                }
+              ],
+              "targetDataItem": {
+                "name": "OFFER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_OFFER_HSH"
+        },
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_HSH"
+        },
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "OfferID"
+                }
+              ],
+              "targetDataItem": {
+                "name": "OFFER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "INCENTIVE_OFFER_HSH"
+        }
+      ],
+      "filterCriterion": "7=7",
+      "enabled": true
+    }
+  ]
+}

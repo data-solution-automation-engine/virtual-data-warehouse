@@ -1,21 +1,17 @@
-{{#each dataObjectMappingList}}
+{{#each dataObjectMappings}}
 --
 -- Persistent Staging Area View definition for {{targetDataObject.name}}
--- Generated at {{../generationSpecificMetadata.generationDateTime}}
+-- Generated at {{now}}
 --
 
-GO
-USE [{{../metadataConfiguration.stagingAreaDatabaseName}}]
-GO
-
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
 GO
 
-CREATE VIEW [{{../metadataConfiguration.vedwSchemaName}}].[{{targetDataObject.name}}] AS
+CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
 
 SELECT
-   {{#each dataItemMapping}}
+   {{#each dataItemMappings}}
    STG.[{{targetDataItem.name}}],
    {{/each}}
    STG.[{{../metadataConfiguration.loadDateTimeAttribute}}],
@@ -24,14 +20,13 @@ SELECT
    STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
    STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
    STG.[{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{../metadataConfiguration.stagingAreaDatabaseName}}].[dbo].[{{sourceDataObject.name}}] STG
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] STG
 LEFT OUTER JOIN -- Prevent reprocessing
-  [{{../metadataConfiguration.persistentStagingDatabaseName}}].[dbo].[{{targetDataObject.name}}] HSTG
-  ON
-     {{#each businessKey}}  {{#each businessKeyComponentMapping}}
-     HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItem.name}}] AND{{/each}} {{/each}}
+  [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] HSTG
+  ON{{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+     HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItems.0.name}}] AND{{/each}} {{/each}}
      HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
      HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
-WHERE {{#each businessKey}}  {{#each businessKeyComponentMapping}} {{#if @first}}
+WHERE {{#each businessKeys}}  {{#each businessKeyComponentMapping}} {{#if @first}}
    HSTG.[{{targetDataItem.name}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
 {{/each}}

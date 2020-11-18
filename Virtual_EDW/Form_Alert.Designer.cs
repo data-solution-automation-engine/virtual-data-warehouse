@@ -1,6 +1,6 @@
 ﻿namespace Virtual_Data_Warehouse
 {
-    partial class Form_Alert
+    partial class FormAlert
     {
         /// <summary>
         /// Required designer variable.
@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Alert));
-            this.labelMessage = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAlert));
+            this.labelProgressMessage = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonClose = new System.Windows.Forms.Button();
@@ -37,15 +37,15 @@
             this.buttonShowLog = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // labelMessage
+            // labelProgressMessage
             // 
-            this.labelMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.labelMessage.AutoSize = true;
-            this.labelMessage.Location = new System.Drawing.Point(9, 456);
-            this.labelMessage.Name = "labelMessage";
-            this.labelMessage.Size = new System.Drawing.Size(48, 13);
-            this.labelMessage.TabIndex = 0;
-            this.labelMessage.Text = "Progress";
+            this.labelProgressMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelProgressMessage.AutoSize = true;
+            this.labelProgressMessage.Location = new System.Drawing.Point(9, 456);
+            this.labelProgressMessage.Name = "labelProgressMessage";
+            this.labelProgressMessage.Size = new System.Drawing.Size(48, 13);
+            this.labelProgressMessage.TabIndex = 0;
+            this.labelProgressMessage.Text = "Progress";
             // 
             // progressBar1
             // 
@@ -79,8 +79,8 @@
             // 
             // richTextBoxMetadataLog
             // 
-            this.richTextBoxMetadataLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.richTextBoxMetadataLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBoxMetadataLog.BackColor = System.Drawing.SystemColors.Info;
             this.richTextBoxMetadataLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -103,7 +103,7 @@
             this.buttonShowLog.UseVisualStyleBackColor = true;
             this.buttonShowLog.Click += new System.EventHandler(this.buttonShowLog_Click);
             // 
-            // Form_Alert
+            // FormAlert
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -113,9 +113,9 @@
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.labelMessage);
+            this.Controls.Add(this.labelProgressMessage);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form_Alert";
+            this.Name = "FormAlert";
             this.Text = "Processing Metadata";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -124,7 +124,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label labelMessage;
+        private System.Windows.Forms.Label labelProgressMessage;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonClose;

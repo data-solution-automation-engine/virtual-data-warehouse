@@ -1,0 +1,180 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "LSAT_MEMBERSHIP",
+    "generationDateTime": "2020-11-17T14:18:42.4743304+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "LSAT_MEMBERSHIP",
+      "mappingClassifications": [
+        {
+          "id": 6,
+          "classification": "NaturalBusinessRelationshipContext",
+          "notes": "The Link Satellites describe the changes over time for the relationships (Links). This pattern supports normal (historical) Link Satellites."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUST_MEMBERSHIP",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "LSAT_MEMBERSHIP",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_CUSTOMER"
+        },
+        {
+          "name": "HUB_MEMBERSHIP_PLAN"
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "End_Date",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 11
+            }
+          ],
+          "targetDataItem": {
+            "name": "MEMBERSHIP_END_DATE"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Start_Date",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 10
+            }
+          ],
+          "targetDataItem": {
+            "name": "MEMBERSHIP_START_DATE"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Status",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 12
+            }
+          ],
+          "targetDataItem": {
+            "name": "MEMBERSHIP_STATUS"
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Plan_Code",
+                  "dataType": "nvarchar",
+                  "characterLength": 100,
+                  "ordinalPosition": 9
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "name": "'XYZ'",
+                  "isHardCodedValue": true
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX"
+              }
+            }
+          ],
+          "surrogateKey": "MEMBERSHIP_HSH"
+        },
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Status"
+                }
+              ],
+              "targetDataItem": {
+                "name": "SALES_CHANNEL"
+              }
+            }
+          ],
+          "surrogateKey": "SALES_CHANNEL",
+          "businessKeyClassification": [
+            {
+              "classification": "DegenerateAttribute",
+              "notes": "Non Core Business Concept attribute, though part of the Relationship Key."
+            }
+          ]
+        }
+      ],
+      "filterCriterion": "17=17",
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": "HUB_INCENTIVE_OFFER",
+    "generationDateTime": "2020-11-17T14:18:42.8933303+10:00"
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "HUB_INCENTIVE_OFFER",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_OFFER",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_INCENTIVE_OFFER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "OfferID",
+                  "dataType": "int",
+                  "ordinalPosition": 9
+                }
+              ],
+              "targetDataItem": {
+                "name": "OFFER_ID",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            }
+          ],
+          "surrogateKey": "INCENTIVE_OFFER_HSH"
+        }
+      ],
+      "filterCriterion": "6=6",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_INCENTIVE_OFFER",
+      "mappingClassifications": [
+        {
+          "id": 3,
+          "classification": "CoreBusinessConcept",
+          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_OFFER",
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          }
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_INCENTIVE_OFFER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        }
+      },
+      "relatedDataObjects": [
+        {
+          "name": "SAT_INCENTIVE_OFFER"
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "OfferID",
+                  "dataType": "int",
+                  "ordinalPosition": 8
+                }
+              ],
+              "targetDataItem": {
+                "name": "OFFER_ID",
+                "dataType": "nvarchar",
+                "characterLength": 100,
+                "ordinalPosition": 5
+              }
+            }
+          ],
+          "surrogateKey": "INCENTIVE_OFFER_HSH"
+        }
+      ],
+      "filterCriterion": "3=3",
+      "enabled": true
+    }
+  ]
+}
