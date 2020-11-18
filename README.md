@@ -9,3 +9,7 @@ The key concepts are related to the idea that, if you can generate all your ETL 
 Your Data Warehouse model essentially becomes a ‘schema-on-read’ on your raw data.
 
 More information at present is here: http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/.
+
+# A library of patterns
+
+VDW comes with a library of patterns based on Handlebars as templating engine. With this it is possible to generate a sample Data Warehouse using Data Vault methodology.
