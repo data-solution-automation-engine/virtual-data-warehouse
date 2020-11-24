@@ -75,6 +75,7 @@ namespace Virtual_Data_Warehouse
                 VdwConfigurationSettings.VdwEventLog.Add(localEvent);
             }
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Examples path set for {VdwConfigurationSettings.VdwOutputPath}."));
+
             #endregion
 
             // Create the initial VDW configuration file, if it doesn't exist (first time use or change of directory).
@@ -733,19 +734,26 @@ namespace Virtual_Data_Warehouse
 
         internal class LocalPattern
         {
-            internal int id { get; set; }
             internal string classification { get; set; }
             internal string notes { get; set; }
             internal Dictionary<string,VDW_DataObjectMappingList> itemList { get; set; }
+        }
+
+        internal void InformUser(string text, EventTypes eventType)
+        {
+            VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(eventType, $"{text}"));
+            richTextBoxInformationMain.AppendText(text + "\r\n");
         }
 
         /// <summary>
         /// Load all the metadata into a single list and associate with a pattern, based on the classification of the mapping (i.e. CoreBusinessConcept).
         /// </summary>
         /// <returns></returns>
-        internal List<LocalPattern> Patternlist()
+        internal List<LocalPattern> PatternList()
         {
-            // Deserialise the Json files for further use
+            #region Deserialisation
+
+            // Deserialise the Json files into a local List of Data Object Mappings (mappingList) for further use.
             List<VDW_DataObjectMappingList> mappingList = new List<VDW_DataObjectMappingList>();
 
             if (Directory.Exists(VdwConfigurationSettings.VdwInputPath))
@@ -753,88 +761,182 @@ namespace Virtual_Data_Warehouse
                 string[] fileEntries = Directory.GetFiles(VdwConfigurationSettings.VdwInputPath, "*.json");
 
                 // Hard-coded exclusions
-                string[] excludedfiles = {"interfaceBusinessKeyComponent.json", "interfaceBusinessKeyComponentPart.json", "interfaceDrivingKey.json", "interfaceHubLinkXref.json", "interfacePhysicalModel.json", "interfaceSourceHubXref.json", "interfaceSourceLinkAttributeXref.json" };
-
-                foreach (string fileName in fileEntries)
+                string[] excludedFiles =
                 {
-                    if (!Array.Exists(excludedfiles, x => x == Path.GetFileName(fileName)))
-                    {
-                        try
-                        {
-                            var jsonInput = File.ReadAllText(fileName);
-                            VDW_DataObjectMappingList deserialisedMapping =
-                                JsonConvert.DeserializeObject<VDW_DataObjectMappingList>(jsonInput);
+                    "interfaceBusinessKeyComponent.json", "interfaceBusinessKeyComponentPart.json",
+                    "interfaceDrivingKey.json", "interfaceHubLinkXref.json", "interfacePhysicalModel.json",
+                    "interfaceSourceHubXref.json", "interfaceSourceLinkAttributeXref.json"
+                };
 
-                            mappingList.Add(deserialisedMapping);
-                        }
-                        catch
+                if (fileEntries.Length > 0)
+                {
+                    foreach (string fileName in fileEntries)
+                    {
+                        if (!Array.Exists(excludedFiles, x => x == Path.GetFileName(fileName)))
                         {
-                            richTextBoxInformationMain.AppendText($"The file {fileName} could not be loaded properly.");
+                            try
+                            {
+                                // Validate the file contents against the schema definition.
+                                if (File.Exists(Application.StartupPath + @"\Schema\" + GlobalParameters
+                                                    .JsonSchemaForDataWarehouseAutomationFileName))
+                                {
+                                    var result = DataWarehouseAutomation.JsonHandling.ValidateJsonFileAgainstSchema(
+                                        Application.StartupPath + @"\Schema\" + GlobalParameters
+                                            .JsonSchemaForDataWarehouseAutomationFileName, fileName);
+
+                                    foreach (var error in result.Errors)
+                                    {
+                                        VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
+                                            $"An error was encountered validating the contents {fileName}.{error.Message}. This occurs at line {error.LineNumber}."));
+                                    }
+                                }
+                                else
+                                {
+                                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
+                                        $"An error occurred while validating the file against the Data Warehouse Automation schema. Does the schema file exist?"));
+                                }
+
+                                // Add the deserialised file to the list of mappings.
+                                VDW_DataObjectMappingList deserialisedMapping = new VDW_DataObjectMappingList();
+
+                                var jsonInput = File.ReadAllText(fileName);
+                                deserialisedMapping =
+                                    JsonConvert.DeserializeObject<VDW_DataObjectMappingList>(jsonInput);
+                                deserialisedMapping.metadataFileName = fileName;
+
+                                mappingList.Add(deserialisedMapping);
+                            }
+                            catch
+                            {
+                                InformUser($"The file {fileName} could not be loaded properly.", EventTypes.Error);
+                            }
                         }
+                    }
+                }
+                else
+                {
+                    InformUser($"No files were detected in directory {VdwConfigurationSettings.VdwInputPath}.",
+                        EventTypes.Warning);
+                }
+            }
+            else
+            {
+                InformUser(
+                    $"There were issues accessing the directory {VdwConfigurationSettings.VdwInputPath}. It does not seem to exist.",
+                    EventTypes.Warning);
+            }
+
+            #endregion
+
+            // The intended outcome is to have a list of patterns (LocalPattern class) to return back for further processing
+            // This list of patterns is based on the classifications, each pattern is mapped to a classification and so the classifications are unique.
+            // Each classification is bound to the 'item list' of the pattern, which is the name of the mapping and the list of associated Data Object Mappings.
+            // In a way, it's bringing the classification to a higher level - from the Data Object mapping to the Data Object Mapping List level.
+
+            #region Flattening
+
+            // First step, re-ordering and flattening.
+            // In the Tuple, Item1 is the classification, Item2 is the mapping name and Item 3 is notes.
+            Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>> objectDictionary =
+                new Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>>();
+
+            if (mappingList.Any() == true)
+            {
+                foreach (VDW_DataObjectMappingList dataObjectMappings in mappingList)
+                {
+                    if (dataObjectMappings.dataObjectMappings != null)
+                    {
+                        foreach (DataObjectMapping dataObjectMapping in dataObjectMappings.dataObjectMappings)
+                        {
+                            if (dataObjectMapping.mappingName == null)
+                            {
+                                dataObjectMapping.mappingName = dataObjectMapping.targetDataObject.name;
+                                InformUser(
+                                    $"The Data Object Mapping for target {dataObjectMapping.targetDataObject.name} does not have a mapping name, so the target name is used.",
+                                    EventTypes.Warning);
+                            }
+                            // Check if there are classifications, as these are used to create the tabs.
+                            if (dataObjectMapping.mappingClassifications != null)
+                            {
+                                foreach (Classification classification in dataObjectMapping.mappingClassifications)
+                                {
+                                    if (!objectDictionary.ContainsKey(dataObjectMappings))
+                                    {
+                                        objectDictionary.Add(dataObjectMappings,
+                                            new Tuple<string, string, string>(classification.classification,
+                                                dataObjectMapping.mappingName, classification.notes));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (!objectDictionary.ContainsKey(dataObjectMappings))
+                                {
+                                    objectDictionary.Add(dataObjectMappings,
+                                        new Tuple<string, string, string>("Miscellaneous",
+                                            dataObjectMapping.mappingName, ""));
+                                }
+
+                                InformUser(
+                                    $"The Data Object Mapping {dataObjectMapping.mappingName} does not have a classification, and therefore will be placed under 'Miscellaneous'",
+                                    EventTypes.Warning);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        InformUser(
+                            $"There are no valid Data Object Mappings found in the file {dataObjectMappings.metadataFileName}. Please check the Event Log, and if this file has valid Json contents.",
+                            EventTypes.Warning);
                     }
                 }
             }
             else
             {
-                richTextBoxInformationMain.AppendText("There were issues accessing the directory.");
+                InformUser($"The list of Data Object Mappings is empty.", EventTypes.Warning);
             }
 
-            // Create base list of classification / types to become the tab pages (based on the classification + notes field)
+            #endregion
+
+            // Now use the full validated and re-organised set to create a list of Data Object Mapping lists (list of DataObjectMappings) for each classification.
+            // This will generate the tab pages.
+
+            // Create base list of classification / types to become the tab pages (key: classification, value: notes).
             Dictionary<string, string> classificationDictionary = new Dictionary<string, string>();
 
-            foreach (VDW_DataObjectMappingList dataObjectMappings in mappingList)
+            foreach (var objectRow in objectDictionary)
             {
-                foreach (DataObjectMapping dataObjectMapping in dataObjectMappings.dataObjectMappings)
+                if (!classificationDictionary.ContainsKey(objectRow.Value.Item1))
                 {
-                    foreach (Classification classification in dataObjectMapping.mappingClassifications)
-                    {
-                        if (!classificationDictionary.ContainsKey(classification.classification))
-                        {
-                            classificationDictionary.Add(classification.classification, classification.notes);
-                        }
-                    }
+                    classificationDictionary.Add(objectRow.Value.Item1, objectRow.Value.Item3);
                 }
             }
 
-            // Now use the base list of classifications / tab pages to add the item list (individual mappings) by searching the VDW_DataObjectMappingList
+            // Create the final list
             List<LocalPattern> finalMappingList = new List<LocalPattern>();
 
-            foreach (KeyValuePair<string, string> classification in classificationDictionary)
+            foreach (var classification in classificationDictionary)
             {
-                int localclassification = 0;
-                string localConnectionString = "";
-
                 LocalPattern localPatternMapping = new LocalPattern();
-                Dictionary<string, VDW_DataObjectMappingList> itemList = new Dictionary<string, VDW_DataObjectMappingList>();
+                Dictionary<string, VDW_DataObjectMappingList> itemList =
+                    new Dictionary<string, VDW_DataObjectMappingList>();
 
-                // Iterate through the various levels to find the classification
-                foreach (VDW_DataObjectMappingList dataObjectMappingList in mappingList)
+                foreach (var objectRow in objectDictionary)
                 {
-                    foreach (DataObjectMapping dataObjectMapping in dataObjectMappingList.dataObjectMappings)
+                    if (objectRow.Value.Item1 == classification.Key)
                     {
-                        foreach (Classification dataObjectMappingClassification in dataObjectMapping.mappingClassifications)
+                        if (!itemList.ContainsKey(objectRow.Value.Item2))
                         {
-                            if (dataObjectMappingClassification.classification == classification.Key)
-                            {
-                                localclassification = dataObjectMappingClassification.id;
-                                localConnectionString = dataObjectMapping.targetDataObject.dataObjectConnection.dataConnectionString;
-
-                                if (!itemList.ContainsKey(dataObjectMapping.mappingName))
-                                {
-                                    itemList.Add(dataObjectMapping.mappingName, dataObjectMappingList);
-                                }
-                            }
+                            itemList.Add(objectRow.Value.Item2, objectRow.Key);
                         }
                     }
                 }
 
-                localPatternMapping.id = localclassification;
                 localPatternMapping.classification = classification.Key;
                 localPatternMapping.notes = classification.Value;
                 localPatternMapping.itemList = itemList;
 
                 finalMappingList.Add(localPatternMapping);
-
             }
 
             return finalMappingList;
@@ -860,8 +962,8 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
-            List<LocalPattern> finalMappingList = Patternlist();
-            var sortedMappingList = finalMappingList.OrderBy(x => x.id);
+            List<LocalPattern> finalMappingList = PatternList();
+            var sortedMappingList = finalMappingList.OrderBy(x => x.classification);
 
             // Add the Custom Tab Pages
             foreach (var pattern in sortedMappingList)
@@ -935,7 +1037,7 @@ namespace Virtual_Data_Warehouse
         private void button12_Click(object sender, EventArgs e)
         {
             // Get the total of tab pages to create
-            var patternList = Patternlist();
+            var patternList = PatternList();
 
             // Get the name of the active tab so this can be refreshed
             string tabName = tabControlMain.SelectedTab.Name;
