@@ -21,14 +21,5 @@ namespace Virtual_Data_Warehouse
 
             return result;
         }
-
-        /// <summary>
-        ///   Clear out (remove) an existing Json file, to facilitate overwriting.
-        /// </summary>
-        internal static void RemoveExistingJsonFile(string inputFileName)
-        {
-            File.Delete(FormBase.VdwConfigurationSettings.VdwInputPath + inputFileName);
-        }
-
     }
 }

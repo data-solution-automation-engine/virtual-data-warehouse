@@ -24,13 +24,10 @@ namespace Virtual_Data_Warehouse
 
         private BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
 
-        private DatabaseHandling databaseHandling;
         FormAlert _alertEventLog;
 
         public FormMain()
         {
-            databaseHandling = new DatabaseHandling();
-
             localCustomTabPageList = new List<CustomTabPage>();
 
             InitializeComponent();
@@ -106,7 +103,7 @@ namespace Virtual_Data_Warehouse
             PopulateEnvironmentComboBox();
             comboBoxEnvironments.SelectedIndex = comboBoxEnvironments.FindStringExact(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
 
-            var comboItem = comboBoxEnvironments.Items.Cast<KeyValuePair<string, TeamWorkingEnvironment>>().FirstOrDefault(item => item.Value.Equals(FormBase.VdwConfigurationSettings.ActiveEnvironment));
+            var comboItem = comboBoxEnvironments.Items.Cast<KeyValuePair<string, TeamWorkingEnvironment>>().FirstOrDefault(item => item.Value.Equals(VdwConfigurationSettings.ActiveEnvironment));
             comboBoxEnvironments.SelectedItem = comboItem;
 
             richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
