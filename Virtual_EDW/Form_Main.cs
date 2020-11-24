@@ -24,13 +24,10 @@ namespace Virtual_Data_Warehouse
 
         private BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
 
-        private DatabaseHandling databaseHandling;
         FormAlert _alertEventLog;
 
         public FormMain()
         {
-            databaseHandling = new DatabaseHandling();
-
             localCustomTabPageList = new List<CustomTabPage>();
 
             InitializeComponent();
@@ -106,11 +103,8 @@ namespace Virtual_Data_Warehouse
             PopulateEnvironmentComboBox();
             comboBoxEnvironments.SelectedIndex = comboBoxEnvironments.FindStringExact(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
 
-            var comboItem = comboBoxEnvironments.Items.Cast<KeyValuePair<string, TeamWorkingEnvironment>>().FirstOrDefault(item => item.Value.Equals(FormBase.VdwConfigurationSettings.ActiveEnvironment));
+            var comboItem = comboBoxEnvironments.Items.Cast<KeyValuePair<string, TeamWorkingEnvironment>>().FirstOrDefault(item => item.Value.Equals(VdwConfigurationSettings.ActiveEnvironment));
             comboBoxEnvironments.SelectedItem = comboItem;
-
-            // Start monitoring the configuration directories for file changes
-            // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
 
             richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
 
@@ -134,10 +128,18 @@ namespace Virtual_Data_Warehouse
 
             foreach (CustomTabPage localCustomTabPage in localCustomTabPageList)
             {
+                localCustomTabPage.setDisplayJsonFlag(true);
                 localCustomTabPage.setDisplayJsonFlag(false);
+
+                localCustomTabPage.setGenerateInDatabaseFlag(true);
                 localCustomTabPage.setGenerateInDatabaseFlag(false);
+
+                localCustomTabPage.setSaveOutputFileFlag(false);
                 localCustomTabPage.setSaveOutputFileFlag(true);
             }
+
+            // Start monitoring the configuration directories for file changes
+            RunFileWatcher();
 
             startUpIndicator = false;
         }
@@ -263,29 +265,8 @@ namespace Virtual_Data_Warehouse
 
         private void GridAutoLayoutLoadPatternCollection()
         {
-            //dataGridViewLoadPatternCollection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            ////Set the auto-size based on (the contents of) all cells in each column.
-            //for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
-            //{
-            //    dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            //    int localWidth = dataGridViewLoadPatternCollection.Columns[i].Width;
-            //}
-
-            //// Choose one column to be used to fill out the grid
-            //if (dataGridViewLoadPatternCollection.Columns.Count > 0)
-            //{
-            //    dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            //}
-
-            //// Disable the auto size again (to enable manual resizing).
-            //for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
-            //{
-            //    int columnWidth = dataGridViewLoadPatternCollection.Columns[i].Width;
-            //    dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            //    dataGridViewLoadPatternCollection.Columns[i].Width = columnWidth;
-            //}
             dataGridViewLoadPatternCollection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            //dataGridViewLoadPatternCollection.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
             dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             // Disable the auto size again (to enable manual resizing).
@@ -297,131 +278,45 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void SetDatabaseConnections()
-        {
-            #region Database connections
-
-            //var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-            //var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-            //var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-
-            //// Attempt to gracefully capture connection troubles
-            //if (connOmd.ConnectionString != "Server=<>;Initial Catalog=<Metadata>;user id=sa;password=<>")
-            //    try
-            //    {
-            //        connOmd.Open();
-            //        connOmd.Close();
-            //        // connOmd.Dispose();
-            //    }
-            //    catch
-            //    {
-            //        SetTextMain(
-            //            "There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-            //            TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
-            //        return;
-            //    }
-            //else
-            //{
-            //    SetTextMain(
-            //        "Metadata Repository Connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-            //    return;
-            //}
-
-
-            //if (connPsa.ConnectionString !=
-            //    "Server=<>;Initial Catalog=<Persistent_Staging_Area>;user id = sa;password =<> ")
-            //    try
-            //    {
-            //        connPsa.Open();
-            //        connPsa.Close();
-            //        //connPsa.Dispose();
-            //    }
-            //    catch
-            //    {
-            //        SetTextMain(
-            //            "There was an issue establishing a database connection to the Persistent Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-            //            TeamConfigurationSettings.ConnectionStringHstg + "'.\r\n");
-            //        return;
-            //    }
-            //else
-            //{
-            //    SetTextMain(
-            //        "The Persistent Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-            //    return;
-            //}
-
-
-            //if (connStg.ConnectionString != "Server=<>;Initial Catalog=<Staging_Area>;user id = sa;password =<> ")
-            //    try
-            //    {
-            //        connStg.Open();
-            //        connStg.Close();
-            //        //connStg.Dispose();
-            //    }
-            //    catch
-            //    {
-            //        SetTextMain(
-            //            "There was an issue establishing a database connection to the Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-            //            TeamConfigurationSettings.ConnectionStringStg + "'.\r\n");
-            //        return;
-            //    }
-            //else
-            //{
-            //    SetTextMain(
-            //        "The Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-            //    return;
-            //}
-
-            #endregion
-
-
-            // Use the database connections
-            try
-            {
-                //connOmd.Open();
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(
-                    "An issue was encountered while populating the available metadata for the selected version. The error message is: " +
-                    ex);
-            }
-            finally
-            {
-              //  connOmd.Close();
-              //  connOmd.Dispose();
-            }
-        }
-
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        public static void RunFileWatcher()
+        public void RunFileWatcher()
         {
             // Create a new FileSystemWatcher and set its properties.
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            //watcher.Path = (GlobalParameters.ConfigurationPath + GlobalParameters.ConfigfileName);
-
-            watcher.Path = VdwConfigurationSettings.TeamEnvironmentFilePath;
-
-            /* Watch for changes in LastAccess and LastWrite times, and
-               the renaming of files or directories. */
-            watcher.NotifyFilter = NotifyFilters.LastWrite;
-            // Only watch text files.
-            watcher.Filter = GlobalParameters.TeamConfigurationFileName;
+            FileSystemWatcher watcher = new FileSystemWatcher
+            {
+                Path = VdwConfigurationSettings.VdwInputPath,
+                Filter = "*.json"
+            };
 
             // Add event handlers.
-            watcher.Changed += OnChanged;
-            //  watcher.Created += new FileSystemEventHandler(OnChanged);
-            //  watcher.Deleted += new FileSystemEventHandler(OnChanged);
+            watcher.Changed += FileWatcherOnChanged;
+            watcher.Created += FileWatcherOnChanged;
+            watcher.Deleted += FileWatcherOnChanged;
+            watcher.Error += FileWatcherOnError;
 
+            watcher.SynchronizingObject = this;
             // Begin watching.
             watcher.EnableRaisingEvents = true;
         }
 
-        // Define the event handlers.
-        private static void OnChanged(object source, FileSystemEventArgs e)
+        private void FileWatcherOnError(object source, ErrorEventArgs e)
         {
-            // Specify what is done when a file is changed, created, or deleted.
-            MessageBox.Show("File changed");
+            if (e.GetException().GetType() == typeof(InternalBufferOverflowException))
+            {
+                InformUser("File System Watcher internal buffer overflow.",EventTypes.Error);
+            }
+            else
+            {
+                InformUser($"Watched directory {VdwConfigurationSettings.VdwInputPath} not accessible by the system.", EventTypes.Error);
+            }
+        }
+
+        // Define the event handlers.
+        private void FileWatcherOnChanged(object source, FileSystemEventArgs e)
+        {
+            InformUser($"File {e.Name} was modified in {VdwConfigurationSettings.VdwInputPath}.", EventTypes.Information);
+            
+            CreateCustomTabPages();
         }
 
 
@@ -443,55 +338,14 @@ namespace Virtual_Data_Warehouse
             Application.Exit();
         }
 
-        private void CloseAboutForm(object sender, FormClosedEventArgs e)
-        {
-            _myAboutForm = null;
-        }
-
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Process.Start(ExtensionMethod.GetDefaultBrowserPath(),
                 "http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
         }
         
-        private FormAbout _myAboutForm;
-
-        public void ThreadProcAbout()
-        {
-            if (_myAboutForm == null)
-            {
-                _myAboutForm = new FormAbout(this);
-                _myAboutForm.Show();
-
-                Application.Run();
-            }
-
-            else
-            {
-                if (_myAboutForm.InvokeRequired)
-                {
-                    // Thread Error
-                    _myAboutForm.Invoke((MethodInvoker) delegate { _myAboutForm.Close(); });
-                    _myAboutForm.FormClosed += CloseAboutForm;
-
-                    _myAboutForm = new FormAbout(this);
-                    _myAboutForm.Show();
-                    Application.Run();
-                }
-                else
-                {
-                    // No invoke required - same thread
-                    _myAboutForm.FormClosed += CloseAboutForm;
-
-                    _myAboutForm = new FormAbout(this);
-                    _myAboutForm.Show();
-                    Application.Run();
-                }
-
-            }
-        }
-
-        #region Multi-threading delegates for text boxes
+ 
+        #region Multi-threading delegates
 
         /// <summary>
         /// Delegate to update the main information textbox.
@@ -512,8 +366,40 @@ namespace Virtual_Data_Warehouse
             }
         }
 
+
+        delegate void CallBackAddCustomTabPage(TabPage tabPage);
+
+        private void AddCustomTabPage(TabPage tabPage)
+        {
+            if (tabControlMain.InvokeRequired)
+            {
+                var d = new CallBackAddCustomTabPage(AddCustomTabPage);
+                Invoke(d, tabPage);
+            }
+            else
+            {
+                tabControlMain.TabPages.Add(tabPage);
+
+            }
+        }
+
+        delegate void CallBackRemoveCustomTabPage(TabPage tabPage);
+
+        private void RemoveCustomTabPage(TabPage tabPage)
+        {
+            if (tabControlMain.InvokeRequired)
+            {
+                var d = new CallBackRemoveCustomTabPage(RemoveCustomTabPage);
+                Invoke(d, tabPage);
+            }
+            else
+            {
+                tabControlMain.TabPages.Remove(tabPage);
+            }
+        }
+
         #endregion
-        
+
         #region Background worker
 
         // This event handler deals with the results of the background operation.
@@ -646,10 +532,6 @@ namespace Virtual_Data_Warehouse
 
             // Reload the VDW and TEAM settings, as the environment may have changed
             VdwUtility.LoadVdwConfigurationFile();
-            //ApplyTeamConfigurationToMemory();
-
-            // Reset / reload the checkbox lists
-            SetDatabaseConnections();
 
             // Recreate the in-memory patterns (to make sure MetadataGeneration object details are also added).
             CreateCustomTabPages();
@@ -738,11 +620,12 @@ namespace Virtual_Data_Warehouse
             internal string notes { get; set; }
             internal Dictionary<string,VDW_DataObjectMappingList> itemList { get; set; }
         }
+        
 
         internal void InformUser(string text, EventTypes eventType)
         {
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(eventType, $"{text}"));
-            richTextBoxInformationMain.AppendText(text + "\r\n");
+            SetTextMain(text + "\r\n");
         }
 
         /// <summary>
@@ -947,6 +830,12 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         internal void CreateCustomTabPages()
         {
+            // Save all work when reloading
+            if (startUpIndicator == false)
+            {
+                // TO DO, save the pattern before reload to not lose work.
+            }
+
             // Remove any existing Custom Tab Pages before rebuild
             localCustomTabPageList.Clear();
             foreach (TabPage customTabPage in tabControlMain.TabPages)
@@ -958,7 +847,7 @@ namespace Virtual_Data_Warehouse
                 else
                 {
                     // Remove the Tab Page from the Tab Control
-                    tabControlMain.Controls.Remove((customTabPage));
+                    RemoveCustomTabPage(customTabPage);
                 }
             }
 
@@ -973,7 +862,8 @@ namespace Virtual_Data_Warehouse
                 localCustomTabPage.OnClearMainText += ClearMainInformationTextBox;
 
                 localCustomTabPageList.Add(localCustomTabPage);
-                tabControlMain.TabPages.Add(localCustomTabPage);
+
+                AddCustomTabPage(localCustomTabPage);
             }
 
             // Work around issue related to incorrectly enabled metadata extract
@@ -987,7 +877,33 @@ namespace Virtual_Data_Warehouse
                 checkBoxGenerateJsonSchema.Checked = true;
                 checkBoxGenerateJsonSchema.Checked = false;
             }
+
+            // Work around issue related to incorrectly enabled metadata extract
+            if (checkBoxGenerateInDatabase.Checked)
+            {
+                checkBoxGenerateInDatabase.Checked = false;
+                checkBoxGenerateInDatabase.Checked = true;
+            }
+            else
+            {
+                checkBoxGenerateInDatabase.Checked = true;
+                checkBoxGenerateInDatabase.Checked = false;
+            }
+
+
+            // Set the tabpages back to what they were before reload
+            if (startUpIndicator == false)
+            {
+                var currentMainTab = VdwConfigurationSettings.SelectedMainTab;
+
+                if (currentMainTab != null && currentMainTab != "")
+                {
+                    tabControlMain.SelectTab(tabControlMain.TabPages[currentMainTab]);
+                }
+            }
         }
+
+
 
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
         {
@@ -1659,6 +1575,14 @@ namespace Virtual_Data_Warehouse
             if (dataGridViewLoadPatternCollection.IsCurrentCellDirty)
             {
                 dataGridViewLoadPatternCollection.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControlMain.SelectedTab.Name != tabControlMain.TabPages[0].Name)
+            {
+                FormBase.VdwConfigurationSettings.SelectedMainTab = tabControlMain.SelectedTab.Name;
             }
         }
     }

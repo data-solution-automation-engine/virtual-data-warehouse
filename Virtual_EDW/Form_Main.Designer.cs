@@ -265,7 +265,7 @@
             // 
             this.helpToolStripMenuItem1.Image = global::Virtual_Data_Warehouse.Properties.Resources.HelpIconSmall;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -273,7 +273,7 @@
             // 
             this.displayEventLogToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.log_file;
             this.displayEventLogToolStripMenuItem.Name = "displayEventLogToolStripMenuItem";
-            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.displayEventLogToolStripMenuItem.Text = "Display Event Log";
             this.displayEventLogToolStripMenuItem.Click += new System.EventHandler(this.displayEventLogToolStripMenuItem_Click);
             // 
@@ -767,6 +767,7 @@
             this.tabControlMain.SelectedIndex = 0;
             this.tabControlMain.Size = new System.Drawing.Size(1679, 741);
             this.tabControlMain.TabIndex = 3;
+            this.tabControlMain.SelectedIndexChanged += new System.EventHandler(this.tabControlMain_SelectedIndexChanged);
             // 
             // backgroundWorkerEventLog
             // 
