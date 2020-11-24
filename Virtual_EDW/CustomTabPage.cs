@@ -71,6 +71,14 @@ namespace Virtual_Data_Warehouse
         internal bool StartUpIndicator = true;
 
 
+        /// <summary>
+        /// Function can be called from the main form as well this wya.
+        /// </summary>
+        public void ApplySyntaxHighlightingForHandlebars()
+        {
+            TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text.TrimEnd());
+        }
+
         public void setDisplayJsonFlag(bool value)
         {
             DisplayJsonFlag = value;
@@ -202,12 +210,14 @@ namespace Virtual_Data_Warehouse
             localTabControl.Size = new Size(896, 573);
             localTabControl.Name = $"tabControl{classification}";
             localTabControl.BackColor = Color.White;
-            localTabControl.SelectedIndexChanged += new EventHandler(SyntaxHighlightsHandlebars);
+            //localTabControl.SelectedIndexChanged += new EventHandler(SyntaxHighlightsHandlebars);
+            localTabControl.SelectedIndexChanged += new EventHandler(SubTabClick);
 
             // Add 'Generation Output' Tab Page on Sub Tab
             tabPageGenerationOutput = new TabPage($"{_inputNiceName} Generation Output");
             localTabControl.TabPages.Add(tabPageGenerationOutput);
             tabPageGenerationOutput.BackColor = Color.Transparent;
+            tabPageGenerationOutput.Name = $"{_inputNiceName} Generation Output";
             tabPageGenerationOutput.BorderStyle = BorderStyle.None;
             tabPageGenerationOutput.UseVisualStyleBackColor = true;
 
@@ -219,11 +229,12 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationOutput.Location = new Point(3, 6);
             localRichTextBoxGenerationOutput.Size = new Size(882, 535);
             localRichTextBoxGenerationOutput.BorderStyle = BorderStyle.None;
-
+            
             // Add 'Pattern' Tab Page to on Sub Tab
             tabPageGenerationPattern = new TabPage($"{_inputNiceName} Pattern");
             localTabControl.TabPages.Add(tabPageGenerationPattern);
             tabPageGenerationPattern.BackColor = Color.Transparent;
+            tabPageGenerationPattern.Name = $"{_inputNiceName} Pattern";
             tabPageGenerationPattern.BorderStyle = BorderStyle.None;
             tabPageGenerationPattern.UseVisualStyleBackColor = true;
 
@@ -281,8 +292,6 @@ namespace Virtual_Data_Warehouse
             localLabelActiveConnectionKeyValue.Name = $"label{classification}ConnectionKeyValue";
             localLabelActiveConnectionKeyValue.Text = @"<connection key>";
 
-
-
             // Add 'Save Pattern' Button
             localSavePattern = new Button();
             tabPageGenerationPattern.Controls.Add(localSavePattern);
@@ -300,6 +309,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationPattern.Location = new Point(3, 82);
             localRichTextBoxGenerationPattern.Size = new Size(195, 30);
             localRichTextBoxGenerationPattern.BorderStyle = BorderStyle.None;
+            localRichTextBoxGenerationPattern.TextChanged += new EventHandler(CommitPatternToMemory);
             #endregion
 
             #region Constructor Methods
@@ -323,14 +333,83 @@ namespace Virtual_Data_Warehouse
                 _localRichTextBox.AppendText(notes);
             }
 
+            // Set the tab pages back to what they were before reload
+            var currentSubTab = FormBase.VdwConfigurationSettings.SelectedSubTab;
+            if (currentSubTab != null)
+            {
+                var localTabPage = localTabControl.TabPages[currentSubTab];
+
+                if (localTabPage != null) // The control we're looking for has to exist, otherwise no need to continue
+                {
+                    if (localTabControl.TabPages.Contains(localTabControl.TabPages[currentSubTab]))
+                    {
+                        localTabControl.SelectTab(localTabControl.TabPages[currentSubTab]);
+                        try
+                        {
+                            localTabControl.SelectedTab.Controls[7].Text =
+                                FormBase.VdwConfigurationSettings.SelectedPatternText;
+                        }
+                        catch
+                        {
+                            // Do nothing
+                        }
+
+                        ApplySyntaxHighlightingForHandlebars();
+                    }
+                }
+            }
+
             // Prevention of double hitting of some event handlers
             StartUpIndicator = false;
 
             #endregion
         }
 
+        private void CommitPatternToMemory(object sender, EventArgs args)
+        {
+            if (StartUpIndicator == false)
+            {
+                if (localTabControl.SelectedTab != null)
+                {
+                    try
+                    {
+                        FormBase.VdwConfigurationSettings.SelectedPatternText =
+                            localTabControl.SelectedTab.Controls[7].Text;
+                    }
+                    catch
+                    {
+                        // Do nothing
+                    }
+                }
+            }
+        }
+
         /// <summary>
-        /// Automatically scroll to the end of the text
+        /// Called by the OnSelectedIndexChanged event on the local tab control, this method saves on-screen information to memory in case the UI is rebuilt.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void SubTabClick(object sender, EventArgs args)
+        {
+            try
+            {
+                if (!localTabControl.SelectedTab.Name.EndsWith("Output"))
+                {
+                    //SyntaxHighlightsHandlebars(sender, args); // Needed as part of index change event
+                    //TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text.TrimEnd());
+                    FormBase.VdwConfigurationSettings.SelectedSubTab = localTabControl.SelectedTab.Name;
+                    FormBase.VdwConfigurationSettings.SelectedPatternText = localTabControl.SelectedTab.Controls[7].Text;
+                    ApplySyntaxHighlightingForHandlebars();
+                }
+            }
+            catch
+            {
+                // Do nothing
+            }
+        }
+
+        /// <summary>
+        /// Automatically scroll to the end of the text.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -338,11 +417,6 @@ namespace Virtual_Data_Warehouse
         {
             _localRichTextBox.SelectionStart = _localRichTextBox.Text.Length;
             _localRichTextBox.ScrollToCaret();
-        }
-
-        public void SyntaxHighlightsHandlebars(object sender, EventArgs e)
-        {
-            TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text.TrimEnd());
         }
 
         public void FilterItemList(object o, EventArgs e)
@@ -392,36 +466,43 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-
         private void DisplayPattern(object o, EventArgs e)
         {
-            // Retrieve all the info for the pattern name from memory (from the list of patterns)
+            // Retrieve all the info for the pattern name from memory based on the combobox value (from the list of patterns).
             var loadPattern = FormBase.VdwConfigurationSettings.patternList.FirstOrDefault(x => x.LoadPatternName == localComboBoxGenerationPattern.Text);
             
             // Set the label with the path so it's visible to the user where the file is located
-            string localFullPath = Path.Combine(FormBase.VdwConfigurationSettings.LoadPatternPath, loadPattern.LoadPatternFilePath);
-
-            localLabelFullFilePath.Text = localFullPath;
-            localLabelActiveConnectionKeyValue.Text = loadPattern.LoadPatternConnectionKey;
-
-            // Read the file from the path
-            string loadPatternTemplate ="";
-            try
+            if (loadPattern != null)
             {
-                loadPatternTemplate = File.ReadAllText(localFullPath);
-            }
-            catch
-            {
-                loadPatternTemplate = $"There was an error loading the pattern specified in the load pattern collection file.\r\n\r\nDoes '{loadPattern.LoadPatternFilePath}' exist and is the path correct?\r\n\r\nIf this is not the case please update the load pattern collection information in the 'settings' tab.";
-            }
+                string localFullPath = Path.Combine(FormBase.VdwConfigurationSettings.LoadPatternPath, loadPattern.LoadPatternFilePath);
 
-            // Display the pattern in the text box on the screen
-            localRichTextBoxGenerationPattern.Text = loadPatternTemplate;
+                localLabelFullFilePath.Text = localFullPath;
+                localLabelActiveConnectionKeyValue.Text = loadPattern.LoadPatternConnectionKey;
+
+                // Read the file from the path
+                string loadPatternTemplate ="";
+                try
+                {
+                    loadPatternTemplate = File.ReadAllText(localFullPath);
+                }
+                catch
+                {
+                    loadPatternTemplate = $"There was an error loading the pattern specified in the load pattern collection file.\r\n\r\nDoes '{loadPattern.LoadPatternFilePath}' exist and is the path correct?\r\n\r\nIf this is not the case please update the load pattern collection information in the 'settings' tab.";
+                }
+
+                // Display the pattern in the text box on the screen
+                localRichTextBoxGenerationPattern.Text = loadPatternTemplate;
+            }
+            else
+            {
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, $"There was no pattern available."));
+            }
 
             // Syntax highlight for Handlebars
             if (StartUpIndicator == false)
             {
-                TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text);
+                ApplySyntaxHighlightingForHandlebars();
+                //TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text);
             }
         }
 
@@ -471,8 +552,6 @@ namespace Virtual_Data_Warehouse
 
         void DoWork()
         {
-            //VdwUtility.CreateSchema(FormBase.TeamConfigurationSettings.ConnectionStringStg);
-            // TO DO: retrieve correct schema
             _localRichTextBox.Clear();
             GenerateFromPattern();
         }
@@ -576,13 +655,8 @@ namespace Virtual_Data_Warehouse
             RaiseOnChangeMainText($"\r\nAssociated scripts have been saved in {FormBase.VdwConfigurationSettings.VdwOutputPath}.\r\n");
 
             // Apply syntax highlighting
-            SyntaxHighlight();
-        }
-
-        public void SyntaxHighlight()
-        {
             TextHandling.SyntaxHighlightSql(localRichTextBoxGenerationOutput, localRichTextBoxGenerationOutput.Text);
-        }        
+        }
 
         /// <summary>
         /// Populate the combobox containing the pattern names associated with the classification.

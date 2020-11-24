@@ -131,8 +131,13 @@ namespace Virtual_Data_Warehouse
 
             foreach (CustomTabPage localCustomTabPage in localCustomTabPageList)
             {
+                localCustomTabPage.setDisplayJsonFlag(true);
                 localCustomTabPage.setDisplayJsonFlag(false);
+
+                localCustomTabPage.setGenerateInDatabaseFlag(true);
                 localCustomTabPage.setGenerateInDatabaseFlag(false);
+
+                localCustomTabPage.setSaveOutputFileFlag(false);
                 localCustomTabPage.setSaveOutputFileFlag(true);
             }
 
@@ -276,102 +281,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void SetDatabaseConnections()
-        {
-            #region Database connections
-
-            //var connOmd = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringOmd};
-            //var connStg = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringStg};
-            //var connPsa = new SqlConnection {ConnectionString = TeamConfigurationSettings.ConnectionStringHstg};
-
-            //// Attempt to gracefully capture connection troubles
-            //if (connOmd.ConnectionString != "Server=<>;Initial Catalog=<Metadata>;user id=sa;password=<>")
-            //    try
-            //    {
-            //        connOmd.Open();
-            //        connOmd.Close();
-            //        // connOmd.Dispose();
-            //    }
-            //    catch
-            //    {
-            //        SetTextMain(
-            //            "There was an issue establishing a database connection to the Metadata Repository Database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-            //            TeamConfigurationSettings.ConnectionStringOmd + "'.\r\n");
-            //        return;
-            //    }
-            //else
-            //{
-            //    SetTextMain(
-            //        "Metadata Repository Connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-            //    return;
-            //}
-
-
-            //if (connPsa.ConnectionString !=
-            //    "Server=<>;Initial Catalog=<Persistent_Staging_Area>;user id = sa;password =<> ")
-            //    try
-            //    {
-            //        connPsa.Open();
-            //        connPsa.Close();
-            //        //connPsa.Dispose();
-            //    }
-            //    catch
-            //    {
-            //        SetTextMain(
-            //            "There was an issue establishing a database connection to the Persistent Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-            //            TeamConfigurationSettings.ConnectionStringHstg + "'.\r\n");
-            //        return;
-            //    }
-            //else
-            //{
-            //    SetTextMain(
-            //        "The Persistent Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-            //    return;
-            //}
-
-
-            //if (connStg.ConnectionString != "Server=<>;Initial Catalog=<Staging_Area>;user id = sa;password =<> ")
-            //    try
-            //    {
-            //        connStg.Open();
-            //        connStg.Close();
-            //        //connStg.Dispose();
-            //    }
-            //    catch
-            //    {
-            //        SetTextMain(
-            //            "There was an issue establishing a database connection to the Staging Area database. These are managed via the TEAM configuration files. The reported database connection string is '" +
-            //            TeamConfigurationSettings.ConnectionStringStg + "'.\r\n");
-            //        return;
-            //    }
-            //else
-            //{
-            //    SetTextMain(
-            //        "The Staging Area connection has not yet been defined yet. Please make sure TEAM is configured with the right connection details. \r\n");
-            //    return;
-            //}
-
-            #endregion
-
-
-            // Use the database connections
-            try
-            {
-                //connOmd.Open();
-            }
-            catch (Exception ex)
-            {
-                SetTextMain(
-                    "An issue was encountered while populating the available metadata for the selected version. The error message is: " +
-                    ex);
-            }
-            finally
-            {
-              //  connOmd.Close();
-              //  connOmd.Dispose();
-            }
-        }
-
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         public void RunFileWatcher()
         {
@@ -432,54 +341,13 @@ namespace Virtual_Data_Warehouse
             Application.Exit();
         }
 
-        private void CloseAboutForm(object sender, FormClosedEventArgs e)
-        {
-            _myAboutForm = null;
-        }
-
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Process.Start(ExtensionMethod.GetDefaultBrowserPath(),
                 "http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
         }
         
-        private FormAbout _myAboutForm;
-
-        public void ThreadProcAbout()
-        {
-            if (_myAboutForm == null)
-            {
-                _myAboutForm = new FormAbout(this);
-                _myAboutForm.Show();
-
-                Application.Run();
-            }
-
-            else
-            {
-                if (_myAboutForm.InvokeRequired)
-                {
-                    // Thread Error
-                    _myAboutForm.Invoke((MethodInvoker) delegate { _myAboutForm.Close(); });
-                    _myAboutForm.FormClosed += CloseAboutForm;
-
-                    _myAboutForm = new FormAbout(this);
-                    _myAboutForm.Show();
-                    Application.Run();
-                }
-                else
-                {
-                    // No invoke required - same thread
-                    _myAboutForm.FormClosed += CloseAboutForm;
-
-                    _myAboutForm = new FormAbout(this);
-                    _myAboutForm.Show();
-                    Application.Run();
-                }
-
-            }
-        }
-
+ 
         #region Multi-threading delegates
 
         /// <summary>
@@ -667,10 +535,6 @@ namespace Virtual_Data_Warehouse
 
             // Reload the VDW and TEAM settings, as the environment may have changed
             VdwUtility.LoadVdwConfigurationFile();
-            //ApplyTeamConfigurationToMemory();
-
-            // Reset / reload the checkbox lists
-            SetDatabaseConnections();
 
             // Recreate the in-memory patterns (to make sure MetadataGeneration object details are also added).
             CreateCustomTabPages();
@@ -969,6 +833,12 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         internal void CreateCustomTabPages()
         {
+            // Save all work when reloading
+            if (startUpIndicator == false)
+            {
+                // TO DO, save the pattern before reload to not lose work.
+            }
+
             // Remove any existing Custom Tab Pages before rebuild
             localCustomTabPageList.Clear();
             foreach (TabPage customTabPage in tabControlMain.TabPages)
@@ -1010,7 +880,33 @@ namespace Virtual_Data_Warehouse
                 checkBoxGenerateJsonSchema.Checked = true;
                 checkBoxGenerateJsonSchema.Checked = false;
             }
+
+            // Work around issue related to incorrectly enabled metadata extract
+            if (checkBoxGenerateInDatabase.Checked)
+            {
+                checkBoxGenerateInDatabase.Checked = false;
+                checkBoxGenerateInDatabase.Checked = true;
+            }
+            else
+            {
+                checkBoxGenerateInDatabase.Checked = true;
+                checkBoxGenerateInDatabase.Checked = false;
+            }
+
+
+            // Set the tabpages back to what they were before reload
+            if (startUpIndicator == false)
+            {
+                var currentMainTab = VdwConfigurationSettings.SelectedMainTab;
+
+                if (currentMainTab != null && currentMainTab != "")
+                {
+                    tabControlMain.SelectTab(tabControlMain.TabPages[currentMainTab]);
+                }
+            }
         }
+
+
 
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
         {
@@ -1682,6 +1578,14 @@ namespace Virtual_Data_Warehouse
             if (dataGridViewLoadPatternCollection.IsCurrentCellDirty)
             {
                 dataGridViewLoadPatternCollection.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControlMain.SelectedTab.Name != tabControlMain.TabPages[0].Name)
+            {
+                FormBase.VdwConfigurationSettings.SelectedMainTab = tabControlMain.SelectedTab.Name;
             }
         }
     }

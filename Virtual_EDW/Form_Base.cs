@@ -89,6 +89,11 @@ namespace Virtual_Data_Warehouse
 
             // TEAM active working environment
             public static TeamWorkingEnvironment ActiveEnvironment { get; set; } = new TeamWorkingEnvironment();
+
+            // In memory settings for reloading
+            public static string SelectedSubTab { get; set; }
+            public static string SelectedMainTab { get; set; }
+            public static string SelectedPatternText { get; set; }
         }
 
 
