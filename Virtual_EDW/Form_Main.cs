@@ -109,9 +109,6 @@ namespace Virtual_Data_Warehouse
             var comboItem = comboBoxEnvironments.Items.Cast<KeyValuePair<string, TeamWorkingEnvironment>>().FirstOrDefault(item => item.Value.Equals(FormBase.VdwConfigurationSettings.ActiveEnvironment));
             comboBoxEnvironments.SelectedItem = comboItem;
 
-            // Start monitoring the configuration directories for file changes
-            // RunFileWatcher(); DISABLED FOR NOW - FIRES 2 EVENTS!!
-
             richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
@@ -138,6 +135,9 @@ namespace Virtual_Data_Warehouse
                 localCustomTabPage.setGenerateInDatabaseFlag(false);
                 localCustomTabPage.setSaveOutputFileFlag(true);
             }
+
+            // Start monitoring the configuration directories for file changes
+            RunFileWatcher();
 
             startUpIndicator = false;
         }
@@ -263,29 +263,8 @@ namespace Virtual_Data_Warehouse
 
         private void GridAutoLayoutLoadPatternCollection()
         {
-            //dataGridViewLoadPatternCollection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            ////Set the auto-size based on (the contents of) all cells in each column.
-            //for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
-            //{
-            //    dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            //    int localWidth = dataGridViewLoadPatternCollection.Columns[i].Width;
-            //}
-
-            //// Choose one column to be used to fill out the grid
-            //if (dataGridViewLoadPatternCollection.Columns.Count > 0)
-            //{
-            //    dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            //}
-
-            //// Disable the auto size again (to enable manual resizing).
-            //for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
-            //{
-            //    int columnWidth = dataGridViewLoadPatternCollection.Columns[i].Width;
-            //    dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            //    dataGridViewLoadPatternCollection.Columns[i].Width = columnWidth;
-            //}
             dataGridViewLoadPatternCollection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            //dataGridViewLoadPatternCollection.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
             dataGridViewLoadPatternCollection.Columns[dataGridViewLoadPatternCollection.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             // Disable the auto size again (to enable manual resizing).
@@ -394,34 +373,44 @@ namespace Virtual_Data_Warehouse
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        public static void RunFileWatcher()
+        public void RunFileWatcher()
         {
             // Create a new FileSystemWatcher and set its properties.
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            //watcher.Path = (GlobalParameters.ConfigurationPath + GlobalParameters.ConfigfileName);
-
-            watcher.Path = VdwConfigurationSettings.TeamEnvironmentFilePath;
-
-            /* Watch for changes in LastAccess and LastWrite times, and
-               the renaming of files or directories. */
-            watcher.NotifyFilter = NotifyFilters.LastWrite;
-            // Only watch text files.
-            watcher.Filter = GlobalParameters.TeamConfigurationFileName;
+            FileSystemWatcher watcher = new FileSystemWatcher
+            {
+                Path = VdwConfigurationSettings.VdwInputPath,
+                Filter = "*.json"
+            };
 
             // Add event handlers.
-            watcher.Changed += OnChanged;
-            //  watcher.Created += new FileSystemEventHandler(OnChanged);
-            //  watcher.Deleted += new FileSystemEventHandler(OnChanged);
+            watcher.Changed += FileWatcherOnChanged;
+            watcher.Created += FileWatcherOnChanged;
+            watcher.Deleted += FileWatcherOnChanged;
+            watcher.Error += FileWatcherOnError;
 
+            watcher.SynchronizingObject = this;
             // Begin watching.
             watcher.EnableRaisingEvents = true;
         }
 
-        // Define the event handlers.
-        private static void OnChanged(object source, FileSystemEventArgs e)
+        private void FileWatcherOnError(object source, ErrorEventArgs e)
         {
-            // Specify what is done when a file is changed, created, or deleted.
-            MessageBox.Show("File changed");
+            if (e.GetException().GetType() == typeof(InternalBufferOverflowException))
+            {
+                InformUser("File System Watcher internal buffer overflow.",EventTypes.Error);
+            }
+            else
+            {
+                InformUser($"Watched directory {VdwConfigurationSettings.VdwInputPath} not accessible by the system.", EventTypes.Error);
+            }
+        }
+
+        // Define the event handlers.
+        private void FileWatcherOnChanged(object source, FileSystemEventArgs e)
+        {
+            InformUser($"File {e.Name} was modified in {VdwConfigurationSettings.VdwInputPath}.", EventTypes.Information);
+            
+            CreateCustomTabPages();
         }
 
 
@@ -491,7 +480,7 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        #region Multi-threading delegates for text boxes
+        #region Multi-threading delegates
 
         /// <summary>
         /// Delegate to update the main information textbox.
@@ -512,8 +501,40 @@ namespace Virtual_Data_Warehouse
             }
         }
 
+
+        delegate void CallBackAddCustomTabPage(TabPage tabPage);
+
+        private void AddCustomTabPage(TabPage tabPage)
+        {
+            if (tabControlMain.InvokeRequired)
+            {
+                var d = new CallBackAddCustomTabPage(AddCustomTabPage);
+                Invoke(d, tabPage);
+            }
+            else
+            {
+                tabControlMain.TabPages.Add(tabPage);
+
+            }
+        }
+
+        delegate void CallBackRemoveCustomTabPage(TabPage tabPage);
+
+        private void RemoveCustomTabPage(TabPage tabPage)
+        {
+            if (tabControlMain.InvokeRequired)
+            {
+                var d = new CallBackRemoveCustomTabPage(RemoveCustomTabPage);
+                Invoke(d, tabPage);
+            }
+            else
+            {
+                tabControlMain.TabPages.Remove(tabPage);
+            }
+        }
+
         #endregion
-        
+
         #region Background worker
 
         // This event handler deals with the results of the background operation.
@@ -738,11 +759,12 @@ namespace Virtual_Data_Warehouse
             internal string notes { get; set; }
             internal Dictionary<string,VDW_DataObjectMappingList> itemList { get; set; }
         }
+        
 
         internal void InformUser(string text, EventTypes eventType)
         {
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(eventType, $"{text}"));
-            richTextBoxInformationMain.AppendText(text + "\r\n");
+            SetTextMain(text + "\r\n");
         }
 
         /// <summary>
@@ -958,7 +980,7 @@ namespace Virtual_Data_Warehouse
                 else
                 {
                     // Remove the Tab Page from the Tab Control
-                    tabControlMain.Controls.Remove((customTabPage));
+                    RemoveCustomTabPage(customTabPage);
                 }
             }
 
@@ -973,7 +995,8 @@ namespace Virtual_Data_Warehouse
                 localCustomTabPage.OnClearMainText += ClearMainInformationTextBox;
 
                 localCustomTabPageList.Add(localCustomTabPage);
-                tabControlMain.TabPages.Add(localCustomTabPage);
+
+                AddCustomTabPage(localCustomTabPage);
             }
 
             // Work around issue related to incorrectly enabled metadata extract
