@@ -1,0 +1,451 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/RoelantVos/Data_Warehouse_Automation_Metadata_Interface/GenericInterface/interfaceDataWarehouseAutomationMetadata.json",
+  "title": "interfaceDataWarehouseAutomationMetadata",
+  "description": "Standardised format for the required metadata to generate ETL and DDL structures available for a Data Warehouse solution. The intent is to separate / decouple how individual software stores Data Warehouse Automation metadata and how this metadata can be exposed to other components, technologies and solutions for ETL and database structure generation.",
+  "type": "object",
+  "required": [
+    "dataObjectMappings"
+  ],
+  "properties": {
+    "dataObjectMappings": {
+      "$ref": "#/definitions/dataObjectMappings"
+    }
+  },
+  "definitions": {
+    "dataObjectMappings": {
+      "$id": "#/definitions/dataObjectMappings",
+      "title": "List of Data Object mappings.",
+      "description": "The list (array) of mappings between Data Objects (source-to-target mappings).",
+      "type": [ "array", "null" ],
+      "items": {
+        "$ref": "#/definitions/dataObjectMapping"
+      }
+    },
+    "dataObjectMapping": {
+      "$id": "#/definitions/dataObjectMapping",
+      "title": "The individual Data Object mapping.",
+      "description": "A mapping between a source and a target.",
+      "type": "object",
+      "required": [
+        "sourceDataObjects",
+        "targetDataObject"
+      ],
+      "properties": {
+        "mappingName": {
+          "$id": "#/definitions/dataObjectMapping/properties/dataObjectMappingName",
+          "description": "Unique name which identifies the mapping.",
+          "type": [ "string", "null" ]
+        },
+        "mappingClassifications": {
+          "$id": "#/definitions/dataObjectMapping/properties/dataObjectMappingClassifications",
+          "description": "Classification for the source-to-target mapping (free form).",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/classification"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "sourceDataObjects": {
+          "$id": "#/definitions/dataObjectMapping/properties/sourceDataObjects",
+          "description": "The source object of the mapping. This can either be an object or a query.",
+          "oneOf": [
+            {
+              "type": [ "array", "null" ],
+              "items": {
+                "$ref": "#/definitions/dataObject"
+              }
+            },
+            {
+              "type": [ "array", "null" ],
+              "items": {
+                "$ref": "#/definitions/dataQuery"
+              }
+            }
+          ]
+        },
+        "targetDataObject": {
+          "$id": "#/definitions/dataObjectMapping/properties/targetDataObject",
+          "description": "The target object of the mapping.",
+          "$ref": "#/definitions/dataObject"
+        },
+        "relatedDataObjects": {
+          "$id": "#/definitions/dataObjectMapping/properties/relatedDataObjects",
+          "description": "The collection of data objects with a different relationship than either source or target e.g. lookup.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/dataObject"
+          }
+        },
+        "dataItemMappings": {
+          "$id": "#/definitions/dataObjectMapping/properties/dataItemMappings",
+          "description": "The collection of column-to-column mappings.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/dataItemMapping"
+          }
+        },
+        "businessKeys": {
+          "$id": "#/definitions/dataObjectMapping/properties/businessKeys",
+          "description": "The Business Key definition for the mapping.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/businessKeyDefinition"
+          }
+        },
+        "filterCriterion": {
+          "$id": "#/definitions/dataObjectMapping/properties/filterCriterion",
+          "description": "Any filtering that needs to be applied to the dataObjectMapping.",
+          "type": [ "string", "null" ]
+        },
+        "enabled": {
+          "$id": "#/definitions/dataObjectMapping/properties/enabled",
+          "description": "The source object of the mapping.",
+          "type": [ "boolean", "null" ]
+        },
+        "extensions": {
+          "$id": "#/definitions/dataObjectMapping/properties/extensions",
+          "description": "Key/Value pair extension object.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/extension"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    },
+    "classification": {
+      "$id": "#/definitions/classification",
+      "title": "List of source-to-target mapping classifications.",
+      "description": "Classification for the source-to-target mapping (free form), used to add various tags and notes if required.",
+      "type": "object",
+      "required": [ "classification" ],
+      "properties": {
+        "id": {
+          "$id": "#/definitions/classification/properties/id",
+          "title": "ClassificationId",
+          "description": "An optional unique identifier for classification, for sorting or identification purposes.",
+          "type": "integer"
+        },
+        "classification": {
+          "$id": "#/definitions/classification/properties/classification",
+          "title": "Classification",
+          "description": "A free-form name that adds documentation / classification to an object.",
+          "type": "string"
+        },
+        "notes": {
+          "$id": "#/definitions/classification/properties/notes",
+          "title": "Classification Notes",
+          "description": "Any additional information to be added to the classification.",
+          "type": "string"
+        }
+      }
+    },
+    "extension": {
+      "$id": "#/definitions/extension",
+      "title": "Key/Value pair extensions",
+      "description": "Free-format key/value pair that can be used for additional context.",
+      "type": "object",
+      "required": [ "key" ],
+      "properties": {
+        "key": {
+          "$id": "#/definitions/extension/properties/key",
+          "title": "Extension key",
+          "description": "The Key in a Key/Value pair.",
+          "type": "string"
+        },
+        "value": {
+          "$id": "#/definitions/extension/properties/value",
+          "title": "Extension value",
+          "description": "The Value in a Key/Value pair.",
+          "type": "string"
+        },
+        "description": {
+          "$id": "#/definitions/extension/properties/description",
+          "title": "Extension description",
+          "description": "Any additional information to explain the intent of extension key/value pair.",
+          "type": "string"
+        }
+      }
+    },
+    "dataObject": {
+      "title": "DataObject",
+      "description": "The generic table of file definition. Any kind of entity, i.e. data set, query, object, file or table.",
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "$id": "#/definitions/dataObject/properties/dataObjectId",
+          "title": "",
+          "description": "Optional unique identifier for a file/table.",
+          "type": "integer"
+        },
+        "name": {
+          "$id": "#/definitions/dataObject/properties/dataObjectName",
+          "type": "string",
+          "title": "",
+          "description": "Mandatory unique name of the file/table."
+        },
+        "dataItems": {
+          "$id": "#/definitions/dataObject/properties/dataItems",
+          "type": [ "array", "null" ],
+          "title": "",
+          "description": "Optional - collection of dataItems for a table or file. Elements that define the dat set.",
+          "items": {
+            "$ref": "#/definitions/dataItem"
+          }
+        },
+        "dataObjectConnection": {
+          "$id": "#/definitions/dataObject/properties/dataObjectConnection",
+          "type": [ "object", "null" ],
+          "title": "",
+          "description": "",
+          "$ref": "#/definitions/dataConnection"
+        },
+        "dataObjectClassification": {
+          "$id": "#/definitions/dataObject/properties/dataObjectClassification",
+          "description": "Classification for the dataObject (free form).",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/classification"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "extensions": {
+          "$id": "#/definitions/dataObject/properties/extensions",
+          "description": "Key/Value pair extension object.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/extension"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    },
+    "dataQuery": {
+      "$id": "#/definitions/dataQuery",
+      "title": "A concise piece of transformation or query logic.",
+      "description": "A query, which can act as a source for either a dataObject or dataItem.",
+      "required": [ "dataQueryCode" ],
+      "type": "object",
+      "properties": {
+        "dataQueryName": {
+          "$id": "#/definitions/dataQuery/properties/dataQueryName",
+          "type": "string",
+          "title": "",
+          "description": "An optional name for the query"
+        },
+        "dataQueryCode": {
+          "$id": "#/definitions/dataQuery/properties/dataQueryCode",
+          "type": "string",
+          "title": "",
+          "description": "The actual code that constitutes the query."
+        },
+        "dataQueryLanguage": {
+          "$id": "#/definitions/dataQuery/properties/dataQueryLanguage",
+          "type": "string",
+          "title": "",
+          "description": "The language that the code was written in (e.g. SQL)."
+        },
+        "dataQueryConnection": {
+          "$id": "#/definitions/dataQuery/properties/dataQueryConnection",
+          "description": "The connection for the query.",
+          "$ref": "#/definitions/dataConnection"
+        },
+        "dataQueryClassification": {
+          "$id": "#/definitions/dataQuery/properties/dataObjectClassification",
+          "description": "Classification for the dataObject (free form).",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/classification"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "extensions": {
+          "$id": "#/definitions/dataQuery/properties/extensions",
+          "description": "Key/Value pair extension object.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/extension"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    },
+    "dataConnection": {
+      "$id": "#/definitions/dataConnection",
+      "title": "Connection details",
+      "description": "Optional connectivity information, that can be used for either a DataObject or DataQuery.",
+      "required": [ "dataConnectionString" ],
+      "type": [ "object", "null" ],
+      "properties": {
+        "dataConnectionString": {
+          "$id": "#/definitions/dataConnection/properties/dataConnectionString",
+          "type": [ "string", "null" ],
+          "title": "",
+          "description": "A connection token, key or string"
+        },
+        "extensions": {
+          "$id": "#/definitions/dataConnection/properties/extensions",
+          "description": "Key/Value pair extension object.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/extension"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    },
+    "businessKeyDefinition": {
+      "$id": "#/definitions/businessKeyDefinition",
+      "title": "The definition of the business key",
+      "description": "The generic definition of business key.",
+      "type": "object",
+      "required": [ "businessKeyComponentMapping" ],
+      "properties": {
+        "surrogateKey": {
+          "description": "An optional label for the end result e.g. the target business key attribute.",
+          "type": [ "string", "null" ]
+        },
+        "businessKeyComponentMapping": {
+          "description": "Items that define the Business Key e.g. the collection of columns for a Business Key.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dataItemMapping"
+          }
+        },
+        "businessKeyClassification": {
+          "$id": "#/definitions/businessKeyDefinition/properties/dataObjectClassification",
+          "description": "Classification for the dataObject (free form).",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/classification"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "extensions": {
+          "$id": "#/definitions/businessKeyDefinition/properties/extensions",
+          "description": "Key/Value pair extension object.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/extension"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    },
+    "dataItem": {
+      "$id": "#/definitions/dataItem",
+      "title": "The individual value, query or attribute within a Data Object",
+      "description": "The generic definition of a column. A column, attribute or item in a dataObject",
+      "type": "object",
+      "required": [ "name" ],
+      "properties": {
+        "name": {
+          "description": "Unique name which identifies the column / attribute.",
+          "type": "string"
+        },
+        "dataType": {
+          "description": "Optional. Label of the data type",
+          "type": [ "string", "null" ]
+        },
+        "characterLength": {
+          "description": "Optional. Length of the item in case it is text.",
+          "type": [ "integer", "null" ]
+        },
+        "numericPrecision": {
+          "description": "The number of digits in a numeric value (number).",
+          "type": [ "integer", "null" ]
+        },
+        "numericScale": {
+          "description": "The number of digits to the right of the decimal point.",
+          "type": [ "integer", "null" ]
+        },
+        "ordinalPosition": {
+          "description": "Optional. The position of items in the data object.",
+          "type": [ "integer", "null" ]
+        },
+        "isPrimaryKey": {
+          "description": "Boolean value indicating if the item is a Primary Key.",
+          "type": [ "boolean", "null" ]
+        },
+        "dataItemClassification": {
+          "$id": "#/definitions/dataItem/properties/dataObjectClassification",
+          "description": "Classification for the dataObject (free form).",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/classification"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "extensions": {
+          "$id": "#/definitions/dataItem/properties/extensions",
+          "description": "Key/Value pair extension object.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/extension"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    },
+    "dataItemMapping": {
+      "$id": "#/definitions/dataItemMapping",
+      "title": "The individual mappings between Data Items",
+      "description": "A mapping between a source and a target columns or attributes",
+      "type": "object",
+      "required": [
+        "sourceDataItems",
+        "targetDataItem"
+      ],
+      "properties": {
+        "sourceDataItems": {
+          "$id": "#/definitions/dataItemMapping/properties/sourceDataItems",
+          "description": "The source item of the mapping. This can either be an column or a query.",
+          "oneOf": [
+            {
+              "type": [ "array", "null" ],
+              "items": {
+                "$ref": "#/definitions/dataItem"
+              }
+            },
+            {
+              "type": [ "array", "null" ],
+              "items": {
+                "$ref": "#/definitions/dataQuery"
+              }
+            }
+          ]
+        },
+        "targetDataItem": {
+          "$id": "#/definitions/dataItemMapping/properties/targetDataObject",
+          "description": "The target item of the mapping.",
+          "$ref": "#/definitions/dataItem"
+        },
+        "extensions": {
+          "$id": "#/definitions/dataItemMapping/properties/extensions",
+          "description": "Key/Value pair extension object.",
+          "type": [ "array", "null" ],
+          "items": {
+            "$ref": "#/definitions/extension"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+} 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -311,7 +311,7 @@ namespace Virtual_Data_Warehouse
             SetItemList(itemList);
 
             // Report back to the user if there is not metadata available
-            if (itemList.Count == 0)
+            if (itemList == null || itemList.Count == 0)
             {
                 _localRichTextBox.Text =
                     $"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.\r\n\r\n";
@@ -359,11 +359,14 @@ namespace Virtual_Data_Warehouse
             _localCheckedListBox.Items.Clear();
 
             // Add items to the Checked List Box, if it satisfies the filter criterion
-            foreach (string item in itemList.Keys)
+            if (itemList != null && itemList.Count > 0)
             {
-                if (item.Contains(_localTextBoxFilter.Text))
+                foreach (string item in itemList.Keys)
                 {
-                    _localCheckedListBox.Items.Add(item);
+                    if (item.Contains(_localTextBoxFilter.Text))
+                    {
+                        _localCheckedListBox.Items.Add(item);
+                    }
                 }
             }
 

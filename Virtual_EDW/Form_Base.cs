@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using TEAM;
 
@@ -49,6 +50,9 @@ namespace Virtual_Data_Warehouse
             public static string JsonConnectionFileName { get; } = "TEAM_connections";
             public static string JsonEnvironmentFileName { get; } = "TEAM_environments";
             public static string JsonExtension { get; } = ".json";
+
+            public static string JsonSchemaForDataWarehouseAutomationFileName { get; } = "interfaceDataWarehouseAutomationMetadata.json";
+            //public static string DataWarehouseSchemaDefinition { get; } = File.ReadAllText(Application.StartupPath + @"\Schema\" + JsonSchemaForDataWarehouseAutomationFileName);
         }
 
 
@@ -65,7 +69,6 @@ namespace Virtual_Data_Warehouse
             public static string VdwInputPath { get; set; } = Application.StartupPath + @"\Input\";
             public static string VdwOutputPath { get; set; } = Application.StartupPath + @"\Output\";
             public static string VdwExamplesPath { get; set; } = Application.StartupPath + @"\Examples\";
-
 
 
             // Parameters that can be changed at runtime
