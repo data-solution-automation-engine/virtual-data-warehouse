@@ -128,14 +128,14 @@ namespace Virtual_Data_Warehouse
 
             foreach (CustomTabPage localCustomTabPage in localCustomTabPageList)
             {
-                localCustomTabPage.setDisplayJsonFlag(true);
-                localCustomTabPage.setDisplayJsonFlag(false);
+                localCustomTabPage.SetDisplayJsonFlag(true);
+                localCustomTabPage.SetDisplayJsonFlag(false);
 
-                localCustomTabPage.setGenerateInDatabaseFlag(true);
-                localCustomTabPage.setGenerateInDatabaseFlag(false);
+                localCustomTabPage.SetGenerateInDatabaseFlag(true);
+                localCustomTabPage.SetGenerateInDatabaseFlag(false);
 
-                localCustomTabPage.setSaveOutputFileFlag(false);
-                localCustomTabPage.setSaveOutputFileFlag(true);
+                localCustomTabPage.SetSaveOutputFileFlag(false);
+                localCustomTabPage.SetSaveOutputFileFlag(true);
             }
 
             // Start monitoring the configuration directories for file changes
@@ -911,11 +911,11 @@ namespace Virtual_Data_Warehouse
             {
                 if (checkBoxGenerateInDatabase.Checked)
                 {
-                    localTabPage.setGenerateInDatabaseFlag(true);
+                    localTabPage.SetGenerateInDatabaseFlag(true);
                 }
                 else
                 {
-                    localTabPage.setGenerateInDatabaseFlag(false);
+                    localTabPage.SetGenerateInDatabaseFlag(false);
                 }
             }
         }
@@ -926,11 +926,11 @@ namespace Virtual_Data_Warehouse
             {
                 if (checkBoxGenerateJsonSchema.Checked)
                 {
-                    localTabPage.setDisplayJsonFlag(true);
+                    localTabPage.SetDisplayJsonFlag(true);
                 }
                 else
                 {
-                    localTabPage.setDisplayJsonFlag(false);
+                    localTabPage.SetDisplayJsonFlag(false);
                 }
             }
         }
@@ -941,11 +941,11 @@ namespace Virtual_Data_Warehouse
             {
                 if (checkBoxSaveToFile.Checked)
                 {
-                    localTabPage.setSaveOutputFileFlag(true);
+                    localTabPage.SetSaveOutputFileFlag(true);
                 }
                 else
                 {
-                    localTabPage.setSaveOutputFileFlag(false);
+                    localTabPage.SetSaveOutputFileFlag(false);
                 }
             }
         }

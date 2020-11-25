@@ -1,6 +1,5 @@
 ﻿using System;
 using DataWarehouseAutomation;
-using Microsoft.Identity.Client;
 
 namespace Virtual_Data_Warehouse
 {

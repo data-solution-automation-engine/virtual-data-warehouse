@@ -239,7 +239,7 @@ namespace Virtual_Data_Warehouse
                     //sqlConnection.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
                     using (var connection = sqlConnection)
                     {
-                        var server = new Server(new ServerConnection(connection));
+                        var server = new Server(new ServerConnection(sqlConnection));
                         try
                         {
                             server.ConnectionContext.ExecuteNonQuery(query);

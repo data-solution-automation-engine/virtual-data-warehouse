@@ -46,21 +46,21 @@ namespace Virtual_Data_Warehouse
         readonly TextBox _localTextBoxFilter;
 
         // Objects on the sub Tab Control (on the main Tab Page)
-        TabControl localTabControl;
+        readonly TabControl localTabControl;
 
         readonly TabPage tabPageGenerationOutput;
-        RichTextBox localRichTextBoxGenerationOutput;
+        readonly RichTextBox localRichTextBoxGenerationOutput;
 
         readonly TabPage tabPageGenerationPattern;
         readonly Label localLabelActivePattern;
         readonly Label localLabelFilePath;
-        Label localLabelFullFilePath;
-        Label localLabelActiveConnectionKey;
-        Label localLabelActiveConnectionKeyValue;
+        readonly Label localLabelFullFilePath;
+        readonly Label localLabelActiveConnectionKey;
+        readonly Label localLabelActiveConnectionKeyValue;
 
-        ComboBox localComboBoxGenerationPattern;
-        RichTextBox localRichTextBoxGenerationPattern;
-        Button localSavePattern;      
+        readonly ComboBox localComboBoxGenerationPattern;
+        readonly RichTextBox localRichTextBoxGenerationPattern;
+        readonly Button localSavePattern;      
 
         #region Main Form CheckBox value handling
         // Values for the checkboxes from main form
@@ -79,17 +79,17 @@ namespace Virtual_Data_Warehouse
             TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text.TrimEnd());
         }
 
-        public void setDisplayJsonFlag(bool value)
+        public void SetDisplayJsonFlag(bool value)
         {
             DisplayJsonFlag = value;
         }
 
-        public void setGenerateInDatabaseFlag(bool value)
+        public void SetGenerateInDatabaseFlag(bool value)
         {
             GenerateInDatabaseFlag = value;
         }
 
-        public void setSaveOutputFileFlag(bool value)
+        public void SetSaveOutputFileFlag(bool value)
         {
             SaveOutputFileFlag = value;
         }
