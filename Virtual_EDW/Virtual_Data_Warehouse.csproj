@@ -171,9 +171,9 @@
     </Compile>
     <None Include="Libraries\DataWarehouseAutomation.dll" />
     <None Include="Libraries\TEAM_Library.dll" />
-    <Content Include="Libraries\Microsoft.Data.SqlClient.dll" />
-    <Content Include="Libraries\Microsoft.Data.SqlClient.SNI.x64.dll" />
-    <Content Include="Libraries\Microsoft.Data.SqlClient.SNI.x86.dll" />
+    <None Include="Libraries\Microsoft.Data.SqlClient.dll" />
+    <None Include="Libraries\Microsoft.Data.SqlClient.SNI.x64.dll" />
+    <None Include="Libraries\Microsoft.Data.SqlClient.SNI.x86.dll" />
     <Content Include="LoadPatterns\loadPatternCollection.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
