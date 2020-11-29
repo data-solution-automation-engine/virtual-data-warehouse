@@ -14,6 +14,13 @@
     "loadPatternNotes": "Pattern to load a Hub view into a physical table (persistence)."
   },
   {
+    "loadPatternName": "Data Vault Hub 002 Insert Into Pattern with DIRECT wrapper",
+    "loadPatternType": "CoreBusinessConcept",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
+    "loadPatternFilePath": "loadPatternHubInsertIntoDirectWrapper.handlebars",
+    "loadPatternNotes": "Pattern to load a Hub view into a physical table (persistence), integrated with the DIRECT framework."
+  },  
+  {
     "loadPatternName": "Data Vault Hub 003 Delta Select From Pattern",
     "loadPatternType": "CoreBusinessConcept",
     "loadPatternConnectionKey": "IntegrationConnectionInternalId",
@@ -26,6 +33,13 @@
     "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternHubView_DBT_Snowflake.handlebars",
     "loadPatternNotes": "Standard Hub pattern - display the distinct list of Business Keys for a Core Business Concept."
+  },  
+  {
+    "loadPatternName": "Data Vault Hub 005 Generate Tables for DIRECT wrapper",
+    "loadPatternType": "CoreBusinessConcept",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
+    "loadPatternFilePath": "loadPatternHubGenerateTables.handlebars",
+    "loadPatternNotes": "Creating tables using the DIRECT standard conventions."
   },
   {
     "loadPatternName": "Data Vault Link 001 View Pattern",

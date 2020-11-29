@@ -1,0 +1,150 @@
+{{#each dataObjectMappings}}
+GO
+--
+-- Hub ETL procedure for {{targetDataObject.name}}, coming from {{sourceDataObjects.0.name}}
+-- Generated at {{now}}
+--
+
+CREATE OR ALTER PROCEDURE [usp_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}]
+  @BatchInstanceId INT = 0,
+  @Debug VARCHAR(1) = 'N'
+AS
+
+/* For debugging purposes */
+DECLARE @Reset VARCHAR(10) = 'N';
+DECLARE @Module_id INT;
+
+ -- Module Registration
+INSERT INTO [900_Direct_Framework].[omd].MODULE (MODULE_CODE, MODULE_DESCRIPTION, MODULE_TYPE, DATA_OBJECT_SOURCE, DATA_OBJECT_TARGET, AREA_CODE, FREQUENCY_CODE, INACTIVE_INDICATOR)
+SELECT *
+FROM 
+(
+  VALUES ('m_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}', 'Data logistics from {{sourceDataObjects.0.name}} to {{targetDataObject.name}}', 'SQL', 'None', '[{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]','INT','Continuous', 'N')    
+) AS refData( MODULE_CODE, MODULE_DESCRIPTION, MODULE_TYPE, DATA_OBJECT_SOURCE, DATA_OBJECT_TARGET, AREA_CODE, FREQUENCY_CODE, INACTIVE_INDICATOR)
+WHERE NOT EXISTS 
+(
+  SELECT NULL
+  FROM [900_Direct_Framework].[omd].MODULE module
+  WHERE module.MODULE_CODE = refData.MODULE_CODE
+);
+
+-- Clean up and reset
+SELECT @Module_id = module_id FROM [900_Direct_Framework].[omd].module WHERE module_code = 'm_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}'
+
+IF @Reset = 'Y'
+  BEGIN
+    DELETE FROM [900_Direct_Framework].[omd].event_log WHERE MODULE_INSTANCE_ID IN (SELECT MODULE_INSTANCE_ID FROM [900_Direct_Framework].[omd].module_instance WHERE MODULE_ID=@Module_id)
+    DELETE FROM [900_Direct_Framework].[omd].source_control WHERE MODULE_INSTANCE_ID IN (SELECT MODULE_INSTANCE_ID FROM [900_Direct_Framework].[omd].module_instance WHERE MODULE_ID=@Module_id)
+    DELETE FROM [900_Direct_Framework].[omd].module_instance WHERE MODULE_ID=@Module_id
+    DELETE FROM [900_Direct_Framework].[omd].batch_module where module_id = @Module_id
+  END
+
+/* End of debugging block */
+
+
+/* Start new Module Instance */
+DECLARE @ModuleCode VARCHAR(255) = 'm_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}'
+
+BEGIN
+  -- Module Execution Return Value
+  DECLARE @QueryResult VARCHAR(MAX);
+
+  -- Create Module Instance
+  DECLARE @ModuleInstanceId INT
+  EXEC [900_Direct_Framework].[omd].[CreateModuleInstance]
+    @ModuleCode = @ModuleCode,
+    @Debug = @Debug,
+    @BatchInstanceId = @BatchInstanceId, -- The Batch Instance Id, if the Module is run from a Batch.
+    @ModuleInstanceId = @ModuleInstanceId OUTPUT;
+
+  -- Module Evaluation
+  DECLARE @ProcessIndicator VARCHAR(10);
+  EXEC [900_Direct_Framework].[omd].[ModuleEvaluation]
+    @ModuleInstanceId = @ModuleInstanceId,
+    @Debug = @Debug,
+    @ProcessIndicator = @ProcessIndicator OUTPUT;
+
+  IF @Debug = 'Y'
+    PRINT @ProcessIndicator;
+
+  IF @ProcessIndicator NOT IN ('Abort','Cancel') -- These are end-states for the process.
+    BEGIN TRY
+
+      /*
+        Main ETL block
+      */
+
+       INSERT INTO [{{targetDataObject.name}}]
+       (
+         [{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
+         [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
+         [MODULE_INSTANCE_ID],
+         [{{../metadataConfiguration.loadDateTimeAttribute}}],
+         [{{../metadataConfiguration.recordSourceAttribute}}]
+       )
+       SELECT
+         hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
+         hub_view.[{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
+         @ModuleInstanceId AS [MODULE_INSTANCE_ID],
+         hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
+         hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
+       FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
+       LEFT OUTER JOIN [{{targetDataObject.name}}] hub_table
+          ON hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+       WHERE hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL  
+
+      DECLARE @RowCountInsert INT= @@ROWCOUNT;
+
+      IF @Debug = 'Y'
+        PRINT CONVERT(VARCHAR(10),@RowCountInsert)+' rows inserted';
+
+      /*
+        Wrap up
+      */
+
+      IF @Debug = 'Y'
+        PRINT 'Success pathway';
+
+      -- Module Success
+      EXEC [900_Direct_Framework].[omd].[UpdateModuleInstance]
+        @ModuleInstanceId            = @ModuleInstanceId,
+        @RowCountSelect              = 0,
+        @RowCountInsert               = @RowCountInsert,
+        @Debug                              = @Debug,
+        @EventCode                       = 'Success'
+
+      SET @QueryResult  = 'Success';
+
+    END TRY
+
+    BEGIN CATCH
+      IF @Debug = 'Y'
+        PRINT 'Failure pathway';
+
+        -- Module Failure
+      EXEC [900_Direct_Framework].[omd].[UpdateModuleInstance]
+        @ModuleInstanceId = @ModuleInstanceId,
+        @Debug                   = @Debug,
+        @EventCode            = 'Failure';
+
+      SET @QueryResult = 'Failure';
+
+      -- Logging
+      DECLARE
+        @EventDetail VARCHAR(4000) = ERROR_MESSAGE(),
+        @EventReturnCode int               = ERROR_NUMBER();
+
+      EXEC [900_Direct_Framework].[omd].[InsertIntoEventLog]
+        @ModuleInstanceId  = @ModuleInstanceId,
+        @EventDetail            = @EventDetail,
+        @EventReturnCode  = @EventReturnCode;
+
+      THROW
+    END CATCH
+
+  ELSE
+    SET @QueryResult = @ProcessIndicator;
+
+  -- End of procedure
+END
+{{/each}}

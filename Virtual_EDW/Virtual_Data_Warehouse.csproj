@@ -345,8 +345,18 @@
     <Content Include="Examples\STG_PROFILER_PLAN.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="LoadPatterns\loadPatternSatelliteReferentialIntegrity.Handlebars" />
-    <None Include="LoadPatterns\loadPatternStagingTestData.Handlebars" />
+    <Content Include="LoadPatterns\loadPatternSatelliteReferentialIntegrity.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternStagingTestData.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternHubGenerateTables.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LoadPatterns\loadPatternHubInsertIntoDirectWrapper.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\app.manifest" />
     <Content Include="Resources\Ravos-logo-small.ico" />
     <Content Include="Schema\interfaceDataWarehouseAutomationMetadata.json">
