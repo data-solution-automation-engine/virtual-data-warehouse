@@ -357,6 +357,9 @@
     <Content Include="LoadPatterns\loadPatternHubInsertIntoDirectWrapper.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="LoadPatterns\loadPatternDimSelect.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\app.manifest" />
     <Content Include="Resources\Ravos-logo-small.ico" />
     <Content Include="Schema\interfaceDataWarehouseAutomationMetadata.json">
