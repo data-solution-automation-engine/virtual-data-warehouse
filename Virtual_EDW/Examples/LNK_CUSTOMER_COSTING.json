@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LNK_CUSTOMER_COSTING",
-    "generationDateTime": "2020-11-17T14:18:42.9863301+10:00"
+    "generationDateTime": "2021-01-12T20:33:49.3960357+10:00"
   },
   "dataObjectMappings": [
     {
@@ -121,7 +121,7 @@
               }
             }
           ],
-          "surrogateKey": "CUSTOMER_COSTING_HSH"
+          "surrogateKey": "CUSTOMER_COSTING_SK"
         },
         {
           "businessKeyComponentMapping": [
@@ -147,7 +147,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+          "surrogateKey": "MEMBERSHIP_PLAN_SK"
         },
         {
           "businessKeyComponentMapping": [
@@ -162,7 +162,7 @@
               }
             }
           ],
-          "surrogateKey": "CUSTOMER_HSH"
+          "surrogateKey": "CUSTOMER_SK"
         },
         {
           "businessKeyComponentMapping": [
@@ -177,7 +177,7 @@
               }
             }
           ],
-          "surrogateKey": "SEGMENT_HSH"
+          "surrogateKey": "SEGMENT_SK"
         }
       ],
       "filterCriterion": "",

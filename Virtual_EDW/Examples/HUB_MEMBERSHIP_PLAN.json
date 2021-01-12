@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "HUB_MEMBERSHIP_PLAN",
-    "generationDateTime": "2020-11-17T14:18:43.0333301+10:00"
+    "generationDateTime": "2021-01-12T20:33:49.459034+10:00"
   },
   "dataObjectMappings": [
     {
@@ -94,7 +94,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+          "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
       "filterCriterion": "14=14",
@@ -186,7 +186,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+          "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
       "filterCriterion": "12=12",
@@ -273,7 +273,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+          "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
       "filterCriterion": "18=18",
@@ -365,7 +365,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+          "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
       "filterCriterion": "10=10",
@@ -452,7 +452,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+          "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
       "filterCriterion": "1=1",

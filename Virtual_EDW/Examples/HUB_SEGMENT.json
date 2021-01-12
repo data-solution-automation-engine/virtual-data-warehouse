@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "HUB_SEGMENT",
-    "generationDateTime": "2020-11-17T14:18:43.0893304+10:00"
+    "generationDateTime": "2021-01-12T20:33:49.5228758+10:00"
   },
   "dataObjectMappings": [
     {
@@ -77,7 +77,7 @@
               }
             }
           ],
-          "surrogateKey": "SEGMENT_HSH"
+          "surrogateKey": "SEGMENT_SK"
         }
       ],
       "filterCriterion": "",
@@ -152,7 +152,7 @@
               }
             }
           ],
-          "surrogateKey": "SEGMENT_HSH"
+          "surrogateKey": "SEGMENT_SK"
         }
       ],
       "filterCriterion": "8=8",

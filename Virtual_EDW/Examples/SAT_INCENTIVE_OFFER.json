@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "SAT_INCENTIVE_OFFER",
-    "generationDateTime": "2020-11-17T14:18:42.907331+10:00"
+    "generationDateTime": "2021-01-12T20:33:49.3044877+10:00"
   },
   "dataObjectMappings": [
     {
@@ -76,7 +76,10 @@
             }
           ],
           "targetDataItem": {
-            "name": "OFFER_DESCRIPTION"
+            "name": "OFFER_DESCRIPTION",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 8
           }
         }
       ],
@@ -96,7 +99,7 @@
               }
             }
           ],
-          "surrogateKey": "INCENTIVE_OFFER_HSH"
+          "surrogateKey": "INCENTIVE_OFFER_SK"
         }
       ],
       "filterCriterion": "4=4",

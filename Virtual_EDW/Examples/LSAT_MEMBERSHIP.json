@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LSAT_MEMBERSHIP",
-    "generationDateTime": "2020-11-17T14:18:42.4743304+10:00"
+    "generationDateTime": "2021-01-12T20:33:49.0732844+10:00"
   },
   "dataObjectMappings": [
     {
@@ -79,7 +79,10 @@
             }
           ],
           "targetDataItem": {
-            "name": "MEMBERSHIP_END_DATE"
+            "name": "MEMBERSHIP_END_DATE",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 9
           }
         },
         {
@@ -92,7 +95,10 @@
             }
           ],
           "targetDataItem": {
-            "name": "MEMBERSHIP_START_DATE"
+            "name": "MEMBERSHIP_START_DATE",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 8
           }
         },
         {
@@ -105,7 +111,10 @@
             }
           ],
           "targetDataItem": {
-            "name": "MEMBERSHIP_STATUS"
+            "name": "MEMBERSHIP_STATUS",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 10
           }
         }
       ],
@@ -149,7 +158,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_HSH"
+          "surrogateKey": "MEMBERSHIP_SK"
         },
         {
           "businessKeyComponentMapping": [
