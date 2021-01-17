@@ -23,7 +23,7 @@ namespace Virtual_Data_Warehouse
         // List of TEAM working environments.
         public static TeamWorkingEnvironmentCollection TeamEnvironmentCollection { get; set; } = new TeamWorkingEnvironmentCollection();
 
-        // TEAM configuration settings.
+        // TEAM configuration settings, containing all the conventions etc.
         public static TeamConfiguration TeamConfigurationSettings { get; set; } = new TeamConfiguration();
 
         // List of versions.

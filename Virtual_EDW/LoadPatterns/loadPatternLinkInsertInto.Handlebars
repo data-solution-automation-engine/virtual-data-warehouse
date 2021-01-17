@@ -6,16 +6,14 @@
 
 INSERT INTO [{{targetDataObject.name}}]
 (  {{#each businessKeys}}
-   [{{surrogateKey}}],{{/each}}
-   {{#each dataItemMappings}}
+   [{{surrogateKey}}],{{/each}}{{#each dataItemMappings}}
    [{{targetDataItem.name}}],{{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.recordSourceAttribute}}]
 )
 SELECT {{#each businessKeys}}
-   link_view.[{{surrogateKey}}],{{/each}}
-   {{#each dataItemMappings}}
+   link_view.[{{surrogateKey}}],{{/each}}{{#each dataItemMappings}}
    link_view.[{{targetDataItem.name}}],{{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],

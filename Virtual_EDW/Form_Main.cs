@@ -898,7 +898,14 @@ namespace Virtual_Data_Warehouse
 
                 if (currentMainTab != null && currentMainTab != "")
                 {
-                    tabControlMain.SelectTab(tabControlMain.TabPages[currentMainTab]);
+                    try
+                    {
+                        tabControlMain.SelectTab(tabControlMain.TabPages[currentMainTab]);
+                    }
+                    catch (Exception ex)
+                    {
+                        VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, $"An exception was encountered creating a new tab page. The exception is {ex}."));
+                    }
                 }
             }
         }
