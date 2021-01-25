@@ -34,7 +34,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.3";
+            const string versionNumberForApplication = "v1.6.4";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
