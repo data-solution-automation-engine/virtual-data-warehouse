@@ -99,10 +99,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\DataWarehouseAutomation.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json.Schema">
+      <HintPath>bin\Debug\Newtonsoft.Json.Schema.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -431,9 +433,6 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json.Schema">
-      <Version>3.0.13</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
