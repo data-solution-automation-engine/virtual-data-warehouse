@@ -6,24 +6,44 @@
     "expiryDateTimeAttribute": "LOAD_END_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "DIM_CUSTOMER",
-    "generationDateTime": "2020-11-17T14:18:42.9293307+10:00"
+    "generationDateTime": "2021-01-25T17:29:58.4876393+10:00"
   },
   "dataObjectMappings": [
     {
       "mappingName": "DIM_CUSTOMER",
       "mappingClassifications": [
         {
-          "classification": "Point-in-Time / Dimension"
+          "classification": "Presentation"
         }
       ],
       "sourceDataObjects": [
         {
           "name": "HUB_CUSTOMER",
+          "dataItems": [
+            {
+              "name": "CUSTOMER_ID"
+            }
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
           "dataObjectClassifications": [
             {
               "classification": "CoreBusinessConcept"
@@ -32,11 +52,6 @@
         },
         {
           "name": "SAT_CUSTOMER",
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ],
           "dataItems": [
             {
               "name": "DATE_OF_BIRTH"
@@ -47,18 +62,53 @@
             {
               "name": "SUBURB"
             }
-          ]
-        },
-        {
-          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
           "dataObjectClassifications": [
             {
               "classification": "Context"
             }
-          ],
+          ]
+        },
+        {
+          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
           "dataItems": [
             {
               "name": "CONTACT_NUMBER"
+            }
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Context"
             }
           ]
         }
@@ -66,11 +116,11 @@
       "targetDataObject": {
         "name": "DIM_CUSTOMER",
         "dataObjectConnection": {
-          "dataConnectionString": "PSA",
+          "dataConnectionString": "Presentation",
           "extensions": [
             {
               "key": "database",
-              "value": "150_Persistent_Staging_Area",
+              "value": "300_Presentation_Layer",
               "description": "database name"
             },
             {
@@ -82,6 +132,16 @@
         }
       },
       "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "CUSTOMER_ID"
+            }
+          ],
+          "targetDataItem": {
+            "name": "CUSTOMER_ID"
+          }
+        },
         {
           "sourceDataItems": [
             {
@@ -129,15 +189,15 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "CustomerID"
+                  "name": "CUSTOMER_SK"
                 }
               ],
               "targetDataItem": {
-                "name": "CUSTOMER_ID"
+                "name": "CUSTOMER_SK"
               }
             }
           ],
-          "surrogateKey": "CUSTOMER_HSH"
+          "surrogateKey": "DIM_CUSTOMER_SK"
         }
       ],
       "enabled": true
