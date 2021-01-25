@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-    "generationDateTime": "2020-11-17T14:18:42.8213315+10:00"
+    "generationDateTime": "2021-01-12T20:33:49.2212664+10:00"
   },
   "dataObjectMappings": [
     {
@@ -78,7 +78,7 @@
             }
           ],
           "targetDataItem": {
-            "name": "Contact_Number",
+            "name": "CONTACT_NUMBER",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 8
@@ -94,7 +94,7 @@
             }
           ],
           "targetDataItem": {
-            "name": "State",
+            "name": "STATE",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 9
@@ -117,7 +117,7 @@
               }
             }
           ],
-          "surrogateKey": "CUSTOMER_HSH"
+          "surrogateKey": "CUSTOMER_SK"
         }
       ],
       "filterCriterion": "",

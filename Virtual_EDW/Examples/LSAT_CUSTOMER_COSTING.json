@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LSAT_CUSTOMER_COSTING",
-    "generationDateTime": "2020-11-17T14:18:42.9913298+10:00"
+    "generationDateTime": "2021-01-12T20:33:49.4010978+10:00"
   },
   "dataObjectMappings": [
     {
@@ -83,12 +83,9 @@
           ],
           "targetDataItem": {
             "name": "COSTING_EFFECTIVE_DATE",
-            "dataItemClassification": [
-              {
-                "classification": "MultiActive",
-                "notes": "A multi-active attribute is part of the target table key."
-              }
-            ]
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 2
           }
         },
         {
@@ -102,7 +99,11 @@
             }
           ],
           "targetDataItem": {
-            "name": "PERSONAL_MONTHLY_COST"
+            "name": "PERSONAL_MONTHLY_COST",
+            "dataType": "numeric",
+            "numericPrecision": 38,
+            "numericScale": 20,
+            "ordinalPosition": 9
           }
         }
       ],
@@ -156,7 +157,7 @@
               }
             }
           ],
-          "surrogateKey": "CUSTOMER_COSTING_HSH"
+          "surrogateKey": "CUSTOMER_COSTING_SK"
         }
       ],
       "filterCriterion": "",

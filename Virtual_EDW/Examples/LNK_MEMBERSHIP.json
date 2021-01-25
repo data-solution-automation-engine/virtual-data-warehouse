@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LNK_MEMBERSHIP",
-    "generationDateTime": "2020-11-17T14:18:42.4503299+10:00"
+    "generationDateTime": "2021-01-12T20:33:49.05005+10:00"
   },
   "dataObjectMappings": [
     {
@@ -108,7 +108,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_HSH"
+          "surrogateKey": "MEMBERSHIP_SK"
         },
         {
           "businessKeyComponentMapping": [
@@ -123,7 +123,7 @@
               }
             }
           ],
-          "surrogateKey": "CUSTOMER_HSH"
+          "surrogateKey": "CUSTOMER_SK"
         },
         {
           "businessKeyComponentMapping": [
@@ -149,7 +149,7 @@
               }
             }
           ],
-          "surrogateKey": "MEMBERSHIP_PLAN_HSH"
+          "surrogateKey": "MEMBERSHIP_PLAN_SK"
         },
         {
           "businessKeyComponentMapping": [

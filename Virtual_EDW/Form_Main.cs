@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DataWarehouseAutomation;
 using Newtonsoft.Json;
@@ -33,7 +34,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.3";
+            const string versionNumberForApplication = "v1.6.4";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
@@ -285,8 +286,10 @@ namespace Virtual_Data_Warehouse
             FileSystemWatcher watcher = new FileSystemWatcher
             {
                 Path = VdwConfigurationSettings.VdwInputPath,
-                Filter = "*.json"
+                Filter = "*.json",
             };
+
+            var timeOut = Task.Delay(500);
 
             // Add event handlers.
             watcher.Changed += FileWatcherOnChanged;
@@ -314,9 +317,25 @@ namespace Virtual_Data_Warehouse
         // Define the event handlers.
         private void FileWatcherOnChanged(object source, FileSystemEventArgs e)
         {
-            InformUser($"File {e.Name} was modified in {VdwConfigurationSettings.VdwInputPath}.", EventTypes.Information);
-            
-            CreateCustomTabPages();
+            // Make sure the damn thing only fires once.
+            var localFileSystemWatcher = (FileSystemWatcher) source;
+            try
+            {
+
+                localFileSystemWatcher.EnableRaisingEvents = false;
+
+                InformUser($"File {e.Name} was modified in {VdwConfigurationSettings.VdwInputPath}.", EventTypes.Information);
+
+                CreateCustomTabPages();
+
+            }
+
+            finally
+            {
+                localFileSystemWatcher.EnableRaisingEvents = true;
+            }
+
+
         }
 
 
@@ -898,7 +917,14 @@ namespace Virtual_Data_Warehouse
 
                 if (currentMainTab != null && currentMainTab != "")
                 {
-                    tabControlMain.SelectTab(tabControlMain.TabPages[currentMainTab]);
+                    try
+                    {
+                        tabControlMain.SelectTab(tabControlMain.TabPages[currentMainTab]);
+                    }
+                    catch (Exception ex)
+                    {
+                        VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, $"An exception was encountered creating a new tab page. The exception is {ex}."));
+                    }
                 }
             }
         }

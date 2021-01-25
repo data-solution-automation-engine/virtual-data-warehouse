@@ -5,12 +5,12 @@
     "loadDateTimeAttribute": "LOAD_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "ETL_INSERT_RUN_ID",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "STG_PROFILER_PLAN",
-    "generationDateTime": "2020-11-17T14:18:42.1053304+10:00"
+    "generationDateTime": "2021-01-12T20:33:48.8779119+10:00"
   },
   "dataObjectMappings": [
     {
