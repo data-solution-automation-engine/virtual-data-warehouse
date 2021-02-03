@@ -46,57 +46,75 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         internal static void LoadVdwConfigurationFile()
         {
-            var configList = FileHandling.LoadConfigurationFile(
-                FormBase.GlobalParameters.VdwConfigurationPath +
-                FormBase.GlobalParameters.VdwConfigurationFileName);
-
-            string[] configurationArray = new[] { "TeamEnvironmentFilePath", "TeamConfigurationPath", "TeamConnectionsPath", "TeamSelectedEnvironment", "InputPath", "OutputPath", "LoadPatternPath", "VdwSchema" };
-
-            foreach (string configuration in configurationArray)
+            try
             {
-                if (configList.ContainsKey(configuration))
+                var configList = FileHandling.LoadConfigurationFile(
+                    FormBase.GlobalParameters.VdwConfigurationPath +
+                    FormBase.GlobalParameters.VdwConfigurationFileName);
+
+
+                string[] configurationArray = new[]
                 {
-                    switch (configuration)
+                    "TeamEnvironmentFilePath", "TeamConfigurationPath", "TeamConnectionsPath",
+                    "TeamSelectedEnvironment", "InputPath", "OutputPath", "LoadPatternPath", "VdwSchema"
+                };
+
+                foreach (string configuration in configurationArray)
+                {
+                    if (configList.ContainsKey(configuration))
                     {
-                        case "TeamEnvironmentFilePath":
-                            FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath = configList[configuration];
-                            break;
-                        case "TeamConfigurationPath":
-                            FormBase.VdwConfigurationSettings.TeamConfigurationPath = configList[configuration];
-                            break;
-                        case "TeamConnectionsPath":
-                            FormBase.VdwConfigurationSettings.TeamConnectionsPath = configList[configuration];
-                            break;
-                        case "TeamSelectedEnvironment":
-                            FormBase.VdwConfigurationSettings.TeamSelectedEnvironmentInternalId = configList[configuration];
-                            break;
-                        case "InputPath":
-                            FormBase.VdwConfigurationSettings.VdwInputPath = configList[configuration];
-                            break;
-                        case "OutputPath":
-                            FormBase.VdwConfigurationSettings.VdwOutputPath = configList[configuration];
-                            break;
-                        case "LoadPatternPath":
-                            FormBase.VdwConfigurationSettings.LoadPatternPath = configList[configuration];
-                            break;
-                        case "VdwSchema":
-                            FormBase.VdwConfigurationSettings.VdwSchema = configList[configuration];
-                            break;
-                        default:
-                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"Incorrect configuration '{configuration}' encountered."));
-                            break;
+                        switch (configuration)
+                        {
+                            case "TeamEnvironmentFilePath":
+                                FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath = configList[configuration];
+                                break;
+                            case "TeamConfigurationPath":
+                                FormBase.VdwConfigurationSettings.TeamConfigurationPath = configList[configuration];
+                                break;
+                            case "TeamConnectionsPath":
+                                FormBase.VdwConfigurationSettings.TeamConnectionsPath = configList[configuration];
+                                break;
+                            case "TeamSelectedEnvironment":
+                                FormBase.VdwConfigurationSettings.TeamSelectedEnvironmentInternalId =
+                                    configList[configuration];
+                                break;
+                            case "InputPath":
+                                FormBase.VdwConfigurationSettings.VdwInputPath = configList[configuration];
+                                break;
+                            case "OutputPath":
+                                FormBase.VdwConfigurationSettings.VdwOutputPath = configList[configuration];
+                                break;
+                            case "LoadPatternPath":
+                                FormBase.VdwConfigurationSettings.LoadPatternPath = configList[configuration];
+                                break;
+                            case "VdwSchema":
+                                FormBase.VdwConfigurationSettings.VdwSchema = configList[configuration];
+                                break;
+                            default:
+                                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
+                                    $"Incorrect configuration '{configuration}' encountered."));
+                                break;
+                        }
+
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
+                            $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
+
                     }
-
-                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
-
+                    else
+                    {
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
+                            $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
+                    }
                 }
-                else
-                {
-                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
-                }
+
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
+                    $"The VDW configuration has been updated in memory" + $"."));
             }
-
-            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The VDW configuration has been updated in memory" + $"."));
+            catch (Exception ex)
+            {
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
+                    $"An error was encountered loading the VDW configuration file. The reported error is: \r\n\r\n{ex}."));
+            }
 
         }
 
