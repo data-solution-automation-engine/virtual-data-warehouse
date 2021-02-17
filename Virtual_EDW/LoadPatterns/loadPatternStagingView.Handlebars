@@ -29,13 +29,13 @@ SELECT
    {{#each dataItemMappings}}
    A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{#if relatedDataObjects.0.dataObjectClassification.0}}{{relatedDataObjects.0.name}}{{/if}}] A
+FROM [{{relatedDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{relatedDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{relatedDataObjects.0.name}}] A
 JOIN
    (
    SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
       [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
       MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-   FROM [{{#if relatedDataObjects.0.dataObjectClassification.0}}{{relatedDataObjects.0.name}}{{/if}}]
+   FROM [{{relatedDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{relatedDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{relatedDataObjects.0.name}}] A
    GROUP BY {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
       [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
    ) B ON {{#each businessKeys}}  {{#each businessKeyComponentMapping}}

@@ -3,6 +3,7 @@
     "changeDataCaptureAttribute": "CDC_OPERATION",
     "recordSourceAttribute": "RECORD_SOURCE",
     "loadDateTimeAttribute": "LOAD_DATETIME",
+    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
     "etlProcessAttribute": "MODULE_INSTANCE_ID",
@@ -10,7 +11,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "STG_PROFILER_CUST_MEMBERSHIP",
-    "generationDateTime": "2021-01-12T20:33:48.7858012+10:00"
+    "generationDateTime": "2021-02-17T18:13:49.4804935+10:00"
   },
   "dataObjectMappings": [
     {
@@ -39,7 +40,12 @@
                 "description": "schema name"
               }
             ]
-          }
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Source"
+            }
+          ]
         }
       ],
       "targetDataObject": {
@@ -58,15 +64,57 @@
               "description": "schema name"
             }
           ]
-        }
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "StagingArea"
+          }
+        ]
       },
       "relatedDataObjects": [
         {
           "name": "PSA_PROFILER_CUST_MEMBERSHIP",
-          "dataObjectClassification": [
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
             {
-              "classification": "Lookup",
-              "notes": "Lookup table related to the source-to-target mapping"
+              "classification": "PersistentStagingArea"
+            }
+          ]
+        },
+        {
+          "name": "Metadata",
+          "dataObjectConnection": {
+            "dataConnectionString": "Metadata",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "900_Metadata",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Metadata"
             }
           ]
         }

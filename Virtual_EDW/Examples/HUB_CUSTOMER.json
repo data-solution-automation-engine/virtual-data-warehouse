@@ -3,6 +3,7 @@
     "changeDataCaptureAttribute": "CDC_OPERATION",
     "recordSourceAttribute": "RECORD_SOURCE",
     "loadDateTimeAttribute": "LOAD_DATETIME",
+    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
     "etlProcessAttribute": "MODULE_INSTANCE_ID",
@@ -10,7 +11,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "HUB_CUSTOMER",
-    "generationDateTime": "2021-01-12T20:33:49.3272531+10:00"
+    "generationDateTime": "2021-02-17T18:13:50.2483952+10:00"
   },
   "dataObjectMappings": [
     {
@@ -39,7 +40,12 @@
                 "description": "schema name"
               }
             ]
-          }
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "PersistentStagingArea"
+            }
+          ]
         }
       ],
       "targetDataObject": {
@@ -58,8 +64,61 @@
               "description": "schema name"
             }
           ]
-        }
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "CoreBusinessConcept"
+          }
+        ]
       },
+      "relatedDataObjects": [
+        {
+          "name": "DIM_CUSTOMER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Presentation",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "300_Presentation_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Presentation"
+            }
+          ]
+        },
+        {
+          "name": "Metadata",
+          "dataObjectConnection": {
+            "dataConnectionString": "Metadata",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "900_Metadata",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Metadata"
+            }
+          ]
+        }
+      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -111,7 +170,12 @@
                 "description": "schema name"
               }
             ]
-          }
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "PersistentStagingArea"
+            }
+          ]
         }
       ],
       "targetDataObject": {
@@ -130,8 +194,61 @@
               "description": "schema name"
             }
           ]
-        }
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "CoreBusinessConcept"
+          }
+        ]
       },
+      "relatedDataObjects": [
+        {
+          "name": "DIM_CUSTOMER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Presentation",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "300_Presentation_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Presentation"
+            }
+          ]
+        },
+        {
+          "name": "Metadata",
+          "dataObjectConnection": {
+            "dataConnectionString": "Metadata",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "900_Metadata",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Metadata"
+            }
+          ]
+        }
+      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -183,7 +300,12 @@
                 "description": "schema name"
               }
             ]
-          }
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "PersistentStagingArea"
+            }
+          ]
         }
       ],
       "targetDataObject": {
@@ -202,14 +324,105 @@
               "description": "schema name"
             }
           ]
-        }
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "CoreBusinessConcept"
+          }
+        ]
       },
       "relatedDataObjects": [
         {
-          "name": "SAT_CUSTOMER"
+          "name": "SAT_CUSTOMER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Context"
+            }
+          ]
         },
         {
-          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS"
+          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Context"
+            }
+          ]
+        },
+        {
+          "name": "DIM_CUSTOMER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Presentation",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "300_Presentation_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Presentation"
+            }
+          ]
+        },
+        {
+          "name": "Metadata",
+          "dataObjectConnection": {
+            "dataConnectionString": "Metadata",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "900_Metadata",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Metadata"
+            }
+          ]
         }
       ],
       "businessKeys": [
@@ -263,7 +476,12 @@
                 "description": "schema name"
               }
             ]
-          }
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "PersistentStagingArea"
+            }
+          ]
         }
       ],
       "targetDataObject": {
@@ -282,8 +500,61 @@
               "description": "schema name"
             }
           ]
-        }
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "CoreBusinessConcept"
+          }
+        ]
       },
+      "relatedDataObjects": [
+        {
+          "name": "DIM_CUSTOMER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Presentation",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "300_Presentation_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Presentation"
+            }
+          ]
+        },
+        {
+          "name": "Metadata",
+          "dataObjectConnection": {
+            "dataConnectionString": "Metadata",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "900_Metadata",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Metadata"
+            }
+          ]
+        }
+      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
