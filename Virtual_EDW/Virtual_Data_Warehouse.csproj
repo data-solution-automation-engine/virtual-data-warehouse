@@ -99,9 +99,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\DataWarehouseAutomation.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json.Schema">
-      <HintPath>bin\Debug\Newtonsoft.Json.Schema.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
