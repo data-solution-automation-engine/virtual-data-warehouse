@@ -11,7 +11,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "DIM_CUSTOMER",
-    "generationDateTime": "2021-01-25T17:29:58.4876393+10:00"
+    "generationDateTime": "2021-02-17T18:13:49.4578582+10:00"
   },
   "dataObjectMappings": [
     {
@@ -129,8 +129,38 @@
               "description": "schema name"
             }
           ]
-        }
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "Presentation"
+          }
+        ]
       },
+      "relatedDataObjects": [
+        {
+          "name": "Metadata",
+          "dataObjectConnection": {
+            "dataConnectionString": "Metadata",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "900_Metadata",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Metadata"
+            }
+          ]
+        }
+      ],
       "dataItemMappings": [
         {
           "sourceDataItems": [

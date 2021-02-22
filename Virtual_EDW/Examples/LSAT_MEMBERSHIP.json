@@ -3,6 +3,7 @@
     "changeDataCaptureAttribute": "CDC_OPERATION",
     "recordSourceAttribute": "RECORD_SOURCE",
     "loadDateTimeAttribute": "LOAD_DATETIME",
+    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
     "etlProcessAttribute": "MODULE_INSTANCE_ID",
@@ -10,7 +11,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "LSAT_MEMBERSHIP",
-    "generationDateTime": "2021-01-12T20:33:49.0732844+10:00"
+    "generationDateTime": "2021-02-17T18:13:49.8663503+10:00"
   },
   "dataObjectMappings": [
     {
@@ -39,7 +40,12 @@
                 "description": "schema name"
               }
             ]
-          }
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "PersistentStagingArea"
+            }
+          ]
         }
       ],
       "targetDataObject": {
@@ -58,14 +64,82 @@
               "description": "schema name"
             }
           ]
-        }
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "NaturalBusinessRelationshipContext"
+          }
+        ]
       },
       "relatedDataObjects": [
         {
-          "name": "HUB_CUSTOMER"
+          "name": "HUB_CUSTOMER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "CoreBusinessConcept"
+            }
+          ]
         },
         {
-          "name": "HUB_MEMBERSHIP_PLAN"
+          "name": "HUB_MEMBERSHIP_PLAN",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "CoreBusinessConcept"
+            }
+          ]
+        },
+        {
+          "name": "Metadata",
+          "dataObjectConnection": {
+            "dataConnectionString": "Metadata",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "900_Metadata",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Metadata"
+            }
+          ]
         }
       ],
       "dataItemMappings": [
@@ -159,27 +233,6 @@
             }
           ],
           "surrogateKey": "MEMBERSHIP_SK"
-        },
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "Status"
-                }
-              ],
-              "targetDataItem": {
-                "name": "SALES_CHANNEL"
-              }
-            }
-          ],
-          "surrogateKey": "SALES_CHANNEL",
-          "businessKeyClassification": [
-            {
-              "classification": "DegenerateAttribute",
-              "notes": "Non Core Business Concept attribute, though part of the Relationship Key."
-            }
-          ]
         }
       ],
       "filterCriterion": "17=17",

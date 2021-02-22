@@ -3,6 +3,7 @@
     "changeDataCaptureAttribute": "CDC_OPERATION",
     "recordSourceAttribute": "RECORD_SOURCE",
     "loadDateTimeAttribute": "LOAD_DATETIME",
+    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
     "eventDateTimeAttribute": "EVENT_DATETIME",
     "recordChecksumAttribute": "HASH_FULL_RECORD",
     "etlProcessAttribute": "MODULE_INSTANCE_ID",
@@ -10,7 +11,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": "SAT_SEGMENT",
-    "generationDateTime": "2021-01-12T20:33:49.5358756+10:00"
+    "generationDateTime": "2021-02-17T18:13:50.5455245+10:00"
   },
   "dataObjectMappings": [
     {
@@ -39,7 +40,12 @@
                 "description": "schema name"
               }
             ]
-          }
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "PersistentStagingArea"
+            }
+          ]
         }
       ],
       "targetDataObject": {
@@ -58,11 +64,59 @@
               "description": "schema name"
             }
           ]
-        }
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "Context"
+          }
+        ]
       },
       "relatedDataObjects": [
         {
-          "name": "HUB_SEGMENT"
+          "name": "HUB_SEGMENT",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "CoreBusinessConcept"
+            }
+          ]
+        },
+        {
+          "name": "Metadata",
+          "dataObjectConnection": {
+            "dataConnectionString": "Metadata",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "900_Metadata",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Metadata"
+            }
+          ]
         }
       ],
       "dataItemMappings": [
