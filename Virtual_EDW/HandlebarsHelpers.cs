@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using HandlebarsDotNet;
 
 namespace Virtual_Data_Warehouse
@@ -180,6 +176,39 @@ namespace Virtual_Data_Warehouse
                 {
                     options.Template(output, (object)context);
                 }
+
+            });
+
+            // Character spacing not satisfactory? Do not panic, help is near! Make sure the character spacing is righteous using this Handlebars helper.
+            // Usage {{space sourceDataObject.name}} will space out (!?) the name of the source to 30 characters and a few tabs for lots of white spaces.
+            Handlebars.RegisterHelper("space", (writer, context, args) =>
+            {
+                string outputString = args[0].ToString();
+                if (outputString.Length < 30)
+                {
+                    outputString = outputString.PadRight(30);
+                }
+                writer.WriteSafeString(outputString + "\t\t\t\t");
+
+            });
+
+
+            Handlebars.RegisterHelper("StringReplace", (writer, context, args) =>
+            {
+                if (args.Length < 3) throw new HandlebarsException("The {{StringReplace}} function requires at least three arguments.");
+
+                string expression = args[0] as string;
+
+                if (args[0] is Newtonsoft.Json.Linq.JValue)
+                {
+                    expression = ((Newtonsoft.Json.Linq.JValue)args[0]).Value.ToString();
+                }
+
+                string pattern = args[1] as string;
+                string replacement = args[2] as string;
+
+                expression = expression.Replace(pattern, replacement);
+                writer.WriteSafeString(expression);
 
             });
         }
