@@ -93,7 +93,15 @@ namespace Virtual_Data_Warehouse
 
             // Then load the environments file and current working environment.
             // The TeamEnvironmentCollection contains all the environments as specified in TEAM (environments file).
-            TeamEnvironmentCollection.LoadTeamEnvironmentCollection(VdwConfigurationSettings.TeamEnvironmentFilePath);
+            try
+            {
+                TeamEnvironmentCollection.LoadTeamEnvironmentCollection(
+                    VdwConfigurationSettings.TeamEnvironmentFilePath);
+            }
+            catch
+            {
+                richTextBoxInformationMain.AppendText("The root environment configuration file was not found. The following file was expected: "+ VdwConfigurationSettings.TeamEnvironmentFilePath+'.');
+            }
 
             VdwConfigurationSettings.ActiveEnvironment = TeamEnvironmentCollection.GetEnvironmentByKey(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
 
@@ -282,24 +290,32 @@ namespace Virtual_Data_Warehouse
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         public void RunFileWatcher()
         {
-            // Create a new FileSystemWatcher and set its properties.
-            FileSystemWatcher watcher = new FileSystemWatcher
+            try
             {
-                Path = VdwConfigurationSettings.VdwInputPath,
-                Filter = "*.json",
-            };
+                // Create a new FileSystemWatcher and set its properties.
+                FileSystemWatcher watcher = new FileSystemWatcher
+                {
+                    Path = VdwConfigurationSettings.VdwInputPath,
+                    Filter = "*.json",
+                };
 
-            var timeOut = Task.Delay(500);
+                var timeOut = Task.Delay(500);
 
-            // Add event handlers.
-            watcher.Changed += FileWatcherOnChanged;
-            watcher.Created += FileWatcherOnChanged;
-            watcher.Deleted += FileWatcherOnChanged;
-            watcher.Error += FileWatcherOnError;
+                // Add event handlers.
+                watcher.Changed += FileWatcherOnChanged;
+                watcher.Created += FileWatcherOnChanged;
+                watcher.Deleted += FileWatcherOnChanged;
+                watcher.Error += FileWatcherOnError;
 
-            watcher.SynchronizingObject = this;
-            // Begin watching.
-            watcher.EnableRaisingEvents = true;
+                watcher.SynchronizingObject = this;
+                // Begin watching.
+                watcher.EnableRaisingEvents = true;
+            }
+            catch (Exception ex)
+            {
+                richTextBoxInformationMain.AppendText($"There was en error starting the file watcher: {ex}.");
+            }
+
         }
 
         private void FileWatcherOnError(object source, ErrorEventArgs e)

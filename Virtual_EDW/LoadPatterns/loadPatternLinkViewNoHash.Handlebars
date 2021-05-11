@@ -47,7 +47,7 @@ FROM
        {{/each}}
        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY         
-       {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringdiff isHardCodedValue "True"}}{{name}},{{/stringdiff}}{{/each}}{{/each}}{{/each}}{{#each dataItemMappings}}[{{sourceDataItems.0.name}}],{{/each}}
+       {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}},{{/stringcompare}}{{/each}}{{/each}}{{/each}}{{#each dataItemMappings}}[{{sourceDataItems.0.name}}],{{/each}}          
        {{../metadataConfiguration.recordSourceAttribute}}{{#unless @last}}UNION{{/unless}}
   ) LINK_selection
   GROUP BY {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}

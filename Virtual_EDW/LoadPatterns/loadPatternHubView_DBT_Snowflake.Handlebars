@@ -36,7 +36,7 @@ FROM
         {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY         
-        {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringdiff isHardCodedValue "True"}}{{name}},{{/stringdiff}}{{/each}}{{/each}}{{/each}}
+        {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}},{{/stringcompare}}{{/each}}{{/each}}{{/each}}        
         {{../metadataConfiguration.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}

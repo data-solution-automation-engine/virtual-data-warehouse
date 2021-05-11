@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using HandlebarsDotNet;
 using Newtonsoft.Json;
 using TEAM;
+using DataWarehouseAutomation;
 
 namespace Virtual_Data_Warehouse
 {
@@ -100,8 +101,8 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         public CustomTabPage(string classification, string notes, Dictionary<string, VDW_DataObjectMappingList> itemList)
         {
-            // Register the Handlebars helpers (extensions)
-            HandlebarsHelpers.RegisterHandleBarsHelpers();
+            // Register the Handlebars helpers (extensions), these are maintained in the DataWarehouseAutomation class library.
+            HandleBarsHelpers.RegisterHandleBarsHelpers();
 
             this.ItemList = itemList;
 

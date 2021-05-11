@@ -3,8 +3,8 @@
 -- Test data generation for: {{targetDataObject.name}}
 -- Generated at {{now}}
 --
-{{replicate 2}}
-INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+{{#replicate 5}}
+INSERT INTO [{{../targetDataObject.dataObjectConnection.extensions.0.value}}].[{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[{{../targetDataObject.name}}]
 (
    [{{../../metadataConfiguration.etlProcessAttribute}}], 
    [{{../../metadataConfiguration.eventDateTimeAttribute}}],
@@ -22,9 +22,10 @@ VALUES
   'Test Cases',
   'Insert',
   0x00000000000000000000000000000000,
-  {{#each dataItemMappings}}
-  {{stringcompare sourceDataItems.0.dataType "int"}}{{randomnumber 100000}}{{/stringcompare}}{{stringcompare sourceDataItems.0.dataType "varchar"}}'{{randomstring 10}}'{{/stringcompare}}{{stringcompare sourceDataItems.0.dataType "date"}}'{{randomdate 2000}}'{{/stringcompare}}{{#unless @last}},{{/unless}}
+  {{#each ../dataItemMappings}}
+  {{#stringcompare sourceDataItems.0.dataType "int"}}{{randomnumber 100000}}{{/stringcompare}}{{#stringcompare sourceDataItems.0.dataType "varchar"}}'{{randomstring 10}}'{{/stringcompare}}{{#stringcompare sourceDataItems.0.dataType "date"}}'{{randomdate 2000}}'{{/stringcompare}}{{#unless @last}},{{/unless}}
 {{/each}}
 )
 {{/replicate}}
+
 {{/each}}
