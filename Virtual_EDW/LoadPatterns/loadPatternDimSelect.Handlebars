@@ -80,7 +80,6 @@ FROM
        AND {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.{{../../../metadataConfiguration.expiryDateTimeAttribute}} >= TimeRanges.PIT_EXPIRY_DATETIME
 {{/stringcompare}}
 {{/each}}
-{{/each}}
     ) SUB_TIMELINES
   ) SUB_CHECKSUM
 ) SUB_FINAL
