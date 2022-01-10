@@ -54,7 +54,7 @@ FROM
     [{{../metadataConfiguration.sourceRowIdAttribute}}],
     [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}}{{#each businessKeyComponentMapping}}
     [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}{{/each}}
-     {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#each SourceDataItems}}{{#stringdiff dataItemClassification.0.classification "DrivingKey"}}LAG ([{{name}}], 1, '0')  OVER (
+     {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#each SourceDataItems}}{{#stringdiff dataItemClassification.0.classification "DrivingKey"}}LAG ([{{../name}}], 1, '0')  OVER (
         PARTITION BY {{#each ../../../../businessKeys}}{{#each BusinessKeyComponentMapping}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
         ORDER BY [{{../../../../../metadataConfiguration.loadDateTimeAttribute}}]
    ) AS PREVIOUS_FOLLOWER_KEY{{@index}}    {{/stringdiff}}{{/each}}{{/each}}{{/each}}
