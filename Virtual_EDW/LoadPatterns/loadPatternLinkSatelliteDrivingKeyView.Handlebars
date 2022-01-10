@@ -58,7 +58,7 @@ FROM
         PARTITION BY {{#each ../../../../businessKeys}}{{#each BusinessKeyComponentMapping}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
         ORDER BY [{{../../../../../metadataConfiguration.loadDateTimeAttribute}}]
    ) AS PREVIOUS_FOLLOWER_KEY{{@index}}    {{/stringdiff}}{{/each}}{{/each}}{{/each}}
-  FROM {{sourceDataObjects.0.name}}
+  FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
   WHERE NOT
   ([{{../metadataConfiguration.sourceRowIdAttribute}}]>1 AND [{{../metadataConfiguration.changeDataCaptureAttribute}}] ='Delete')
   {{#if filterCriterion}}AND {{filterCriterion}} {{/if}}  
@@ -84,7 +84,7 @@ FROM
                 PARTITION BY {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
                 ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}], {{#each businessKeys}}{{#each BusinessKeyComponentMapping}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}} ASC
            ) AS ROWVERSION
-        FROM {{sourceDataObjects.0.name}}
+        FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
    ) dummysub
 WHERE ROWVERSION=1
 ) sub

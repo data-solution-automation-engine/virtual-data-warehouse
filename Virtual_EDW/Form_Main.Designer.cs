@@ -91,10 +91,10 @@
             this.OutputPathLabel = new System.Windows.Forms.Label();
             this.textBoxOutputPath = new System.Windows.Forms.TextBox();
             this.tabPageHome = new System.Windows.Forms.TabPage();
+            this.labelWelcome = new System.Windows.Forms.Label();
             this.linkLabelVdwGithub = new System.Windows.Forms.LinkLabel();
             this.linkLabelWebLog = new System.Windows.Forms.LinkLabel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.richTextBoxMainScreen = new System.Windows.Forms.RichTextBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.backgroundWorkerEventLog = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
@@ -702,10 +702,10 @@
             // 
             // tabPageHome
             // 
+            this.tabPageHome.Controls.Add(this.labelWelcome);
             this.tabPageHome.Controls.Add(this.linkLabelVdwGithub);
             this.tabPageHome.Controls.Add(this.linkLabelWebLog);
             this.tabPageHome.Controls.Add(this.pictureBox2);
-            this.tabPageHome.Controls.Add(this.richTextBoxMainScreen);
             this.tabPageHome.Location = new System.Drawing.Point(4, 22);
             this.tabPageHome.Name = "tabPageHome";
             this.tabPageHome.Size = new System.Drawing.Size(1671, 715);
@@ -713,10 +713,19 @@
             this.tabPageHome.Text = "Home";
             this.tabPageHome.UseVisualStyleBackColor = true;
             // 
+            // labelWelcome
+            // 
+            this.labelWelcome.AutoSize = true;
+            this.labelWelcome.Location = new System.Drawing.Point(203, 31);
+            this.labelWelcome.Name = "labelWelcome";
+            this.labelWelcome.Size = new System.Drawing.Size(346, 13);
+            this.labelWelcome.TabIndex = 85;
+            this.labelWelcome.Text = "Welcome to the Virtual Data Warehouse - open source code generation";
+            // 
             // linkLabelVdwGithub
             // 
             this.linkLabelVdwGithub.AutoSize = true;
-            this.linkLabelVdwGithub.Location = new System.Drawing.Point(200, 71);
+            this.linkLabelVdwGithub.Location = new System.Drawing.Point(203, 77);
             this.linkLabelVdwGithub.Name = "linkLabelVdwGithub";
             this.linkLabelVdwGithub.Size = new System.Drawing.Size(273, 13);
             this.linkLabelVdwGithub.TabIndex = 20;
@@ -727,7 +736,7 @@
             // linkLabelWebLog
             // 
             this.linkLabelWebLog.AutoSize = true;
-            this.linkLabelWebLog.Location = new System.Drawing.Point(200, 50);
+            this.linkLabelWebLog.Location = new System.Drawing.Point(203, 53);
             this.linkLabelWebLog.Name = "linkLabelWebLog";
             this.linkLabelWebLog.Size = new System.Drawing.Size(137, 13);
             this.linkLabelWebLog.TabIndex = 19;
@@ -744,16 +753,6 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 18;
             this.pictureBox2.TabStop = false;
-            // 
-            // richTextBoxMainScreen
-            // 
-            this.richTextBoxMainScreen.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBoxMainScreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBoxMainScreen.Location = new System.Drawing.Point(200, 31);
-            this.richTextBoxMainScreen.Name = "richTextBoxMainScreen";
-            this.richTextBoxMainScreen.Size = new System.Drawing.Size(393, 115);
-            this.richTextBoxMainScreen.TabIndex = 17;
-            this.richTextBoxMainScreen.Text = "Welcome to the Virtual Data Warehouse - open source code generation.";
             // 
             // tabControlMain
             // 
@@ -864,7 +863,6 @@
         private System.Windows.Forms.LinkLabel linkLabelVdwGithub;
         private System.Windows.Forms.LinkLabel linkLabelWebLog;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.RichTextBox richTextBoxMainScreen;
         private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.GroupBox groupBoxConfigurationPaths;
         private System.Windows.Forms.PictureBox pictureBox3;
@@ -897,6 +895,7 @@
         internal System.Windows.Forms.TextBox textBoxTeamConnectionsPath;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ToolTip toolTipVdw;
+        private System.Windows.Forms.Label labelWelcome;
     }
 }
 

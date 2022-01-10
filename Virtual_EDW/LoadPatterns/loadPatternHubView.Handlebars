@@ -35,7 +35,7 @@ FROM
         CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
         {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM [{{sourceDataObjects.0.name}}]
+    FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
     WHERE {{#each businessKeys}}{{#each businessKeyComponentMapping}}
         {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}

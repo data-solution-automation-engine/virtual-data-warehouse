@@ -28,7 +28,7 @@ FROM
             stg.[{{../metadataConfiguration.loadDateTimeAttribute}}],
             -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
             stg.[{{../metadataConfiguration.recordSourceAttribute}}]
-          FROM [{{sourceDataObjects.0.name}}] stg
+          FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] stg
           WHERE NOT EXISTS
           (
              SELECT 1

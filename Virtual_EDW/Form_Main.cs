@@ -34,10 +34,14 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.5";
+            const string versionNumberForApplication = "v1.6.6";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
+            labelWelcome.Text = $"{labelWelcome.Text} - { versionNumberForApplication}";
+            ;
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
+
+
 
             #region Root Paths
             // Make sure the root directories exist, based on (tool) parameters
@@ -1624,6 +1628,11 @@ namespace Virtual_Data_Warehouse
             {
                 FormBase.VdwConfigurationSettings.SelectedMainTab = tabControlMain.SelectedTab.Name;
             }
+        }
+
+        private void richTextBoxMainScreen_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
