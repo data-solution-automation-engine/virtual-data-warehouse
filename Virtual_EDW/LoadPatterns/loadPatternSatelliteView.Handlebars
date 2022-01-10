@@ -119,7 +119,7 @@ FROM
           'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}} {{#each businessKeyComponentMapping}}
           CAST ({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}],{{/each}}{{/each}}        
           {{#each dataItemMappings}}
-          {{stringcompare targetDataItem.dataItemClassification.0.classification 'MultiActive'}}[{{sourceDataItems.0.name}}]{{else}}NULL{{/stringcompare}} AS [{{sourceDataItems.0.name}}],
+          {{#stringcompare targetDataItem.dataItemClassification.0.classification 'MultiActive'}}[{{sourceDataItems.0.name}}]{{else}}NULL{{/stringcompare}} AS [{{sourceDataItems.0.name}}],
           {{/each}}
           0x00000000000000000000000000000000 AS COMBINED_VALUE
         FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
@@ -130,4 +130,3 @@ WHERE
   OR
   ( CDC_CHANGE_INDICATOR = 'Different' and TIME_CHANGE_INDICATOR = 'Different')
 {{/each}}
-
