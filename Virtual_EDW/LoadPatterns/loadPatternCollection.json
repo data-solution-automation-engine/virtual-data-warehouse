@@ -98,6 +98,13 @@
     "loadPatternNotes": "Taken from earlier VDW versions, demonstrating one possible DIM / PIT template."
   },
   {
+    "loadPatternName": "Persistent Staging Area 001 View Pattern",
+    "loadPatternType": "PersistentStagingArea",
+    "loadPatternConnectionKey": "PsaConnectionInternalId",
+    "loadPatternFilePath": "loadPatternPersistentStagingView.handlebars",
+    "loadPatternNotes": ""
+  },
+  {
     "loadPatternName": "Persistent Staging Area 001 Full Outer Join Insert Pattern",
     "loadPatternType": "PersistentStagingArea",
     "loadPatternConnectionKey": "PsaConnectionInternalId",
@@ -110,13 +117,6 @@
     "loadPatternConnectionKey": "PsaConnectionInternalId",
     "loadPatternFilePath": "loadPatternPersistentStagingViewSimplified.handlebars",
     "loadPatternNotes": "This PSA pattern does not contain a full row checksum and CDC operation check, but just inserts STG records if they haven't been processed already."
-  },
-  {
-    "loadPatternName": "Persistent Staging Area 001 View Pattern",
-    "loadPatternType": "PersistentStagingArea",
-    "loadPatternConnectionKey": "PsaConnectionInternalId",
-    "loadPatternFilePath": "loadPatternPersistentStagingView.handlebars",
-    "loadPatternNotes": ""
   },
   {
     "loadPatternName": "Persistent Staging Area 001 View Pattern With Deduplication",

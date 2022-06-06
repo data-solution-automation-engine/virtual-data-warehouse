@@ -267,13 +267,13 @@ namespace Virtual_Data_Warehouse
                         }
                         catch (Exception ex)
                         {
-                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, "Issues occurred executing the SQL statement. SQL error: " + ex.Message + ""));
+                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"Issues occurred executing the SQL statement. SQL error {ex.Message} - {ex.InnerException.Message}."));
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue executing the code against the database. The message is: " + ex.Message + ""));
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue executing the code against the database. The message is {ex.Message} - {ex.InnerException.Message}."));
                 }
             }
         }

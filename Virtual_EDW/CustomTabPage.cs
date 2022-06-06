@@ -620,8 +620,23 @@ namespace Virtual_Data_Warehouse
                             {
                                 var conn = new SqlConnection {ConnectionString = localConnection.CreateSqlServerConnectionString(false)};
 
-                                VdwUtility.CreateVdwSchema(conn);
-                                VdwUtility.ExecuteOutputInDatabase(conn, result);
+                                try
+                                {
+                                    VdwUtility.CreateVdwSchema(conn);
+                                }
+                                catch
+                                {
+                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue creating the schema {FormBase.VdwConfigurationSettings.VdwSchema} in database {conn.Database}."));
+                                }
+
+                                try
+                                {
+                                    VdwUtility.ExecuteOutputInDatabase(conn, result);
+                                }
+                                catch
+                                {
+                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue executing the query {result} in database {conn.Database}."));
+                                }
                             }
                             else
                             {
