@@ -636,9 +636,7 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text =
-                    "An error has occured while attempting to open the VDW configuration file. The error message is: " +
-                    ex;
+                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the VDW configuration file. The error message is: " + ex;
             }
         }
 
