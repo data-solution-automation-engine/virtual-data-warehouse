@@ -24,7 +24,7 @@ namespace Virtual_Data_Warehouse
     /// </summary>
     public class GenerationSpecificMetadata
     {
-        public string selectedDataObject { get; set; }
+        public DataObject selectedDataObject { get; set; }
         public DateTime generationDateTime { get; set; }
     }
 

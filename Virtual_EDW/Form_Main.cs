@@ -8,7 +8,6 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DataWarehouseAutomation;
 using Newtonsoft.Json;
@@ -21,9 +20,9 @@ namespace Virtual_Data_Warehouse
     {
         internal bool startUpIndicator = true;
 
-        private List<CustomTabPage> localCustomTabPageList = new List<CustomTabPage>();
+        private readonly List<CustomTabPage> localCustomTabPageList = new List<CustomTabPage>();
 
-        private BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
+        private readonly BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
 
         FormAlert _alertEventLog;
 
@@ -34,14 +33,12 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.6";
+            const string versionNumberForApplication = "v1.6.7";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - { versionNumberForApplication}";
             ;
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
-
-
 
             #region Root Paths
             // Make sure the root directories exist, based on (tool) parameters
@@ -267,13 +264,6 @@ namespace Virtual_Data_Warehouse
                 DataPropertyName = "Notes"
             };
             dataGridViewLoadPatternCollection.Columns.Add(loadPatternNotes);
-
-            //// Ensure editing is committed straight away.
-            //foreach (Binding item in dataGridViewLoadPatternCollection.DataBindings)
-            //{
-            //    item.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            //}
-
         }
 
         private void GridAutoLayoutLoadPatternCollection()
@@ -285,7 +275,6 @@ namespace Virtual_Data_Warehouse
             // Disable the auto size again (to enable manual resizing).
             for (var i = 0; i < dataGridViewLoadPatternCollection.Columns.Count - 1; i++)
             {
-
                 dataGridViewLoadPatternCollection.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                 dataGridViewLoadPatternCollection.Columns[i].Width = dataGridViewLoadPatternCollection.Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
             }
@@ -303,8 +292,6 @@ namespace Virtual_Data_Warehouse
                     Filter = "*.json",
                 };
 
-                var timeOut = Task.Delay(500);
-
                 // Add event handlers.
                 watcher.Changed += FileWatcherOnChanged;
                 watcher.Created += FileWatcherOnChanged;
@@ -319,7 +306,6 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.AppendText($"There was en error starting the file watcher: {ex}.");
             }
-
         }
 
         private void FileWatcherOnError(object source, ErrorEventArgs e)
@@ -354,8 +340,6 @@ namespace Virtual_Data_Warehouse
             {
                 localFileSystemWatcher.EnableRaisingEvents = true;
             }
-
-
         }
 
 
@@ -367,8 +351,7 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text =
-                    "An error has occured while attempting to open the output directory. The error message is: " + ex;
+                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the output directory. The error message is: " + ex.Message;
             }
         }
 
@@ -379,8 +362,7 @@ namespace Virtual_Data_Warehouse
 
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Process.Start(ExtensionMethod.GetDefaultBrowserPath(),
-                "http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
+            Process.Start(ExtensionMethod.GetDefaultBrowserPath(),"http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
         }
         
  
@@ -482,16 +464,12 @@ namespace Virtual_Data_Warehouse
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-
             // Handling multithreading
             if (worker != null && worker.CancellationPending)
             {
                 e.Cancel = true;
             }
         }
-
-
-
 
         /// <summary>
         /// Save VDW settings in the from to memory & disk
@@ -562,8 +540,7 @@ namespace Virtual_Data_Warehouse
             rootPathConfigurationFile.AppendLine("/* End of file */");
 
             // Save the VDW core settings file to disk
-            using (var outfile = new StreamWriter(GlobalParameters.VdwConfigurationPath +
-                                                  GlobalParameters.VdwConfigurationFileName))
+            using (var outfile = new StreamWriter(GlobalParameters.VdwConfigurationPath + GlobalParameters.VdwConfigurationFileName))
             {
                 outfile.Write(rootPathConfigurationFile.ToString());
                 outfile.Close();
@@ -575,9 +552,7 @@ namespace Virtual_Data_Warehouse
             // Recreate the in-memory patterns (to make sure MetadataGeneration object details are also added).
             CreateCustomTabPages();
 
-            richTextBoxInformationMain.Text = DateTime.Now+" - the global parameter file (" +
-                                              GlobalParameters.VdwConfigurationFileName + ") has been updated in: " +
-                                              GlobalParameters.VdwConfigurationPath+"\r\n\r\n";
+            richTextBoxInformationMain.Text = DateTime.Now+" - the global parameter file (" + GlobalParameters.VdwConfigurationFileName + ") has been updated in: " + GlobalParameters.VdwConfigurationPath+"\r\n\r\n";
         }
 
         private void openTEAMConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -588,9 +563,7 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text =
-                    "An error has occured while attempting to open the TEAM configuration file. The error message is: " +
-                    ex;
+                richTextBoxInformationMain.Text = "An error has occured while attempting to open the TEAM configuration file. The error message is: " + ex.Message;
             }
         }
 
@@ -625,18 +598,16 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-
         private void openVDWConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                Process.Start(GlobalParameters.VdwConfigurationPath +
-                              GlobalParameters.VdwConfigurationFileName);
+                Process.Start(GlobalParameters.VdwConfigurationPath + GlobalParameters.VdwConfigurationFileName);
 
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the VDW configuration file. The error message is: " + ex;
+                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the VDW configuration file. The error message is: " + ex.Message;
             }
         }
 
@@ -657,7 +628,7 @@ namespace Virtual_Data_Warehouse
             internal string notes { get; set; }
             internal Dictionary<string,VDW_DataObjectMappingList> itemList { get; set; }
         }
-        
+
 
         internal void InformUser(string text, EventTypes eventType)
         {
@@ -669,7 +640,7 @@ namespace Virtual_Data_Warehouse
         /// Load all the metadata into a single list and associate with a pattern, based on the classification of the mapping (i.e. CoreBusinessConcept).
         /// </summary>
         /// <returns></returns>
-        internal List<LocalPattern> PatternList()
+        internal List<LocalPattern> GetMetadata()
         {
             #region Deserialisation
 
@@ -683,50 +654,52 @@ namespace Virtual_Data_Warehouse
                 // Hard-coded exclusions
                 string[] excludedFiles =
                 {
-                    "interfaceBusinessKeyComponent.json", "interfaceBusinessKeyComponentPart.json",
-                    "interfaceDrivingKey.json", "interfaceHubLinkXref.json", "interfacePhysicalModel.json",
-                    "interfaceSourceHubXref.json", "interfaceSourceLinkAttributeXref.json"
+                    "interfaceBusinessKeyComponent.json", 
+                    "interfaceBusinessKeyComponentPart.json",
+                    "interfaceDrivingKey.json", 
+                    "interfaceHubLinkXref.json", 
+                    "interfacePhysicalModel.json",
+                    "interfaceSourceHubXref.json", 
+                    "interfaceSourceLinkAttributeXref.json",
+                    "Development_TEAM_Model_Metadata.json",
+                    "Development_TEAM_Attribute_Mapping.json",
                 };
 
                 if (fileEntries.Length > 0)
                 {
-                    foreach (string fileName in fileEntries)
+                    foreach (var fileName in fileEntries)
                     {
                         if (!Array.Exists(excludedFiles, x => x == Path.GetFileName(fileName)))
                         {
                             try
                             {
                                 // Validate the file contents against the schema definition.
-                                if (File.Exists(Application.StartupPath + @"\Schema\" + GlobalParameters
-                                                    .JsonSchemaForDataWarehouseAutomationFileName))
+                                if (File.Exists(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName))
                                 {
                                     var result = DataWarehouseAutomation.JsonHandling.ValidateJsonFileAgainstSchema(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName, fileName);
 
                                     foreach (var error in result.Errors)
                                     {
-                                        VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
-                                            $"An error was encountered validating the contents {fileName}.{error.Message}. This occurs at line {error.LineNumber}."));
+                                        VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error was encountered validating the contents {fileName}.{error.Message}. This occurs at line {error.LineNumber}."));
                                     }
                                 }
                                 else
                                 {
-                                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
-                                        $"An error occurred while validating the file against the Data Warehouse Automation schema. Does the schema file exist?"));
+                                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error occurred while validating the file against the Data Warehouse Automation schema. Does the schema file exist?"));
                                 }
 
                                 // Add the deserialised file to the list of mappings.
                                 VDW_DataObjectMappingList deserialisedMapping = new VDW_DataObjectMappingList();
 
                                 var jsonInput = File.ReadAllText(fileName);
-                                deserialisedMapping =
-                                    JsonConvert.DeserializeObject<VDW_DataObjectMappingList>(jsonInput);
+                                deserialisedMapping = JsonConvert.DeserializeObject<VDW_DataObjectMappingList>(jsonInput);
                                 deserialisedMapping.metadataFileName = fileName;
 
                                 mappingList.Add(deserialisedMapping);
                             }
-                            catch
+                            catch (Exception exception)
                             {
-                                InformUser($"The file {fileName} could not be loaded properly.", EventTypes.Error);
+                                InformUser($"The file '{fileName}' could not be loaded properly. The reported error is {exception.Message}", EventTypes.Error);
                             }
                         }
                     }
@@ -886,7 +859,7 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
-            List<LocalPattern> finalMappingList = PatternList();
+            List<LocalPattern> finalMappingList = GetMetadata();
             var sortedMappingList = finalMappingList.OrderBy(x => x.classification);
 
             // Add the Custom Tab Pages
@@ -992,10 +965,10 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void button12_Click(object sender, EventArgs e)
+        private void buttonRefreshMetadata_Click(object sender, EventArgs e)
         {
             // Get the total of tab pages to create
-            var patternList = PatternList();
+            var patternList = GetMetadata();
 
             // Get the name of the active tab so this can be refreshed
             string tabName = tabControlMain.SelectedTab.Name;
@@ -1454,9 +1427,8 @@ namespace Virtual_Data_Warehouse
                         finalPath = fileBrowserDialog.SelectedPath + @"\";
                     }
 
-
                     // Update the parameters in memory.
-                    VdwConfigurationSettings.TeamConfigurationPath = finalPath; ;
+                    VdwConfigurationSettings.TeamConfigurationPath = finalPath;
                     textBoxTeamConfigurationPath.Text = finalPath;
 
                     // Report back to the user.
@@ -1536,22 +1508,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            // Specify that the link was visited. 
-            linkLabelVdwGithub.LinkVisited = true;
-            // Navigate to a URL.
-            Process.Start("https://github.com/RoelantVos/Virtual-Data-Warehouse");
-        }
-
-        private void linkLabelWebLog_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            // Specify that the link was visited. 
-            linkLabelWebLog.LinkVisited = true;
-            // Navigate to a URL.
-            Process.Start("http://www.roelantvos.com");
-        }
-
         /// <summary>
         /// Set the TEAM Connections File Path.
         /// </summary>
@@ -1597,7 +1553,7 @@ namespace Virtual_Data_Warehouse
 
 
                     // Update the parameters in memory.
-                    VdwConfigurationSettings.TeamConnectionsPath = finalPath; ;
+                    VdwConfigurationSettings.TeamConnectionsPath = finalPath;
                     textBoxTeamConnectionsPath.Text = finalPath;
 
                     // Report back to the user.
@@ -1624,13 +1580,54 @@ namespace Virtual_Data_Warehouse
         {
             if (tabControlMain.SelectedTab.Name != tabControlMain.TabPages[0].Name)
             {
-                FormBase.VdwConfigurationSettings.SelectedMainTab = tabControlMain.SelectedTab.Name;
+                VdwConfigurationSettings.SelectedMainTab = tabControlMain.SelectedTab.Name;
+            }
+        }
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var t = new Thread(ThreadProcAbout);
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start();
+        }
+
+        private FormAbout _myAboutForm;
+        public void ThreadProcAbout()
+        {
+            if (_myAboutForm == null)
+            {
+                _myAboutForm = new FormAbout();
+                _myAboutForm.Show();
+
+                Application.Run();
+            }
+
+            else
+            {
+                if (_myAboutForm.InvokeRequired)
+                {
+                    // Thread Error
+                    _myAboutForm.Invoke((MethodInvoker)delegate { _myAboutForm.Close(); });
+                    _myAboutForm.FormClosed += CloseAboutForm;
+
+                    _myAboutForm = new FormAbout();
+                    _myAboutForm.Show();
+                    Application.Run();
+                }
+                else
+                {
+                    // No invoke required - same thread
+                    _myAboutForm.FormClosed += CloseAboutForm;
+
+                    _myAboutForm = new FormAbout();
+                    _myAboutForm.Show();
+                    Application.Run();
+                }
             }
         }
 
-        private void richTextBoxMainScreen_TextChanged(object sender, EventArgs e)
+        private void CloseAboutForm(object sender, FormClosedEventArgs e)
         {
-
+            _myAboutForm = null;
         }
     }
 }

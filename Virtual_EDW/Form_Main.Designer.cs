@@ -53,6 +53,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.displayEventLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxGenerateInDatabase = new System.Windows.Forms.CheckBox();
             this.SQLGenerationGroupBox = new System.Windows.Forms.GroupBox();
             this.checkBoxSaveToFile = new System.Windows.Forms.CheckBox();
@@ -92,8 +93,6 @@
             this.textBoxOutputPath = new System.Windows.Forms.TextBox();
             this.tabPageHome = new System.Windows.Forms.TabPage();
             this.labelWelcome = new System.Windows.Forms.Label();
-            this.linkLabelVdwGithub = new System.Windows.Forms.LinkLabel();
-            this.linkLabelWebLog = new System.Windows.Forms.LinkLabel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.backgroundWorkerEventLog = new System.ComponentModel.BackgroundWorker();
@@ -256,7 +255,8 @@
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.helpToolStripMenuItem1,
-            this.displayEventLogToolStripMenuItem});
+            this.displayEventLogToolStripMenuItem,
+            this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
@@ -265,7 +265,7 @@
             // 
             this.helpToolStripMenuItem1.Image = global::Virtual_Data_Warehouse.Properties.Resources.HelpIconSmall;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -273,9 +273,17 @@
             // 
             this.displayEventLogToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.log_file;
             this.displayEventLogToolStripMenuItem.Name = "displayEventLogToolStripMenuItem";
-            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.displayEventLogToolStripMenuItem.Text = "Display Event Log";
             this.displayEventLogToolStripMenuItem.Click += new System.EventHandler(this.displayEventLogToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // checkBoxGenerateInDatabase
             // 
@@ -379,7 +387,7 @@
             this.button12.TabIndex = 23;
             this.button12.Text = "Refresh Metadata";
             this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
+            this.button12.Click += new System.EventHandler(this.buttonRefreshMetadata_Click);
             // 
             // tabPageSettings
             // 
@@ -703,8 +711,6 @@
             // tabPageHome
             // 
             this.tabPageHome.Controls.Add(this.labelWelcome);
-            this.tabPageHome.Controls.Add(this.linkLabelVdwGithub);
-            this.tabPageHome.Controls.Add(this.linkLabelWebLog);
             this.tabPageHome.Controls.Add(this.pictureBox2);
             this.tabPageHome.Location = new System.Drawing.Point(4, 22);
             this.tabPageHome.Name = "tabPageHome";
@@ -721,28 +727,6 @@
             this.labelWelcome.Size = new System.Drawing.Size(346, 13);
             this.labelWelcome.TabIndex = 85;
             this.labelWelcome.Text = "Welcome to the Virtual Data Warehouse - open source code generation";
-            // 
-            // linkLabelVdwGithub
-            // 
-            this.linkLabelVdwGithub.AutoSize = true;
-            this.linkLabelVdwGithub.Location = new System.Drawing.Point(203, 77);
-            this.linkLabelVdwGithub.Name = "linkLabelVdwGithub";
-            this.linkLabelVdwGithub.Size = new System.Drawing.Size(273, 13);
-            this.linkLabelVdwGithub.TabIndex = 20;
-            this.linkLabelVdwGithub.TabStop = true;
-            this.linkLabelVdwGithub.Text = "https://github.com/RoelantVos/Virtual-Data-Warehouse";
-            this.linkLabelVdwGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // linkLabelWebLog
-            // 
-            this.linkLabelWebLog.AutoSize = true;
-            this.linkLabelWebLog.Location = new System.Drawing.Point(203, 53);
-            this.linkLabelWebLog.Name = "linkLabelWebLog";
-            this.linkLabelWebLog.Size = new System.Drawing.Size(137, 13);
-            this.linkLabelWebLog.TabIndex = 19;
-            this.linkLabelWebLog.TabStop = true;
-            this.linkLabelWebLog.Text = "http://www.roelantvos.com";
-            this.linkLabelWebLog.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWebLog_LinkClicked);
             // 
             // pictureBox2
             // 
@@ -799,7 +783,7 @@
             this.MinimumSize = new System.Drawing.Size(1378, 835);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Virtual Enterprise Data Warehouse";
+            this.Text = "Virtual Data Warehouse";
             this.menuStripMainMenu.ResumeLayout(false);
             this.menuStripMainMenu.PerformLayout();
             this.SQLGenerationGroupBox.ResumeLayout(false);
@@ -860,8 +844,6 @@
         private System.Windows.Forms.Label labelTEAMConfigurationFile;
         private System.Windows.Forms.Label OutputPathLabel;
         private System.Windows.Forms.TabPage tabPageHome;
-        private System.Windows.Forms.LinkLabel linkLabelVdwGithub;
-        private System.Windows.Forms.LinkLabel linkLabelWebLog;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.GroupBox groupBoxConfigurationPaths;
@@ -896,6 +878,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ToolTip toolTipVdw;
         private System.Windows.Forms.Label labelWelcome;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

@@ -206,7 +206,7 @@
           "description": "",
           "$ref": "#/definitions/dataConnection"
         },
-        "dataObjectClassification": {
+        "dataObjectClassifications": {
           "$id": "#/definitions/dataObject/properties/dataObjectClassification",
           "description": "Classification for the dataObject (free form).",
           "type": [ "array", "null" ],
@@ -355,6 +355,12 @@
         "name": {
           "description": "Unique name which identifies the column / attribute.",
           "type": "string"
+        },
+        "dataObject": {
+          "$id": "#/definitions/dataItem/properties/dataObject",
+          "description": "The data object of the data item, which may be required when the data item is used in a data item mapping context.",
+          "type": [ "object", "null" ],
+          "$ref": "#/definitions/dataObject"
         },
         "dataType": {
           "description": "Optional. Label of the data type",
