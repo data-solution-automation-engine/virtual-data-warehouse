@@ -95,10 +95,6 @@
     <StartupObject>Virtual_Data_Warehouse.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DataWarehouseAutomation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\DataWarehouseAutomation.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -415,6 +411,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DataWarehouseAutomation">
+      <Version>1.2.3</Version>
+    </PackageReference>
     <PackageReference Include="Handlebars.Net">
       <Version>2.0.7</Version>
     </PackageReference>
