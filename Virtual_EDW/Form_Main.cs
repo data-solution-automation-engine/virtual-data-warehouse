@@ -41,7 +41,7 @@ namespace Virtual_Data_Warehouse
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
 
             #region Root Paths
-            // Make sure the root directories exist, based on (tool) parameters
+            // Make sure the root directories exist, based on (tool) parameters.
 
             // Configuration Path
             var localEvent = FileHandling.InitialisePath(GlobalParameters.VdwConfigurationPath);
@@ -51,7 +51,7 @@ namespace Virtual_Data_Warehouse
             }
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Configuration path initialised for {GlobalParameters.VdwConfigurationPath}."));
             
-            // Input Path
+            // Input Path.
             localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwInputPath);
             if (localEvent.eventDescription != null)
             {
@@ -59,7 +59,7 @@ namespace Virtual_Data_Warehouse
             }
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Input path set for {VdwConfigurationSettings.VdwInputPath}."));
 
-            // Output Path
+            // Output Path.
             localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwOutputPath);
             if (localEvent.eventDescription != null)
             {
@@ -67,7 +67,7 @@ namespace Virtual_Data_Warehouse
             }
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Output path set for {VdwConfigurationSettings.VdwOutputPath}."));
 
-            // Examples Path
+            // Examples Path.
             localEvent = FileHandling.InitialisePath(VdwConfigurationSettings.VdwExamplesPath);
             if (localEvent.eventDescription != null)
             {
@@ -96,8 +96,7 @@ namespace Virtual_Data_Warehouse
             // The TeamEnvironmentCollection contains all the environments as specified in TEAM (environments file).
             try
             {
-                TeamEnvironmentCollection.LoadTeamEnvironmentCollection(
-                    VdwConfigurationSettings.TeamEnvironmentFilePath);
+                TeamEnvironmentCollection.LoadTeamEnvironmentCollection(VdwConfigurationSettings.TeamEnvironmentFilePath);
             }
             catch
             {
@@ -486,22 +485,22 @@ namespace Virtual_Data_Warehouse
 
             if (!textBoxTeamConfigurationPath.Text.EndsWith(@"\"))
             {
-                textBoxTeamConfigurationPath.Text = textBoxTeamConfigurationPath.Text + @"\";
+                textBoxTeamConfigurationPath.Text += @"\";
             }
 
             if (!textBoxInputPath.Text.EndsWith(@"\"))
             {
-                textBoxInputPath.Text = textBoxInputPath.Text + @"\";
+                textBoxInputPath.Text += @"\";
             }
 
             if (!textBoxOutputPath.Text.EndsWith(@"\"))
             {
-                textBoxOutputPath.Text = textBoxOutputPath.Text + @"\";
+                textBoxOutputPath.Text += @"\";
             }
 
             if (!textBoxLoadPatternPath.Text.EndsWith(@"\"))
             {
-                textBoxLoadPatternPath.Text = textBoxLoadPatternPath.Text + @"\";
+                textBoxLoadPatternPath.Text += @"\";
             }
 
             new KeyValuePair< string, TeamWorkingEnvironment > ("", null);
@@ -563,7 +562,7 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occured while attempting to open the TEAM configuration file. The error message is: " + ex.Message;
+                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the TEAM configuration file. The error message is: " + ex.Message;
             }
         }
 
@@ -663,6 +662,10 @@ namespace Virtual_Data_Warehouse
                     "interfaceSourceLinkAttributeXref.json",
                     "Development_TEAM_Model_Metadata.json",
                     "Development_TEAM_Attribute_Mapping.json",
+                    "Development_TEAM_Table_Mapping.json",
+                    "Production_TEAM_Model_Metadata.json",
+                    "Production_TEAM_Attribute_Mapping.json",
+                    "Production_TEAM_Table_Mapping.json"
                 };
 
                 if (fileEntries.Length > 0)
@@ -689,13 +692,16 @@ namespace Virtual_Data_Warehouse
                                 }
 
                                 // Add the deserialised file to the list of mappings.
-                                VDW_DataObjectMappingList deserialisedMapping = new VDW_DataObjectMappingList();
+                                VDW_DataObjectMappingList deserialisedMapping;
 
                                 var jsonInput = File.ReadAllText(fileName);
                                 deserialisedMapping = JsonConvert.DeserializeObject<VDW_DataObjectMappingList>(jsonInput);
-                                deserialisedMapping.metadataFileName = fileName;
+                                if (deserialisedMapping != null)
+                                {
+                                    deserialisedMapping.metadataFileName = fileName;
 
-                                mappingList.Add(deserialisedMapping);
+                                    mappingList.Add(deserialisedMapping);
+                                }
                             }
                             catch (Exception exception)
                             {
@@ -731,7 +737,7 @@ namespace Virtual_Data_Warehouse
             Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>> objectDictionary =
                 new Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>>();
 
-            if (mappingList.Any() == true)
+            if (mappingList.Any())
             {
                 foreach (VDW_DataObjectMappingList dataObjectMappings in mappingList)
                 {
@@ -1155,7 +1161,7 @@ namespace Virtual_Data_Warehouse
 
 
                 // Update the parameters in memory.
-                VdwConfigurationSettings.LoadPatternPath = finalPath; ;
+                VdwConfigurationSettings.LoadPatternPath = finalPath;
                 textBoxLoadPatternPath.Text = finalPath;
 
                 // Report back to the user.
