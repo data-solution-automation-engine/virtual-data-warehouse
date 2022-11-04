@@ -93,7 +93,7 @@
   {
     "loadPatternName": "Dimension / PIT 001 Select Pattern",
     "loadPatternType": "Presentation",
-    "loadPatternConnectionKey": "PsaConnectionInternalId",
+    "loadPatternConnectionKey": "IntegrationConnectionInternalId",
     "loadPatternFilePath": "loadPatternDimSelect.handlebars",
     "loadPatternNotes": "Taken from earlier VDW versions, demonstrating one possible DIM / PIT template."
   },

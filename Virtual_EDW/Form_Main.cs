@@ -672,7 +672,10 @@ namespace Virtual_Data_Warehouse
                 {
                     foreach (var fileName in fileEntries)
                     {
-                        if (!Array.Exists(excludedFiles, x => x == Path.GetFileName(fileName)))
+                        if (!Array.Exists(excludedFiles, x => x == Path.GetFileName(fileName)) && 
+                            !fileName.EndsWith("TEAM_Table_Mapping.json") && 
+                            !fileName.EndsWith("TEAM_Attribute_Mapping.json") && 
+                            !fileName.EndsWith("TEAM_Model_Metadata.json"))
                         {
                             try
                             {
