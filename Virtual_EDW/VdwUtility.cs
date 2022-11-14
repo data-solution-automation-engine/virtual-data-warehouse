@@ -1,14 +1,17 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using TEAM;
 
+
 namespace Virtual_Data_Warehouse
 {
-    public class VdwUtility
+    public static class VdwUtility
     {
 
        /// <summary>
@@ -293,8 +296,13 @@ namespace Virtual_Data_Warehouse
             {
                 FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue saving the output to disk. The message is: " + ex.Message + "\r\n\r\n"));
             }
+        }
 
-  
+        public static void DoubleBuffered(this DataGridView dgv, bool setting)
+        {
+            Type dgvType = dgv.GetType();
+            PropertyInfo pi = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
+            pi.SetValue(dgv, setting, null);
         }
     }
 }

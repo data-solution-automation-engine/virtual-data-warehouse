@@ -18,10 +18,8 @@ namespace Virtual_Data_Warehouse
 {
     public partial class FormMain : FormBase
     {
-        internal bool startUpIndicator = true;
-
-        private readonly List<CustomTabPage> localCustomTabPageList = new List<CustomTabPage>();
-
+        internal bool startUpIndicator;
+        private readonly List<CustomTabPage> localCustomTabPageList;
         private readonly BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
 
         FormAlert _alertEventLog;
@@ -33,11 +31,11 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.7";
+            const string versionNumberForApplication = "v1.6.8";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - { versionNumberForApplication}";
-            ;
+            
             VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"{Text}."));
 
             #region Root Paths
@@ -162,15 +160,15 @@ namespace Virtual_Data_Warehouse
         public void PopulateLoadPatternCollectionDataGrid()
         {
             // Convert into data table
-            DataTable dt = VdwConfigurationSettings.patternList.ToDataTable();
+            DataTable patternDataTable = VdwConfigurationSettings.patternList.ToDataTable();
 
             // Accept changes
-            dt.AcceptChanges();
+            patternDataTable.AcceptChanges();
 
             // Handle unknown combobox values, by setting them to empty.
             var localConnectionKeyList = LocalTeamConnection.TeamConnectionKeyList(TeamConfigurationSettings.ConnectionDictionary);
             List<string> userFeedbackList = new List<string>();
-            foreach (DataRow row in dt.Rows)
+            foreach (DataRow row in patternDataTable.Rows)
             {
                 var comboBoxValueConnectionKey = row["LoadPatternConnectionKey"].ToString();
 
@@ -195,16 +193,16 @@ namespace Virtual_Data_Warehouse
             }
 
             //Make sure the changes are seen as committed, so that changes can be detected later on.
-            dt.AcceptChanges();
+            patternDataTable.AcceptChanges();
 
             // Tidy-up headers
-            dt.Columns[0].ColumnName = "Name";
-            dt.Columns[1].ColumnName = "Type";
-            dt.Columns[2].ColumnName = "Connection Key";
-            dt.Columns[3].ColumnName = "Path";
-            dt.Columns[4].ColumnName = "Notes";
+            patternDataTable.Columns[0].ColumnName = "Name";
+            patternDataTable.Columns[1].ColumnName = "Type";
+            patternDataTable.Columns[2].ColumnName = "Connection Key";
+            patternDataTable.Columns[3].ColumnName = "Path";
+            patternDataTable.Columns[4].ColumnName = "Notes";
 
-            _bindingSourceLoadPatternCollection.DataSource = dt;
+            _bindingSourceLoadPatternCollection.DataSource = patternDataTable;
             dataGridViewLoadPatternCollection.DataSource = _bindingSourceLoadPatternCollection;
 
 
@@ -218,6 +216,8 @@ namespace Virtual_Data_Warehouse
             dataGridViewLoadPatternCollection.AutoGenerateColumns = false;
             dataGridViewLoadPatternCollection.ColumnHeadersVisible = true;
             dataGridViewLoadPatternCollection.EditMode = DataGridViewEditMode.EditOnEnter;
+
+            dataGridViewLoadPatternCollection.DoubleBuffered(true);
 
             DataGridViewTextBoxColumn loadPatternName = new DataGridViewTextBoxColumn
             {
