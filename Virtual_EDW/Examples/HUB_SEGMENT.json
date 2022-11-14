@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "HUB_SEGMENT",
-    "generationDateTime": "2021-02-17T18:13:50.5329353+10:00"
+    "selectedDataObject": {
+      "name": "HUB_SEGMENT",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "CoreBusinessConcept"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "HUB_SEGMENT",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -71,45 +90,18 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
             {
               "sourceDataItems": [
                 {
-                  "name": "Segment+'TEST'"
+                  "name": "Segment+'TEST'",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "SEGMENT_CODE",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "SEGMENT_CODE"
               }
             }
           ],
@@ -123,9 +115,7 @@
       "mappingName": "HUB_SEGMENT",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -136,7 +126,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -160,7 +150,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -176,75 +166,25 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "SAT_SEGMENT",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
             {
               "sourceDataItems": [
                 {
-                  "name": "Demographic_Segment_Code+'TEST'"
+                  "name": "Demographic_Segment_Code+'TEST'",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "SEGMENT_CODE",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "SEGMENT_CODE"
               }
             }
           ],
           "surrogateKey": "SEGMENT_SK"
         }
       ],
-      "filterCriterion": "8=8",
+      "filterCriterion": "",
       "enabled": true
     }
   ]

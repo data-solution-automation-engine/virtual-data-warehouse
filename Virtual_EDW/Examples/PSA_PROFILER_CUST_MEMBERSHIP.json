@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "PSA_PROFILER_CUST_MEMBERSHIP",
-    "generationDateTime": "2021-02-17T18:13:50.5663368+10:00"
+    "selectedDataObject": {
+      "name": "PSA_PROFILER_CUST_MEMBERSHIP",
+      "dataObjectConnection": {
+        "dataConnectionString": "PSA",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "PersistentStagingArea"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "PSA_PROFILER_CUST_MEMBERSHIP",
       "mappingClassifications": [
         {
-          "id": 2,
-          "classification": "PersistentStagingArea",
-          "notes": "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts. Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area."
+          "classification": "PersistentStagingArea"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "100_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "150_Persistent_Staging_Area",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -163,124 +182,67 @@
               "classification": "NaturalBusinessRelationshipContext"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Comment",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 13
+              "name": "Start_Date"
             }
           ],
           "targetDataItem": {
-            "name": "Comment",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 13
+            "name": "Start_Date"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "CustomerID",
-              "dataType": "int",
-              "ordinalPosition": 8
+              "name": "End_Date"
             }
           ],
           "targetDataItem": {
-            "name": "CustomerID",
-            "dataType": "int",
-            "ordinalPosition": 8
+            "name": "End_Date"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "End_Date",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 11
+              "name": "Status"
             }
           ],
           "targetDataItem": {
-            "name": "End_Date",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 11
+            "name": "Status"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Plan_Code",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
+              "name": "Comment"
             }
           ],
           "targetDataItem": {
-            "name": "Plan_Code",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 9
+            "name": "Comment"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Start_Date",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 10
+              "name": "CustomerID"
             }
           ],
           "targetDataItem": {
-            "name": "Start_Date",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 10
+            "name": "CustomerID"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Status",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
+              "name": "Plan_Code"
             }
           ],
           "targetDataItem": {
-            "name": "Status",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 12
+            "name": "Plan_Code"
           }
         }
       ],
@@ -291,34 +253,26 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "CustomerID",
-                "dataType": "int",
-                "ordinalPosition": 8
+                "name": "CustomerID"
               }
             },
             {
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 9
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Plan_Code",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 9
+                "name": "Plan_Code"
               }
             }
           ],
-          "surrogateKey": "Not applicable"
+          "surrogateKey": "PROFILER_CUST_MEMBERSHIP_SK"
         }
       ],
       "filterCriterion": "",

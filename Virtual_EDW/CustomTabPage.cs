@@ -10,6 +10,7 @@ using HandlebarsDotNet;
 using Newtonsoft.Json;
 using TEAM;
 using DataWarehouseAutomation;
+using TEAM_Library;
 
 namespace Virtual_Data_Warehouse
 {

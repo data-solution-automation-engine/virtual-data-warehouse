@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "PSA_PROFILER_CUSTOMER_OFFER",
-    "generationDateTime": "2021-02-17T18:13:50.5794226+10:00"
+    "selectedDataObject": {
+      "name": "PSA_PROFILER_CUSTOMER_OFFER",
+      "dataObjectConnection": {
+        "dataConnectionString": "PSA",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "PersistentStagingArea"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "PSA_PROFILER_CUSTOMER_OFFER",
       "mappingClassifications": [
         {
-          "id": 2,
-          "classification": "PersistentStagingArea",
-          "notes": "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts. Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area."
+          "classification": "PersistentStagingArea"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "100_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "150_Persistent_Staging_Area",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -163,58 +182,27 @@
               "classification": "NaturalBusinessRelationshipContext"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "CustomerID",
-              "dataType": "int",
-              "ordinalPosition": 8
+              "name": "CustomerID"
             }
           ],
           "targetDataItem": {
-            "name": "CustomerID",
-            "dataType": "int",
-            "ordinalPosition": 8
+            "name": "CustomerID"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "OfferID",
-              "dataType": "int",
-              "ordinalPosition": 9
+              "name": "OfferID"
             }
           ],
           "targetDataItem": {
-            "name": "OfferID",
-            "dataType": "int",
-            "ordinalPosition": 9
+            "name": "OfferID"
           }
         }
       ],
@@ -225,32 +213,26 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "CustomerID",
-                "dataType": "int",
-                "ordinalPosition": 8
+                "name": "CustomerID"
               }
             },
             {
               "sourceDataItems": [
                 {
                   "name": "OfferID",
-                  "dataType": "int",
-                  "ordinalPosition": 9
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "OfferID",
-                "dataType": "int",
-                "ordinalPosition": 9
+                "name": "OfferID"
               }
             }
           ],
-          "surrogateKey": "Not applicable"
+          "surrogateKey": "PROFILER_CUSTOMER_OFFER_SK"
         }
       ],
       "filterCriterion": "",

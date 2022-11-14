@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "LSAT_CUSTOMER_COSTING",
-    "generationDateTime": "2021-02-17T18:13:50.3567477+10:00"
+    "selectedDataObject": {
+      "name": "LSAT_CUSTOMER_COSTING",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "NaturalBusinessRelationshipContext"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "LSAT_CUSTOMER_COSTING",
       "mappingClassifications": [
         {
-          "id": 6,
-          "classification": "NaturalBusinessRelationshipContext",
-          "notes": "The Link Satellites describe the changes over time for the relationships (Links). This pattern supports normal (historical) Link Satellites."
+          "classification": "NaturalBusinessRelationshipContext"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -71,133 +90,31 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "HUB_SEGMENT",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Date_effective",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 11
+              "name": "Date_effective"
             }
           ],
           "targetDataItem": {
             "name": "COSTING_EFFECTIVE_DATE",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 2
+            "dataItemClassification": [
+              {
+                "classification": "MultiActiveKey",
+                "notes": "The attribute that supports granularity shift in describing context."
+              }
+            ]
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Monthly_Cost",
-              "dataType": "numeric",
-              "numericPrecision": 38,
-              "numericScale": 20,
-              "ordinalPosition": 12
+              "name": "Monthly_Cost"
             }
           ],
           "targetDataItem": {
-            "name": "PERSONAL_MONTHLY_COST",
-            "dataType": "numeric",
-            "numericPrecision": 38,
-            "numericScale": 20,
-            "ordinalPosition": 9
+            "name": "PERSONAL_MONTHLY_COST"
           }
         }
       ],
@@ -208,9 +125,7 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 10
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -232,8 +147,7 @@
               "sourceDataItems": [
                 {
                   "name": "Member",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -243,7 +157,8 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "Segment+'TEST'"
+                  "name": "Segment+'TEST'",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {

@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "HUB_MEMBERSHIP_PLAN",
-    "generationDateTime": "2021-02-17T18:13:50.4741111+10:00"
+    "selectedDataObject": {
+      "name": "HUB_MEMBERSHIP_PLAN",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "CoreBusinessConcept"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "HUB_MEMBERSHIP_PLAN",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -71,31 +90,6 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -103,16 +97,11 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 9
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_CODE",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "PLAN_CODE"
               }
             },
             {
@@ -123,26 +112,21 @@
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_SUFFIX",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 6
+                "name": "PLAN_SUFFIX"
               }
             }
           ],
           "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
-      "filterCriterion": "14=14",
+      "filterCriterion": "",
       "enabled": true
     },
     {
       "mappingName": "HUB_MEMBERSHIP_PLAN",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -153,7 +137,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -177,7 +161,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -193,54 +177,6 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "SAT_MEMBERSHIP_PLAN_VALUATION",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -248,16 +184,11 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_CODE",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "PLAN_CODE"
               }
             },
             {
@@ -268,26 +199,21 @@
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_SUFFIX",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 6
+                "name": "PLAN_SUFFIX"
               }
             }
           ],
           "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
-      "filterCriterion": "12=12",
+      "filterCriterion": "",
       "enabled": true
     },
     {
       "mappingName": "HUB_MEMBERSHIP_PLAN",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -298,7 +224,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -322,7 +248,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -338,31 +264,6 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -370,16 +271,11 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 10
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_CODE",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "PLAN_CODE"
               }
             },
             {
@@ -390,26 +286,21 @@
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_SUFFIX",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 6
+                "name": "PLAN_SUFFIX"
               }
             }
           ],
           "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
-      "filterCriterion": "18=18",
+      "filterCriterion": "",
       "enabled": true
     },
     {
       "mappingName": "HUB_MEMBERSHIP_PLAN",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -420,7 +311,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -444,7 +335,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -460,54 +351,6 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "SAT_MEMBERSHIP_PLAN_DETAIL",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -515,16 +358,11 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_CODE",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "PLAN_CODE"
               }
             },
             {
@@ -535,26 +373,21 @@
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_SUFFIX",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 6
+                "name": "PLAN_SUFFIX"
               }
             }
           ],
           "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
-      "filterCriterion": "10=10",
+      "filterCriterion": "",
       "enabled": true
     },
     {
       "mappingName": "HUB_MEMBERSHIP_PLAN",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -565,7 +398,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -589,7 +422,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -605,31 +438,6 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -637,16 +445,11 @@
               "sourceDataItems": [
                 {
                   "name": "Renewal_Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 10
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_CODE",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "PLAN_CODE"
               }
             },
             {
@@ -657,17 +460,14 @@
                 }
               ],
               "targetDataItem": {
-                "name": "PLAN_SUFFIX",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 6
+                "name": "PLAN_SUFFIX"
               }
             }
           ],
           "surrogateKey": "MEMBERSHIP_PLAN_SK"
         }
       ],
-      "filterCriterion": "1=1",
+      "filterCriterion": "",
       "enabled": true
     }
   ]

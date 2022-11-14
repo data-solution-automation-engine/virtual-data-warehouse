@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "HUB_CUSTOMER",
-    "generationDateTime": "2021-02-17T18:13:50.2483952+10:00"
+    "selectedDataObject": {
+      "name": "HUB_CUSTOMER",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "CoreBusinessConcept"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "HUB_CUSTOMER",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -94,29 +113,6 @@
               "classification": "Presentation"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "businessKeys": [
@@ -126,31 +122,25 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "CUSTOMER_ID",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "CUSTOMER_ID"
               }
             }
           ],
           "surrogateKey": "CUSTOMER_SK"
         }
       ],
-      "filterCriterion": "15=15",
+      "filterCriterion": "",
       "enabled": true
     },
     {
       "mappingName": "HUB_CUSTOMER",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -161,7 +151,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -185,7 +175,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -224,29 +214,6 @@
               "classification": "Presentation"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "businessKeys": [
@@ -256,31 +223,25 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "CUSTOMER_ID",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "CUSTOMER_ID"
               }
             }
           ],
           "surrogateKey": "CUSTOMER_SK"
         }
       ],
-      "filterCriterion": "5=5",
+      "filterCriterion": "",
       "enabled": true
     },
     {
       "mappingName": "HUB_CUSTOMER",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -291,7 +252,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -315,7 +276,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -332,52 +293,6 @@
         ]
       },
       "relatedDataObjects": [
-        {
-          "name": "SAT_CUSTOMER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
-        {
-          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
         {
           "name": "DIM_CUSTOMER",
           "dataObjectConnection": {
@@ -398,29 +313,6 @@
           "dataObjectClassifications": [
             {
               "classification": "Presentation"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
             }
           ]
         }
@@ -432,31 +324,25 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "CUSTOMER_ID",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "CUSTOMER_ID"
               }
             }
           ],
           "surrogateKey": "CUSTOMER_SK"
         }
       ],
-      "filterCriterion": "1=1",
+      "filterCriterion": "",
       "enabled": true
     },
     {
       "mappingName": "HUB_CUSTOMER",
       "mappingClassifications": [
         {
-          "id": 3,
-          "classification": "CoreBusinessConcept",
-          "notes": "The source-to-target mappings for a Hub entity type. The Hub entities define the business concept and integration point for the model. In the Virtual Data Warehouse, the generated views combine the metadata from the various source to target mappings to create a single integrated Hub query."
+          "classification": "CoreBusinessConcept"
         }
       ],
       "sourceDataObjects": [
@@ -467,7 +353,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -491,7 +377,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -528,29 +414,6 @@
           "dataObjectClassifications": [
             {
               "classification": "Presentation"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
             }
           ]
         }
@@ -562,15 +425,11 @@
               "sourceDataItems": [
                 {
                   "name": "Member",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "CUSTOMER_ID",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 5
+                "name": "CUSTOMER_ID"
               }
             }
           ],

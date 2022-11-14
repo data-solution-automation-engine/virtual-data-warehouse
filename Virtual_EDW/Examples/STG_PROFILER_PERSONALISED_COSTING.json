@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "STG_PROFILER_PERSONALISED_COSTING",
-    "generationDateTime": "2021-02-17T18:13:49.5728749+10:00"
+    "selectedDataObject": {
+      "name": "STG_PROFILER_PERSONALISED_COSTING",
+      "dataObjectConnection": {
+        "dataConnectionString": "Staging",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "StagingArea"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "STG_PROFILER_PERSONALISED_COSTING",
       "mappingClassifications": [
         {
-          "id": 1,
-          "classification": "StagingArea",
-          "notes": "The mappings from source to the landing (staging) area."
+          "classification": "StagingArea"
         }
       ],
       "sourceDataObjects": [
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "100_Staging_Area",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -94,109 +113,57 @@
               "classification": "PersistentStagingArea"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Date_effective",
-              "dataType": "datetime",
-              "numericScale": 3,
-              "ordinalPosition": 4
+              "name": "Plan_Code"
             }
           ],
           "targetDataItem": {
-            "name": "Date_effective",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 11
+            "name": "Plan_Code"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Member",
-              "dataType": "int",
-              "ordinalPosition": 1
+              "name": "Date_effective"
             }
           ],
           "targetDataItem": {
-            "name": "Member",
-            "dataType": "int",
-            "ordinalPosition": 8
+            "name": "Date_effective"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Monthly_Cost",
-              "dataType": "numeric",
-              "numericPrecision": 18,
-              "ordinalPosition": 5
+              "name": "Monthly_Cost"
             }
           ],
           "targetDataItem": {
-            "name": "Monthly_Cost",
-            "dataType": "numeric",
-            "numericPrecision": 38,
-            "numericScale": 20,
-            "ordinalPosition": 12
+            "name": "Monthly_Cost"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Plan_Code",
-              "dataType": "varchar",
-              "characterLength": 100,
-              "ordinalPosition": 3
+              "name": "Member"
             }
           ],
           "targetDataItem": {
-            "name": "Plan_Code",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 10
+            "name": "Member"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Segment",
-              "dataType": "varchar",
-              "characterLength": 100,
-              "ordinalPosition": 2
+              "name": "Segment"
             }
           ],
           "targetDataItem": {
-            "name": "Segment",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 9
+            "name": "Segment"
           }
         }
       ],
@@ -207,66 +174,48 @@
               "sourceDataItems": [
                 {
                   "name": "Member",
-                  "dataType": "int",
-                  "ordinalPosition": 1
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Member",
-                "dataType": "int",
-                "ordinalPosition": 8
+                "name": "Member"
               }
             },
             {
               "sourceDataItems": [
                 {
                   "name": "Segment",
-                  "dataType": "varchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 2
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Segment",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 9
+                "name": "Segment"
               }
             },
             {
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "varchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 3
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Plan_Code",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 10
+                "name": "Plan_Code"
               }
             },
             {
               "sourceDataItems": [
                 {
                   "name": "Date_effective",
-                  "dataType": "datetime",
-                  "numericScale": 3,
-                  "ordinalPosition": 4
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Date_effective",
-                "dataType": "datetime2",
-                "numericScale": 7,
-                "ordinalPosition": 11
+                "name": "Date_effective"
               }
             }
           ],
-          "surrogateKey": "Not applicable"
+          "surrogateKey": "PROFILER_PERSONALISED_COSTING_SK"
         }
       ],
       "filterCriterion": "",

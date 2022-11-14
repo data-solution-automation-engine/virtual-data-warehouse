@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "LNK_RENEWAL_MEMBERSHIP",
-    "generationDateTime": "2021-02-17T18:13:50.4892017+10:00"
+    "selectedDataObject": {
+      "name": "LNK_RENEWAL_MEMBERSHIP",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "NaturalBusinessRelationship"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "LNK_RENEWAL_MEMBERSHIP",
       "mappingClassifications": [
         {
-          "id": 4,
-          "classification": "NaturalBusinessRelationship",
-          "notes": "The Link type entities record the relationships between the Business Entities (Hubs). Similar to Hubs they are subject to potentially being populated from multiple Staging Area tables. The Link views therefore present an integrated view of all relationships across these tables."
+          "classification": "NaturalBusinessRelationship"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -71,100 +90,6 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "SAT_MEMBERSHIP_PLAN_DETAIL",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
-        {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -172,9 +97,7 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -196,9 +119,7 @@
               "sourceDataItems": [
                 {
                   "name": "Renewal_Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 10
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -224,7 +145,8 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "Plan_Code"
+                  "name": "Plan_Code",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -250,7 +172,8 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "Renewal_Plan_Code"
+                  "name": "Renewal_Plan_Code",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -272,7 +195,7 @@
           "surrogateKey": "RENEWAL_PLAN_SK"
         }
       ],
-      "filterCriterion": "1=1",
+      "filterCriterion": "",
       "enabled": true
     }
   ]

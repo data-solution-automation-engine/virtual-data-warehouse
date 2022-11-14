@@ -30,9 +30,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,6 +98,7 @@
             this.backgroundWorkerEventLog = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.toolTipVdw = new System.Windows.Forms.ToolTip(this.components);
+            this.openCoreDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStripMainMenu.SuspendLayout();
             this.SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -132,10 +133,11 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openCoreDirectoryToolStripMenuItem,
             this.openVDWConfigurationDirectoryToolStripMenuItem,
             this.openInputDirectoryToolStripMenuItem,
-            this.openOutputDirectoryToolStripMenuItem,
             this.openLoadPatternDirectoryToolStripMenuItem,
+            this.openOutputDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
             this.openVDWConfigurationSettingsFileToolStripMenuItem,
             this.openTEAMConfigurationSettingsFileToolStripMenuItem,
@@ -154,16 +156,16 @@
             // 
             this.openVDWConfigurationDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
             this.openVDWConfigurationDirectoryToolStripMenuItem.Name = "openVDWConfigurationDirectoryToolStripMenuItem";
-            this.openVDWConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.openVDWConfigurationDirectoryToolStripMenuItem.Text = "Open VDW Configuration Directory";
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Text = "Open Configuration Directory";
             this.openVDWConfigurationDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openVDWConfigurationDirectoryToolStripMenuItem_Click);
             // 
             // openInputDirectoryToolStripMenuItem
             // 
             this.openInputDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
             this.openInputDirectoryToolStripMenuItem.Name = "openInputDirectoryToolStripMenuItem";
-            this.openInputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.openInputDirectoryToolStripMenuItem.Text = "Open Input (Json) Directory";
+            this.openInputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openInputDirectoryToolStripMenuItem.Text = "Open Metadata Directory";
             this.openInputDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openInputDirectoryToolStripMenuItem_Click);
             // 
             // openOutputDirectoryToolStripMenuItem
@@ -234,8 +236,8 @@
             this.saveConfigurationFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.SaveFile;
             this.saveConfigurationFileToolStripMenuItem.Name = "saveConfigurationFileToolStripMenuItem";
             this.saveConfigurationFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.saveConfigurationFileToolStripMenuItem.Text = "Save VDW Settings";
+            this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.saveConfigurationFileToolStripMenuItem.Text = "Save Settings";
             this.saveConfigurationFileToolStripMenuItem.Click += new System.EventHandler(this.saveConfigurationFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
@@ -265,7 +267,7 @@
             // 
             this.helpToolStripMenuItem1.Image = global::Virtual_Data_Warehouse.Properties.Resources.HelpIconSmall;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -273,7 +275,7 @@
             // 
             this.displayEventLogToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.log_file;
             this.displayEventLogToolStripMenuItem.Name = "displayEventLogToolStripMenuItem";
-            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.displayEventLogToolStripMenuItem.Text = "Display Event Log";
             this.displayEventLogToolStripMenuItem.Click += new System.EventHandler(this.displayEventLogToolStripMenuItem_Click);
             // 
@@ -281,7 +283,7 @@
             // 
             this.aboutToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -482,27 +484,27 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLoadPatternCollection.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle13;
             this.dataGridViewLoadPatternCollection.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle14;
             this.dataGridViewLoadPatternCollection.Location = new System.Drawing.Point(3, 191);
             this.dataGridViewLoadPatternCollection.Name = "dataGridViewLoadPatternCollection";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle15;
             this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(1665, 521);
             this.dataGridViewLoadPatternCollection.TabIndex = 104;
             this.dataGridViewLoadPatternCollection.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridViewLoadPatternCollection_CurrentCellDirtyStateChanged_1);
@@ -724,9 +726,9 @@
             this.labelWelcome.AutoSize = true;
             this.labelWelcome.Location = new System.Drawing.Point(203, 31);
             this.labelWelcome.Name = "labelWelcome";
-            this.labelWelcome.Size = new System.Drawing.Size(346, 13);
+            this.labelWelcome.Size = new System.Drawing.Size(198, 13);
             this.labelWelcome.TabIndex = 85;
-            this.labelWelcome.Text = "Welcome to the Virtual Data Warehouse - open source code generation";
+            this.labelWelcome.Text = "Welcome to the Virtual Data Warehouse";
             // 
             // pictureBox2
             // 
@@ -765,6 +767,14 @@
             this.toolTipVdw.AutoPopDelay = 5000;
             this.toolTipVdw.InitialDelay = 300;
             this.toolTipVdw.ReshowDelay = 100;
+            // 
+            // openCoreDirectoryToolStripMenuItem
+            // 
+            this.openCoreDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.openCoreDirectoryToolStripMenuItem.Name = "openCoreDirectoryToolStripMenuItem";
+            this.openCoreDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openCoreDirectoryToolStripMenuItem.Text = "Open Core Directory";
+            this.openCoreDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openCoreDirectoryToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -879,6 +889,7 @@
         private System.Windows.Forms.ToolTip toolTipVdw;
         private System.Windows.Forms.Label labelWelcome;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openCoreDirectoryToolStripMenuItem;
     }
 }
 

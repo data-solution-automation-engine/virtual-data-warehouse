@@ -10,8 +10,29 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "DIM_CUSTOMER",
-    "generationDateTime": "2021-02-17T18:13:49.4578582+10:00"
+    "selectedDataObject": {
+      "name": "DIM_CUSTOMER",
+      "dataObjectConnection": {
+        "dataConnectionString": "Presentation",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "Presentation"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
@@ -24,17 +45,12 @@
       "sourceDataObjects": [
         {
           "name": "HUB_CUSTOMER",
-          "dataItems": [
-            {
-              "name": "CUSTOMER_ID"
-            }
-          ],
           "dataObjectConnection": {
             "dataConnectionString": "Integration",
             "extensions": [
               {
                 "key": "database",
-                "value": "200_Integration_Layer",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -49,54 +65,80 @@
               "classification": "CoreBusinessConcept"
             }
           ]
-        },
-        {
-          "name": "SAT_CUSTOMER",
-          "dataItems": [
+        }
+      ],
+      "targetDataObject": {
+        "name": "DIM_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Presentation",
+          "extensions": [
             {
-              "name": "DATE_OF_BIRTH"
+              "key": "database",
+              "value": "VirtualDWH",
+              "description": "database name"
             },
             {
-              "name": "GIVEN_NAME"
-            },
-            {
-              "name": "SUBURB"
-            }
-          ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
             }
           ]
         },
+        "dataObjectClassifications": [
+          {
+            "classification": "Presentation"
+          }
+        ]
+      },
+      "dataItemMappings": [
         {
-          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-          "dataItems": [
+          "sourceDataItems": [
             {
-              "name": "CONTACT_NUMBER"
+              "name": "CUSTOMER_ID"
             }
           ],
+          "targetDataItem": {
+            "name": "CUSTOMER_ID"
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CUSTOMER_SK",
+                  "isHardCodedValue": false
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_SK"
+              }
+            }
+          ],
+          "surrogateKey": "DIM_CUSTOMER_SK"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    },
+    {
+      "mappingName": "DIM_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "classification": "Presentation"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "SAT_CUSTOMER",
           "dataObjectConnection": {
             "dataConnectionString": "Integration",
             "extensions": [
               {
                 "key": "database",
-                "value": "200_Integration_Layer",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -120,7 +162,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "300_Presentation_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -136,42 +178,7 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "dataItemMappings": [
-        {
-          "sourceDataItems": [
-            {
-              "name": "CUSTOMER_ID"
-            }
-          ],
-          "targetDataItem": {
-            "name": "CUSTOMER_ID"
-          }
-        },
         {
           "sourceDataItems": [
             {
@@ -201,7 +208,85 @@
           "targetDataItem": {
             "name": "SUBURB"
           }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CUSTOMER_SK",
+                  "isHardCodedValue": false
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_SK"
+              }
+            }
+          ],
+          "surrogateKey": "DIM_CUSTOMER_SK"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    },
+    {
+      "mappingName": "DIM_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "classification": "Presentation"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "VirtualDWH",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Context"
+            }
+          ]
+        }
+      ],
+      "targetDataObject": {
+        "name": "DIM_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Presentation",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "VirtualDWH",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
         },
+        "dataObjectClassifications": [
+          {
+            "classification": "Presentation"
+          }
+        ]
+      },
+      "dataItemMappings": [
         {
           "sourceDataItems": [
             {
@@ -219,7 +304,8 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "CUSTOMER_SK"
+                  "name": "CUSTOMER_SK",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -230,6 +316,7 @@
           "surrogateKey": "DIM_CUSTOMER_SK"
         }
       ],
+      "filterCriterion": "",
       "enabled": true
     }
   ]

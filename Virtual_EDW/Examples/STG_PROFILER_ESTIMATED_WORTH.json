@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "STG_PROFILER_ESTIMATED_WORTH",
-    "generationDateTime": "2021-02-17T18:13:49.5425546+10:00"
+    "selectedDataObject": {
+      "name": "STG_PROFILER_ESTIMATED_WORTH",
+      "dataObjectConnection": {
+        "dataConnectionString": "Staging",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "StagingArea"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "STG_PROFILER_ESTIMATED_WORTH",
       "mappingClassifications": [
         {
-          "id": 1,
-          "classification": "StagingArea",
-          "notes": "The mappings from source to the landing (staging) area."
+          "classification": "StagingArea"
         }
       ],
       "sourceDataObjects": [
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "100_Staging_Area",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -94,79 +113,37 @@
               "classification": "PersistentStagingArea"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Date_effective",
-              "dataType": "datetime",
-              "numericScale": 3,
-              "ordinalPosition": 2
+              "name": "Value_Amount"
             }
           ],
           "targetDataItem": {
-            "name": "Date_effective",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 9
+            "name": "Value_Amount"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Plan_Code",
-              "dataType": "varchar",
-              "characterLength": 100,
-              "ordinalPosition": 1
+              "name": "Plan_Code"
             }
           ],
           "targetDataItem": {
-            "name": "Plan_Code",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 8
+            "name": "Plan_Code"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Value_Amount",
-              "dataType": "numeric",
-              "numericPrecision": 18,
-              "ordinalPosition": 3
+              "name": "Date_effective"
             }
           ],
           "targetDataItem": {
-            "name": "Value_Amount",
-            "dataType": "numeric",
-            "numericPrecision": 38,
-            "numericScale": 20,
-            "ordinalPosition": 10
+            "name": "Date_effective"
           }
         }
       ],
@@ -177,36 +154,26 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "varchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 1
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Plan_Code",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 8
+                "name": "Plan_Code"
               }
             },
             {
               "sourceDataItems": [
                 {
                   "name": "Date_effective",
-                  "dataType": "datetime",
-                  "numericScale": 3,
-                  "ordinalPosition": 2
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Date_effective",
-                "dataType": "datetime2",
-                "numericScale": 7,
-                "ordinalPosition": 9
+                "name": "Date_effective"
               }
             }
           ],
-          "surrogateKey": "Not applicable"
+          "surrogateKey": "PROFILER_ESTIMATED_WORTH_SK"
         }
       ],
       "filterCriterion": "",

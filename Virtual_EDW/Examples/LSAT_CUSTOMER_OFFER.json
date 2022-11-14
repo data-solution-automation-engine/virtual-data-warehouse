@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "LSAT_CUSTOMER_OFFER",
-    "generationDateTime": "2021-02-17T18:13:49.9904803+10:00"
+    "selectedDataObject": {
+      "name": "LSAT_CUSTOMER_OFFER",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "NaturalBusinessRelationshipContext"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "LSAT_CUSTOMER_OFFER",
       "mappingClassifications": [
         {
-          "id": 7,
-          "classification": "NaturalBusinessRelationshipContextDrivingKey",
-          "notes": "The Driving Key pattern for Link Satellites is an implementation of effective-dating relationships."
+          "classification": "NaturalBusinessRelationshipContextDrivingKey"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -71,77 +90,6 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "HUB_INCENTIVE_OFFER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -149,8 +97,7 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8,
+                  "isHardCodedValue": false,
                   "dataItemClassification": [
                     {
                       "classification": "DrivingKey",
@@ -167,8 +114,7 @@
               "sourceDataItems": [
                 {
                   "name": "OfferID",
-                  "dataType": "int",
-                  "ordinalPosition": 9
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -179,7 +125,7 @@
           "surrogateKey": "CUSTOMER_OFFER_SK"
         }
       ],
-      "filterCriterion": "7=7",
+      "filterCriterion": "",
       "enabled": true
     }
   ]

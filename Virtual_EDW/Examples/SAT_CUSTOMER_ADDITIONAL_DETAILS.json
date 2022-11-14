@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-    "generationDateTime": "2021-02-17T18:13:50.0751423+10:00"
+    "selectedDataObject": {
+      "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "Context"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
       "mappingClassifications": [
         {
-          "id": 5,
-          "classification": "Context",
-          "notes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+          "classification": "Context"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -72,52 +91,6 @@
         ]
       },
       "relatedDataObjects": [
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "SAT_CUSTOMER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
         {
           "name": "DIM_CUSTOMER",
           "dataObjectConnection": {
@@ -140,61 +113,27 @@
               "classification": "Presentation"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Contact_Number",
-              "dataType": "int",
-              "ordinalPosition": 17
+              "name": "Contact_Number"
             }
           ],
           "targetDataItem": {
-            "name": "CONTACT_NUMBER",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 8
+            "name": "CONTACT_NUMBER"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "State",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
+              "name": "State"
             }
           ],
           "targetDataItem": {
-            "name": "STATE",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 9
+            "name": "STATE"
           }
         }
       ],
@@ -205,8 +144,7 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {

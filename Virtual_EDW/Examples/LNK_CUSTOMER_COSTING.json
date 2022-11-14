@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "LNK_CUSTOMER_COSTING",
-    "generationDateTime": "2021-02-17T18:13:50.3517484+10:00"
+    "selectedDataObject": {
+      "name": "LNK_CUSTOMER_COSTING",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "NaturalBusinessRelationship"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "LNK_CUSTOMER_COSTING",
       "mappingClassifications": [
         {
-          "id": 4,
-          "classification": "NaturalBusinessRelationship",
-          "notes": "The Link type entities record the relationships between the Business Entities (Hubs). Similar to Hubs they are subject to potentially being populated from multiple Staging Area tables. The Link views therefore present an integrated view of all relationships across these tables."
+          "classification": "NaturalBusinessRelationship"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -71,100 +90,6 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "HUB_SEGMENT",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "businessKeys": [
         {
           "businessKeyComponentMapping": [
@@ -172,9 +97,7 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 10
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -196,8 +119,7 @@
               "sourceDataItems": [
                 {
                   "name": "Member",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -207,7 +129,8 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "Segment+'TEST'"
+                  "name": "Segment+'TEST'",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -222,7 +145,8 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "Plan_Code"
+                  "name": "Plan_Code",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -248,7 +172,8 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "Member"
+                  "name": "Member",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -263,7 +188,8 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "Segment+'TEST'"
+                  "name": "Segment+'TEST'",
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {

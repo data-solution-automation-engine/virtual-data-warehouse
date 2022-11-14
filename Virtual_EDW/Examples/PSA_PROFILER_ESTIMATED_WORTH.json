@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "PSA_PROFILER_ESTIMATED_WORTH",
-    "generationDateTime": "2021-02-17T18:13:50.6074228+10:00"
+    "selectedDataObject": {
+      "name": "PSA_PROFILER_ESTIMATED_WORTH",
+      "dataObjectConnection": {
+        "dataConnectionString": "PSA",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "PersistentStagingArea"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "PSA_PROFILER_ESTIMATED_WORTH",
       "mappingClassifications": [
         {
-          "id": 2,
-          "classification": "PersistentStagingArea",
-          "notes": "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts. Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area."
+          "classification": "PersistentStagingArea"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "100_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "150_Persistent_Staging_Area",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -117,80 +136,37 @@
               "classification": "Context"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Date_effective",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 9
+              "name": "Value_Amount"
             }
           ],
           "targetDataItem": {
-            "name": "Date_effective",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 9
+            "name": "Value_Amount"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Plan_Code",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 8
+              "name": "Plan_Code"
             }
           ],
           "targetDataItem": {
-            "name": "Plan_Code",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 8
+            "name": "Plan_Code"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Value_Amount",
-              "dataType": "numeric",
-              "numericPrecision": 38,
-              "numericScale": 20,
-              "ordinalPosition": 10
+              "name": "Date_effective"
             }
           ],
           "targetDataItem": {
-            "name": "Value_Amount",
-            "dataType": "numeric",
-            "numericPrecision": 38,
-            "numericScale": 20,
-            "ordinalPosition": 10
+            "name": "Date_effective"
           }
         }
       ],
@@ -201,36 +177,26 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Plan_Code",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 8
+                "name": "Plan_Code"
               }
             },
             {
               "sourceDataItems": [
                 {
                   "name": "Date_effective",
-                  "dataType": "datetime2",
-                  "numericScale": 7,
-                  "ordinalPosition": 9
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Date_effective",
-                "dataType": "datetime2",
-                "numericScale": 7,
-                "ordinalPosition": 9
+                "name": "Date_effective"
               }
             }
           ],
-          "surrogateKey": "Not applicable"
+          "surrogateKey": "PROFILER_ESTIMATED_WORTH_SK"
         }
       ],
       "filterCriterion": "",
