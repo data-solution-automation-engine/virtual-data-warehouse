@@ -18,6 +18,7 @@ namespace Virtual_Data_Warehouse
             MyParent = myParent;
             InitializeComponent();
         }
+        internal static LoadPatternGridView _loadPatternGridView;
 
         // List of TEAM working environments.
         public static TeamEnvironmentCollection TeamEnvironmentCollection { get; set; } = new TeamEnvironmentCollection();
@@ -49,7 +50,6 @@ namespace Virtual_Data_Warehouse
             public static string JsonSchemaForDataWarehouseAutomationFileName { get; } = "interfaceDataWarehouseAutomationMetadata.json";
         }
 
-
         /// <summary>
         /// These are the VDW specific configuration settings (i.e. not TEAM driven)
         /// Elements in this class are saved to / retrieved from the VDW Core Settings file
@@ -64,7 +64,7 @@ namespace Virtual_Data_Warehouse
             public static string VdwOutputPath { get; set; } = Application.StartupPath + @"\Output\";
             public static string VdwExamplesPath { get; set; } = Application.StartupPath + @"\Examples\";
             
-            public static List<LoadPattern> patternList { get; set; }
+            public static List<LoadPatternFileHandling> patternList { get; set; }
 
             // Related to TEAM configuration settings
             //public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\";

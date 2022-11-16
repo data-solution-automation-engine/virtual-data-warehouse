@@ -109,11 +109,14 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="InterfaceObjectModel.cs" />
+    <Compile Include="LoadPatternGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="VdwUtility.cs" />
     <Compile Include="CustomTabPage.cs" />
     <Compile Include="JsonHandling.cs" />
     <Compile Include="TextHandling.cs" />
-    <Compile Include="LoadPatternHandling.cs" />
+    <Compile Include="LoadPatternFileHandling.cs" />
     <Compile Include="Form_Base.cs">
       <SubType>Form</SubType>
     </Compile>
