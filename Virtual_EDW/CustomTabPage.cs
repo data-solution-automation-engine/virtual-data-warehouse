@@ -43,7 +43,6 @@ namespace Virtual_Data_Warehouse
         // Objects on main Tab Page
         readonly CheckBox _localCheckBoxSelectAll;
         readonly CheckedListBox _localCheckedListBox;
-        readonly RichTextBox _localRichTextBox;
         readonly TextBox _localTextBoxFilter;
 
         // Objects on the sub Tab Control (on the main Tab Page)
@@ -164,27 +163,17 @@ namespace Virtual_Data_Warehouse
             _localCheckBoxSelectAll.Name = "checkBoxSelectAll";
             _localCheckBoxSelectAll.Checked = true;
             _localCheckBoxSelectAll.Text = "Select all";
-            _localCheckBoxSelectAll.CheckedChanged += new EventHandler(SelectAllCheckBoxItems);
+            _localCheckBoxSelectAll.CheckedChanged += SelectAllCheckBoxItems;
 
             // Add Checked List Box
             _localCheckedListBox = new CheckedListBox();
             localPanel.Controls.Add(_localCheckedListBox);
             _localCheckedListBox.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
             _localCheckedListBox.Location = new Point(17, 31);
-            _localCheckedListBox.Size = new Size(393, 377);
+            _localCheckedListBox.Size = new Size(393, 510);
             _localCheckedListBox.BorderStyle = BorderStyle.FixedSingle;
             _localCheckedListBox.CheckOnClick = true;
             _localCheckedListBox.Name = $"checkedListBox{classification}";
-
-            // Add User feedback RichTextBox (left hand side of form)
-            _localRichTextBox = new RichTextBox();
-            localPanel.Controls.Add(_localRichTextBox);
-            _localRichTextBox.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-            _localRichTextBox.Location = new Point(17, 402);
-            _localRichTextBox.Size = new Size(393, 120);
-            _localRichTextBox.BorderStyle = BorderStyle.None;
-            _localRichTextBox.BackColor = SystemColors.Window;
-            _localRichTextBox.TextChanged += ScrollToCaret;
 
             // Add 'Filter' Group Box
             var localGroupBoxFilter = new GroupBox();
@@ -346,13 +335,13 @@ namespace Virtual_Data_Warehouse
             // Report back to the user if there is not metadata available
             if (itemList == null || itemList.Count == 0)
             {
-                _localRichTextBox.Text = $"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.\r\n\r\n";
+                RaiseOnChangeMainText($"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.\r\n\r\n");
             }
 
             // Initial documentation as per the definition notes
             if (notes != null)
             {
-                _localRichTextBox.AppendText(notes);
+                RaiseOnChangeMainText(notes);
             }
 
             // Set the tab pages back to what they were before reload
@@ -430,17 +419,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        /// <summary>
-        /// Automatically scroll to the end of the text.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void ScrollToCaret(object sender, EventArgs e)
-        {
-            _localRichTextBox.SelectionStart = _localRichTextBox.Text.Length;
-            _localRichTextBox.ScrollToCaret();
-        }
-
         public void FilterItemList(object o, EventArgs e)
         {
             SetItemList(ItemList);
@@ -469,7 +447,7 @@ namespace Virtual_Data_Warehouse
             // Report back to the user if there is not metadata available
             if (_localCheckedListBox.Items.Count == 0)
             {
-                _localRichTextBox.Text = $"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.";
+                RaiseOnChangeMainText($"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.");
             }
 
             // Set all the Check Boxes to 'checked'
@@ -533,7 +511,6 @@ namespace Virtual_Data_Warehouse
             if (StartUpIndicator == false)
             {
                 ApplySyntaxHighlightingForHandlebars();
-                //TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text);
             }
         }
 
@@ -583,7 +560,6 @@ namespace Virtual_Data_Warehouse
 
         void DoWork()
         {
-            _localRichTextBox.Clear();
             GenerateFromPattern();
         }
 
@@ -605,7 +581,7 @@ namespace Virtual_Data_Warehouse
                 for (int x = 0; x <= _localCheckedListBox.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = _localCheckedListBox.CheckedItems[x].ToString();
-                    _localRichTextBox.AppendText(@"Processing generation for " + targetTableName + ".\r\n");
+                    RaiseOnChangeMainText(@"Processing generation for " + targetTableName + ".\r\n");
 
                     // Only process the selected items in the total of available source-to-target mappings
                     ItemList.TryGetValue(targetTableName, out var dataObjectMappingList);
@@ -686,7 +662,7 @@ namespace Virtual_Data_Warehouse
             }
             else
             {
-                _localRichTextBox.AppendText($"There was no metadata selected to generate {_inputNiceName} code. Please check the metadata schema - are there any {_inputNiceName} objects selected?");
+                RaiseOnChangeMainText($"There was no metadata selected to generate {_inputNiceName} code. Please check the metadata schema - are there any {_inputNiceName} objects selected?");
             }
 
             // Report back to the user

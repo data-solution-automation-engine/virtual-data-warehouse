@@ -938,6 +938,7 @@ namespace Virtual_Data_Warehouse
         {
             var fileBrowserDialog = new FolderBrowserDialog();
 
+            fileBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
             var originalPath = textBoxMetadataPath.Text;
             fileBrowserDialog.SelectedPath = textBoxMetadataPath.Text;
 
@@ -989,14 +990,16 @@ namespace Virtual_Data_Warehouse
         private void pictureBox5_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
+
+            fileBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
             fileBrowserDialog.SelectedPath = textBoxOutputPath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
 
             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
             {
-
                 string finalPath;
+
                 if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
                 {
                     finalPath = fileBrowserDialog.SelectedPath;
@@ -1006,13 +1009,9 @@ namespace Virtual_Data_Warehouse
                     finalPath = fileBrowserDialog.SelectedPath + @"\";
                 }
 
-
                 textBoxOutputPath.Text = finalPath;
 
-
-                    richTextBoxInformationMain.Text =
-                        "The code generation output will be saved at "+finalPath+".'";
-   
+                richTextBoxInformationMain.Text = "The code generation output will be saved at "+finalPath+".'";  
 
             }
         }
@@ -1044,6 +1043,8 @@ namespace Virtual_Data_Warehouse
         private void pictureBoxUpdateLoadPatternPath_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
+
+            fileBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
             fileBrowserDialog.SelectedPath = textBoxLoadPatternPath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
@@ -1076,14 +1077,12 @@ namespace Virtual_Data_Warehouse
 
                 if (fileCounter == 0)
                 {
-                    richTextBoxInformationMain.Text =
-                        "The selected directory does not seem to contain a loadPatternCollection.json file. Did you select a correct Load Pattern directory?";
+                    richTextBoxInformationMain.Text = "The selected directory does not seem to contain a loadPatternCollection.json file. Did you select a correct Load Pattern directory?";
                 }
                 else
                 {
                     richTextBoxInformationMain.Text = "The path now points to a directory that contains the loadPatternCollection.json Load Pattern Collection file.";
                 }
-
 
                 // Update the parameters in memory.
                 VdwConfigurationSettings.LoadPatternPath = finalPath;
@@ -1097,7 +1096,6 @@ namespace Virtual_Data_Warehouse
                 VdwConfigurationSettings.patternList.Clear();
                 VdwConfigurationSettings.patternList = LoadPatternFileHandling.LoadPatternCollection();
                 PopulateLoadPatternCollectionDataGrid();
-
             }
         }
 
@@ -1305,6 +1303,8 @@ namespace Virtual_Data_Warehouse
         private void pictureOpenTeamConfigurationFile_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
+
+            fileBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
             fileBrowserDialog.SelectedPath = textBoxTeamConfigurationPath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
@@ -1448,6 +1448,8 @@ namespace Virtual_Data_Warehouse
         private void pictureBoxOpenConnectionFile_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
+
+            fileBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
             fileBrowserDialog.SelectedPath = textBoxTeamConnectionsPath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
