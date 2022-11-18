@@ -81,7 +81,7 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         public void ApplySyntaxHighlightingForHandlebars()
         {
-            TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text.TrimEnd());
+            localRichTextBoxGenerationPattern.Rtf = TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern.Text.TrimEnd()).Rtf;
         }
 
         public void SetDisplayJsonFlag(bool value)
@@ -142,7 +142,7 @@ namespace Virtual_Data_Warehouse
             localButtonGenerate.Name = $"Generate{classification}";
             localButtonGenerate.Size = new Size(170, 40);
             localButtonGenerate.Text = $"Generate {_inputNiceName}";
-            localButtonGenerate.Click += new EventHandler(Generate);
+            localButtonGenerate.Click += Generate;
 
             // Add 'Processing' Label
             var localLabelProcessing = new Label();
@@ -680,8 +680,8 @@ namespace Virtual_Data_Warehouse
             RaiseOnChangeMainText($"\r\n{errorCounter} error(s) have been found.\r\n");
             RaiseOnChangeMainText($"\r\nAssociated scripts have been saved in {FormBase.VdwConfigurationSettings.VdwOutputPath}.\r\n");
 
-            // Apply syntax highlighting
-            TextHandling.SyntaxHighlightSql(localRichTextBoxGenerationOutput, localRichTextBoxGenerationOutput.Text);
+            // Apply syntax highlighting.
+            localRichTextBoxGenerationOutput.Rtf = TextHandling.SyntaxHighlightSql(localRichTextBoxGenerationOutput.Text).Rtf;
         }
 
         /// <summary>
