@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "STG_PROFILER_CUSTOMER_OFFER",
-    "generationDateTime": "2021-02-17T18:13:49.4944948+10:00"
+    "selectedDataObject": {
+      "name": "STG_PROFILER_CUSTOMER_OFFER",
+      "dataObjectConnection": {
+        "dataConnectionString": "Staging",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "StagingArea"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "STG_PROFILER_CUSTOMER_OFFER",
       "mappingClassifications": [
         {
-          "id": 1,
-          "classification": "StagingArea",
-          "notes": "The mappings from source to the landing (staging) area."
+          "classification": "StagingArea"
         }
       ],
       "sourceDataObjects": [
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "100_Staging_Area",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -94,58 +113,27 @@
               "classification": "PersistentStagingArea"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "CustomerID",
-              "dataType": "int",
-              "ordinalPosition": 1
+              "name": "CustomerID"
             }
           ],
           "targetDataItem": {
-            "name": "CustomerID",
-            "dataType": "int",
-            "ordinalPosition": 8
+            "name": "CustomerID"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "OfferID",
-              "dataType": "int",
-              "ordinalPosition": 2
+              "name": "OfferID"
             }
           ],
           "targetDataItem": {
-            "name": "OfferID",
-            "dataType": "int",
-            "ordinalPosition": 9
+            "name": "OfferID"
           }
         }
       ],
@@ -156,32 +144,26 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 1
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "CustomerID",
-                "dataType": "int",
-                "ordinalPosition": 8
+                "name": "CustomerID"
               }
             },
             {
               "sourceDataItems": [
                 {
                   "name": "OfferID",
-                  "dataType": "int",
-                  "ordinalPosition": 2
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "OfferID",
-                "dataType": "int",
-                "ordinalPosition": 9
+                "name": "OfferID"
               }
             }
           ],
-          "surrogateKey": "Not applicable"
+          "surrogateKey": "PROFILER_CUSTOMER_OFFER_SK"
         }
       ],
       "filterCriterion": "",

@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "SAT_INCENTIVE_OFFER",
-    "generationDateTime": "2021-02-17T18:13:50.1955821+10:00"
+    "selectedDataObject": {
+      "name": "SAT_INCENTIVE_OFFER",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "Context"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "SAT_INCENTIVE_OFFER",
       "mappingClassifications": [
         {
-          "id": 5,
-          "classification": "Context",
-          "notes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+          "classification": "Context"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -71,69 +90,15 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_INCENTIVE_OFFER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Offer_Long_Description",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
+              "name": "Offer_Long_Description"
             }
           ],
           "targetDataItem": {
-            "name": "OFFER_DESCRIPTION",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 8
+            "name": "OFFER_DESCRIPTION"
           }
         }
       ],
@@ -144,8 +109,7 @@
               "sourceDataItems": [
                 {
                   "name": "OfferID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -156,7 +120,7 @@
           "surrogateKey": "INCENTIVE_OFFER_SK"
         }
       ],
-      "filterCriterion": "4=4",
+      "filterCriterion": "",
       "enabled": true
     }
   ]

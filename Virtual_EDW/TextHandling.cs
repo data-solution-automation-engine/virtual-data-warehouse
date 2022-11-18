@@ -7,9 +7,9 @@ namespace Virtual_Data_Warehouse
 {
     class TextHandling
     {
-        internal static void SyntaxHighlightHandlebars(RichTextBox inputTextBox, string inputText)
+        internal static RichTextBox SyntaxHighlightHandlebars(string inputText)
         {
-            inputTextBox.Clear();
+            RichTextBox returnTextBox = new RichTextBox();
 
             // Split the text into lines, so we can parse each line for syntax highlighting
             Regex splitLineRegex = new Regex("\\n");
@@ -27,8 +27,8 @@ namespace Virtual_Data_Warehouse
                 foreach (string token in tokens)
                 {
                     // Make sure the default colour is set
-                    inputTextBox.SelectionColor = Color.Black;
-                    inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Regular);
+                    returnTextBox.SelectionColor = Color.Black;
+                    returnTextBox.SelectionFont = new Font(returnTextBox.Font, FontStyle.Regular);
 
                     if (token == "{")
                     {
@@ -46,17 +46,17 @@ namespace Virtual_Data_Warehouse
                         if (keywords[i] == token)
                         {
                             // Apply alternative color and font to highlight keyword.  
-                            inputTextBox.SelectionColor = Color.DarkGreen;
+                            returnTextBox.SelectionColor = Color.DarkGreen;
                             //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                             break;
                         } else if (syntaxHighlightCounter>1 && token !="{" && token!="}")
                         {
-                            inputTextBox.SelectionColor = Color.Purple;
+                            returnTextBox.SelectionColor = Color.Purple;
                             //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                         }
                     }
 
-                    inputTextBox.SelectedText = token;
+                    returnTextBox.SelectedText = token;
 
                     if (token == "}")
                     {
@@ -64,14 +64,15 @@ namespace Virtual_Data_Warehouse
                     }
 
                 }
-                inputTextBox.SelectedText = "\n";
+                returnTextBox.SelectedText = "\n";
             }
 
+            return returnTextBox;
         }
 
-        internal static void SyntaxHighlightSql(RichTextBox inputTextBox, string inputText)
+        internal static RichTextBox SyntaxHighlightSql(string inputText)
         {
-            inputTextBox.Clear();
+            var returnTextBox = new RichTextBox();
 
             // Split the text into lines, so we can parse each line for syntax highlighting
             Regex splitLineRegex = new Regex("\\n");
@@ -89,8 +90,8 @@ namespace Virtual_Data_Warehouse
                 foreach (string token in tokens)
                 {
                     // Make sure the default colour is set
-                    inputTextBox.SelectionColor = Color.Black;
-                    inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Regular);
+                    returnTextBox.SelectionColor = Color.Black;
+                    returnTextBox.SelectionFont = new Font(returnTextBox.Font, FontStyle.Regular);
 
                     if (token == "-")
                     {
@@ -128,7 +129,7 @@ namespace Virtual_Data_Warehouse
                         if (keyWordSql[i] == token)
                         {
                             // Apply alternative color and font to highlight keyword.  
-                            inputTextBox.SelectionColor = Color.Blue;
+                            returnTextBox.SelectionColor = Color.Blue;
                             //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                             break;
                         }
@@ -140,7 +141,7 @@ namespace Virtual_Data_Warehouse
                         if (keyWordFunction[i] == token)
                         {
                             // Apply alternative color and font to highlight keyword.  
-                            inputTextBox.SelectionColor = Color.Purple;
+                            returnTextBox.SelectionColor = Color.Purple;
                             //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                             break;
                         }
@@ -152,13 +153,13 @@ namespace Virtual_Data_Warehouse
                         if (keyWordFunctionComment[i] == token)
                         {
                             // Apply alternative color and font to highlight keyword.  
-                            inputTextBox.SelectionColor = Color.ForestGreen;
+                            returnTextBox.SelectionColor = Color.ForestGreen;
                             //inputTextBox.SelectionFont = new Font(inputTextBox.Font, FontStyle.Bold);
                             break;
                         }
                     }
 
-                    inputTextBox.SelectedText = token;
+                    returnTextBox.SelectedText = token;
 
                     if (token == "}")
                     {
@@ -166,8 +167,10 @@ namespace Virtual_Data_Warehouse
                     }
 
                 }
-                inputTextBox.SelectedText = "\n";
+                returnTextBox.SelectedText = "\n";
             }
+
+            return returnTextBox;
 
         }
     }

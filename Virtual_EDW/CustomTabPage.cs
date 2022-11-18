@@ -8,8 +8,8 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using HandlebarsDotNet;
 using Newtonsoft.Json;
-using TEAM;
 using DataWarehouseAutomation;
+using TEAM_Library;
 
 namespace Virtual_Data_Warehouse
 {
@@ -43,7 +43,6 @@ namespace Virtual_Data_Warehouse
         // Objects on main Tab Page
         readonly CheckBox _localCheckBoxSelectAll;
         readonly CheckedListBox _localCheckedListBox;
-        readonly RichTextBox _localRichTextBox;
         readonly TextBox _localTextBoxFilter;
 
         // Objects on the sub Tab Control (on the main Tab Page)
@@ -53,11 +52,16 @@ namespace Virtual_Data_Warehouse
         readonly RichTextBox localRichTextBoxGenerationOutput;
 
         readonly TabPage tabPageGenerationPattern;
+        // Active pattern
         readonly Label localLabelActivePattern;
         readonly Label localLabelFilePath;
         readonly Label localLabelFullFilePath;
+        // Assigned connection
         readonly Label localLabelActiveConnectionKey;
         readonly Label localLabelActiveConnectionKeyValue;
+        // Output file pattern
+        readonly Label localLabelOutputFilePattern;
+        readonly Label localLabelOutputFilePatternValue;
 
         readonly ComboBox localComboBoxGenerationPattern;
         readonly RichTextBox localRichTextBoxGenerationPattern;
@@ -77,7 +81,7 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         public void ApplySyntaxHighlightingForHandlebars()
         {
-            TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text.TrimEnd());
+            localRichTextBoxGenerationPattern.Rtf = TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern.Text.TrimEnd()).Rtf;
         }
 
         public void SetDisplayJsonFlag(bool value)
@@ -138,7 +142,7 @@ namespace Virtual_Data_Warehouse
             localButtonGenerate.Name = $"Generate{classification}";
             localButtonGenerate.Size = new Size(170, 40);
             localButtonGenerate.Text = $"Generate {_inputNiceName}";
-            localButtonGenerate.Click += new EventHandler(Generate);
+            localButtonGenerate.Click += Generate;
 
             // Add 'Processing' Label
             var localLabelProcessing = new Label();
@@ -159,27 +163,17 @@ namespace Virtual_Data_Warehouse
             _localCheckBoxSelectAll.Name = "checkBoxSelectAll";
             _localCheckBoxSelectAll.Checked = true;
             _localCheckBoxSelectAll.Text = "Select all";
-            _localCheckBoxSelectAll.CheckedChanged += new EventHandler(SelectAllCheckBoxItems);
+            _localCheckBoxSelectAll.CheckedChanged += SelectAllCheckBoxItems;
 
             // Add Checked List Box
             _localCheckedListBox = new CheckedListBox();
             localPanel.Controls.Add(_localCheckedListBox);
             _localCheckedListBox.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
             _localCheckedListBox.Location = new Point(17, 31);
-            _localCheckedListBox.Size = new Size(393, 377);
+            _localCheckedListBox.Size = new Size(393, 510);
             _localCheckedListBox.BorderStyle = BorderStyle.FixedSingle;
             _localCheckedListBox.CheckOnClick = true;
             _localCheckedListBox.Name = $"checkedListBox{classification}";
-
-            // Add User feedback RichTextBox (left hand side of form)
-            _localRichTextBox = new RichTextBox();
-            localPanel.Controls.Add(_localRichTextBox);
-            _localRichTextBox.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-            _localRichTextBox.Location = new Point(17, 402);
-            _localRichTextBox.Size = new Size(393, 120);
-            _localRichTextBox.BorderStyle = BorderStyle.None;
-            _localRichTextBox.BackColor = SystemColors.Window;
-            _localRichTextBox.TextChanged += new EventHandler(ScrollToCaret);
 
             // Add 'Filter' Group Box
             var localGroupBoxFilter = new GroupBox();
@@ -197,7 +191,7 @@ namespace Virtual_Data_Warehouse
             _localTextBoxFilter.Location = new Point(6, 15);
             _localTextBoxFilter.Size = new Size(151, 20);
             _localTextBoxFilter.Name = $"textBoxFilterCriterion{_inputNiceName}";
-            _localTextBoxFilter.TextChanged += new EventHandler(FilterItemList);
+            _localTextBoxFilter.TextChanged += FilterItemList;
 
             #endregion
 
@@ -211,8 +205,7 @@ namespace Virtual_Data_Warehouse
             localTabControl.Size = new Size(896, 573);
             localTabControl.Name = $"tabControl{classification}";
             localTabControl.BackColor = Color.White;
-            //localTabControl.SelectedIndexChanged += new EventHandler(SyntaxHighlightsHandlebars);
-            localTabControl.SelectedIndexChanged += new EventHandler(SubTabClick);
+            localTabControl.SelectedIndexChanged += SubTabClick;
 
             // Add 'Generation Output' Tab Page on Sub Tab
             tabPageGenerationOutput = new TabPage($"{_inputNiceName} Generation Output");
@@ -246,7 +239,7 @@ namespace Virtual_Data_Warehouse
             localComboBoxGenerationPattern.Location = new Point(108, 8);
             localComboBoxGenerationPattern.Size = new Size(496, 21);
             localComboBoxGenerationPattern.Name = $"comboBox{classification}Pattern";
-            localComboBoxGenerationPattern.SelectedIndexChanged += new EventHandler(DisplayPattern);
+            localComboBoxGenerationPattern.SelectedIndexChanged += DisplayPattern;
 
             // Add 'Active Pattern' Label
             localLabelActivePattern = new Label();
@@ -289,9 +282,27 @@ namespace Virtual_Data_Warehouse
             tabPageGenerationPattern.Controls.Add(localLabelActiveConnectionKeyValue);
             localLabelActiveConnectionKeyValue.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelActiveConnectionKeyValue.Location = new Point(105, 57);
-            localLabelActiveConnectionKeyValue.Size = new Size(650, 13);
+            localLabelActiveConnectionKeyValue.Size = new Size(240, 13);
             localLabelActiveConnectionKeyValue.Name = $"label{classification}ConnectionKeyValue";
             localLabelActiveConnectionKeyValue.Text = @"<connection key>";
+
+            // Add 'Output File Pattern' Label
+            localLabelOutputFilePattern = new Label();
+            tabPageGenerationPattern.Controls.Add(localLabelOutputFilePattern);
+            localLabelOutputFilePattern.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            localLabelOutputFilePattern.Location = new Point(350, 57);
+            localLabelOutputFilePattern.Size = new Size(100, 13);
+            localLabelOutputFilePattern.Name = $"label{classification}OutputFilePattern";
+            localLabelOutputFilePattern.Text = @"Output file pattern:";
+
+            // Add 'Output File Pattern Value' Label
+            localLabelOutputFilePatternValue = new Label();
+            tabPageGenerationPattern.Controls.Add(localLabelOutputFilePatternValue);
+            localLabelOutputFilePatternValue.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            localLabelOutputFilePatternValue.Location = new Point(460, 57);
+            localLabelOutputFilePatternValue.Size = new Size(250, 13);
+            localLabelOutputFilePatternValue.Name = $"label{classification}OutputFilePatternValue";
+            localLabelOutputFilePatternValue.Text = @"<output file pattern>";
 
             // Add 'Save Pattern' Button
             localSavePattern = new Button();
@@ -301,7 +312,7 @@ namespace Virtual_Data_Warehouse
             localSavePattern.Size = new Size(101, 23);
             localSavePattern.Text = $"Save updates";
             localSavePattern.Name = $"Save{classification}";
-            localSavePattern.Click += (SavePattern);
+            localSavePattern.Click += SavePattern;
 
             // Add 'Generation Pattern' RichTextBox to Pattern tab
             localRichTextBoxGenerationPattern = new RichTextBox();
@@ -310,7 +321,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationPattern.Location = new Point(3, 82);
             localRichTextBoxGenerationPattern.Size = new Size(195, 30);
             localRichTextBoxGenerationPattern.BorderStyle = BorderStyle.None;
-            localRichTextBoxGenerationPattern.TextChanged += new EventHandler(CommitPatternToMemory);
+            localRichTextBoxGenerationPattern.TextChanged += CommitPatternToMemory;
             #endregion
 
             #region Constructor Methods
@@ -324,14 +335,13 @@ namespace Virtual_Data_Warehouse
             // Report back to the user if there is not metadata available
             if (itemList == null || itemList.Count == 0)
             {
-                _localRichTextBox.Text =
-                    $"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.\r\n\r\n";
+                RaiseOnChangeMainText($"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.\r\n\r\n");
             }
 
             // Initial documentation as per the definition notes
             if (notes != null)
             {
-                _localRichTextBox.AppendText(notes);
+                RaiseOnChangeMainText(notes);
             }
 
             // Set the tab pages back to what they were before reload
@@ -409,17 +419,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        /// <summary>
-        /// Automatically scroll to the end of the text.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void ScrollToCaret(object sender, EventArgs e)
-        {
-            _localRichTextBox.SelectionStart = _localRichTextBox.Text.Length;
-            _localRichTextBox.ScrollToCaret();
-        }
-
         public void FilterItemList(object o, EventArgs e)
         {
             SetItemList(ItemList);
@@ -448,8 +447,7 @@ namespace Virtual_Data_Warehouse
             // Report back to the user if there is not metadata available
             if (_localCheckedListBox.Items.Count == 0)
             {
-                _localRichTextBox.Text =
-                    $"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.";
+                RaiseOnChangeMainText($"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.");
             }
 
             // Set all the Check Boxes to 'checked'
@@ -480,6 +478,16 @@ namespace Virtual_Data_Warehouse
                 localLabelFullFilePath.Text = localFullPath;
                 localLabelActiveConnectionKeyValue.Text = loadPattern.LoadPatternConnectionKey;
 
+                if (!string.IsNullOrEmpty(loadPattern.LoadPatternOutputFilePattern))
+                {
+                    localLabelOutputFilePatternValue.Text = loadPattern.LoadPatternOutputFilePattern;
+                }
+                else
+                {
+                    localLabelOutputFilePatternValue.Text = "Undefined";
+                }
+
+
                 // Read the file from the path
                 string loadPatternTemplate ="";
                 try
@@ -503,7 +511,6 @@ namespace Virtual_Data_Warehouse
             if (StartUpIndicator == false)
             {
                 ApplySyntaxHighlightingForHandlebars();
-                //TextHandling.SyntaxHighlightHandlebars(localRichTextBoxGenerationPattern, localRichTextBoxGenerationPattern.Text);
             }
         }
 
@@ -529,13 +536,13 @@ namespace Virtual_Data_Warehouse
         void SavePattern(object o, EventArgs e)
         {
             RaiseOnClearMainText();
-            string backupResponse = LoadPattern.BackupLoadPattern(localLabelFullFilePath.Text);
+            string backupResponse = LoadPatternFileHandling.BackupPatternCollection(localLabelFullFilePath.Text);
             string saveResponse = "";
 
             if (backupResponse.StartsWith("A backup was created"))
             {
                 RaiseOnChangeMainText(backupResponse);
-                saveResponse = LoadPattern.SaveLoadPattern(localLabelFullFilePath.Text, localRichTextBoxGenerationPattern.Text);
+                saveResponse = LoadPatternFileHandling.SavePatternCollection(localLabelFullFilePath.Text, localRichTextBoxGenerationPattern.Text);
                 RaiseOnChangeMainText("\r\n\r\n" + saveResponse);
             }
             else
@@ -553,7 +560,6 @@ namespace Virtual_Data_Warehouse
 
         void DoWork()
         {
-            _localRichTextBox.Clear();
             GenerateFromPattern();
         }
 
@@ -569,13 +575,13 @@ namespace Virtual_Data_Warehouse
             RaiseOnClearMainText();
             localTabControl.SelectedIndex = 0;
 
-            // Loop through the checked items, select the right mapping and generate the pattern
+            // Loop through the checked items, select the right mapping and generate the pattern.
             if (_localCheckedListBox.CheckedItems.Count != 0)
             {
                 for (int x = 0; x <= _localCheckedListBox.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = _localCheckedListBox.CheckedItems[x].ToString();
-                    _localRichTextBox.AppendText(@"Processing generation for " + targetTableName + ".\r\n");
+                    RaiseOnChangeMainText(@"Processing generation for " + targetTableName + ".\r\n");
 
                     // Only process the selected items in the total of available source-to-target mappings
                     ItemList.TryGetValue(targetTableName, out var dataObjectMappingList);
@@ -583,11 +589,11 @@ namespace Virtual_Data_Warehouse
                     // Return the result to the user
                     try
                     {
-                        // Compile the template, and merge it with the metadata
+                        // Compile the template, and merge it with the metadata.
                         var template = Handlebars.Compile(localRichTextBoxGenerationPattern.Text);
                         var result = template(dataObjectMappingList);
 
-                        // Check if the metadata needs to be displayed
+                        // Check if the metadata needs to be displayed.
                         if (DisplayJsonFlag)
                         {
                             try
@@ -601,16 +607,19 @@ namespace Virtual_Data_Warehouse
                             }
                         }
 
-                        // Display the output of the template to the user
+                        // Display the output of the template to the user.
                         localRichTextBoxGenerationOutput.AppendText(result);
 
-                        // Spool the output to disk
+                        // Spool the output to disk.
                         if (SaveOutputFileFlag)
                         {
-                            VdwUtility.SaveOutputToDisk(FormBase.VdwConfigurationSettings.VdwOutputPath + targetTableName + ".sql", result);
+                            // Assert file output pattern.
+                            var outputFile = localLabelOutputFilePatternValue.Text;
+                            outputFile = outputFile.Replace("{targetDataObject.name}", targetTableName);
+                            VdwUtility.SaveOutputToDisk(FormBase.VdwConfigurationSettings.VdwOutputPath + outputFile, result);
                         }
 
-                        //Generate in database
+                        //Generate in database.
                         if (GenerateInDatabaseFlag)
                         {
                             // Find the right connection for the pattern connection key
@@ -653,11 +662,12 @@ namespace Virtual_Data_Warehouse
             }
             else
             {
-                _localRichTextBox.AppendText($"There was no metadata selected to generate {_inputNiceName} code. Please check the metadata schema - are there any {_inputNiceName} objects selected?");
+                RaiseOnChangeMainText($"There was no metadata selected to generate {_inputNiceName} code. Please check the metadata schema - are there any {_inputNiceName} objects selected?");
             }
 
             // Report back to the user
             int errorCounter = 0;
+
             foreach (Event individualEvent in FormBase.VdwConfigurationSettings.VdwEventLog)
             {
                 if (individualEvent.eventCode == 1 && individualEvent.eventTime>currentTime)
@@ -670,8 +680,8 @@ namespace Virtual_Data_Warehouse
             RaiseOnChangeMainText($"\r\n{errorCounter} error(s) have been found.\r\n");
             RaiseOnChangeMainText($"\r\nAssociated scripts have been saved in {FormBase.VdwConfigurationSettings.VdwOutputPath}.\r\n");
 
-            // Apply syntax highlighting
-            TextHandling.SyntaxHighlightSql(localRichTextBoxGenerationOutput, localRichTextBoxGenerationOutput.Text);
+            // Apply syntax highlighting.
+            localRichTextBoxGenerationOutput.Rtf = TextHandling.SyntaxHighlightSql(localRichTextBoxGenerationOutput.Text).Rtf;
         }
 
         /// <summary>

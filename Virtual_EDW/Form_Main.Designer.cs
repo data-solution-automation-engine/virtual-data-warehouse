@@ -30,16 +30,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openCoreDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openInputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openLoadPatternDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.openVDWConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openTEAMConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,13 +64,11 @@
             this.tabPageSettings = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.textBoxInputPath = new System.Windows.Forms.TextBox();
+            this.textBoxMetadataPath = new System.Windows.Forms.TextBox();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.labelPatternPath = new System.Windows.Forms.Label();
             this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
             this.pictureBox6 = new System.Windows.Forms.PictureBox();
-            this.dataGridViewLoadPatternCollection = new System.Windows.Forms.DataGridView();
-            this.checkBoxBackupFiles = new System.Windows.Forms.CheckBox();
             this.groupBoxConfigurationPaths = new System.Windows.Forms.GroupBox();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.textBoxTeamConnectionsPath = new System.Windows.Forms.TextBox();
@@ -106,7 +102,6 @@
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternCollection)).BeginInit();
             this.groupBoxConfigurationPaths.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
@@ -132,10 +127,11 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openCoreDirectoryToolStripMenuItem,
             this.openVDWConfigurationDirectoryToolStripMenuItem,
             this.openInputDirectoryToolStripMenuItem,
-            this.openOutputDirectoryToolStripMenuItem,
             this.openLoadPatternDirectoryToolStripMenuItem,
+            this.openOutputDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
             this.openVDWConfigurationSettingsFileToolStripMenuItem,
             this.openTEAMConfigurationSettingsFileToolStripMenuItem,
@@ -150,48 +146,56 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // openCoreDirectoryToolStripMenuItem
+            // 
+            this.openCoreDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.openCoreDirectoryToolStripMenuItem.Name = "openCoreDirectoryToolStripMenuItem";
+            this.openCoreDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openCoreDirectoryToolStripMenuItem.Text = "Open Core Directory";
+            this.openCoreDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openCoreDirectoryToolStripMenuItem_Click);
+            // 
             // openVDWConfigurationDirectoryToolStripMenuItem
             // 
             this.openVDWConfigurationDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
             this.openVDWConfigurationDirectoryToolStripMenuItem.Name = "openVDWConfigurationDirectoryToolStripMenuItem";
-            this.openVDWConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.openVDWConfigurationDirectoryToolStripMenuItem.Text = "Open VDW Configuration Directory";
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openVDWConfigurationDirectoryToolStripMenuItem.Text = "Open Configuration Directory";
             this.openVDWConfigurationDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openVDWConfigurationDirectoryToolStripMenuItem_Click);
             // 
             // openInputDirectoryToolStripMenuItem
             // 
             this.openInputDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
             this.openInputDirectoryToolStripMenuItem.Name = "openInputDirectoryToolStripMenuItem";
-            this.openInputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.openInputDirectoryToolStripMenuItem.Text = "Open Input (Json) Directory";
+            this.openInputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openInputDirectoryToolStripMenuItem.Text = "Open Metadata Directory";
             this.openInputDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openInputDirectoryToolStripMenuItem_Click);
-            // 
-            // openOutputDirectoryToolStripMenuItem
-            // 
-            this.openOutputDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.openOutputDirectoryToolStripMenuItem.Name = "openOutputDirectoryToolStripMenuItem";
-            this.openOutputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.openOutputDirectoryToolStripMenuItem.Text = "Open Output Directory";
-            this.openOutputDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openOutputDirectoryToolStripMenuItem_Click);
             // 
             // openLoadPatternDirectoryToolStripMenuItem
             // 
             this.openLoadPatternDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
             this.openLoadPatternDirectoryToolStripMenuItem.Name = "openLoadPatternDirectoryToolStripMenuItem";
-            this.openLoadPatternDirectoryToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.openLoadPatternDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.openLoadPatternDirectoryToolStripMenuItem.Text = "Open Load Pattern Directory";
             this.openLoadPatternDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openLoadPatternDirectoryToolStripMenuItem_Click);
+            // 
+            // openOutputDirectoryToolStripMenuItem
+            // 
+            this.openOutputDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.openOutputDirectoryToolStripMenuItem.Name = "openOutputDirectoryToolStripMenuItem";
+            this.openOutputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openOutputDirectoryToolStripMenuItem.Text = "Open Output Directory";
+            this.openOutputDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openOutputDirectoryToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(257, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(231, 6);
             // 
             // openVDWConfigurationSettingsFileToolStripMenuItem
             // 
             this.openVDWConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
             this.openVDWConfigurationSettingsFileToolStripMenuItem.Name = "openVDWConfigurationSettingsFileToolStripMenuItem";
-            this.openVDWConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.openVDWConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.openVDWConfigurationSettingsFileToolStripMenuItem.Text = "Open VDW Configuration File";
             this.openVDWConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openVDWConfigurationSettingsFileToolStripMenuItem_Click);
             // 
@@ -199,20 +203,20 @@
             // 
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Name = "openTEAMConfigurationSettingsFileToolStripMenuItem";
-            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.openTEAMConfigurationSettingsFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Text = "Open TEAM Environments File";
             this.openTEAMConfigurationSettingsFileToolStripMenuItem.Click += new System.EventHandler(this.openTEAMConfigurationSettingsFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(257, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(231, 6);
             // 
             // openPatternCollectionFileToolStripMenuItem
             // 
             this.openPatternCollectionFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
             this.openPatternCollectionFileToolStripMenuItem.Name = "openPatternCollectionFileToolStripMenuItem";
-            this.openPatternCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.openPatternCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.openPatternCollectionFileToolStripMenuItem.Text = "Open Pattern Collection File";
             this.openPatternCollectionFileToolStripMenuItem.Click += new System.EventHandler(this.openPatternCollectionFileToolStripMenuItem_Click);
             // 
@@ -220,34 +224,34 @@
             // 
             this.savePatternCollectionFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.SaveFile;
             this.savePatternCollectionFileToolStripMenuItem.Name = "savePatternCollectionFileToolStripMenuItem";
-            this.savePatternCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.savePatternCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.savePatternCollectionFileToolStripMenuItem.Text = "Save Pattern Collection Grid";
             this.savePatternCollectionFileToolStripMenuItem.Click += new System.EventHandler(this.savePatternCollectionFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(257, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(231, 6);
             // 
             // saveConfigurationFileToolStripMenuItem
             // 
             this.saveConfigurationFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.SaveFile;
             this.saveConfigurationFileToolStripMenuItem.Name = "saveConfigurationFileToolStripMenuItem";
             this.saveConfigurationFileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.saveConfigurationFileToolStripMenuItem.Text = "Save VDW Settings";
+            this.saveConfigurationFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.saveConfigurationFileToolStripMenuItem.Text = "Save Settings";
             this.saveConfigurationFileToolStripMenuItem.Click += new System.EventHandler(this.saveConfigurationFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(257, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(231, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.ExitApplication;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -265,7 +269,7 @@
             // 
             this.helpToolStripMenuItem1.Image = global::Virtual_Data_Warehouse.Properties.Resources.HelpIconSmall;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -273,7 +277,7 @@
             // 
             this.displayEventLogToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.log_file;
             this.displayEventLogToolStripMenuItem.Name = "displayEventLogToolStripMenuItem";
-            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.displayEventLogToolStripMenuItem.Text = "Display Event Log";
             this.displayEventLogToolStripMenuItem.Click += new System.EventHandler(this.displayEventLogToolStripMenuItem_Click);
             // 
@@ -281,7 +285,7 @@
             // 
             this.aboutToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -392,8 +396,6 @@
             // tabPageSettings
             // 
             this.tabPageSettings.Controls.Add(this.groupBox1);
-            this.tabPageSettings.Controls.Add(this.dataGridViewLoadPatternCollection);
-            this.tabPageSettings.Controls.Add(this.checkBoxBackupFiles);
             this.tabPageSettings.Controls.Add(this.groupBoxConfigurationPaths);
             this.tabPageSettings.Controls.Add(this.groupBoxOutputOptions);
             this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
@@ -406,7 +408,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.textBoxInputPath);
+            this.groupBox1.Controls.Add(this.textBoxMetadataPath);
             this.groupBox1.Controls.Add(this.pictureBox4);
             this.groupBox1.Controls.Add(this.labelPatternPath);
             this.groupBox1.Controls.Add(this.textBoxLoadPatternPath);
@@ -427,14 +429,14 @@
             this.label10.TabIndex = 94;
             this.label10.Text = "Metadata directory (json)";
             // 
-            // textBoxInputPath
+            // textBoxMetadataPath
             // 
-            this.textBoxInputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxInputPath.Location = new System.Drawing.Point(137, 23);
-            this.textBoxInputPath.Multiline = true;
-            this.textBoxInputPath.Name = "textBoxInputPath";
-            this.textBoxInputPath.Size = new System.Drawing.Size(668, 20);
-            this.textBoxInputPath.TabIndex = 93;
+            this.textBoxMetadataPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxMetadataPath.Location = new System.Drawing.Point(137, 23);
+            this.textBoxMetadataPath.Multiline = true;
+            this.textBoxMetadataPath.Name = "textBoxMetadataPath";
+            this.textBoxMetadataPath.Size = new System.Drawing.Size(668, 20);
+            this.textBoxMetadataPath.TabIndex = 93;
             // 
             // pictureBox4
             // 
@@ -475,50 +477,6 @@
             this.pictureBox6.TabIndex = 99;
             this.pictureBox6.TabStop = false;
             this.pictureBox6.Click += new System.EventHandler(this.pictureBoxUpdateLoadPatternPath_Click);
-            // 
-            // dataGridViewLoadPatternCollection
-            // 
-            this.dataGridViewLoadPatternCollection.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridViewLoadPatternCollection.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewLoadPatternCollection.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridViewLoadPatternCollection.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridViewLoadPatternCollection.Location = new System.Drawing.Point(3, 191);
-            this.dataGridViewLoadPatternCollection.Name = "dataGridViewLoadPatternCollection";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewLoadPatternCollection.RowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridViewLoadPatternCollection.Size = new System.Drawing.Size(1665, 521);
-            this.dataGridViewLoadPatternCollection.TabIndex = 104;
-            this.dataGridViewLoadPatternCollection.CurrentCellDirtyStateChanged += new System.EventHandler(this.dataGridViewLoadPatternCollection_CurrentCellDirtyStateChanged_1);
-            // 
-            // checkBoxBackupFiles
-            // 
-            this.checkBoxBackupFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkBoxBackupFiles.AutoSize = true;
-            this.checkBoxBackupFiles.Checked = true;
-            this.checkBoxBackupFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxBackupFiles.Location = new System.Drawing.Point(668, 219);
-            this.checkBoxBackupFiles.Name = "checkBoxBackupFiles";
-            this.checkBoxBackupFiles.Size = new System.Drawing.Size(222, 17);
-            this.checkBoxBackupFiles.TabIndex = 103;
-            this.checkBoxBackupFiles.Text = "Automatically create file backups on save";
-            this.checkBoxBackupFiles.UseVisualStyleBackColor = true;
             // 
             // groupBoxConfigurationPaths
             // 
@@ -724,9 +682,9 @@
             this.labelWelcome.AutoSize = true;
             this.labelWelcome.Location = new System.Drawing.Point(203, 31);
             this.labelWelcome.Name = "labelWelcome";
-            this.labelWelcome.Size = new System.Drawing.Size(346, 13);
+            this.labelWelcome.Size = new System.Drawing.Size(198, 13);
             this.labelWelcome.TabIndex = 85;
-            this.labelWelcome.Text = "Welcome to the Virtual Data Warehouse - open source code generation";
+            this.labelWelcome.Text = "Welcome to the Virtual Data Warehouse";
             // 
             // pictureBox2
             // 
@@ -791,12 +749,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox9.ResumeLayout(false);
             this.tabPageSettings.ResumeLayout(false);
-            this.tabPageSettings.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLoadPatternCollection)).EndInit();
             this.groupBoxConfigurationPaths.ResumeLayout(false);
             this.groupBoxConfigurationPaths.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
@@ -852,8 +808,6 @@
         private System.Windows.Forms.ToolStripMenuItem openVDWConfigurationDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openInputDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.DataGridView dataGridViewLoadPatternCollection;
-        private System.Windows.Forms.CheckBox checkBoxBackupFiles;
         private System.Windows.Forms.ToolStripMenuItem openPatternCollectionFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem savePatternCollectionFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openLoadPatternDirectoryToolStripMenuItem;
@@ -868,7 +822,7 @@
         private System.Windows.Forms.Label label2;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Label label10;
-        internal System.Windows.Forms.TextBox textBoxInputPath;
+        internal System.Windows.Forms.TextBox textBoxMetadataPath;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Label labelPatternPath;
         internal System.Windows.Forms.TextBox textBoxLoadPatternPath;
@@ -879,6 +833,7 @@
         private System.Windows.Forms.ToolTip toolTipVdw;
         private System.Windows.Forms.Label labelWelcome;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openCoreDirectoryToolStripMenuItem;
     }
 }
 

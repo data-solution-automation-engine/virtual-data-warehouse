@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "PSA_PROFILER_PLAN",
-    "generationDateTime": "2021-02-17T18:13:50.650423+10:00"
+    "selectedDataObject": {
+      "name": "PSA_PROFILER_PLAN",
+      "dataObjectConnection": {
+        "dataConnectionString": "PSA",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "PersistentStagingArea"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "PSA_PROFILER_PLAN",
       "mappingClassifications": [
         {
-          "id": 2,
-          "classification": "PersistentStagingArea",
-          "notes": "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts. Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area."
+          "classification": "PersistentStagingArea"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "100_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "150_Persistent_Staging_Area",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -163,78 +182,37 @@
               "classification": "Context"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Plan_Code",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 8
+              "name": "Renewal_Plan_Code"
             }
           ],
           "targetDataItem": {
-            "name": "Plan_Code",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 8
+            "name": "Renewal_Plan_Code"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Plan_Desc",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
+              "name": "Plan_Code"
             }
           ],
           "targetDataItem": {
-            "name": "Plan_Desc",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 9
+            "name": "Plan_Code"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Renewal_Plan_Code",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 10
+              "name": "Plan_Desc"
             }
           ],
           "targetDataItem": {
-            "name": "Renewal_Plan_Code",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 10
+            "name": "Plan_Desc"
           }
         }
       ],
@@ -245,20 +223,15 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "Plan_Code",
-                "dataType": "nvarchar",
-                "characterLength": 100,
-                "ordinalPosition": 8
+                "name": "Plan_Code"
               }
             }
           ],
-          "surrogateKey": "Not applicable"
+          "surrogateKey": "PROFILER_PLAN_SK"
         }
       ],
       "filterCriterion": "",

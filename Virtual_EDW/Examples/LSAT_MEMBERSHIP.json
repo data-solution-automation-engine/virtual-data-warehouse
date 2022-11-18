@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "LSAT_MEMBERSHIP",
-    "generationDateTime": "2021-02-17T18:13:49.8663503+10:00"
+    "selectedDataObject": {
+      "name": "LSAT_MEMBERSHIP",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "NaturalBusinessRelationshipContext"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "LSAT_MEMBERSHIP",
       "mappingClassifications": [
         {
-          "id": 6,
-          "classification": "NaturalBusinessRelationshipContext",
-          "notes": "The Link Satellites describe the changes over time for the relationships (Links). This pattern supports normal (historical) Link Satellites."
+          "classification": "NaturalBusinessRelationshipContext"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -71,124 +90,35 @@
           }
         ]
       },
-      "relatedDataObjects": [
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "HUB_MEMBERSHIP_PLAN",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
-        }
-      ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "End_Date",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 11
+              "name": "End_Date"
             }
           ],
           "targetDataItem": {
-            "name": "MEMBERSHIP_END_DATE",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 9
+            "name": "MEMBERSHIP_END_DATE"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Start_Date",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 10
+              "name": "Start_Date"
             }
           ],
           "targetDataItem": {
-            "name": "MEMBERSHIP_START_DATE",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 8
+            "name": "MEMBERSHIP_START_DATE"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Status",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
+              "name": "Status"
             }
           ],
           "targetDataItem": {
-            "name": "MEMBERSHIP_STATUS",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 10
+            "name": "MEMBERSHIP_STATUS"
           }
         }
       ],
@@ -199,8 +129,7 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -211,9 +140,7 @@
               "sourceDataItems": [
                 {
                   "name": "Plan_Code",
-                  "dataType": "nvarchar",
-                  "characterLength": 100,
-                  "ordinalPosition": 9
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -235,7 +162,7 @@
           "surrogateKey": "MEMBERSHIP_SK"
         }
       ],
-      "filterCriterion": "17=17",
+      "filterCriterion": "",
       "enabled": true
     }
   ]

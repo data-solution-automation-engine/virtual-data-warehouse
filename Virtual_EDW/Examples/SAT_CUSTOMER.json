@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "SAT_CUSTOMER",
-    "generationDateTime": "2021-02-17T18:13:50.0611339+10:00"
+    "selectedDataObject": {
+      "name": "SAT_CUSTOMER",
+      "dataObjectConnection": {
+        "dataConnectionString": "Integration",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "Context"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "SAT_CUSTOMER",
       "mappingClassifications": [
         {
-          "id": 5,
-          "classification": "Context",
-          "notes": "The Satellite type entities capture (historical / time-variant) context about the Business Keys in the Hub entities. A Satellite is typically sourced from a single Staging Area table."
+          "classification": "Context"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "200_Integration_Layer",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -72,52 +91,6 @@
         ]
       },
       "relatedDataObjects": [
-        {
-          "name": "HUB_CUSTOMER",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "CoreBusinessConcept"
-            }
-          ]
-        },
-        {
-          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
         {
           "name": "DIM_CUSTOMER",
           "dataObjectConnection": {
@@ -140,156 +113,87 @@
               "classification": "Presentation"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Country",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 14
+              "name": "Country"
             }
           ],
           "targetDataItem": {
-            "name": "COUNTRY",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 12
+            "name": "COUNTRY"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "DOB",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 16
+              "name": "DOB"
             }
           ],
           "targetDataItem": {
-            "name": "DATE_OF_BIRTH",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 14
+            "name": "DATE_OF_BIRTH"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Gender",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 15
+              "name": "Gender"
             }
           ],
           "targetDataItem": {
-            "name": "GENDER",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 13
+            "name": "GENDER"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Given",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
+              "name": "Given"
             }
           ],
           "targetDataItem": {
-            "name": "GIVEN_NAME",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 8
+            "name": "GIVEN_NAME"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Postcode",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 13
+              "name": "Postcode"
             }
           ],
           "targetDataItem": {
-            "name": "POSTCODE",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 11
+            "name": "POSTCODE"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Referee_Offer_Made",
-              "dataType": "int",
-              "ordinalPosition": 18
+              "name": "Referee_Offer_Made"
             }
           ],
           "targetDataItem": {
-            "name": "REFERRAL_OFFER_MADE_INDICATOR",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 15
+            "name": "REFERRAL_OFFER_MADE_INDICATOR"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Suburb",
-              "dataType": "varchar",
-              "characterLength": -1,
-              "ordinalPosition": 11
+              "name": "Suburb"
             }
           ],
           "targetDataItem": {
-            "name": "SUBURB",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 10
+            "name": "SUBURB"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Surname",
-              "dataType": "nvarchar",
-              "ordinalPosition": 10
+              "name": "Surname"
             }
           ],
           "targetDataItem": {
-            "name": "SURNAME",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 9
+            "name": "SURNAME"
           }
         }
       ],
@@ -300,8 +204,7 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
@@ -312,7 +215,7 @@
           "surrogateKey": "CUSTOMER_SK"
         }
       ],
-      "filterCriterion": "2=2",
+      "filterCriterion": "",
       "enabled": true
     }
   ]

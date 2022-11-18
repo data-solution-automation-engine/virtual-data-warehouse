@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using TEAM;
+using TEAM_Library;
 
 namespace Virtual_Data_Warehouse
 {
@@ -18,28 +18,25 @@ namespace Virtual_Data_Warehouse
             MyParent = myParent;
             InitializeComponent();
         }
+        internal static LoadPatternGridView _loadPatternGridView;
 
         // List of TEAM working environments.
-        public static TeamWorkingEnvironmentCollection TeamEnvironmentCollection { get; set; } = new TeamWorkingEnvironmentCollection();
+        public static TeamEnvironmentCollection TeamEnvironmentCollection { get; set; } = new TeamEnvironmentCollection();
 
         // TEAM configuration settings, containing all the conventions etc.
         public static TeamConfiguration TeamConfigurationSettings { get; set; } = new TeamConfiguration();
-
-        // List of versions.
-        public static TeamVersionList EnvironmentVersion { get; set; } = new TeamVersionList();
 
         /// <summary>
         /// Application specific global parameters - not meant to be updated via the GUI.
         /// </summary>
         internal static class GlobalParameters
         {
-
-            // VDW core path parameters, not meant to be updated
+            // VDW core parameters, not meant to be updated
             public static string RootPath { get; } = Application.StartupPath;
+            public static string CorePath { get; } = Application.StartupPath + @"\" + @"Core\";
             public static string VdwConfigurationPath { get; } = RootPath + @"\Configuration\";
             public static string VdwConfigurationFileName { get; } = "VDW_Configuration.txt";
             public static string LoadPatternListFileName { get; } = "loadPatternCollection.json";
-            public static string LoadPatternDefinitionFileName { get; } = "loadPatternDefinition.json";
 
             // TEAM core file names, not meant to be updated
             public static string TeamConfigurationFileName { get; } = "TEAM_configuration";
@@ -51,9 +48,7 @@ namespace Virtual_Data_Warehouse
             public static string JsonExtension { get; } = ".json";
 
             public static string JsonSchemaForDataWarehouseAutomationFileName { get; } = "interfaceDataWarehouseAutomationMetadata.json";
-            //public static string DataWarehouseSchemaDefinition { get; } = File.ReadAllText(Application.StartupPath + @"\Schema\" + JsonSchemaForDataWarehouseAutomationFileName);
         }
-
 
         /// <summary>
         /// These are the VDW specific configuration settings (i.e. not TEAM driven)
@@ -65,18 +60,11 @@ namespace Virtual_Data_Warehouse
 
             public static string VdwSchema { get; set; } = "dbo";
             public static string LoadPatternPath { get; set; } = GlobalParameters.RootPath + @"\LoadPatterns\";
-            public static string VdwInputPath { get; set; } = Application.StartupPath + @"\Input\";
+            public static string VdwMetadatPath { get; set; } = Application.StartupPath + @"\Metadata\";
             public static string VdwOutputPath { get; set; } = Application.StartupPath + @"\Output\";
             public static string VdwExamplesPath { get; set; } = Application.StartupPath + @"\Examples\";
-
-
-            // Parameters that can be changed at runtime
-            public static string hashingStartSnippet { get; set; }
-            public static string hashingEndSnippet { get; set; }
-            public static string hashingCollation { get; set; }
-            public static string hashingZeroKey { get; set; } = "0x00000000000000000000000000000000";
-
-            public static List<LoadPattern> patternList { get; set; }
+            
+            public static List<LoadPatternFileHandling> patternList { get; set; }
 
             // Related to TEAM configuration settings
             //public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\";
@@ -84,18 +72,14 @@ namespace Virtual_Data_Warehouse
             public static string TeamConnectionsPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\" + GlobalParameters.JsonEnvironmentFileName + GlobalParameters.JsonExtension;
 
+            // TEAM active working environment.
             public static string TeamSelectedEnvironmentInternalId { get; set; } = "";
+            public static TeamEnvironment ActiveEnvironment { get; set; } = new TeamEnvironment();
 
-            // TEAM active working environment
-            public static TeamWorkingEnvironment ActiveEnvironment { get; set; } = new TeamWorkingEnvironment();
-
-            // In memory settings for reloading
+            // In memory settings for reloading.
             public static string SelectedSubTab { get; set; }
             public static string SelectedMainTab { get; set; }
             public static string SelectedPatternText { get; set; }
         }
-
-
- 
     }
 }

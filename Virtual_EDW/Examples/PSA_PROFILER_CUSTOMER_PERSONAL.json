@@ -10,17 +10,36 @@
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
   "generationSpecificMetadata": {
-    "selectedDataObject": "PSA_PROFILER_CUSTOMER_PERSONAL",
-    "generationDateTime": "2021-02-17T18:13:50.5944506+10:00"
+    "selectedDataObject": {
+      "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+      "dataObjectConnection": {
+        "dataConnectionString": "PSA",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "PersistentStagingArea"
+        }
+      ]
+    }
   },
   "dataObjectMappings": [
     {
       "mappingName": "PSA_PROFILER_CUSTOMER_PERSONAL",
       "mappingClassifications": [
         {
-          "id": 2,
-          "classification": "PersistentStagingArea",
-          "notes": "The Persistent Staging Area (PSA) is the foundation of the Virtual Enterprise Data Warehouse (EDW). The ETL effectively compares and loads the delta into the PSA tables that correspond to the Staging Area counterparts. Because of this the logic is generated as 'SELECT INSERT' to load new data delta into this area."
+          "classification": "PersistentStagingArea"
         }
       ],
       "sourceDataObjects": [
@@ -31,7 +50,7 @@
             "extensions": [
               {
                 "key": "database",
-                "value": "100_Staging_Area",
+                "value": "VirtualDWH",
                 "description": "database name"
               },
               {
@@ -55,7 +74,7 @@
           "extensions": [
             {
               "key": "database",
-              "value": "150_Persistent_Staging_Area",
+              "value": "VirtualDWH",
               "description": "database name"
             },
             {
@@ -140,198 +159,117 @@
               "classification": "Context"
             }
           ]
-        },
-        {
-          "name": "Metadata",
-          "dataObjectConnection": {
-            "dataConnectionString": "Metadata",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "900_Metadata",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Metadata"
-            }
-          ]
         }
       ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Contact_Number",
-              "dataType": "int",
-              "ordinalPosition": 17
+              "name": "Surname"
             }
           ],
           "targetDataItem": {
-            "name": "Contact_Number",
-            "dataType": "int",
-            "ordinalPosition": 17
+            "name": "Surname"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Country",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 14
+              "name": "Suburb"
             }
           ],
           "targetDataItem": {
-            "name": "Country",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 14
+            "name": "Suburb"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "CustomerID",
-              "dataType": "int",
-              "ordinalPosition": 8
+              "name": "State"
             }
           ],
           "targetDataItem": {
-            "name": "CustomerID",
-            "dataType": "int",
-            "ordinalPosition": 8
+            "name": "State"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "DOB",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 16
+              "name": "Postcode"
             }
           ],
           "targetDataItem": {
-            "name": "DOB",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 16
+            "name": "Postcode"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Gender",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 15
+              "name": "Country"
             }
           ],
           "targetDataItem": {
-            "name": "Gender",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 15
+            "name": "Country"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Given",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
+              "name": "Gender"
             }
           ],
           "targetDataItem": {
-            "name": "Given",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 9
+            "name": "Gender"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Postcode",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 13
+              "name": "DOB"
             }
           ],
           "targetDataItem": {
-            "name": "Postcode",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 13
+            "name": "DOB"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Referee_Offer_Made",
-              "dataType": "int",
-              "ordinalPosition": 18
+              "name": "Contact_Number"
             }
           ],
           "targetDataItem": {
-            "name": "Referee_Offer_Made",
-            "dataType": "int",
-            "ordinalPosition": 18
+            "name": "Contact_Number"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "State",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
+              "name": "Referee_Offer_Made"
             }
           ],
           "targetDataItem": {
-            "name": "State",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 12
+            "name": "Referee_Offer_Made"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Suburb",
-              "dataType": "varchar",
-              "characterLength": -1,
-              "ordinalPosition": 11
+              "name": "CustomerID"
             }
           ],
           "targetDataItem": {
-            "name": "Suburb",
-            "dataType": "varchar",
-            "characterLength": -1,
-            "ordinalPosition": 11
+            "name": "CustomerID"
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Surname",
-              "dataType": "nvarchar",
-              "ordinalPosition": 10
+              "name": "Given"
             }
           ],
           "targetDataItem": {
-            "name": "Surname",
-            "dataType": "nvarchar",
-            "ordinalPosition": 10
+            "name": "Given"
           }
         }
       ],
@@ -342,18 +280,15 @@
               "sourceDataItems": [
                 {
                   "name": "CustomerID",
-                  "dataType": "int",
-                  "ordinalPosition": 8
+                  "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "CustomerID",
-                "dataType": "int",
-                "ordinalPosition": 8
+                "name": "CustomerID"
               }
             }
           ],
-          "surrogateKey": "Not applicable"
+          "surrogateKey": "PROFILER_CUSTOMER_PERSONAL_SK"
         }
       ],
       "filterCriterion": "",

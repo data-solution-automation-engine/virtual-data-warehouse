@@ -1,23 +1,24 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
-using TEAM;
+using Microsoft.Win32;
+using TEAM_Library;
+
 
 namespace Virtual_Data_Warehouse
 {
-    public class VdwUtility
+    public static class VdwUtility
     {
-
-       /// <summary>
+        /// <summary>
         /// Check if a Team Graph Configuration File exists, and create a default configuration file if not.
         /// </summary>
         internal static void CreateNewVdwConfigurationFile()
         {
-            Event localEvent;
-
             var initialConfigurationFile = new StringBuilder();
             initialConfigurationFile.AppendLine("/* Virtual Data Warehouse (VDW) Core Settings */");
             initialConfigurationFile.AppendLine("TeamEnvironmentFilePath|" + FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath);
@@ -30,11 +31,10 @@ namespace Virtual_Data_Warehouse
             initialConfigurationFile.AppendLine("VdwSchema|vdw");
             initialConfigurationFile.AppendLine("/* End of file */");
 
-            var vdwConfigurationFileName =
-                FormBase.GlobalParameters.VdwConfigurationPath + 
-                FormBase.GlobalParameters.VdwConfigurationFileName;
+            var vdwConfigurationFileName = FormBase.GlobalParameters.CorePath + FormBase.GlobalParameters.VdwConfigurationFileName;
 
-            localEvent = FileHandling.CreateConfigurationFile(vdwConfigurationFileName, initialConfigurationFile);
+            var localEvent = FileHandling.CreateConfigurationFile(vdwConfigurationFileName, initialConfigurationFile);
+
             if (localEvent.eventDescription != null)
             {
                 FormBase.VdwConfigurationSettings.VdwEventLog.Add(localEvent);
@@ -42,21 +42,24 @@ namespace Virtual_Data_Warehouse
         }
 
         /// <summary>
-        /// Load the information from the VDW configuration file into memory and display on the form
+        /// Load the information from the VDW configuration file into memory and display on the form.
         /// </summary>
         internal static void LoadVdwConfigurationFile()
         {
             try
             {
-                var configList = FileHandling.LoadConfigurationFile(
-                    FormBase.GlobalParameters.VdwConfigurationPath +
-                    FormBase.GlobalParameters.VdwConfigurationFileName);
+                var configList = FileHandling.LoadConfigurationFile(FormBase.GlobalParameters.CorePath + FormBase.GlobalParameters.VdwConfigurationFileName);
 
-
-                string[] configurationArray = new[]
+                string[] configurationArray =
                 {
-                    "TeamEnvironmentFilePath", "TeamConfigurationPath", "TeamConnectionsPath",
-                    "TeamSelectedEnvironment", "InputPath", "OutputPath", "LoadPatternPath", "VdwSchema"
+                    "TeamEnvironmentFilePath",
+                    "TeamConfigurationPath",
+                    "TeamConnectionsPath",
+                    "TeamSelectedEnvironment",
+                    "InputPath",
+                    "OutputPath",
+                    "LoadPatternPath",
+                    "VdwSchema"
                 };
 
                 foreach (string configuration in configurationArray)
@@ -79,7 +82,7 @@ namespace Virtual_Data_Warehouse
                                     configList[configuration];
                                 break;
                             case "InputPath":
-                                FormBase.VdwConfigurationSettings.VdwInputPath = configList[configuration];
+                                FormBase.VdwConfigurationSettings.VdwMetadatPath = configList[configuration];
                                 break;
                             case "OutputPath":
                                 FormBase.VdwConfigurationSettings.VdwOutputPath = configList[configuration];
@@ -91,31 +94,24 @@ namespace Virtual_Data_Warehouse
                                 FormBase.VdwConfigurationSettings.VdwSchema = configList[configuration];
                                 break;
                             default:
-                                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
-                                    $"Incorrect configuration '{configuration}' encountered."));
+                                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"Incorrect configuration '{configuration}' encountered."));
                                 break;
                         }
 
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
-                            $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
-
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
                     }
                     else
                     {
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
-                            $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
                     }
                 }
 
-                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
-                    $"The VDW configuration has been updated in memory" + $"."));
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The VDW configuration has been updated in memory" + $"."));
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
-                    $"An error was encountered loading the VDW configuration file. The reported error is: \r\n\r\n{ex}."));
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error was encountered loading the VDW configuration file. The reported error is: \r\n\r\n{exception.Message}."));
             }
-
         }
 
         /// <summary>
@@ -127,10 +123,7 @@ namespace Virtual_Data_Warehouse
             if (environmentName != null)
             {
                 // Connection information (TEAM_connections).
-                var connectionFileName = 
-                                         FormBase.VdwConfigurationSettings.TeamConnectionsPath +
-                                         FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName +
-                                         FormBase.GlobalParameters.JsonExtension;
+                var connectionFileName = FormBase.VdwConfigurationSettings.TeamConnectionsPath + FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName + FormBase.GlobalParameters.JsonExtension;
 
                 FormBase.TeamConfigurationSettings.ConnectionDictionary = TeamConnectionFile.LoadConnectionFile(connectionFileName);
 
@@ -162,16 +155,13 @@ namespace Virtual_Data_Warehouse
             if (environmentName != null)
             {
                 // Configuration information (TEAM_configuration.txt).
-                var configurationFileName = 
-                                            FormBase.VdwConfigurationSettings.TeamConfigurationPath +
-                                            FormBase.GlobalParameters.TeamConfigurationFileName + '_' + environmentName +
-                                            FormBase.GlobalParameters.ConfigurationFileExtension;
+                var configurationFileName = FormBase.VdwConfigurationSettings.TeamConfigurationPath + FormBase.GlobalParameters.TeamConfigurationFileName + '_' + environmentName + FormBase.GlobalParameters.ConfigurationFileExtension;
 
                 try
                 {
                     if (!File.Exists(configurationFileName))
                     {
-                        FormBase.TeamConfigurationSettings.CreateDummyEnvironmentConfigurationFile(configurationFileName);
+                        FormBase.TeamConfigurationSettings.CreateDummyTeamConfigurationFile(configurationFileName);
                         FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"A new configuration file {configurationFileName} was created."));
                     }
                     else
@@ -210,10 +200,7 @@ namespace Virtual_Data_Warehouse
                 connection.Open();
 
                 // Execute the check to see if the schema exists or not
-                var checkCommand =
-                    new SqlCommand(
-                        $"SELECT CASE WHEN EXISTS (SELECT * FROM sys.schemas WHERE name = '{FormBase.VdwConfigurationSettings.VdwSchema}') THEN 1 ELSE 0 END",
-                        connection);
+                var checkCommand = new SqlCommand($"SELECT CASE WHEN EXISTS (SELECT * FROM sys.schemas WHERE name = '{FormBase.VdwConfigurationSettings.VdwSchema}') THEN 1 ELSE 0 END", connection);
                 var exists = (int) checkCommand.ExecuteScalar() == 1;
 
                 if (exists == false)
@@ -237,15 +224,12 @@ namespace Virtual_Data_Warehouse
 
                     commandVersion.ExecuteNonQuery();
 
-                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
-                        $"The VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}' was created for database '{connection.Database}'."));
-
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}' was created for database '{connection.Database}'."));
                 }
             }
             catch (Exception ex)
             {
-                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
-                    $"An issue occured creating the VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}'. The reported error is {ex}"));
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An issue occurred creating the VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}'. The reported error is {ex}"));
             }
         }
 
@@ -255,7 +239,7 @@ namespace Virtual_Data_Warehouse
                 try
                 {
                     //sqlConnection.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                    using (var connection = sqlConnection)
+                    using (sqlConnection)
                     {
                         var server = new Server(new ServerConnection(sqlConnection));
                         try
@@ -293,8 +277,68 @@ namespace Virtual_Data_Warehouse
             {
                 FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, "There was an issue saving the output to disk. The message is: " + ex.Message + "\r\n\r\n"));
             }
+        }
 
-  
+        public static void DoubleBuffered(this DataGridView dgv, bool setting)
+        {
+            Type dgvType = dgv.GetType();
+            PropertyInfo pi = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
+            pi.SetValue(dgv, setting, null);
+        }
+
+        private static string CleanifyBrowserPath(string p)
+        {
+            string[] url = p.Split('"');
+            string clean = url[1];
+            return clean;
+        }
+
+        public static string GetDefaultBrowserPath()
+        {
+            string urlAssociation = @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http";
+            string browserPathKey = @"$BROWSER$\shell\open\command";
+
+            Microsoft.Win32.RegistryKey userChoiceKey = null;
+            string browserPath = "";
+
+            try
+            {
+                //Read default browser path from userChoiceLKey
+                userChoiceKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(urlAssociation + @"\UserChoice", false);
+
+                //If user choice was not found, try machine default
+                if (userChoiceKey == null)
+                {
+                    //Read default browser path from Win XP registry key
+                    var browserKey = Registry.ClassesRoot.OpenSubKey(@"HTTP\shell\open\command", false);
+
+                    //If browser path wasn’t found, try Win Vista (and newer) registry key
+                    if (browserKey == null)
+                    {
+                        browserKey = Registry.CurrentUser.OpenSubKey(urlAssociation, false);
+                    }
+                    var path = CleanifyBrowserPath(browserKey.GetValue(null) as string);
+                    browserKey.Close();
+                    return path;
+                }
+                else
+                {
+                    // user defined browser choice was found
+                    string progId = (userChoiceKey.GetValue("ProgId").ToString());
+                    userChoiceKey.Close();
+
+                    // now look up the path of the executable
+                    string concreteBrowserKey = browserPathKey.Replace("$BROWSER$", progId);
+                    var kp = Registry.ClassesRoot.OpenSubKey(concreteBrowserKey, false);
+                    browserPath = CleanifyBrowserPath(kp.GetValue(null) as string);
+                    kp.Close();
+                    return browserPath;
+                }
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
     }
 }
