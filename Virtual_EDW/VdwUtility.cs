@@ -201,7 +201,7 @@ namespace Virtual_Data_Warehouse
 
                 // Execute the check to see if the schema exists or not
                 var checkCommand = new SqlCommand($"SELECT CASE WHEN EXISTS (SELECT * FROM sys.schemas WHERE name = '{FormBase.VdwConfigurationSettings.VdwSchema}') THEN 1 ELSE 0 END", connection);
-                var exists = (int) checkCommand.ExecuteScalar() == 1;
+                var exists = (int)checkCommand.ExecuteScalar() == 1;
 
                 if (exists == false)
                 {
@@ -218,7 +218,6 @@ namespace Virtual_Data_Warehouse
                     //createStatement.AppendLine("END");
 
                     createStatement.AppendLine("IF SCHEMA_ID('" + FormBase.VdwConfigurationSettings.VdwSchema + "') IS NULL EXEC('CREATE SCHEMA " + FormBase.VdwConfigurationSettings.VdwSchema + "')");
-                    
 
                     var commandVersion = new SqlCommand(createStatement.ToString(), connection);
 
@@ -227,9 +226,15 @@ namespace Virtual_Data_Warehouse
                     FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}' was created for database '{connection.Database}'."));
                 }
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An issue occurred creating the VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}'. The reported error is {ex}"));
+                var errorMessage = $"An issue occurred creating the VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}' in the '{connection.Database}' database. The reported error is {exception.Message}";
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
             }
         }
 

@@ -581,12 +581,12 @@ namespace Virtual_Data_Warehouse
                 for (int x = 0; x <= _localCheckedListBox.CheckedItems.Count - 1; x++)
                 {
                     var targetTableName = _localCheckedListBox.CheckedItems[x].ToString();
-                    RaiseOnChangeMainText(@"Processing generation for " + targetTableName + ".\r\n");
+                    RaiseOnChangeMainText(@"Generating code for " + targetTableName + ".\r\n");
 
-                    // Only process the selected items in the total of available source-to-target mappings
+                    // Only process the selected items in the total of available source-to-target mappings.
                     ItemList.TryGetValue(targetTableName, out var dataObjectMappingList);
 
-                    // Return the result to the user
+                    // Return the result to the user.
                     try
                     {
                         // Compile the template, and merge it with the metadata.
@@ -601,9 +601,9 @@ namespace Virtual_Data_Warehouse
                                 var json = JsonConvert.SerializeObject(dataObjectMappingList, Formatting.Indented);
                                 localRichTextBoxGenerationOutput.AppendText(json + "\r\n\r\n");
                             }
-                            catch (Exception ex)
+                            catch (Exception exception)
                             {
-                                RaiseOnChangeMainText("An error was encountered while generating the Json metadata. The error message is: " + ex);
+                                RaiseOnChangeMainText("An error was encountered while parsing the Json metadata. The error message is: " + exception.Message);
                             }
                         }
 
@@ -622,7 +622,7 @@ namespace Virtual_Data_Warehouse
                         //Generate in database.
                         if (GenerateInDatabaseFlag)
                         {
-                            // Find the right connection for the pattern connection key
+                            // Find the right connection for the pattern connection key.
                             var localConnection = TeamConfiguration.GetTeamConnectionByInternalId(localLabelActiveConnectionKeyValue.Text, FormBase.TeamConfigurationSettings.ConnectionDictionary);
 
                             if (localConnection != null)
@@ -635,7 +635,9 @@ namespace Virtual_Data_Warehouse
                                 }
                                 catch
                                 {
-                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue creating the schema {FormBase.VdwConfigurationSettings.VdwSchema} in database {conn.Database}."));
+                                    var errorMessage = $"There was an issue creating the schema '{FormBase.VdwConfigurationSettings.VdwSchema}' in database '{conn.Database}'.";
+                                    RaiseOnChangeMainText(errorMessage);
+                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
                                 }
 
                                 try
@@ -644,19 +646,24 @@ namespace Virtual_Data_Warehouse
                                 }
                                 catch
                                 {
-                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue executing the query {result} in database {conn.Database}."));
+                                    var errorMessage = $"There was an issue executing the query '{result}' in database '{conn.Database}'.";
+                                    RaiseOnChangeMainText(errorMessage);
+                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
                                 }
                             }
                             else
                             {
-                                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue establishing a connection to generate the output for {targetTableName}. Is there a TEAM connections file in the configuration directory?"));
+                                var errorMessage = $"There was an issue establishing a connection to generate the output for '{targetTableName}'. Is there a TEAM connections file in the configuration directory?";
+                                RaiseOnChangeMainText(errorMessage);
+                                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
                             }
                         }
-
                     }
-                    catch (Exception ex)
+                    catch (Exception exception)
                     {
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"The template could not be compiled. The error message is: {ex.Message}"));
+                        var errorMessage = $"The template could not be compiled. The error message is: {exception.Message}";
+                        RaiseOnChangeMainText(errorMessage);
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
                     }
                 }
             }
