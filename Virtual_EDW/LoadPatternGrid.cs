@@ -17,10 +17,13 @@ namespace Virtual_Data_Warehouse
             EditMode = DataGridViewEditMode.EditOnEnter;
 
             Location = new Point(3, 191);
-            Size = new Size(1665, 521);
+            Size = new Size(1215, 521);
             BackgroundColor = SystemColors.AppWorkspace;
             GridColor = SystemColors.ControlDark;
-            BorderStyle = BorderStyle.FixedSingle;
+
+            //BorderStyle = BorderStyle.FixedSingle;
+            Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            BorderStyle = BorderStyle.None;
 
             Name = "dataGridViewLoadPatternCollection";
 
@@ -127,15 +130,32 @@ namespace Virtual_Data_Warehouse
 
         public void AutoLayout()
         {
-            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            //AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
-            Columns[ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            //Columns[ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            // Disable the auto size again (to enable manual resizing).
-            for (var i = 0; i < Columns.Count - 1; i++)
+            //Disable the auto size again(to enable manual resizing).
+            //for (var i = 0; i < Columns.Count - 1; i++)
+            //{
+            //    Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //    Columns[i].Width = Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+            //}
+
+            try
             {
-                Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                Columns[i].Width = Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+                //dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                //dataGridView.Columns[dataGridView.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+                // Disable the auto size again (to enable manual resizing).
+                for (var i = 0; i < this.Columns.Count - 1; i++)
+                {
+                    this.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    this.Columns[i].Width = this.Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+                }
+            }
+            catch
+            {
+                // Ignore it for now.
             }
         }
 

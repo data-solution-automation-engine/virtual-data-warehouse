@@ -120,7 +120,7 @@
             this.helpToolStripMenuItem});
             this.menuStripMainMenu.Location = new System.Drawing.Point(0, 0);
             this.menuStripMainMenu.Name = "menuStripMainMenu";
-            this.menuStripMainMenu.Size = new System.Drawing.Size(1703, 24);
+            this.menuStripMainMenu.Size = new System.Drawing.Size(1259, 24);
             this.menuStripMainMenu.TabIndex = 4;
             this.menuStripMainMenu.Text = "menuStrip1";
             // 
@@ -306,7 +306,7 @@
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxSaveToFile);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateJsonSchema);
             this.SQLGenerationGroupBox.Controls.Add(this.checkBoxGenerateInDatabase);
-            this.SQLGenerationGroupBox.Location = new System.Drawing.Point(16, 791);
+            this.SQLGenerationGroupBox.Location = new System.Drawing.Point(16, 580);
             this.SQLGenerationGroupBox.Name = "SQLGenerationGroupBox";
             this.SQLGenerationGroupBox.Size = new System.Drawing.Size(200, 106);
             this.SQLGenerationGroupBox.TabIndex = 14;
@@ -349,7 +349,7 @@
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = global::Virtual_Data_Warehouse.Properties.Resources.RavosLogo;
-            this.pictureBox1.Location = new System.Drawing.Point(1578, 797);
+            this.pictureBox1.Location = new System.Drawing.Point(1134, 586);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(109, 100);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -361,9 +361,9 @@
             this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox9.Controls.Add(this.richTextBoxInformationMain);
-            this.groupBox9.Location = new System.Drawing.Point(337, 791);
+            this.groupBox9.Location = new System.Drawing.Point(337, 580);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(1235, 106);
+            this.groupBox9.Size = new System.Drawing.Size(791, 106);
             this.groupBox9.TabIndex = 12;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Information";
@@ -376,7 +376,7 @@
             this.richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBoxInformationMain.Location = new System.Drawing.Point(6, 17);
             this.richTextBoxInformationMain.Name = "richTextBoxInformationMain";
-            this.richTextBoxInformationMain.Size = new System.Drawing.Size(1223, 82);
+            this.richTextBoxInformationMain.Size = new System.Drawing.Size(779, 82);
             this.richTextBoxInformationMain.TabIndex = 29;
             this.richTextBoxInformationMain.Text = "";
             this.richTextBoxInformationMain.TextChanged += new System.EventHandler(this.richTextBoxInformationMain_TextChanged);
@@ -384,7 +384,7 @@
             // button12
             // 
             this.button12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button12.Location = new System.Drawing.Point(222, 797);
+            this.button12.Location = new System.Drawing.Point(222, 586);
             this.button12.MinimumSize = new System.Drawing.Size(109, 40);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(109, 40);
@@ -400,22 +400,23 @@
             this.tabPageSettings.Controls.Add(this.groupBoxOutputOptions);
             this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
             this.tabPageSettings.Name = "tabPageSettings";
-            this.tabPageSettings.Size = new System.Drawing.Size(1671, 715);
+            this.tabPageSettings.Size = new System.Drawing.Size(1227, 504);
             this.tabPageSettings.TabIndex = 8;
             this.tabPageSettings.Text = "Settings";
             this.tabPageSettings.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.textBoxMetadataPath);
             this.groupBox1.Controls.Add(this.pictureBox4);
             this.groupBox1.Controls.Add(this.labelPatternPath);
             this.groupBox1.Controls.Add(this.textBoxLoadPatternPath);
             this.groupBox1.Controls.Add(this.pictureBox6);
-            this.groupBox1.Location = new System.Drawing.Point(832, 3);
+            this.groupBox1.Location = new System.Drawing.Point(615, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(836, 92);
+            this.groupBox1.Size = new System.Drawing.Size(603, 92);
             this.groupBox1.TabIndex = 117;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "VDW input options";
@@ -431,17 +432,20 @@
             // 
             // textBoxMetadataPath
             // 
+            this.textBoxMetadataPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxMetadataPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxMetadataPath.Location = new System.Drawing.Point(137, 23);
             this.textBoxMetadataPath.Multiline = true;
             this.textBoxMetadataPath.Name = "textBoxMetadataPath";
-            this.textBoxMetadataPath.Size = new System.Drawing.Size(668, 20);
+            this.textBoxMetadataPath.Size = new System.Drawing.Size(435, 20);
             this.textBoxMetadataPath.TabIndex = 93;
             // 
             // pictureBox4
             // 
+            this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox4.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox4.Location = new System.Drawing.Point(811, 23);
+            this.pictureBox4.Location = new System.Drawing.Point(578, 23);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(19, 20);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -460,17 +464,20 @@
             // 
             // textBoxLoadPatternPath
             // 
+            this.textBoxLoadPatternPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxLoadPatternPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxLoadPatternPath.Location = new System.Drawing.Point(137, 49);
             this.textBoxLoadPatternPath.Multiline = true;
             this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
-            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(668, 20);
+            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(435, 20);
             this.textBoxLoadPatternPath.TabIndex = 97;
             // 
             // pictureBox6
             // 
+            this.pictureBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox6.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox6.Location = new System.Drawing.Point(811, 49);
+            this.pictureBox6.Location = new System.Drawing.Point(578, 49);
             this.pictureBox6.Name = "pictureBox6";
             this.pictureBox6.Size = new System.Drawing.Size(19, 20);
             this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -480,6 +487,8 @@
             // 
             // groupBoxConfigurationPaths
             // 
+            this.groupBoxConfigurationPaths.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxConfigurationPaths.Controls.Add(this.pictureBox8);
             this.groupBoxConfigurationPaths.Controls.Add(this.textBoxTeamConnectionsPath);
             this.groupBoxConfigurationPaths.Controls.Add(this.label3);
@@ -493,15 +502,16 @@
             this.groupBoxConfigurationPaths.Controls.Add(this.labelTEAMConfigurationFile);
             this.groupBoxConfigurationPaths.Location = new System.Drawing.Point(3, 3);
             this.groupBoxConfigurationPaths.Name = "groupBoxConfigurationPaths";
-            this.groupBoxConfigurationPaths.Size = new System.Drawing.Size(823, 182);
+            this.groupBoxConfigurationPaths.Size = new System.Drawing.Size(606, 182);
             this.groupBoxConfigurationPaths.TabIndex = 100;
             this.groupBoxConfigurationPaths.TabStop = false;
             this.groupBoxConfigurationPaths.Text = "Configuration paths";
             // 
             // pictureBox8
             // 
+            this.pictureBox8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox8.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox8.Location = new System.Drawing.Point(796, 145);
+            this.pictureBox8.Location = new System.Drawing.Point(579, 145);
             this.pictureBox8.Name = "pictureBox8";
             this.pictureBox8.Size = new System.Drawing.Size(19, 20);
             this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -511,11 +521,13 @@
             // 
             // textBoxTeamConnectionsPath
             // 
+            this.textBoxTeamConnectionsPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxTeamConnectionsPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxTeamConnectionsPath.Location = new System.Drawing.Point(137, 145);
             this.textBoxTeamConnectionsPath.Multiline = true;
             this.textBoxTeamConnectionsPath.Name = "textBoxTeamConnectionsPath";
-            this.textBoxTeamConnectionsPath.Size = new System.Drawing.Size(653, 20);
+            this.textBoxTeamConnectionsPath.Size = new System.Drawing.Size(436, 20);
             this.textBoxTeamConnectionsPath.TabIndex = 117;
             this.toolTipVdw.SetToolTip(this.textBoxTeamConnectionsPath, resources.GetString("textBoxTeamConnectionsPath.ToolTip"));
             // 
@@ -530,8 +542,9 @@
             // 
             // pictureBox7
             // 
+            this.pictureBox7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox7.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox7.Location = new System.Drawing.Point(796, 118);
+            this.pictureBox7.Location = new System.Drawing.Point(579, 118);
             this.pictureBox7.Name = "pictureBox7";
             this.pictureBox7.Size = new System.Drawing.Size(19, 20);
             this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -541,11 +554,13 @@
             // 
             // textBoxTeamConfigurationPath
             // 
+            this.textBoxTeamConfigurationPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxTeamConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxTeamConfigurationPath.Location = new System.Drawing.Point(137, 118);
             this.textBoxTeamConfigurationPath.Multiline = true;
             this.textBoxTeamConfigurationPath.Name = "textBoxTeamConfigurationPath";
-            this.textBoxTeamConfigurationPath.Size = new System.Drawing.Size(653, 20);
+            this.textBoxTeamConfigurationPath.Size = new System.Drawing.Size(436, 20);
             this.textBoxTeamConfigurationPath.TabIndex = 114;
             this.toolTipVdw.SetToolTip(this.textBoxTeamConfigurationPath, resources.GetString("textBoxTeamConfigurationPath.ToolTip"));
             // 
@@ -569,18 +584,21 @@
             // 
             // comboBoxEnvironments
             // 
+            this.comboBoxEnvironments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxEnvironments.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxEnvironments.FormattingEnabled = true;
             this.comboBoxEnvironments.Location = new System.Drawing.Point(137, 48);
             this.comboBoxEnvironments.Name = "comboBoxEnvironments";
-            this.comboBoxEnvironments.Size = new System.Drawing.Size(653, 21);
+            this.comboBoxEnvironments.Size = new System.Drawing.Size(436, 21);
             this.comboBoxEnvironments.TabIndex = 112;
             this.comboBoxEnvironments.SelectedIndexChanged += new System.EventHandler(this.comboBoxEnvironments_SelectedIndexChanged);
             // 
             // pictureBox3
             // 
+            this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox3.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox3.Location = new System.Drawing.Point(796, 22);
+            this.pictureBox3.Location = new System.Drawing.Point(579, 22);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(19, 20);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -590,11 +608,13 @@
             // 
             // textBoxTeamEnvironmentsFilePath
             // 
+            this.textBoxTeamEnvironmentsFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxTeamEnvironmentsFilePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxTeamEnvironmentsFilePath.Location = new System.Drawing.Point(137, 22);
             this.textBoxTeamEnvironmentsFilePath.Multiline = true;
             this.textBoxTeamEnvironmentsFilePath.Name = "textBoxTeamEnvironmentsFilePath";
-            this.textBoxTeamEnvironmentsFilePath.Size = new System.Drawing.Size(653, 20);
+            this.textBoxTeamEnvironmentsFilePath.Size = new System.Drawing.Size(436, 20);
             this.textBoxTeamEnvironmentsFilePath.TabIndex = 83;
             this.toolTipVdw.SetToolTip(this.textBoxTeamEnvironmentsFilePath, resources.GetString("textBoxTeamEnvironmentsFilePath.ToolTip"));
             // 
@@ -609,22 +629,24 @@
             // 
             // groupBoxOutputOptions
             // 
+            this.groupBoxOutputOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxOutputOptions.Controls.Add(this.pictureBox5);
             this.groupBoxOutputOptions.Controls.Add(this.textBoxSchemaName);
             this.groupBoxOutputOptions.Controls.Add(this.label12);
             this.groupBoxOutputOptions.Controls.Add(this.OutputPathLabel);
             this.groupBoxOutputOptions.Controls.Add(this.textBoxOutputPath);
-            this.groupBoxOutputOptions.Location = new System.Drawing.Point(832, 101);
+            this.groupBoxOutputOptions.Location = new System.Drawing.Point(615, 101);
             this.groupBoxOutputOptions.Name = "groupBoxOutputOptions";
-            this.groupBoxOutputOptions.Size = new System.Drawing.Size(836, 84);
+            this.groupBoxOutputOptions.Size = new System.Drawing.Size(603, 84);
             this.groupBoxOutputOptions.TabIndex = 89;
             this.groupBoxOutputOptions.TabStop = false;
             this.groupBoxOutputOptions.Text = "VDW output options";
             // 
             // pictureBox5
             // 
+            this.pictureBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox5.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.pictureBox5.Location = new System.Drawing.Point(811, 49);
+            this.pictureBox5.Location = new System.Drawing.Point(578, 49);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(19, 20);
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -634,9 +656,11 @@
             // 
             // textBoxSchemaName
             // 
+            this.textBoxSchemaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSchemaName.Location = new System.Drawing.Point(137, 23);
             this.textBoxSchemaName.Name = "textBoxSchemaName";
-            this.textBoxSchemaName.Size = new System.Drawing.Size(668, 20);
+            this.textBoxSchemaName.Size = new System.Drawing.Size(435, 20);
             this.textBoxSchemaName.TabIndex = 91;
             // 
             // label12
@@ -659,11 +683,13 @@
             // 
             // textBoxOutputPath
             // 
+            this.textBoxOutputPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textBoxOutputPath.Location = new System.Drawing.Point(137, 49);
             this.textBoxOutputPath.Multiline = true;
             this.textBoxOutputPath.Name = "textBoxOutputPath";
-            this.textBoxOutputPath.Size = new System.Drawing.Size(668, 20);
+            this.textBoxOutputPath.Size = new System.Drawing.Size(435, 20);
             this.textBoxOutputPath.TabIndex = 81;
             // 
             // tabPageHome
@@ -672,7 +698,7 @@
             this.tabPageHome.Controls.Add(this.pictureBox2);
             this.tabPageHome.Location = new System.Drawing.Point(4, 22);
             this.tabPageHome.Name = "tabPageHome";
-            this.tabPageHome.Size = new System.Drawing.Size(1671, 715);
+            this.tabPageHome.Size = new System.Drawing.Size(1227, 715);
             this.tabPageHome.TabIndex = 12;
             this.tabPageHome.Text = "Home";
             this.tabPageHome.UseVisualStyleBackColor = true;
@@ -703,10 +729,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlMain.Controls.Add(this.tabPageHome);
             this.tabControlMain.Controls.Add(this.tabPageSettings);
-            this.tabControlMain.Location = new System.Drawing.Point(12, 44);
+            this.tabControlMain.Location = new System.Drawing.Point(12, 32);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(1679, 741);
+            this.tabControlMain.Size = new System.Drawing.Size(1235, 530);
             this.tabControlMain.TabIndex = 3;
             this.tabControlMain.SelectedIndexChanged += new System.EventHandler(this.tabControlMain_SelectedIndexChanged);
             // 
@@ -728,8 +754,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1703, 911);
+            this.ClientSize = new System.Drawing.Size(1259, 700);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.pictureBox1);
@@ -738,7 +765,7 @@
             this.Controls.Add(this.menuStripMainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMainMenu;
-            this.MinimumSize = new System.Drawing.Size(1378, 835);
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Virtual Data Warehouse";
