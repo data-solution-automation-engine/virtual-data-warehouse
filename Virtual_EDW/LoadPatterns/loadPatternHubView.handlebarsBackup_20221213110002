@@ -7,7 +7,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataC
 DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]
 GO
 
-CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] AS
+CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObjec.namet}}] AS
 SELECT hub.*
 FROM (
 {{#each dataObjectMappings}}{{#if @first}}

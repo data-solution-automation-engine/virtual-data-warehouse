@@ -627,26 +627,24 @@ namespace Virtual_Data_Warehouse
 
                             if (localConnection != null)
                             {
-                                var conn = new SqlConnection {ConnectionString = localConnection.CreateSqlServerConnectionString(false)};
-
                                 try
                                 {
-                                    VdwUtility.CreateVdwSchema(conn);
+                                    VdwUtility.CreateVdwSchema(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) });
                                 }
                                 catch
                                 {
-                                    var errorMessage = $"There was an issue creating the schema '{FormBase.VdwConfigurationSettings.VdwSchema}' in database '{conn.Database}'.";
+                                    var errorMessage = $"There was an issue creating the schema '{FormBase.VdwConfigurationSettings.VdwSchema}' against connection '{localConnection.ConnectionKey}'.";
                                     RaiseOnChangeMainText(errorMessage);
                                     FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
                                 }
 
                                 try
                                 {
-                                    VdwUtility.ExecuteOutputInDatabase(conn, result);
+                                    VdwUtility.ExecuteInDatabase(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) }, result);
                                 }
                                 catch
                                 {
-                                    var errorMessage = $"There was an issue executing the query '{result}' in database '{conn.Database}'.";
+                                    var errorMessage = $"There was an issue executing the query '{result}' against connection '{localConnection.ConnectionKey}'.";
                                     RaiseOnChangeMainText(errorMessage);
                                     FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
                                 }

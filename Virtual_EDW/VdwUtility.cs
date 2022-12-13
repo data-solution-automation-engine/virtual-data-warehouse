@@ -98,11 +98,13 @@ namespace Virtual_Data_Warehouse
                                 break;
                         }
 
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
+                            $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
                     }
                     else
                     {
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
+                            $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
                     }
                 }
 
@@ -110,7 +112,8 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception exception)
             {
-                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error was encountered loading the VDW configuration file. The reported error is: \r\n\r\n{exception.Message}."));
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
+                    $"An error was encountered loading the VDW configuration file. The reported error is: \r\n\r\n{exception.Message}."));
             }
         }
 
@@ -123,7 +126,8 @@ namespace Virtual_Data_Warehouse
             if (environmentName != null)
             {
                 // Connection information (TEAM_connections).
-                var connectionFileName = FormBase.VdwConfigurationSettings.TeamConnectionsPath + FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName + FormBase.GlobalParameters.JsonExtension;
+                var connectionFileName = FormBase.VdwConfigurationSettings.TeamConnectionsPath + FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName +
+                                         FormBase.GlobalParameters.JsonExtension;
 
                 FormBase.TeamConfigurationSettings.ConnectionDictionary = TeamConnectionFile.LoadConnectionFile(connectionFileName);
 
@@ -135,7 +139,8 @@ namespace Virtual_Data_Warehouse
                 {
                     foreach (var localConnection in FormBase.TeamConfigurationSettings.ConnectionDictionary)
                     {
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The connection key {localConnection.Value.ConnectionKey} is available as part of the {FormBase.VdwConfigurationSettings.ActiveEnvironment.environmentKey} environment."));
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
+                            $"The connection key {localConnection.Value.ConnectionKey} is available as part of the {FormBase.VdwConfigurationSettings.ActiveEnvironment.environmentKey} environment."));
 
                     }
                 }
@@ -175,7 +180,7 @@ namespace Virtual_Data_Warehouse
                 }
 
                 FormBase.TeamConfigurationSettings.LoadTeamConfigurationFile(configurationFileName);
-                
+
                 // Report back any events that may have happened while loading the TEAM information, by adding events to the global VDW event log.
                 foreach (var localEvent in FormBase.TeamConfigurationSettings.ConfigurationSettingsEventLog)
                 {
@@ -207,16 +212,6 @@ namespace Virtual_Data_Warehouse
                 {
                     var createStatement = new StringBuilder();
 
-                    //createStatement.AppendLine("-- Creating the schema");
-                    //createStatement.AppendLine("IF NOT EXISTS (");
-                    //createStatement.AppendLine("SELECT SCHEMA_NAME");
-                    //createStatement.AppendLine("FROM INFORMATION_SCHEMA.SCHEMATA");
-                    //createStatement.AppendLine("WHERE SCHEMA_NAME = '" + FormBase.VdwConfigurationSettings.VdwSchema + "')");
-                    //createStatement.AppendLine("");
-                    //createStatement.AppendLine("BEGIN");
-                    //createStatement.AppendLine(" EXEC sp_executesql N'CREATE SCHEMA " + FormBase.VdwConfigurationSettings.VdwSchema + "'");
-                    //createStatement.AppendLine("END");
-
                     createStatement.AppendLine("IF SCHEMA_ID('" + FormBase.VdwConfigurationSettings.VdwSchema + "') IS NULL EXEC('CREATE SCHEMA " + FormBase.VdwConfigurationSettings.VdwSchema + "')");
 
                     var commandVersion = new SqlCommand(createStatement.ToString(), connection);
@@ -238,32 +233,25 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        public static void ExecuteOutputInDatabase(SqlConnection sqlConnection, string query)
+        public static void ExecuteInDatabase(SqlConnection connection, string query)
         {
+            try
             {
-                try
-                {
-                    //sqlConnection.ConnectionString = TeamConfigurationSettings.ConnectionStringHstg;
-                    using (sqlConnection)
-                    {
-                        var server = new Server(new ServerConnection(sqlConnection));
-                        try
-                        {
-                            server.ConnectionContext.ExecuteNonQuery(query);
+                connection.Open();
 
-                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully."));
+                var server = new Server(new ServerConnection(connection));
+                server.ConnectionContext.ExecuteNonQuery(query);
 
-                        }
-                        catch (Exception ex)
-                        {
-                            FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"Issues occurred executing the SQL statement. SQL error {ex.Message} - {ex.InnerException.Message}."));
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue executing the code against the database. The message is {ex.Message} - {ex.InnerException.Message}."));
-                }
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully."));
+            }
+            catch (Exception exception)
+            {
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue executing the code against the database. The reported error is {exception.Message}, {exception.InnerException.Message}"));
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
             }
         }
 
@@ -291,7 +279,7 @@ namespace Virtual_Data_Warehouse
             pi.SetValue(dgv, setting, null);
         }
 
-        private static string CleanifyBrowserPath(string p)
+        private static string CleanBrowserPath(string p)
         {
             string[] url = p.Split('"');
             string clean = url[1];
@@ -322,7 +310,7 @@ namespace Virtual_Data_Warehouse
                     {
                         browserKey = Registry.CurrentUser.OpenSubKey(urlAssociation, false);
                     }
-                    var path = CleanifyBrowserPath(browserKey.GetValue(null) as string);
+                    var path = CleanBrowserPath(browserKey.GetValue(null) as string);
                     browserKey.Close();
                     return path;
                 }
@@ -335,7 +323,7 @@ namespace Virtual_Data_Warehouse
                     // now look up the path of the executable
                     string concreteBrowserKey = browserPathKey.Replace("$BROWSER$", progId);
                     var kp = Registry.ClassesRoot.OpenSubKey(concreteBrowserKey, false);
-                    browserPath = CleanifyBrowserPath(kp.GetValue(null) as string);
+                    browserPath = CleanBrowserPath(kp.GetValue(null) as string);
                     kp.Close();
                     return browserPath;
                 }

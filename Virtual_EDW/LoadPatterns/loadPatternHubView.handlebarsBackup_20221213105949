@@ -1,13 +1,13 @@
 --
--- Hub View definition for {{generationSpecificMetadata.selectedDataObjec.namet}}
+-- Hub View definition for {{generationSpecificMetadata.selectedDataObject}}
 -- Generated at {{generationSpecificMetadata.generationDateTime}}
 --
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}]
 GO
 
-CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] AS
+CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject}}] AS
 SELECT hub.*
 FROM (
 {{#each dataObjectMappings}}{{#if @first}}
