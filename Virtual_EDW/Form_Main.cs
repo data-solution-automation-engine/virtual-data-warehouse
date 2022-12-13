@@ -31,7 +31,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.8";
+            const string versionNumberForApplication = "v1.6.9";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
