@@ -106,6 +106,10 @@ namespace Virtual_Data_Warehouse
 
             checkBoxGenerateInDatabase.Checked = false;
 
+            // Re-apply in case the environment change triggered a change compared to what's in the Core file.
+            textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.TeamConfigurationPath;
+            textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.TeamConnectionsPath;
+
             #region Load Pattern Grid
 
             // Load the pattern collection into memory.
@@ -1435,9 +1439,6 @@ namespace Virtual_Data_Warehouse
             textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
             textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
             textBoxMetadataPath.Text = VdwConfigurationSettings.ActiveEnvironment.metadataPath;
-
-
-
         }
 
         /// <summary>
