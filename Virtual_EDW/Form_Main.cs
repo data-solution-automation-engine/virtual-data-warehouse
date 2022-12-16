@@ -109,6 +109,7 @@ namespace Virtual_Data_Warehouse
             // Re-apply in case the environment change triggered a change compared to what's in the Core file.
             textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.TeamConfigurationPath;
             textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.TeamConnectionsPath;
+            textBoxMetadataPath.Text = VdwConfigurationSettings.VdwMetadatPath;
 
             #region Load Pattern Grid
 
