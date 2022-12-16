@@ -223,7 +223,7 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception exception)
             {
-                var errorMessage = $"An issue occurred creating the VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}' in the '{connection.Database}' database. The reported error is {exception.Message}";
+                var errorMessage = $"An issue occurred creating the VDW schema '{FormBase.VdwConfigurationSettings.VdwSchema}' in the '{connection.Database}' database. The reported error is {exception.Message} - {exception.InnerException}";
                 FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
             }
             finally
