@@ -35,11 +35,7 @@ namespace Virtual_Data_Warehouse
                         syntaxHighlightCounter++;
                     }
 
-                    // Search pattern
-                    // Regex handleBarsSyntaxPattern = new Regex("(?<={{).*?(?=}})");
-                    // MatchCollection matches = handleBarsSyntaxPattern.Matches(token);
-
-                    //Check whether the token is a keyword, or between {{ }}  
+                    // Check whether the token is a keyword, or between {{ }}
                     String[] keywords = { "#each", "/each", "#if", "/if", "#unless", "/unless" };
                     for (int i = 0; i < keywords.Length; i++)
                     {
@@ -89,7 +85,7 @@ namespace Virtual_Data_Warehouse
 
                 foreach (string token in tokens)
                 {
-                    // Make sure the default colour is set
+                    // Make sure the default color is set
                     returnTextBox.SelectionColor = Color.Black;
                     returnTextBox.SelectionFont = new Font(returnTextBox.Font, FontStyle.Regular);
 
@@ -97,10 +93,6 @@ namespace Virtual_Data_Warehouse
                     {
                         syntaxHighlightCounter++;
                     }
-
-                    // Search pattern
-                    // Regex handleBarsSyntaxPattern = new Regex("(?<={{).*?(?=}})");
-                    // MatchCollection matches = handleBarsSyntaxPattern.Matches(token);
 
                     //Check whether the token is a keyword, or between {{ }}  
                     String[] keyWordSql = {

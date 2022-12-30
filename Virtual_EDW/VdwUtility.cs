@@ -27,7 +27,7 @@ namespace Virtual_Data_Warehouse
             initialConfigurationFile.AppendLine("TeamSelectedEnvironment|" + "F3958C0634E41306A16639B9445CD0B3");
             initialConfigurationFile.AppendLine("InputPath|" + FormBase.VdwConfigurationSettings.VdwExamplesPath);
             initialConfigurationFile.AppendLine("OutputPath|" + FormBase.VdwConfigurationSettings.VdwOutputPath);
-            initialConfigurationFile.AppendLine("LoadPatternPath|" + FormBase.VdwConfigurationSettings.LoadPatternPath);
+            initialConfigurationFile.AppendLine("TemplatePath|" + FormBase.VdwConfigurationSettings.TemplatePath);
             initialConfigurationFile.AppendLine("VdwSchema|vdw");
             initialConfigurationFile.AppendLine("/* End of file */");
 
@@ -58,7 +58,7 @@ namespace Virtual_Data_Warehouse
                     "TeamSelectedEnvironment",
                     "InputPath",
                     "OutputPath",
-                    "LoadPatternPath",
+                    "TemplatePath",
                     "VdwSchema"
                 };
 
@@ -87,8 +87,8 @@ namespace Virtual_Data_Warehouse
                             case "OutputPath":
                                 FormBase.VdwConfigurationSettings.VdwOutputPath = configList[configuration];
                                 break;
-                            case "LoadPatternPath":
-                                FormBase.VdwConfigurationSettings.LoadPatternPath = configList[configuration];
+                            case "TemplatePath":
+                                FormBase.VdwConfigurationSettings.TemplatePath = configList[configuration];
                                 break;
                             case "VdwSchema":
                                 FormBase.VdwConfigurationSettings.VdwSchema = configList[configuration];

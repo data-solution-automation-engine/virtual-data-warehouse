@@ -36,14 +36,14 @@
             this.openCoreDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openInputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openLoadPatternDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openTemplateDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.openVDWConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openTEAMConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.openPatternCollectionFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.savePatternCollectionFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openTemplateCollectionFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveTemplateCollectionFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.saveConfigurationFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -66,8 +66,8 @@
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxMetadataPath = new System.Windows.Forms.TextBox();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.labelPatternPath = new System.Windows.Forms.Label();
-            this.textBoxLoadPatternPath = new System.Windows.Forms.TextBox();
+            this.labelTemplatePath = new System.Windows.Forms.Label();
+            this.textBoxTemplatePath = new System.Windows.Forms.TextBox();
             this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.groupBoxConfigurationPaths = new System.Windows.Forms.GroupBox();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
@@ -130,14 +130,14 @@
             this.openCoreDirectoryToolStripMenuItem,
             this.openVDWConfigurationDirectoryToolStripMenuItem,
             this.openInputDirectoryToolStripMenuItem,
-            this.openLoadPatternDirectoryToolStripMenuItem,
+            this.openTemplateDirectoryToolStripMenuItem,
             this.openOutputDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
             this.openVDWConfigurationSettingsFileToolStripMenuItem,
             this.openTEAMConfigurationSettingsFileToolStripMenuItem,
             this.toolStripSeparator2,
-            this.openPatternCollectionFileToolStripMenuItem,
-            this.savePatternCollectionFileToolStripMenuItem,
+            this.openTemplateCollectionFileToolStripMenuItem,
+            this.saveTemplateCollectionFileToolStripMenuItem,
             this.toolStripSeparator4,
             this.saveConfigurationFileToolStripMenuItem,
             this.toolStripSeparator3,
@@ -170,13 +170,13 @@
             this.openInputDirectoryToolStripMenuItem.Text = "Open Metadata Directory";
             this.openInputDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openInputDirectoryToolStripMenuItem_Click);
             // 
-            // openLoadPatternDirectoryToolStripMenuItem
+            // openTemplateDirectoryToolStripMenuItem
             // 
-            this.openLoadPatternDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
-            this.openLoadPatternDirectoryToolStripMenuItem.Name = "openLoadPatternDirectoryToolStripMenuItem";
-            this.openLoadPatternDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-            this.openLoadPatternDirectoryToolStripMenuItem.Text = "Open Load Pattern Directory";
-            this.openLoadPatternDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openLoadPatternDirectoryToolStripMenuItem_Click);
+            this.openTemplateDirectoryToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenDirectoryIcon;
+            this.openTemplateDirectoryToolStripMenuItem.Name = "openTemplateDirectoryToolStripMenuItem";
+            this.openTemplateDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openTemplateDirectoryToolStripMenuItem.Text = "Open Template Directory";
+            this.openTemplateDirectoryToolStripMenuItem.Click += new System.EventHandler(this.OpenTemplateDirectoryToolStripMenuItem_Click);
             // 
             // openOutputDirectoryToolStripMenuItem
             // 
@@ -212,21 +212,21 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(231, 6);
             // 
-            // openPatternCollectionFileToolStripMenuItem
+            // openTemplateCollectionFileToolStripMenuItem
             // 
-            this.openPatternCollectionFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
-            this.openPatternCollectionFileToolStripMenuItem.Name = "openPatternCollectionFileToolStripMenuItem";
-            this.openPatternCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-            this.openPatternCollectionFileToolStripMenuItem.Text = "Open Pattern Collection File";
-            this.openPatternCollectionFileToolStripMenuItem.Click += new System.EventHandler(this.openPatternCollectionFileToolStripMenuItem_Click);
+            this.openTemplateCollectionFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
+            this.openTemplateCollectionFileToolStripMenuItem.Name = "openTemplateCollectionFileToolStripMenuItem";
+            this.openTemplateCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openTemplateCollectionFileToolStripMenuItem.Text = "Open Template Collection File";
+            this.openTemplateCollectionFileToolStripMenuItem.Click += new System.EventHandler(this.openTemplateCollectionFileToolStripMenuItem_Click);
             // 
-            // savePatternCollectionFileToolStripMenuItem
+            // saveTemplateCollectionFileToolStripMenuItem
             // 
-            this.savePatternCollectionFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.SaveFile;
-            this.savePatternCollectionFileToolStripMenuItem.Name = "savePatternCollectionFileToolStripMenuItem";
-            this.savePatternCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-            this.savePatternCollectionFileToolStripMenuItem.Text = "Save Pattern Collection Grid";
-            this.savePatternCollectionFileToolStripMenuItem.Click += new System.EventHandler(this.savePatternCollectionFileToolStripMenuItem_Click);
+            this.saveTemplateCollectionFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.SaveFile;
+            this.saveTemplateCollectionFileToolStripMenuItem.Name = "saveTemplateCollectionFileToolStripMenuItem";
+            this.saveTemplateCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.saveTemplateCollectionFileToolStripMenuItem.Text = "Save Template Collection Grid";
+            this.saveTemplateCollectionFileToolStripMenuItem.Click += new System.EventHandler(this.SaveTemplateCollectionFileToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -411,8 +411,8 @@
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.textBoxMetadataPath);
             this.groupBox1.Controls.Add(this.pictureBox4);
-            this.groupBox1.Controls.Add(this.labelPatternPath);
-            this.groupBox1.Controls.Add(this.textBoxLoadPatternPath);
+            this.groupBox1.Controls.Add(this.labelTemplatePath);
+            this.groupBox1.Controls.Add(this.textBoxTemplatePath);
             this.groupBox1.Controls.Add(this.pictureBox6);
             this.groupBox1.Location = new System.Drawing.Point(615, 3);
             this.groupBox1.Name = "groupBox1";
@@ -453,25 +453,25 @@
             this.pictureBox4.TabStop = false;
             this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
             // 
-            // labelPatternPath
+            // labelTemplatePath
             // 
-            this.labelPatternPath.AutoSize = true;
-            this.labelPatternPath.Location = new System.Drawing.Point(6, 52);
-            this.labelPatternPath.Name = "labelPatternPath";
-            this.labelPatternPath.Size = new System.Drawing.Size(111, 13);
-            this.labelPatternPath.TabIndex = 98;
-            this.labelPatternPath.Text = "Load Pattern directory";
+            this.labelTemplatePath.AutoSize = true;
+            this.labelTemplatePath.Location = new System.Drawing.Point(6, 52);
+            this.labelTemplatePath.Name = "labelTemplatePath";
+            this.labelTemplatePath.Size = new System.Drawing.Size(111, 13);
+            this.labelTemplatePath.TabIndex = 98;
+            this.labelTemplatePath.Text = "Template directory";
             // 
-            // textBoxLoadPatternPath
+            // textBoxTemplatePath
             // 
-            this.textBoxLoadPatternPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxTemplatePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxLoadPatternPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.textBoxLoadPatternPath.Location = new System.Drawing.Point(137, 49);
-            this.textBoxLoadPatternPath.Multiline = true;
-            this.textBoxLoadPatternPath.Name = "textBoxLoadPatternPath";
-            this.textBoxLoadPatternPath.Size = new System.Drawing.Size(435, 20);
-            this.textBoxLoadPatternPath.TabIndex = 97;
+            this.textBoxTemplatePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textBoxTemplatePath.Location = new System.Drawing.Point(137, 49);
+            this.textBoxTemplatePath.Multiline = true;
+            this.textBoxTemplatePath.Name = "textBoxTemplatePath";
+            this.textBoxTemplatePath.Size = new System.Drawing.Size(435, 20);
+            this.textBoxTemplatePath.TabIndex = 97;
             // 
             // pictureBox6
             // 
@@ -483,7 +483,7 @@
             this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox6.TabIndex = 99;
             this.pictureBox6.TabStop = false;
-            this.pictureBox6.Click += new System.EventHandler(this.pictureBoxUpdateLoadPatternPath_Click);
+            this.pictureBox6.Click += new System.EventHandler(this.PictureBoxUpdateTemplatePath_Click);
             // 
             // groupBoxConfigurationPaths
             // 
@@ -835,9 +835,9 @@
         private System.Windows.Forms.ToolStripMenuItem openVDWConfigurationDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openInputDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem openPatternCollectionFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem savePatternCollectionFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openLoadPatternDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openTemplateCollectionFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveTemplateCollectionFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openTemplateDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxEnvironments;
@@ -851,8 +851,8 @@
         private System.Windows.Forms.Label label10;
         internal System.Windows.Forms.TextBox textBoxMetadataPath;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.Label labelPatternPath;
-        internal System.Windows.Forms.TextBox textBoxLoadPatternPath;
+        private System.Windows.Forms.Label labelTemplatePath;
+        internal System.Windows.Forms.TextBox textBoxTemplatePath;
         private System.Windows.Forms.PictureBox pictureBox6;
         private System.Windows.Forms.PictureBox pictureBox8;
         internal System.Windows.Forms.TextBox textBoxTeamConnectionsPath;

@@ -18,7 +18,7 @@ namespace Virtual_Data_Warehouse
             MyParent = myParent;
             InitializeComponent();
         }
-        internal static LoadPatternGridView _loadPatternGridView;
+        internal static TemplateGridView _templateGridView;
 
         // List of TEAM working environments.
         public static TeamEnvironmentCollection TeamEnvironmentCollection { get; set; } = new TeamEnvironmentCollection();
@@ -36,7 +36,7 @@ namespace Virtual_Data_Warehouse
             public static string CorePath { get; } = Application.StartupPath + @"\" + @"Core\";
             public static string VdwConfigurationPath { get; } = RootPath + @"\Configuration\";
             public static string VdwConfigurationFileName { get; } = "VDW_Configuration.txt";
-            public static string LoadPatternListFileName { get; } = "loadPatternCollection.json";
+            public static string TemplateCollectionFileName { get; } = "templateCollection.json";
 
             // TEAM core file names, not meant to be updated
             public static string TeamConfigurationFileName { get; } = "TEAM_configuration";
@@ -59,15 +59,14 @@ namespace Virtual_Data_Warehouse
             internal static EventLog VdwEventLog { get; set; } = new EventLog();
 
             public static string VdwSchema { get; set; } = "dbo";
-            public static string LoadPatternPath { get; set; } = GlobalParameters.RootPath + @"\LoadPatterns\";
+            public static string TemplatePath { get; set; } = GlobalParameters.RootPath + @"\Templates\";
             public static string VdwMetadatPath { get; set; } = Application.StartupPath + @"\Metadata\";
             public static string VdwOutputPath { get; set; } = Application.StartupPath + @"\Output\";
             public static string VdwExamplesPath { get; set; } = Application.StartupPath + @"\Examples\";
             
-            public static List<LoadPatternFileHandling> patternList { get; set; }
+            public static List<TemplateHandling> templateList { get; set; }
 
-            // Related to TEAM configuration settings
-            //public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\";
+            // Related to TEAM configuration settings.
             public static string TeamConfigurationPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string TeamConnectionsPath { get; set; } = Application.StartupPath + @"\Configuration\";
             public static string TeamEnvironmentFilePath { get; set; } = GlobalParameters.RootPath + @"\Configuration\" + GlobalParameters.JsonEnvironmentFileName + GlobalParameters.JsonExtension;
@@ -79,7 +78,7 @@ namespace Virtual_Data_Warehouse
             // In memory settings for reloading.
             public static string SelectedSubTab { get; set; }
             public static string SelectedMainTab { get; set; }
-            public static string SelectedPatternText { get; set; }
+            public static string SelectedTemplateText { get; set; }
         }
     }
 }

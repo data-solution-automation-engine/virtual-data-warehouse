@@ -6,9 +6,9 @@ using TEAM_Library;
 
 namespace Virtual_Data_Warehouse
 {
-    public class LoadPatternGridView : DataGridView
+    public class TemplateGridView : DataGridView
     {
-        public LoadPatternGridView(TeamConfiguration teamConfiguration)
+        public TemplateGridView(TeamConfiguration teamConfiguration)
         {
             #region Generic properties
 
@@ -25,71 +25,71 @@ namespace Virtual_Data_Warehouse
             Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             BorderStyle = BorderStyle.None;
 
-            Name = "dataGridViewLoadPatternCollection";
+            Name = "dataGridViewTemplateCollection";
 
             #endregion
 
             #region Columns
 
-            DataGridViewTextBoxColumn loadPatternName = new DataGridViewTextBoxColumn
+            DataGridViewTextBoxColumn TemplateName = new DataGridViewTextBoxColumn
             {
-                Name = LoadPatternGridColumns.LoadPatternName.ToString(),
-                HeaderText = "Name",
-                DataPropertyName = LoadPatternGridColumns.LoadPatternName.ToString()
+                Name = TemplateGridColumns.TemplateName.ToString(),
+                HeaderText = "Template Name",
+                DataPropertyName = TemplateGridColumns.TemplateName.ToString()
             };
-            Columns.Add(loadPatternName);
+            Columns.Add(TemplateName);
 
-            DataGridViewTextBoxColumn loadPatternType = new DataGridViewTextBoxColumn
+            DataGridViewTextBoxColumn TemplateType = new DataGridViewTextBoxColumn
             {
-                Name = LoadPatternGridColumns.LoadPatternType.ToString(),
+                Name = TemplateGridColumns.TemplateType.ToString(),
                 HeaderText = "Type",
-                DataPropertyName = LoadPatternGridColumns.LoadPatternType.ToString()
+                DataPropertyName = TemplateGridColumns.TemplateType.ToString()
             };
-            Columns.Add(loadPatternType);
+            Columns.Add(TemplateType);
 
-            DataGridViewComboBoxColumn loadPatternConnectionKey = new DataGridViewComboBoxColumn
+            DataGridViewComboBoxColumn TemplateConnectionKey = new DataGridViewComboBoxColumn
             {
-                Name = LoadPatternGridColumns.LoadPatternConnectionKey.ToString(),
+                Name = TemplateGridColumns.TemplateConnectionKey.ToString(),
                 HeaderText = "Connection Key",
-                DataPropertyName = LoadPatternGridColumns.LoadPatternConnectionKey.ToString(),
+                DataPropertyName = TemplateGridColumns.TemplateConnectionKey.ToString(),
                 DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing,
                 DataSource = LocalTeamConnection.GetConnections(teamConfiguration.ConnectionDictionary),
                 DisplayMember = "ConnectionKey",
                 ValueMember = "ConnectionId",
                 ValueType = typeof(string)
             };
-            Columns.Add(loadPatternConnectionKey);
+            Columns.Add(TemplateConnectionKey);
 
-            DataGridViewTextBoxColumn loadPatternOutputFilePattern= new DataGridViewTextBoxColumn
+            DataGridViewTextBoxColumn TemplateOutputFileConvention = new DataGridViewTextBoxColumn
             {
-                Name = LoadPatternGridColumns.LoadPatternOutputFilePattern.ToString(),
-                HeaderText = "File Pattern",
-                DataPropertyName = LoadPatternGridColumns.LoadPatternOutputFilePattern.ToString()
+                Name = TemplateGridColumns.TemplateOutputFileConvention.ToString(),
+                HeaderText = "Output File Convention",
+                DataPropertyName = TemplateGridColumns.TemplateOutputFileConvention.ToString()
             };
-            Columns.Add(loadPatternOutputFilePattern);
+            Columns.Add(TemplateOutputFileConvention);
 
-            DataGridViewTextBoxColumn loadPatternPath = new DataGridViewTextBoxColumn
+            DataGridViewTextBoxColumn TemplatePath = new DataGridViewTextBoxColumn
             {
-                Name = LoadPatternGridColumns.LoadPatternFilePath.ToString(),
+                Name = TemplateGridColumns.TemplateFilePath.ToString(),
                 HeaderText = "Path",
-                DataPropertyName = LoadPatternGridColumns.LoadPatternFilePath.ToString()
+                DataPropertyName = TemplateGridColumns.TemplateFilePath.ToString()
             };
-            Columns.Add(loadPatternPath);
+            Columns.Add(TemplatePath);
 
-            DataGridViewTextBoxColumn loadPatternNotes = new DataGridViewTextBoxColumn
+            DataGridViewTextBoxColumn TemplateNotes = new DataGridViewTextBoxColumn
             {
-                Name = LoadPatternGridColumns.LoadPatternNotes.ToString(),
+                Name = TemplateGridColumns.TemplateNotes.ToString(),
                 HeaderText = "Notes",
-                DataPropertyName = LoadPatternGridColumns.LoadPatternNotes.ToString()
+                DataPropertyName = TemplateGridColumns.TemplateNotes.ToString()
             };
-            Columns.Add(loadPatternNotes);
+            Columns.Add(TemplateNotes);
 
             #endregion
 
 
             #region Event Handlers
 
-            CurrentCellDirtyStateChanged += dataGridViewLoadPatternCollection_CurrentCellDirtyStateChanged;
+            CurrentCellDirtyStateChanged += dataGridViewTemplateCollection_CurrentCellDirtyStateChanged;
             DataError += dataGridViewDataError;
 
             #endregion
@@ -164,7 +164,7 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void dataGridViewLoadPatternCollection_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void dataGridViewTemplateCollection_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (IsCurrentCellDirty)
             {
@@ -176,14 +176,14 @@ namespace Virtual_Data_Warehouse
     /// <summary>
     /// Enumerator to hold the column index for the columns (headers) in the Table Metadata data grid view.
     /// </summary>
-    public enum LoadPatternGridColumns
+    public enum TemplateGridColumns
     {
-        LoadPatternName = 0,
-        LoadPatternType = 1,
-        LoadPatternConnectionKey = 2,
-        LoadPatternOutputFilePattern = 3,
-        LoadPatternFilePath = 4,
-        LoadPatternNotes = 5,
+        TemplateName = 0,
+        TemplateType = 1,
+        TemplateConnectionKey = 2,
+        TemplateOutputFileConvention = 3,
+        TemplateFilePath = 4,
+        TemplateNotes = 5,
     }
 
 

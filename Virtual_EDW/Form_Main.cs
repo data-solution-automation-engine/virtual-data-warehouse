@@ -20,7 +20,7 @@ namespace Virtual_Data_Warehouse
     {
         internal bool startUpIndicator;
         private readonly List<CustomTabPage> localCustomTabPageList;
-        private readonly BindingSource _bindingSourceLoadPatternCollection = new BindingSource();
+        private readonly BindingSource _bindingSourceTemplateCollection = new BindingSource();
 
         FormAlert _alertEventLog;
 
@@ -72,7 +72,7 @@ namespace Virtual_Data_Warehouse
 
             // Update the values on the form.
             textBoxOutputPath.Text = VdwConfigurationSettings.VdwOutputPath;
-            textBoxLoadPatternPath.Text = VdwConfigurationSettings.LoadPatternPath;
+            textBoxTemplatePath.Text = VdwConfigurationSettings.TemplatePath;
             textBoxTeamEnvironmentsFilePath.Text = VdwConfigurationSettings.TeamEnvironmentFilePath;
             textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.TeamConfigurationPath;
             textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.TeamConnectionsPath;
@@ -111,31 +111,31 @@ namespace Virtual_Data_Warehouse
             textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.TeamConnectionsPath;
             textBoxMetadataPath.Text = VdwConfigurationSettings.VdwMetadatPath;
 
-            #region Load Pattern Grid
+            #region Template Grid
 
-            // Load the pattern collection into memory.
-            VdwConfigurationSettings.patternList = LoadPatternFileHandling.LoadPatternCollection();
+            // Load the template collection into memory.
+            VdwConfigurationSettings.templateList = TemplateHandling.LoadTemplateCollection();
 
-            if ((VdwConfigurationSettings.patternList != null) && (!VdwConfigurationSettings.patternList.Any()))
+            if ((VdwConfigurationSettings.templateList != null) && (!VdwConfigurationSettings.templateList.Any()))
             {
-                SetTextMain("There are no patterns found in the designated load pattern directory. Please verify if there is a " + GlobalParameters.LoadPatternListFileName + " in the " + VdwConfigurationSettings.LoadPatternPath + " directory, and if the file contains patterns.");
+                SetTextMain("There are no templates found in the designated template directory. Please verify if there is a " + GlobalParameters.TemplateCollectionFileName + " in the " + VdwConfigurationSettings.TemplatePath + " directory, and if the file contains templates.");
             }
 
-            _loadPatternGridView = new LoadPatternGridView(TeamConfigurationSettings);
+            _templateGridView = new TemplateGridView(TeamConfigurationSettings);
 
             // Define and populate the data grid.
-            ((ISupportInitialize)(_loadPatternGridView)).BeginInit();
-            _loadPatternGridView.DoubleBuffered(true);
-            tabPageSettings.Controls.Add(_loadPatternGridView);
-            ((ISupportInitialize)(_loadPatternGridView)).EndInit();
+            ((ISupportInitialize)(_templateGridView)).BeginInit();
+            _templateGridView.DoubleBuffered(true);
+            tabPageSettings.Controls.Add(_templateGridView);
+            ((ISupportInitialize)(_templateGridView)).EndInit();
 
-            PopulateLoadPatternCollectionDataGrid();
+            PopulateTemplateCollectionDataGrid();
 
-            _loadPatternGridView.AutoLayout();
+            _templateGridView.AutoLayout();
 
             #endregion
 
-            #region Pattern Tab Pages
+            #region Template Tab Pages
 
             // Create the tab pages based on available content.
             CreateCustomTabPages();
@@ -166,21 +166,21 @@ namespace Virtual_Data_Warehouse
             set { base.Text = value; }
         }
 
-        public void PopulateLoadPatternCollectionDataGrid()
+        public void PopulateTemplateCollectionDataGrid()
         {
             // Convert into data table
-            DataTable patternDataTable = VdwConfigurationSettings.patternList.ToDataTable();
+            DataTable templateDataTable = VdwConfigurationSettings.templateList.ToDataTable();
 
             // Accept changes
-            patternDataTable.AcceptChanges();
+            templateDataTable.AcceptChanges();
 
             // Handle unknown combobox values, by setting them to empty.
             var localConnectionKeyList = LocalTeamConnection.TeamConnectionKeyList(TeamConfigurationSettings.ConnectionDictionary);
             List<string> userFeedbackList = new List<string>();
 
-            foreach (DataRow row in patternDataTable.Rows)
+            foreach (DataRow row in templateDataTable.Rows)
             {
-                var comboBoxValueConnectionKey = row["LoadPatternConnectionKey"].ToString();
+                var comboBoxValueConnectionKey = row["TemplateConnectionKey"].ToString();
 
                 if (!localConnectionKeyList.Contains(comboBoxValueConnectionKey))
                 {
@@ -189,7 +189,7 @@ namespace Virtual_Data_Warehouse
                         userFeedbackList.Add(comboBoxValueConnectionKey);
                     }
 
-                    row["LoadPatternConnectionKey"] = DBNull.Value;
+                    row["TemplateConnectionKey"] = DBNull.Value;
                 }
             }
 
@@ -203,10 +203,10 @@ namespace Virtual_Data_Warehouse
             }
 
             //Make sure the changes are seen as committed, so that changes can be detected later on.
-            patternDataTable.AcceptChanges();
+            templateDataTable.AcceptChanges();
 
-            _bindingSourceLoadPatternCollection.DataSource = patternDataTable;
-            _loadPatternGridView.DataSource = _bindingSourceLoadPatternCollection;
+            _bindingSourceTemplateCollection.DataSource = templateDataTable;
+            _templateGridView.DataSource = _bindingSourceTemplateCollection;
         }
         
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -428,9 +428,9 @@ namespace Virtual_Data_Warehouse
                 textBoxOutputPath.Text += @"\";
             }
 
-            if (!textBoxLoadPatternPath.Text.EndsWith(@"\"))
+            if (!textBoxTemplatePath.Text.EndsWith(@"\"))
             {
-                textBoxLoadPatternPath.Text += @"\";
+                textBoxTemplatePath.Text += @"\";
             }
 
             new KeyValuePair< string, TeamEnvironment > ("", null);
@@ -449,7 +449,7 @@ namespace Virtual_Data_Warehouse
             VdwConfigurationSettings.TeamEnvironmentFilePath = textBoxTeamEnvironmentsFilePath.Text;
             VdwConfigurationSettings.TeamConfigurationPath = textBoxTeamConfigurationPath.Text;
             VdwConfigurationSettings.TeamConnectionsPath = textBoxTeamConnectionsPath.Text;
-            VdwConfigurationSettings.LoadPatternPath = textBoxLoadPatternPath.Text;
+            VdwConfigurationSettings.TemplatePath = textBoxTemplatePath.Text;
             VdwConfigurationSettings.VdwMetadatPath = textBoxMetadataPath.Text;
             VdwConfigurationSettings.VdwOutputPath = textBoxOutputPath.Text;
             VdwConfigurationSettings.VdwSchema = textBoxSchemaName.Text;
@@ -464,7 +464,7 @@ namespace Virtual_Data_Warehouse
             rootPathConfigurationFile.AppendLine("TeamSelectedEnvironment|" + VdwConfigurationSettings.TeamSelectedEnvironmentInternalId + "");
             rootPathConfigurationFile.AppendLine("InputPath|" + VdwConfigurationSettings.VdwMetadatPath + "");
             rootPathConfigurationFile.AppendLine("OutputPath|" + VdwConfigurationSettings.VdwOutputPath + "");
-            rootPathConfigurationFile.AppendLine("LoadPatternPath|" + VdwConfigurationSettings.LoadPatternPath + "");
+            rootPathConfigurationFile.AppendLine("TemplatePath|" + VdwConfigurationSettings.TemplatePath + "");
             rootPathConfigurationFile.AppendLine("VdwSchema|" + VdwConfigurationSettings.VdwSchema + "");
             rootPathConfigurationFile.AppendLine("/* End of file */");
 
@@ -478,7 +478,7 @@ namespace Virtual_Data_Warehouse
             // Reload the VDW and TEAM settings, as the environment may have changed
             VdwUtility.LoadVdwConfigurationFile();
 
-            // Recreate the in-memory patterns (to make sure MetadataGeneration object details are also added).
+            // Recreate the in-memory templates (to make sure MetadataGeneration object details are also added).
             CreateCustomTabPages();
 
             richTextBoxInformationMain.Text = DateTime.Now+" - the global parameter file (" + GlobalParameters.VdwConfigurationFileName + ") has been updated in: " + GlobalParameters.CorePath+"\r\n\r\n";
@@ -551,7 +551,7 @@ namespace Virtual_Data_Warehouse
         }
 
 
-        internal class LocalPattern
+        internal class LocalTemplate
         {
             internal string classification { get; set; }
             internal string notes { get; set; }
@@ -566,10 +566,10 @@ namespace Virtual_Data_Warehouse
         }
 
         /// <summary>
-        /// Load all the metadata into a single list and associate with a pattern, based on the classification of the mapping (i.e. CoreBusinessConcept).
+        /// Load all the metadata into a single list and associate with a template, based on the classification of the mapping (i.e. CoreBusinessConcept).
         /// </summary>
         /// <returns></returns>
-        internal List<LocalPattern> GetMetadata()
+        internal List<LocalTemplate> GetMetadata()
         {
             #region Deserialisation
 
@@ -659,9 +659,9 @@ namespace Virtual_Data_Warehouse
 
             #endregion
 
-            // The intended outcome is to have a list of patterns (LocalPattern class) to return back for further processing
-            // This list of patterns is based on the classifications, each pattern is mapped to a classification and so the classifications are unique.
-            // Each classification is bound to the 'item list' of the pattern, which is the name of the mapping and the list of associated Data Object Mappings.
+            // The intended outcome is to have a list of templates to return back for further processing
+            // This list of templates is based on the classifications, each template is mapped to a classification and so the classifications are unique.
+            // Each classification is bound to the 'item list' of the template, which is the name of the mapping and the list of associated Data Object Mappings.
             // In a way, it's bringing the classification to a higher level - from the Data Object mapping to the Data Object Mapping List level.
 
             #region Flattening
@@ -744,11 +744,11 @@ namespace Virtual_Data_Warehouse
             }
 
             // Create the final list
-            List<LocalPattern> finalMappingList = new List<LocalPattern>();
+            List<LocalTemplate> finalMappingList = new List<LocalTemplate>();
 
             foreach (var classification in classificationDictionary)
             {
-                LocalPattern localPatternMapping = new LocalPattern();
+                LocalTemplate localTemplateMapping = new LocalTemplate();
                 Dictionary<string, VDW_DataObjectMappingList> itemList =
                     new Dictionary<string, VDW_DataObjectMappingList>();
 
@@ -763,25 +763,25 @@ namespace Virtual_Data_Warehouse
                     }
                 }
 
-                localPatternMapping.classification = classification.Key;
-                localPatternMapping.notes = classification.Value;
-                localPatternMapping.itemList = itemList;
+                localTemplateMapping.classification = classification.Key;
+                localTemplateMapping.notes = classification.Value;
+                localTemplateMapping.itemList = itemList;
 
-                finalMappingList.Add(localPatternMapping);
+                finalMappingList.Add(localTemplateMapping);
             }
 
             return finalMappingList;
         }
 
         /// <summary>
-        /// Generates the Custom Tab Pages using the pattern metadata. This method will remove any non-standard Tab Pages and create these using the Load Pattern Definition metadata.
+        /// Generates the Custom Tab Pages using the template metadata. This method will remove any non-standard Tab Pages and create these using the Template Definition metadata.
         /// </summary>
         internal void CreateCustomTabPages()
         {
             // Save all work when reloading
             if (startUpIndicator == false)
             {
-                // TO DO, save the pattern before reload to not lose work.
+                // TO DO, save the template before reload to not lose work.
             }
 
             // Remove any existing Custom Tab Pages before rebuild
@@ -799,13 +799,13 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
-            List<LocalPattern> finalMappingList = GetMetadata();
+            List<LocalTemplate> finalMappingList = GetMetadata();
             var sortedMappingList = finalMappingList.OrderBy(x => x.classification);
 
             // Add the Custom Tab Pages
-            foreach (var pattern in sortedMappingList)
+            foreach (var template in sortedMappingList)
             {
-                CustomTabPage localCustomTabPage = new CustomTabPage(pattern.classification, pattern.notes, pattern.itemList);
+                CustomTabPage localCustomTabPage = new CustomTabPage(template.classification, template.notes, template.itemList);
                 localCustomTabPage.OnChangeMainText += UpdateMainInformationTextBox;
                 localCustomTabPage.OnClearMainText += ClearMainInformationTextBox;
 
@@ -908,7 +908,7 @@ namespace Virtual_Data_Warehouse
         private void buttonRefreshMetadata_Click(object sender, EventArgs e)
         {
             // Get the total of tab pages to create
-            var patternList = GetMetadata();
+            var templateList = GetMetadata();
 
             // Get the name of the active tab so this can be refreshed
             string tabName = tabControlMain.SelectedTab.Name;
@@ -917,11 +917,11 @@ namespace Virtual_Data_Warehouse
             {
                 if (customTabPage.Name == tabName)
                 {
-                    foreach (LocalPattern localPattern in patternList)
+                    foreach (LocalTemplate localTemplate in templateList)
                     {
-                        if (localPattern.classification == tabName)
+                        if (localTemplate.classification == tabName)
                         {
-                            customTabPage.SetItemList(localPattern.itemList);
+                            customTabPage.SetItemList(localTemplate.itemList);
                         }
                     }
                 }
@@ -1045,12 +1045,12 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void pictureBoxUpdateLoadPatternPath_Click(object sender, EventArgs e)
+        private void PictureBoxUpdateTemplatePath_Click(object sender, EventArgs e)
         {
             var fileBrowserDialog = new FolderBrowserDialog();
 
             fileBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
-            fileBrowserDialog.SelectedPath = textBoxLoadPatternPath.Text;
+            fileBrowserDialog.SelectedPath = textBoxTemplatePath.Text;
 
             DialogResult result = fileBrowserDialog.ShowDialog();
 
@@ -1061,7 +1061,7 @@ namespace Virtual_Data_Warehouse
                 int fileCounter = 0;
                 foreach (string file in files)
                 {
-                    if (file.Contains("loadPatternCollection"))
+                    if (file.Contains("TemplateCollection"))
                     {
                         fileCounter++;
                     }
@@ -1078,39 +1078,39 @@ namespace Virtual_Data_Warehouse
                 }
 
 
-                textBoxLoadPatternPath.Text = finalPath;
+                textBoxTemplatePath.Text = finalPath;
 
                 if (fileCounter == 0)
                 {
-                    richTextBoxInformationMain.Text = "The selected directory does not seem to contain a loadPatternCollection.json file. Did you select a correct Load Pattern directory?";
+                    richTextBoxInformationMain.Text = "The selected directory does not seem to contain a templateCollection.json file. Did you select a correct template directory?";
                 }
                 else
                 {
-                    richTextBoxInformationMain.Text = "The path now points to a directory that contains the loadPatternCollection.json Load Pattern Collection file.";
+                    richTextBoxInformationMain.Text = "The path now points to a directory that contains the templateCollection.json Template Collection file.";
                 }
 
                 // Update the parameters in memory.
-                VdwConfigurationSettings.LoadPatternPath = finalPath;
-                textBoxLoadPatternPath.Text = finalPath;
+                VdwConfigurationSettings.TemplatePath = finalPath;
+                textBoxTemplatePath.Text = finalPath;
 
                 // Report back to the user.
-                richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains load patterns. Please save this configuration to retain these settings.");
-                VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"Load pattern path has been updated to {VdwConfigurationSettings.LoadPatternPath}."));
+                richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains templates. Please save this configuration to retain these settings.");
+                VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The template path has been updated to {VdwConfigurationSettings.TemplatePath}."));
 
                 // Reload the files into the grid
-                VdwConfigurationSettings.patternList.Clear();
-                VdwConfigurationSettings.patternList = LoadPatternFileHandling.LoadPatternCollection();
-                PopulateLoadPatternCollectionDataGrid();
+                VdwConfigurationSettings.templateList.Clear();
+                VdwConfigurationSettings.templateList = TemplateHandling.LoadTemplateCollection();
+                PopulateTemplateCollectionDataGrid();
             }
         }
 
-         private void openPatternCollectionFileToolStripMenuItem_Click(object sender, EventArgs e)
+         private void openTemplateCollectionFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var theDialog = new OpenFileDialog
             {
-                Title = @"Open Load Pattern Collection File",
-                Filter = @"Load Pattern Collection|*.json",
-                InitialDirectory = VdwConfigurationSettings.LoadPatternPath
+                Title = @"Open Template Collection File",
+                Filter = @"Load Template Collection|*.json",
+                InitialDirectory = VdwConfigurationSettings.TemplatePath
             };
 
             var ret = STAShowDialog(theDialog);
@@ -1122,13 +1122,13 @@ namespace Virtual_Data_Warehouse
                     var chosenFile = theDialog.FileName;
 
                     // Save the list to memory
-                    VdwConfigurationSettings.patternList = JsonConvert.DeserializeObject<List<LoadPatternFileHandling>>(File.ReadAllText(chosenFile));
+                    VdwConfigurationSettings.templateList = JsonConvert.DeserializeObject<List<TemplateHandling>>(File.ReadAllText(chosenFile));
 
                     // ... and populate the data grid
-                    PopulateLoadPatternCollectionDataGrid();
+                    PopulateTemplateCollectionDataGrid();
 
                     SetTextMain("The file " + chosenFile + " was loaded.\r\n");
-                    _loadPatternGridView.AutoLayout();
+                    _templateGridView.AutoLayout();
                 }
                 catch (Exception ex)
                 {
@@ -1148,31 +1148,31 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void savePatternCollectionFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveTemplateCollectionFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
                 richTextBoxInformationMain.Clear();
 
-                var chosenFile = textBoxLoadPatternPath.Text + GlobalParameters.LoadPatternListFileName;
+                var chosenFile = textBoxTemplatePath.Text + GlobalParameters.TemplateCollectionFileName;
 
-                DataTable gridDataTable = (DataTable)_bindingSourceLoadPatternCollection.DataSource;
+                DataTable gridDataTable = (DataTable)_bindingSourceTemplateCollection.DataSource;
 
                 // Make sure the output is sorted.
-                gridDataTable.DefaultView.Sort = $"[{LoadPatternGridColumns.LoadPatternName}] ASC";
-                gridDataTable.TableName = "LoadPatternCollection";
+                gridDataTable.DefaultView.Sort = $"[{TemplateGridColumns.TemplateName}] ASC";
+                gridDataTable.TableName = "TemplateCollection";
 
                 JArray outputFileArray = new JArray();
                 foreach (DataRow singleRow in gridDataTable.DefaultView.ToTable().Rows)
                 {
                     JObject individualRow = JObject.FromObject(new
                     {
-                        loadPatternName = singleRow[0].ToString(),
-                        loadPatternType = singleRow[1].ToString(),
-                        loadPatternConnectionKey = singleRow[2].ToString(),
-                        loadPatternOutputFilePattern = singleRow[3].ToString(),
-                        loadPatternFilePath = singleRow[4].ToString(),
-                        loadPatternNotes = singleRow[5].ToString()
+                        TemplateName = singleRow[0].ToString(),
+                        TemplateType = singleRow[1].ToString(),
+                        TemplateConnectionKey = singleRow[2].ToString(),
+                        TemplateOutputFileConvention = singleRow[3].ToString(),
+                        TemplateFilePath = singleRow[4].ToString(),
+                        TemplateNotes = singleRow[5].ToString()
                     });
                     outputFileArray.Add(individualRow);
                 }
@@ -1187,8 +1187,8 @@ namespace Virtual_Data_Warehouse
                 try
                 {
                     // Quick fix, in the file again to commit changes to memory.
-                    VdwConfigurationSettings.patternList =
-                        JsonConvert.DeserializeObject<List<LoadPatternFileHandling>>(File.ReadAllText(chosenFile));
+                    VdwConfigurationSettings.templateList =
+                        JsonConvert.DeserializeObject<List<TemplateHandling>>(File.ReadAllText(chosenFile));
                     CreateCustomTabPages();
                 }
                 catch (Exception ex)
@@ -1203,15 +1203,15 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        private void openLoadPatternDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenTemplateDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                Process.Start(VdwConfigurationSettings.LoadPatternPath);
+                Process.Start(VdwConfigurationSettings.TemplatePath);
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the load pattern directory. The error message is: " + ex;
+                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the template directory. The error message is: " + ex;
             }
         }
 

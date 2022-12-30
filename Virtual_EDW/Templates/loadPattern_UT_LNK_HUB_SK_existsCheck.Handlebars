@@ -1,0 +1,85 @@
+DECLARE @LAST_UT_DETAIL_ID nvarchar(1000);
+DECLARE @UT_ID int = 12;
+DECLARE @HUB nvarchar(1000);
+
+{{#each dataObjectMappings}}
+
+{{#each businessKeys}}
+{{#unless @first}}
+--
+-- LNK UT SK Generation check for {{../targetDataObject.name}} - {{surrogateKey}} pair
+--
+
+SET @HUB = REPLACE('{{surrogateKey}}','_SK','');
+
+INSERT INTO OMD.UT_DETAIL (UT_ID, TARGET_TABLE, SOURCE_TABLE, TARGET_COLUMN, SOURCE_COLUMN, TARGET_SCHEMA, SOURCE_SCHEMA, REALM, UT_TEST_SQL, UT_DETAIL_SQL, INACTIVE_INDICATOR, NOTES)
+SELECT DISTINCT
+	@UT_ID,'{{../targetDataObject.name}}',@HUB,NULL, NULL, '{{../targetDataObject.dataObjectConnection.extensions.1.value}}','{{../targetDataObject.dataObjectConnection.extensions.1.value}}', 
+  
+  CASE '{{../sourceDataObjects.0.dataObjectConnection.extensions.1.value}}' 
+    WHEN 'STG' 
+    THEN substring('{{../sourceDataObjects.0.name}}',5,charindex('_','{{../sourceDataObjects.0.name}}',5)-5)
+    ELSE 'DV'
+  END,
+  
+  'WITH recordcount
+     AS (SELECT Count(*)		AS record_count
+         FROM   [{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[{{../targetDataObject.name}}]),
+     testcount
+     AS (
+      SELECT Count(1) AS test_count 
+         FROM   [{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[{{../targetDataObject.name}}] [{{../targetDataObject.dataObjectConnection.extensions.1.value}}]
+         WHERE  {{surrogateKey}}
+            NOT IN 
+          ( 
+            SELECT [{{surrogateKey}}]
+            FROM [{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[' + @HUB + ']
+          )
+     )
+SELECT record_count,
+       test_count,
+       CASE
+         WHEN test_count = 0 THEN ''Pass''
+         ELSE ''Fail''
+       END          AS Status,
+       Getdate()    AS Test_Execution_DateTime,
+       CURRENT_USER AS Test_Executor
+FROM   recordcount,
+       testcount;  '
+, 
+  
+  'SELECT [{{surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+FROM   [{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[{{../targetDataObject.name}}] [{{../targetDataObject.dataObjectConnection.extensions.1.value}}]
+         WHERE  {{surrogateKey}}
+            NOT IN 
+          ( 
+            SELECT [{{surrogateKey}}]
+            FROM [{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[' + @HUB + ']
+          )'
+
+, 'N'
+, NULL
+
+FROM OMD.UT a
+LEFT JOIN OMD.UT_DETAIL exist ON exist.UT_ID = @UT_ID
+              and TARGET_TABLE = '{{../targetDataObject.name}}' 
+              and SOURCE_TABLE = @HUB
+WHERE exist.UT_DETAIL_ID is null
+
+{{/unless}}
+{{/each}}
+
+
+INSERT INTO OMD.UT_DETAIL_MODULE (UT_DETAIL_ID, MODULE_ID)
+SELECT DISTINCT
+      ud.UT_DETAIL_ID,
+      m.MODULE_ID as MODULE_ID
+FROM OMD.UT ut
+INNER JOIN OMD.UT_DETAIL ud ON ud.TARGET_TABLE = '{{targetDataObject.name}}' 
+                            and ud.UT_ID = @UT_ID
+INNER JOIN OMD.MODULE m ON m.MODULE_CODE = 'm_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}'
+LEFT JOIN OMD.UT_DETAIL_MODULE udm ON udm.MODULE_ID = m.MODULE_ID 
+								  and udm.UT_DETAIL_ID = ud.UT_DETAIL_ID
+WHERE udm.UT_DETAIL_MODULE_ID IS NULL
+
+{{/each}}
