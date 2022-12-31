@@ -1,37 +1,88 @@
 {{#each dataObjectMappings}}{{#if @first}}
 --
 -- Satellite Insert Into statement for {{targetDataObject.name}}
--- Generated at {{now}}
+-- Removed MIS_DATE from OMD_HASH_DIFF
+-- 
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'INT.SP_{{targetDataObject.name}}') AND type in (N'P'))
+DROP PROCEDURE [INT].[SP_{{targetDataObject.name}}];
+GO
+
+CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}] @OMD_INSERT_MODULE_INSTANCE_ID int
+AS
+
+-- 
+-- SAT Insert Into statement for [{{targetDataObject.name}}] from [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+-- Removed MIS_DATE column from OMD_HASH_FULL
 --
 
-INSERT INTO [{{targetDataObject.name}}]
+INSERT INTO [INT].[{{targetDataObject.name}}]
 (  {{#each businessKeys}}
    [{{surrogateKey}}],{{/each}}
-   {{#each dataItemMappings}}
-   [{{targetDataItem.name}}],
+   {{#each dataItemMappings}}[{{targetDataItem.name}}],
    {{/each}}
-   [{{../metadataConfiguration.etlProcessAttribute}}],
-   [{{../metadataConfiguration.loadDateTimeAttribute}}],
-   [{{../metadataConfiguration.recordSourceAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../metadataConfiguration.sourceRowIdAttribute}}],
-   [{{../metadataConfiguration.recordChecksumAttribute}}]
+  OMD_EFFECTIVE_DATETIME ,
+  OMD_EXPIRY_DATETIME,
+  OMD_EVENT_DATETIME,
+  OMD_CURRENT_RECORD_INDICATOR,
+  OMD_DELETED_RECORD_INDICATOR,
+  OMD_INSERT_MODULE_INSTANCE_ID ,
+  OMD_UPDATE_MODULE_INSTANCE_ID,
+  OMD_RECORD_SOURCE_ID,
+  OMD_SOURCE_ROW_ID,
+  OMD_HASH_DIFF
 )
-SELECT {{#each businessKeys}}
-   sat_view.[{{surrogateKey}}],{{/each}}
-   {{#each dataItemMappings}}
-   sat_view.[{{targetDataItem.name}}],
+SELECT  
+{{#each businessKeys}}
+   SUB.[{{surrogateKey}}],{{/each}}
+   {{#each dataItemMappings}}SUB.[{{targetDataItem.name}}],
    {{/each}}
-   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
-   sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-   sat_view.[{{../metadataConfiguration.recordSourceAttribute}}],
-   sat_view.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   sat_view.[{{../metadataConfiguration.sourceRowIdAttribute}}],
-   sat_view.[{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] sat_view
-LEFT OUTER JOIN [{{targetDataObject.name}}] sat_table
-    ON sat_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
-    AND sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}] = sat_table.[{{../metadataConfiguration.loadDateTimeAttribute}}] 
-    {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}AND sat_view.{{../targetDataItem.name}} = sat_table.{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
-WHERE sat_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
+  SUB.OMD_INSERT_DATETIME,
+  SUB.OMD_EXPIRY_DATETIME,
+  SUB.OMD_EVENT_DATETIME,
+  SUB.OMD_CURRENT_RECORD_INDICATOR,
+  SUB.OMD_DELETED_RECORD_INDICATOR,
+  SUB.OMD_INSERT_MODULE_INSTANCE_ID ,
+  SUB.OMD_UPDATE_MODULE_INSTANCE_ID ,
+  SUB.OMD_RECORD_SOURCE_ID,
+  SUB.OMD_SOURCE_ROW_ID,
+  SUB.OMD_HASH_DIFF
+FROM
+(
+SELECT  
+   CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) 
+AS {{#each businessKeys}} [{{surrogateKey}}],{{/each}}
+
+   {{#each dataItemMappings}}
+   [{{../sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
+   {{/each}}
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_INSERT_DATETIME],
+  '9999-12-31 00:00:00.0000000' AS [OMD_EXPIRY_DATETIME],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_EVENT_DATETIME],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_CURRENT_RECORD_INDICATOR],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_DELETED_RECORD_INDICATOR],
+ @OMD_INSERT_MODULE_INSTANCE_ID AS [OMD_INSERT_MODULE_INSTANCE_ID],
+  NULL AS [OMD_UPDATE_MODULE_INSTANCE_ID],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_RECORD_SOURCE_ID],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_SOURCE_ROW_ID],
+ CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each dataItemMappings}}
+  RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),[{{../sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataItems.0.name}}]),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} +'|'+[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_DELETED_RECORD_INDICATOR] )),2) AS [OMD_HASH_DIFF],
+CAST(ROW_NUMBER() OVER (
+				PARTITION BY CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2)
+                                                                {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}, [{{../sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}
+                                                                ORDER BY [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_INSERT_DATETIME], [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_SOURCE_ROW_ID]
+                                                   ) AS INT ) AS [__ROW_NUMBER__]
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] {{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}
+) AS SUB
+LEFT OUTER JOIN --Prevent Processing
+[INT].[{{targetDataObject.name}}] SAT
+ON   [SAT].{{#each businessKeys}}[{{surrogateKey}}] {{/each}}= [SUB].{{#each businessKeys}}[{{surrogateKey}}]{{/each}}      
+{{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}} and  [SAT].[{{../sourceDataItems.0.name}}] = [SUB].[{{../sourceDataItems.0.name}}] {{/if}}{{/each}}{{/each}}
+and [SAT].[OMD_CURRENT_RECORD_INDICATOR]='Y' and [SAT].[OMD_DELETED_RECORD_INDICATOR]='N'  
+WHERE  ( [SAT].{{#each businessKeys}}[{{surrogateKey}}]{{/each}} IS NULL --New record. Does not exist in Sat  
+OR ([SUB].[__ROW_NUMBER__] = 1 AND [SUB].[OMD_HASH_DIFF] <> [SAT].[OMD_HASH_DIFF]) --First record in HLP has a different hash diff the the lastest record in SAT  
+OR [SUB].[__ROW_NUMBER__] > 1) --Only check the first row for changes
+;
+
+SELECT @@ROWCOUNT AS ROWS_INSERTED
+GO
 {{/if}}{{/each}}

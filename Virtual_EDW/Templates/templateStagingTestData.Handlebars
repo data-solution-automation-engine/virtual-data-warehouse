@@ -11,7 +11,7 @@ INSERT INTO [{{../targetDataObject.dataObjectConnection.extensions.0.value}}].[{
    [{{../../metadataConfiguration.recordSourceAttribute}}],
    [{{../../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../../metadataConfiguration.recordChecksumAttribute}}],
-   {{#each dataItemMappings}}
+   {{#each ../dataItemMappings}}
    [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}} -- Data Type is {{sourceDataItems.0.dataType}}
    {{/each}}
 )

@@ -1,0 +1,36 @@
+{{#each dataObjectMappings}}
+update omd.PARAMETER set PARAMETER_VALUE_CODE='MERGE INTO {{sourceDataObjects.0.name}} as source
+
+USING (
+
+SELECT  sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL({{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) as DL_KEY
+         ,OMD_INSERT_DATETIME
+         ,OMD_SOURCE_ROW_ID
+        ,lag(OMD_INSERT_DATETIME, 1, ''9999-12-31'') OVER (PARTITION BY  sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL({{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) ORDER BY OMD_INSERT_DATETIME DESC ,OMD_SOURCE_ROW_ID DESC) AS OMD_EXPIRY_DATETIME
+        ,lag(''N'', 1, ''Y'') OVER (PARTITION BY  sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL({{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) ORDER BY OMD_INSERT_DATETIME DESC ,OMD_SOURCE_ROW_ID DESC) AS OMD_CURRENT_RECORD_INDICATOR
+
+FROM {{sourceDataObjects.0.name}}
+WHERE
+sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL({{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING)))  IN
+(
+        SELECT  sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL({{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) 
+        FROM {{sourceDataObjects.0.name}}
+        WHERE OMD_CURRENT_RECORD_INDICATOR = ''Y''
+        GROUP BY sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL({{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING)))
+        HAVING COUNT(*) > 1
+)
+
+) staged_updates
+
+ON  sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL({{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING)))= DL_KEY
+AND source.OMD_INSERT_DATETIME = staged_updates.OMD_INSERT_DATETIME
+AND source.OMD_SOURCE_ROW_ID = staged_updates.OMD_SOURCE_ROW_ID
+AND staged_updates.OMD_EXPIRY_DATETIME != ''9999-12-31''
+AND source.OMD_CURRENT_RECORD_INDICATOR = ''Y''
+WHEN MATCHED 
+   THEN 
+          UPDATE 
+          SET source.OMD_CURRENT_RECORD_INDICATOR = ''N''
+            ,source.OMD_EXPIRY_DATETIME = staged_updates.OMD_EXPIRY_DATETIME
+            ,source.OMD_UPDATE_MODULE_INSTANCE_ID =' where parameter_key_code='DL_SILVER_UPDATE_{{sourceDataObjects.0.name}}';
+{{/each}}

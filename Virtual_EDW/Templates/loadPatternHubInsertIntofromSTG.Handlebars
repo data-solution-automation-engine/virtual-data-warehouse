@@ -1,0 +1,43 @@
+{{#each dataObjectMappings}}
+--
+-- Hub Insert Into statement for {{targetDataObject.name}}
+--
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'INT.SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}') AND type in (N'P'))
+DROP PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}];
+GO
+
+CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}] @OMD_INSERT_MODULE_INSTANCE_ID int
+AS
+
+--
+-- Hub Insert Into statement for [{{targetDataObject.name}}]
+--
+
+INSERT INTO [INT].[{{targetDataObject.name}}]
+(
+  [{{targetDataObject.name}}_SK],
+  OMD_INSERT_DATETIME,
+  OMD_INSERT_MODULE_INSTANCE_ID,
+  OMD_RECORD_SOURCE_ID,
+  {{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
+   [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/if}}{{/each}}
+)
+          SELECT 
+               CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) as  [{{targetDataObject.name}}_SK],
+   min(OMD_INSERT_DATETIME),
+  @OMD_INSERT_MODULE_INSTANCE_ID,
+  min(OMD_RECORD_SOURCE_ID),
+               {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+            ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA') AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+
+          FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] stg
+          WHERE  CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) NOT IN
+          (
+             SELECT [{{targetDataObject.name}}_SK]
+             FROM [INT].[{{targetDataObject.name}}] INT
+             )
+             GROUP BY  {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}{{#unless @first}},{{/unless}} [{{sourceDataItems.0.name}}]{{/stringcompare}}{{/each}}{{/each}} ;
+
+SELECT @@ROWCOUNT AS ROWS_INSERTED
+GO
+{{/each}}

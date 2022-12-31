@@ -1,0 +1,40 @@
+ {{#each dataObjectMappings}}
+update omd.PARAMETER set PARAMETER_VALUE_CODE='with cte as (
+
+select  * from {{sourceDataObjects.0.name}} as source
+
+where source.IsDeleted =''True''
+
+)
+
+INSERT INTO {{sourceDataObjects.0.name}} (
+{{#each dataItemMappings}}
+  {{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
+   {{/each}}
+,
+OMD_RECORD_SOURCE_ID,
+OMD_FILE_LOCATION,
+OMD_EVENT_DATETIME,
+OMD_HASH_DIFF,
+OMD_CURRENT_RECORD_INDICATOR,
+OMD_DELETED_RECORD_INDICATOR,
+OMD_EXPIRY_DATETIME,
+OMD_UPDATE_MODULE_INSTANCE_ID,
+OMD_INSERT_DATETIME,
+OMD_INSERT_MODULE_INSTANCE_ID
+)
+
+SELECT  {{#each dataItemMappings}}
+  delete_insert.{{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
+   {{/each}}
+,delete_insert.OMD_RECORD_SOURCE_ID,
+delete_insert.OMD_FILE_LOCATION,
+CURRENT_TIMESTAMP() AS OMD_EVENT_DATETIME,
+delete_insert.OMD_HASH_DIFF,
+''Y'',
+''Y'',
+''9999-12-31'' 
+, ''NULL''
+,' where parameter_key_code='DL_SILVER_DELETE_{{sourceDataObjects.0.name}}';
+
+{{/each}}

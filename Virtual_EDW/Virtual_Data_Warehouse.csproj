@@ -172,73 +172,73 @@
     <Content Include="Templates\templateCollection.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternHubDeltaSelect.Handlebars">
+    <Content Include="Templates\templateHubDeltaSelect.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternHubInsertInto.Handlebars">
+    <Content Include="Templates\templateHubInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateHubView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternHubView_DBT_Snowflake.Handlebars">
+    <Content Include="Templates\templateHubView_DBT_Snowflake.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternLinkInsertInto.Handlebars">
+    <Content Include="Templates\templateLinkInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternLinkSatelliteDrivingKeyInsertInto.Handlebars">
+    <Content Include="Templates\templateLinkSatelliteDrivingKeyInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternLinkSatelliteDrivingKeyView.Handlebars">
+    <Content Include="Templates\templateLinkSatelliteDrivingKeyView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternLinkSatelliteInsertInto.Handlebars">
+    <Content Include="Templates\templateLinkSatelliteInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternLinkSatelliteView.Handlebars">
+    <Content Include="Templates\templateLinkSatelliteView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternLinkView.Handlebars">
+    <Content Include="Templates\templateLinkView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternLinkViewNoHash.Handlebars">
+    <Content Include="Templates\templateLinkViewNoHash.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternPersistentStagingFullOuterJoin.Handlebars">
+    <Content Include="Templates\templatePersistentStagingFullOuterJoin.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternPersistentStagingGenerateTables.Handlebars">
+    <Content Include="Templates\templatePersistentStagingGenerateTables.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternPersistentStagingInsertInto.Handlebars">
+    <Content Include="Templates\templatePersistentStagingInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternPersistentStagingView.Handlebars">
+    <Content Include="Templates\templatePersistentStagingView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternPersistentStagingViewSimplified.Handlebars">
+    <Content Include="Templates\templatePersistentStagingViewSimplified.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternPersistentStagingViewWithDedup.Handlebars">
+    <Content Include="Templates\templatePersistentStagingViewWithDedup.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternSatelliteInsertInto.Handlebars">
+    <Content Include="Templates\templateSatelliteInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternSatelliteView.Handlebars">
+    <Content Include="Templates\templateSatelliteView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternSatelliteViewZeroRecord.Handlebars">
+    <Content Include="Templates\templateSatelliteViewZeroRecord.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternStagingGenerateTables.Handlebars">
+    <Content Include="Templates\templateStagingGenerateTables.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternStagingInsertInto.Handlebars">
+    <Content Include="Templates\templateStagingInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternStagingView.Handlebars">
+    <Content Include="Templates\templateStagingView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Examples\DIM_CUSTOMER.json">
@@ -340,21 +340,38 @@
     <Content Include="Examples\STG_PROFILER_PLAN.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternSatelliteReferentialIntegrity.Handlebars">
+    <Content Include="Templates\templateSatelliteReferentialIntegrity.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternStagingTestData.Handlebars">
+    <Content Include="Templates\templateStagingTestData.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternHubGenerateTables.Handlebars">
+    <Content Include="Templates\templateHubGenerateTables.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\loadPatternHubInsertIntoDirectWrapper.Handlebars">
+    <Content Include="Templates\templateHubInsertIntoDirectWrapper.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateDimSelect.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Templates\loadPatternHubInsertIntofromSTG.Handlebars" />
+    <None Include="Templates\loadPatternLinkInsertIntofromSTG.Handlebars" />
+    <None Include="Templates\loadPatternPersistentStagingAreaInsertInto.Handlebars" />
+    <None Include="Templates\loadPatternSatelliteInsertInto.Handlebars" />
+    <None Include="Templates\templateHubDirectRegistration.Handlebars" />
+    <None Include="Templates\templateLinkDirectRegistration.Handlebars" />
+    <None Include="Templates\loadPatternLinkSatelliteInsertInto.Handlebars" />
+    <None Include="Templates\templateLinkSatelliteDirectRegistration.Handlebars" />
+    <None Include="Templates\templateSatelliteDirectRegistration.Handlebars" />
+    <None Include="Templates\templateStagingDirectRegistration.Handlebars" />
+    <None Include="Templates\templateLandingtoSilverFromView.Handlebars" />
+    <None Include="Templates\templateDataLakeSilverToStagingSelectCDC.Handlebars" />
+    <None Include="Templates\templateDataLakeSilver01.Handlebars" />
+    <None Include="Templates\templateDataLakeSilver01CDC.Handlebars" />
+    <None Include="Templates\templateDataLakeSilver02.Handlebars" />
+    <None Include="Templates\templateDataLakeSilver02CDC.Handlebars" />
+    <None Include="Templates\templateDataLakeSilver03.Handlebars" />
     <None Include="Templates\template_test_HUB_KeyTrimCheck.Handlebars" />
     <None Include="Templates\template_test_HUB_KeyNullCheck.Handlebars" />
     <None Include="Templates\loadPattern_UT_HUB_SKgenerationCheck.Handlebars" />
@@ -375,7 +392,7 @@
     <None Include="Templates\loadPattern_UT_SAT_duplicateRecordCheck.Handlebars" />
     <None Include="Templates\loadPattern_UT_SAT_nullKeyCheck.Handlebars" />
     <None Include="Templates\loadPattern_UT_SAT_SK_has_HUB_record.Handlebars" />
-    <None Include="Templates\loadPattern_UT_SAT_STG_to_SAT_Check.Handlebars" />
+    <None Include="Templates\template_test_SAT_StagingMappingCheck.Handlebars" />
     <None Include="Properties\app.manifest" />
     <Content Include="Resources\Ravos-logo-small.ico" />
     <Content Include="Schema\interfaceDataWarehouseAutomationMetadata.json">

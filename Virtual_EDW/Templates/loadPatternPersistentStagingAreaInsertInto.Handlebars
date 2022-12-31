@@ -1,0 +1,48 @@
+{{#each dataObjectMappings}}
+--
+-- Persistent Staging Area Insert Into statement for [{{targetDataObject.name}}]
+--
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'PSA.SP_{{targetDataObject.name}}') AND type in (N'P'))
+DROP PROCEDURE [PSA].[SP_{{targetDataObject.name}}]
+GO
+
+CREATE PROCEDURE [PSA].[SP_{{targetDataObject.name}}] @OMD_INSERT_MODULE_INSTANCE_ID int
+AS
+INSERT INTO [PSA].[{{targetDataObject.name}}]
+(
+   [{{businessKeys.0.surrogateKey}}],
+   {{#each dataItemMappings}}
+   [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+   ,OMD_INSERT_MODULE_INSTANCE_ID
+  ,OMD_FILE_LOCATION
+  ,OMD_EVENT_DATETIME
+  ,OMD_EFFECTIVE_DATETIME
+  ,OMD_HASH_DIFF
+  ,OMD_CURRENT_RECORD_INDICATOR
+  ,OMD_DELETED_RECORD_INDICATOR
+  ,OMD_EXPIRY_DATETIME
+,OMD_RECORD_SOURCE_ID
+,OMD_SOURCE_ROW_ID
+)
+SELECT
+     CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL([{{sourceDataItems.0.name}}],'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2),
+    {{#each dataItemMappings}}
+  [{{sourceDataItems.0.name}}] as [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+   ,@OMD_INSERT_MODULE_INSTANCE_ID
+  ,OMD_FILE_LOCATION
+  ,OMD_EVENT_DATETIME
+  ,OMD_INSERT_DATETIME
+  ,OMD_HASH_DIFF
+  ,OMD_CURRENT_RECORD_INDICATOR
+  ,OMD_DELETED_RECORD_INDICATOR
+  ,OMD_EXPIRY_DATETIME
+  ,OMD_RECORD_SOURCE_ID
+ ,OMD_SOURCE_ROW_ID
+
+FROM [STG].[{{sourceDataObjects.0.name}}] ;
+SELECT @@ROWCOUNT AS ROWS_INSERTED
+GO
+{{/each}}

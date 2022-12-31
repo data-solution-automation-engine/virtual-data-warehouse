@@ -238,5 +238,109 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_KeyNullCheck.sql",
     "templateFilePath": "template_test_HUB_KeyNullCheck.handlebars",
     "templateNotes": "Unit test for checking a (hashed) NULL value in a Data Vault Hub surrogate key."
+  },
+  {
+    "templateName": "Unit Test - STG to SAT Check",
+    "templateType": "Context",
+    "templateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Sat_StagingMappingCheck.sql",
+    "templateFilePath": "template_test_SAT_StagingMappingCheck.handlebars",
+    "templateNotes": "Data Vault Sat Pattern to create unit test for checking mapping and data completeness between STG and SAT"
+  },
+  {
+    "templateName": "Data Lake Silver Merge Insert",
+    "templateType": "StagingArea",
+    "templateConnectionKey": "SourceConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_MergeInsert.sql",
+    "templateFilePath": "templateDataLakeSilver01.handlebars",
+    "templateNotes": "Azure Databricks template to insert new records. Update the changed records, and insert new records for the changed records."
+  },
+  {
+    "templateName": "Data Lake Silver Merge Insert with CDC",
+    "templateType": "StagingArea",
+    "templateConnectionKey": "SourceConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_MergeInsesrt.sql",
+    "templateFilePath": "templateDataLakeSilver01CDC.handlebars",
+    "templateNotes": "Azure Databricks template to insert new records. Update the changed records and insert new records for the changed records for the CDC files."
+  },
+  {
+    "templateName": "Data Lake Silver Insert Delete",
+    "templateType": "StagingArea",
+    "templateConnectionKey": "SourceConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_InsertDelete.sql",
+    "templateFilePath": "templateDataLakeSilver02.handlebars",
+    "templateNotes": "Azure Databricks template to insert records for the deleted Business Keys."
+  },
+  {
+    "templateName": "Data Lake Silver Insert Delete with CDC",
+    "templateType": "StagingArea",
+    "templateConnectionKey": "SourceConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_InsertDelete.sql",
+    "templateFilePath": "templateDataLakeSilver02CDC.handlebars",
+    "templateNotes": "Azure Databricks template to insert records for the deleted Business Keys, for CDC data."
+  },
+  {
+    "templateName": "Data Lake Silver Update Deleted Records",
+    "templateType": "StagingArea",
+    "templateConnectionKey": "SourceConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_UpdateDeleted.sql",
+    "templateFilePath": "templateDataLakeSilver03.handlebars",
+    "templateNotes": "Azure Databricks template to update the deleted records."
+  },
+  {
+    "templateName": "Data Lake Silver To Staging with CDC Select",
+    "templateType": "StagingArea",
+    "templateConnectionKey": "SourceConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "templateFilePath": "templateDataLakeSilverToStagingSelectCDC.handlebars",
+    "templateNotes": "Azure Databricks Staging Area tempalte that selects CDC records from the Data Lake Silver table and inserts them into Data Warehouse STG layer tables."
+  },
+  {
+    "templateName": "Landing to Data Lake Silver Select Columns From View",
+    "templateType": "StagingArea",
+    "templateConnectionKey": "SourceConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_SelectView.sql",
+    "templateFilePath": "templateLandingtoSilverFromView.handlebars",
+    "templateNotes": "Azure Databricks insert into Staging Area. This template generates the select column list command from the view which is created from dataframe."
+  },
+  {
+    "templateName": "Hub Batch/Module Registration for DIRECT",
+    "templateType": "CoreBusinessConcept",
+    "templateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
+    "templateFilePath": "templateHubDirectRegistration.handlebars",
+    "templateNotes": "Creating DIRECT registration scripts."
+  },
+  {
+    "templateName": "Link Batch/Module Registration for DIRECT",
+    "templateType": "NaturalBusinessRelationship",
+    "templateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
+    "templateFilePath": "templateLinkDirectRegistration.handlebars",
+    "templateNotes": "Creating DIRECT registration scripts."
+  },
+  {
+    "templateName": "Link-Satellite Batch/Module Registration for DIRECT",
+    "templateType": "NaturalBusinessRelationshipContext",
+    "templateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
+    "templateFilePath": "templateLinkSatelliteDirectRegistration.handlebars",
+    "templateNotes": "Creating DIRECT registration scripts."
+  },
+  {
+    "templateName": "Satellite Batch/Module Registration for DIRECT",
+    "templateType": "NaturalBusinessRelationshipContext",
+    "templateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
+    "templateFilePath": "templateSatelliteDirectRegistration.handlebars",
+    "templateNotes": "Creating DIRECT registration scripts."
+  },
+  {
+    "templateName": "Staging Area Batch/Module Registration for DIRECT",
+    "templateType": "StagingArea",
+    "templateConnectionKey": "StagingConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
+    "templateFilePath": "templateStagingDirectRegistration.handlebars",
+    "templateNotes": "Creating DIRECT registration scripts."
   }
 ]

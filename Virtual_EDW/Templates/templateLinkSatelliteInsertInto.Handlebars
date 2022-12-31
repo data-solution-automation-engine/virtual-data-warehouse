@@ -1,0 +1,37 @@
+{{#each dataObjectMappings}}{{#if @first}}
+--
+-- Link Satellite Insert Into statement for {{targetDataObject.name}}
+-- Generated at {{now}}
+--
+
+INSERT INTO [{{targetDataObject.name}}]
+(  {{#each businessKeys}}{{#if @first}}
+   [{{surrogateKey}}],{{/if}}{{/each}}
+   {{#each dataItemMappings}}
+   [{{targetDataItem.name}}],
+   {{/each}}
+   [{{../metadataConfiguration.etlProcessAttribute}}],
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
+   [{{../metadataConfiguration.recordSourceAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.sourceRowIdAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}]
+)
+SELECT {{#each businessKeys}}{{#if @first}}
+   sat_view.[{{surrogateKey}}],{{/if}}{{/each}}
+   {{#each dataItemMappings}}
+   sat_view.[{{targetDataItem.name}}],
+   {{/each}}
+   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
+   sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
+   sat_view.[{{../metadataConfiguration.recordSourceAttribute}}],
+   sat_view.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   sat_view.[{{../metadataConfiguration.sourceRowIdAttribute}}],
+   sat_view.[{{../metadataConfiguration.recordChecksumAttribute}}]
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] sat_view
+LEFT OUTER JOIN [{{targetDataObject.name}}] sat_table
+    ON sat_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+    AND sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}] = sat_table.[{{../metadataConfiguration.loadDateTimeAttribute}}] 
+    {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}AND sat_view.{{../targetDataItem.name}} = sat_table.{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
+WHERE sat_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
+{{/if}}{{/each}}
