@@ -217,7 +217,7 @@
             this.openTemplateCollectionFileToolStripMenuItem.Image = global::Virtual_Data_Warehouse.Properties.Resources.OpenFileIcon;
             this.openTemplateCollectionFileToolStripMenuItem.Name = "openTemplateCollectionFileToolStripMenuItem";
             this.openTemplateCollectionFileToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-            this.openTemplateCollectionFileToolStripMenuItem.Text = "Open Template Collection File";
+            this.openTemplateCollectionFileToolStripMenuItem.Text = "Load Template Collection File";
             this.openTemplateCollectionFileToolStripMenuItem.Click += new System.EventHandler(this.openTemplateCollectionFileToolStripMenuItem_Click);
             // 
             // saveTemplateCollectionFileToolStripMenuItem
@@ -458,7 +458,7 @@
             this.labelTemplatePath.AutoSize = true;
             this.labelTemplatePath.Location = new System.Drawing.Point(6, 52);
             this.labelTemplatePath.Name = "labelTemplatePath";
-            this.labelTemplatePath.Size = new System.Drawing.Size(111, 13);
+            this.labelTemplatePath.Size = new System.Drawing.Size(94, 13);
             this.labelTemplatePath.TabIndex = 98;
             this.labelTemplatePath.Text = "Template directory";
             // 
@@ -698,7 +698,7 @@
             this.tabPageHome.Controls.Add(this.pictureBox2);
             this.tabPageHome.Location = new System.Drawing.Point(4, 22);
             this.tabPageHome.Name = "tabPageHome";
-            this.tabPageHome.Size = new System.Drawing.Size(1227, 715);
+            this.tabPageHome.Size = new System.Drawing.Size(1227, 504);
             this.tabPageHome.TabIndex = 12;
             this.tabPageHome.Text = "Home";
             this.tabPageHome.UseVisualStyleBackColor = true;

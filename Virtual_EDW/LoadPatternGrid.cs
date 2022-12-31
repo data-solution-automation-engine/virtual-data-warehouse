@@ -12,8 +12,15 @@ namespace Virtual_Data_Warehouse
         {
             #region Generic properties
 
+            // Disable resizing for performance, will be enabled after binding.
+            RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+            AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
             AutoGenerateColumns = false;
             ColumnHeadersVisible = true;
+
             EditMode = DataGridViewEditMode.EditOnEnter;
 
             Location = new Point(3, 191);
@@ -81,11 +88,11 @@ namespace Virtual_Data_Warehouse
                 Name = TemplateGridColumns.TemplateNotes.ToString(),
                 HeaderText = "Notes",
                 DataPropertyName = TemplateGridColumns.TemplateNotes.ToString()
+                //Width = 400
             };
             Columns.Add(TemplateNotes);
 
             #endregion
-
 
             #region Event Handlers
 
@@ -147,10 +154,10 @@ namespace Virtual_Data_Warehouse
                 //dataGridView.Columns[dataGridView.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
                 // Disable the auto size again (to enable manual resizing).
-                for (var i = 0; i < this.Columns.Count - 1; i++)
+                for (var i = 0; i < Columns.Count - 1; i++)
                 {
-                    this.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    this.Columns[i].Width = this.Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
+                    Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    Columns[i].Width = Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
                 }
             }
             catch

@@ -1318,12 +1318,6 @@
         "Entry"
         {
         "MsmKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
-        "OwnerKey" = "8:_E6DCDC7D499504C82FDEAD092A5F9772"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
         "OwnerKey" = "8:_7C7CC4425468465A8E774BFE2D253A37"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1337,6 +1331,12 @@
         {
         "MsmKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
         "OwnerKey" = "8:_166CE0850202A00C0452B48DF9E8752F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
+        "OwnerKey" = "8:_E6DCDC7D499504C82FDEAD092A5F9772"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1882,12 +1882,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7C7CC4425468465A8E774BFE2D253A37"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_5C4911463B299FE8CE8A85DED339A3EA"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2152,13 +2146,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0E622166C3E81D688557A2CEEBF515A9"
+        "OwnerKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E6F90EBE7E643A437E1160D445BB22FE"
+        "OwnerKey" = "8:_7C7CC4425468465A8E774BFE2D253A37"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_0E622166C3E81D688557A2CEEBF515A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2855,12 +2855,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_E6DCDC7D499504C82FDEAD092A5F9772"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -7761,11 +7755,6 @@
             "AssemblyAsmDisplayName" = "8:System.Security.Cryptography.ProtectedData, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E6F90EBE7E643A437E1160D445BB22FE"
-                    {
-                    "Name" = "8:System.Security.Cryptography.ProtectedData.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Security.Cryptography.ProtectedData.dll"
             "TargetName" = "8:"
@@ -8350,15 +8339,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Virtual Data Warehouse"
-        "ProductCode" = "8:{FE48DFAA-FB08-493A-A163-05234021433F}"
-        "PackageCode" = "8:{DA4DBE5B-786D-4CA1-9F72-A0194702E113}"
+        "ProductCode" = "8:{04E9B8CA-8DB7-4FA5-ABBD-756BD45BDBD0}"
+        "PackageCode" = "8:{274CC7A7-9C8A-4F95-A637-962135FA0262}"
         "UpgradeCode" = "8:{CAA37576-CF3A-4799-AF70-44CB58934E54}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.6.9"
+        "ProductVersion" = "8:1.6.10"
         "Manufacturer" = "8:RoelantVos"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.roelantvos.com/blog"
@@ -8366,7 +8355,7 @@
         "Subject" = "8:"
         "ARPCONTACT" = "8:Roelant Vos"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:Virtual Enterprise Data Warehouse"
+        "ARPCOMMENTS" = "8:Virtual Data Warehouse"
         "ARPURLINFOABOUT" = "8:http://www.roelantvos.com/blog"
         "ARPPRODUCTICON" = "8:_8E7FD6A35F0E43CD8A7D134E58D880F4"
         "ARPIconIndex" = "3:0"

@@ -31,7 +31,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.9";
+            const string versionNumberForApplication = "v1.6.10";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
@@ -102,7 +102,7 @@ namespace Virtual_Data_Warehouse
             var comboItem = comboBoxEnvironments.Items.Cast<KeyValuePair<string, TeamEnvironment>>().FirstOrDefault(item => item.Value.Equals(VdwConfigurationSettings.ActiveEnvironment));
             comboBoxEnvironments.SelectedItem = comboItem;
 
-            richTextBoxInformationMain.AppendText("Application initialised - welcome to the Virtual Data Warehouse! \r\n\r\n");
+            richTextBoxInformationMain.AppendText("Welcome to the Virtual Data Warehouse! \r\n\r\n");
 
             checkBoxGenerateInDatabase.Checked = false;
 
@@ -121,14 +121,15 @@ namespace Virtual_Data_Warehouse
                 SetTextMain("There are no templates found in the designated template directory. Please verify if there is a " + GlobalParameters.TemplateCollectionFileName + " in the " + VdwConfigurationSettings.TemplatePath + " directory, and if the file contains templates.");
             }
 
-            _templateGridView = new TemplateGridView(TeamConfigurationSettings);
-
             // Define and populate the data grid.
+            _templateGridView = new TemplateGridView(TeamConfigurationSettings);
             ((ISupportInitialize)(_templateGridView)).BeginInit();
+
             _templateGridView.DoubleBuffered(true);
             tabPageSettings.Controls.Add(_templateGridView);
-            ((ISupportInitialize)(_templateGridView)).EndInit();
 
+            ((ISupportInitialize)(_templateGridView)).EndInit();
+            
             PopulateTemplateCollectionDataGrid();
 
             _templateGridView.AutoLayout();
@@ -202,11 +203,29 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
-            //Make sure the changes are seen as committed, so that changes can be detected later on.
+            // Make sure the changes are seen as committed, so that changes can be detected later on.
             templateDataTable.AcceptChanges();
 
             _bindingSourceTemplateCollection.DataSource = templateDataTable;
             _templateGridView.DataSource = _bindingSourceTemplateCollection;
+
+            // Layout.
+            try
+            {
+                _templateGridView.Columns[(int)TemplateGridColumns.TemplateName].Width = 300;
+                _templateGridView.Columns[(int)TemplateGridColumns.TemplateType].Width = 200;
+                _templateGridView.Columns[(int)TemplateGridColumns.TemplateConnectionKey].Width = 75;
+                _templateGridView.Columns[(int)TemplateGridColumns.TemplateOutputFileConvention].Width = 200;
+                _templateGridView.Columns[(int)TemplateGridColumns.TemplateFilePath].Width = 150;
+
+                _templateGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+
+                _templateGridView.Columns[(int)TemplateGridColumns.TemplateNotes].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+            catch
+            {
+                // Do nothing.
+            }
         }
         
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -531,12 +550,11 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(GlobalParameters.VdwConfigurationPath + GlobalParameters.VdwConfigurationFileName);
-
+                Process.Start(GlobalParameters.CorePath + GlobalParameters.VdwConfigurationFileName);
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the VDW configuration file. The error message is: " + ex.Message;
+                richTextBoxInformationMain.Text = $"An error has occurred while attempting to open the VDW configuration file at {GlobalParameters.CorePath + GlobalParameters.VdwConfigurationFileName}. The error message is: " + ex.Message;
             }
         }
 
