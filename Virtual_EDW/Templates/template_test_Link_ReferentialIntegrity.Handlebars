@@ -48,7 +48,7 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+  'SELECT [{{surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
 FROM   [{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[{{../targetDataObject.name}}] [{{../targetDataObject.dataObjectConnection.extensions.1.value}}]
          WHERE  {{surrogateKey}}
             NOT IN 

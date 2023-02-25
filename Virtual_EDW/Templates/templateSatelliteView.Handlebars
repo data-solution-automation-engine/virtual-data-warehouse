@@ -54,7 +54,8 @@ SELECT
     ORDER BY {{#each businessKeys}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
           {{targetDataItem.name}},{{/each}}{{/each}}
           {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}{{../sourceDataItems.0.name}},{{/if}}{{/each}}{{/each}}
-          {{../metadataConfiguration.loadDateTimeAttribute}}
+          {{../metadataConfiguration.loadDateTimeAttribute}},
+          {{../metadataConfiguration.sourceRowIdAttribute}}
     ) AS ROW_NUMBER
 FROM
    (

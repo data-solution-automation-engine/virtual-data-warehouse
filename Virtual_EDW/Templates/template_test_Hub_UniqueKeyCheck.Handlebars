@@ -29,9 +29,9 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeys.0.surrogateKey}}] as HUB_SK, [OMD_INSERT_MODULE_INSTANCE_ID]
+  'SELECT [{{businessKeys.0.surrogateKey}}] as HUB_SK, [{{../metadataConfiguration.etlProcessAttribute}}]
     FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-    GROUP  BY [{{businessKeys.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+    GROUP  BY [{{businessKeys.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
     HAVING Count(*) > 1 '
 
 , 'N'

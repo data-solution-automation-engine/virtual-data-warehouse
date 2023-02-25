@@ -7,7 +7,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'PSA.SP_{{tar
 DROP PROCEDURE [PSA].[SP_{{targetDataObject.name}}]
 GO
 
-CREATE PROCEDURE [PSA].[SP_{{targetDataObject.name}}] @OMD_INSERT_MODULE_INSTANCE_ID int
+CREATE PROCEDURE [PSA].[SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} int
 AS
 INSERT INTO [PSA].[{{targetDataObject.name}}]
 (
@@ -15,32 +15,32 @@ INSERT INTO [PSA].[{{targetDataObject.name}}]
    {{#each dataItemMappings}}
    [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-   ,OMD_INSERT_MODULE_INSTANCE_ID
+   ,{{../metadataConfiguration.etlProcessAttribute}}
   ,OMD_FILE_LOCATION
-  ,OMD_EVENT_DATETIME
+  ,{{../metadataConfiguration.eventDateTimeAttribute}}
   ,OMD_EFFECTIVE_DATETIME
   ,OMD_HASH_DIFF
   ,OMD_CURRENT_RECORD_INDICATOR
   ,OMD_DELETED_RECORD_INDICATOR
   ,OMD_EXPIRY_DATETIME
-,OMD_RECORD_SOURCE_ID
-,OMD_SOURCE_ROW_ID
+,{{../metadataConfiguration.recordSourceAttribute}}
+,{{../metadataConfiguration.sourceRowIdAttribute}}
 )
 SELECT
      CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL([{{sourceDataItems.0.name}}],'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2),
     {{#each dataItemMappings}}
   [{{sourceDataItems.0.name}}] as [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-   ,@OMD_INSERT_MODULE_INSTANCE_ID
+   ,@{{../metadataConfiguration.etlProcessAttribute}}
   ,OMD_FILE_LOCATION
-  ,OMD_EVENT_DATETIME
-  ,OMD_INSERT_DATETIME
+  ,{{../metadataConfiguration.eventDateTimeAttribute}}
+  ,[{{../metadataConfiguration.loadDateTimeAttribute}}]
   ,OMD_HASH_DIFF
   ,OMD_CURRENT_RECORD_INDICATOR
   ,OMD_DELETED_RECORD_INDICATOR
   ,OMD_EXPIRY_DATETIME
-  ,OMD_RECORD_SOURCE_ID
- ,OMD_SOURCE_ROW_ID
+  ,{{../metadataConfiguration.recordSourceAttribute}}
+ ,{{../metadataConfiguration.sourceRowIdAttribute}}
 
 FROM [STG].[{{sourceDataObjects.0.name}}] ;
 SELECT @@ROWCOUNT AS ROWS_INSERTED

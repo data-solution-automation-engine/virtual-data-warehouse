@@ -6,7 +6,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'INT.SP_{{tar
 DROP PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}];
 GO
 
-CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}] @OMD_INSERT_MODULE_INSTANCE_ID int
+CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}] @{{../metadataConfiguration.etlProcessAttribute}} int
 AS
 
 --
@@ -16,17 +16,17 @@ AS
 INSERT INTO [INT].[{{targetDataObject.name}}]
 (
   [{{targetDataObject.name}}_SK],
-  OMD_INSERT_DATETIME,
-  OMD_INSERT_MODULE_INSTANCE_ID,
-  OMD_RECORD_SOURCE_ID,
+  [{{../metadataConfiguration.loadDateTimeAttribute}}],
+  {{../metadataConfiguration.etlProcessAttribute}},
+  {{../metadataConfiguration.recordSourceAttribute}},
   {{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
    [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/if}}{{/each}}
 )
           SELECT 
                CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) as  [{{targetDataObject.name}}_SK],
-   min(OMD_INSERT_DATETIME),
-  @OMD_INSERT_MODULE_INSTANCE_ID,
-  min(OMD_RECORD_SOURCE_ID),
+   min([{{../metadataConfiguration.loadDateTimeAttribute}}]),
+  @{{../metadataConfiguration.etlProcessAttribute}},
+  min({{../metadataConfiguration.recordSourceAttribute}}),
                {{#each businessKeys}}{{#each businessKeyComponentMapping}}
             ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA') AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/each}}
 

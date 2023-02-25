@@ -1,0 +1,343 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CDC_OPERATION",
+    "recordSourceAttribute": "RECORD_SOURCE",
+    "loadDateTimeAttribute": "LOAD_DATETIME",
+    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
+    "eventDateTimeAttribute": "EVENT_DATETIME",
+    "recordChecksumAttribute": "HASH_FULL_RECORD",
+    "etlProcessAttribute": "MODULE_INSTANCE_ID",
+    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": {
+      "name": "DIM_CUSTOMER_Virtual",
+      "dataObjectConnection": {
+        "dataConnectionString": "Presentation",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "VirtualDWH",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "Presentation"
+        }
+      ]
+    }
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "DIM_CUSTOMER_Virtual",
+      "mappingClassifications": [
+        {
+          "classification": "Presentation"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "HUB_CUSTOMER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "VirtualDWH",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "CoreBusinessConcept"
+            }
+          ]
+        }
+      ],
+      "targetDataObject": {
+        "name": "DIM_CUSTOMER",
+        "dataObjectConnection": {
+          "dataConnectionString": "Presentation",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "VirtualDWH",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "Presentation"
+          }
+        ]
+      },
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "CUSTOMER_ID"
+            }
+          ],
+          "targetDataItem": {
+            "name": "CUSTOMER_ID"
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CUSTOMER_SK",
+                  "isHardCodedValue": false
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_SK"
+              }
+            }
+          ],
+          "surrogateKey": "DIM_CUSTOMER_SK"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    },
+    {
+      "mappingName": "DIM_CUSTOMER_Virtual",
+      "mappingClassifications": [
+        {
+          "classification": "Presentation"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "SAT_CUSTOMER",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "VirtualDWH",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Context"
+            }
+          ]
+        }
+      ],
+      "targetDataObject": {
+        "name": "DIM_CUSTOMER_Virtual",
+        "dataObjectConnection": {
+          "dataConnectionString": "Presentation",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "VirtualDWH",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "Presentation"
+          }
+        ]
+      },
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "DATE_OF_BIRTH"
+            }
+          ],
+          "targetDataItem": {
+            "name": "DATE_OF_BIRTH"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "GIVEN_NAME"
+            }
+          ],
+          "targetDataItem": {
+            "name": "GIVEN_NAME"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "SUBURB"
+            }
+          ],
+          "targetDataItem": {
+            "name": "SUBURB"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "DELIVER_KEY"
+            }
+          ],
+          "targetDataItem": {
+            "name": "DELIVERY_KEY_SAT_CUSTOMER"
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CUSTOMER_SK",
+                  "isHardCodedValue": false
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_SK"
+              }
+            }
+          ],
+          "surrogateKey": "DIM_CUSTOMER_SK"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    },
+    {
+      "mappingName": "DIM_CUSTOMER_Virtual",
+      "mappingClassifications": [
+        {
+          "classification": "Presentation"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "VirtualDWH",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Context"
+            }
+          ]
+        }
+      ],
+      "targetDataObject": {
+        "name": "DIM_CUSTOMER_Virtual",
+        "dataObjectConnection": {
+          "dataConnectionString": "Presentation",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "VirtualDWH",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "Presentation"
+          }
+        ]
+      },
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "CONTACT_NUMBER"
+            }
+          ],
+          "targetDataItem": {
+            "name": "CONTACT_NUMBER"
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "DELIVER_KEY"
+            }
+          ],
+          "targetDataItem": {
+            "name": "DELIVERY_KEY_SAT_CUSTOMER_ADDITIONAL_DETAIL"
+          }
+        }        
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CUSTOMER_SK",
+                  "isHardCodedValue": false
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_SK"
+              }
+            }
+          ],
+          "surrogateKey": "DIM_CUSTOMER_SK"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    }
+  ]
+}

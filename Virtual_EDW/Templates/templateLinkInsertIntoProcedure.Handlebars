@@ -7,7 +7,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'INT.SP_{{tar
 DROP PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}];
 GO
 
-CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}] @OMD_INSERT_MODULE_INSTANCE_ID int
+CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}] @{{../metadataConfiguration.etlProcessAttribute}} int
 AS
 
 --
@@ -18,9 +18,9 @@ INSERT INTO [INT].[{{targetDataObject.name}}]
 (  {{#each businessKeys}} {{#if @first}} [{{surrogateKey}}], {{/if}}{{/each}}
    {{#each businessKeys}}{{#unless @first}} 
    [{{surrogateKey}}],{{/unless}} {{/each}}
-   OMD_INSERT_DATETIME,
-   OMD_RECORD_SOURCE_ID,
-   OMD_INSERT_MODULE_INSTANCE_ID
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
+   {{../metadataConfiguration.recordSourceAttribute}},
+   {{../metadataConfiguration.etlProcessAttribute}}
 )
 
 SELECT
@@ -34,16 +34,16 @@ SELECT
     {{/unless}}{{#if businessKeyClassification}}{{#each businessKeyComponentMapping}}[{{targetDataItem.name}}{{@../index }}]{{/each}} AS [{{surrogateKey}}],
     {{/if}} {{/unless}} {{/each}}{{#each dataItemMappings}}
     [{{targetDataItem.name}}],{{/each}}
-     OMD_INSERT_DATETIME,
-     OMD_RECORD_SOURCE_ID,
-  @OMD_INSERT_MODULE_INSTANCE_ID
+     [{{../metadataConfiguration.loadDateTimeAttribute}}],
+     {{../metadataConfiguration.recordSourceAttribute}},
+  @{{../metadataConfiguration.etlProcessAttribute}}
 FROM 
 (
     SELECT {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
            CAST({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}[{{/stringcompare}}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}]{{/stringcompare}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}{{@../index }}],{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}
                     [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}
-                    min(OMD_INSERT_DATETIME) AS OMD_INSERT_DATETIME,
-                    min(OMD_RECORD_SOURCE_ID) AS  OMD_RECORD_SOURCE_ID
+                    min([{{../metadataConfiguration.loadDateTimeAttribute}}]) AS [{{../metadataConfiguration.loadDateTimeAttribute}}],
+                    min({{../metadataConfiguration.recordSourceAttribute}}) AS  {{../metadataConfiguration.recordSourceAttribute}}
           FROM STG.[{{sourceDataObjects.0.name}}]
           GROUP BY   {{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}{{#unless @first}},{{/unless}} [{{sourceDataItems.0.name}}]{{/stringcompare}}{{/each}}{{/if}}{{/each}}
  ) LINK_selection

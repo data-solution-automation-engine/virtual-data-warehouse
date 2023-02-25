@@ -6,11 +6,14 @@ DECLARE @UT_ID int = 16;
 --
 -- HUB UT key trim check for {{targetDataObject.name}}
 --
+-- This unit test intends to check if a Hub key field contains leading or trailing spaces.
+-- This gives an indication on the data quality, but also on any errors in the code leading to extra blank characters being added to the data.
+--
 
 INSERT INTO OMD.UT_DETAIL (UT_ID, TARGET_TABLE, SOURCE_TABLE, TARGET_COLUMN, SOURCE_COLUMN, TARGET_SCHEMA, SOURCE_SCHEMA, REALM, UT_TEST_SQL, UT_DETAIL_SQL, INACTIVE_INDICATOR, NOTES)
 SELECT DISTINCT
 	@UT_ID,'{{targetDataObject.name}}','ALL',NULL, NULL, '{{targetDataObject.dataObjectConnection.extensions.1.value}}','{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}', 'DV',
-  
+
   'WITH recordcount
      AS (SELECT Count(*)		AS Record_Count
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
@@ -30,8 +33,8 @@ SELECT record_count,
        CURRENT_USER AS Test_Executor
 FROM   recordcount,
        testcount;  '
-, 
-  'SELECT [{{businessKeys.0.surrogateKey}}], [{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+,
+  'SELECT [{{businessKeys.0.surrogateKey}}], [{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}], [{{../metadataConfiguration.etlProcessAttribute}}]
 FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 WHERE  LEN([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]) != LEN(TRIM([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]))'
 
@@ -40,7 +43,7 @@ WHERE  LEN([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}
 
 FROM OMD.UT a
 LEFT JOIN OMD.UT_DETAIL exist ON exist.UT_ID = @UT_ID
-              and TARGET_TABLE = '{{targetDataObject.name}}' 
+              and TARGET_TABLE = '{{targetDataObject.name}}'
               and SOURCE_TABLE = 'ALL'
               and REALM = 'DV'
 WHERE exist.UT_DETAIL_ID is null
@@ -55,10 +58,10 @@ SELECT DISTINCT
       @LAST_UT_DETAIL_ID as UT_DETAIL_ID,
       m.MODULE_ID as MODULE_ID
 FROM OMD.UT ut
-INNER JOIN OMD.UT_DETAIL ud ON ud.TARGET_TABLE = '{{targetDataObject.name}}' 
+INNER JOIN OMD.UT_DETAIL ud ON ud.TARGET_TABLE = '{{targetDataObject.name}}'
                             and ud.UT_ID = @UT_ID
 INNER JOIN OMD.MODULE m ON m.MODULE_CODE = 'm_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}'
-LEFT JOIN OMD.UT_DETAIL_MODULE udm ON udm.MODULE_ID = m.MODULE_ID 
+LEFT JOIN OMD.UT_DETAIL_MODULE udm ON udm.MODULE_ID = m.MODULE_ID
 								  and udm.UT_DETAIL_ID = ud.UT_DETAIL_ID
 WHERE udm.UT_DETAIL_MODULE_ID IS NULL
 
