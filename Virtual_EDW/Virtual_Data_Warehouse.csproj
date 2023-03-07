@@ -296,10 +296,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="DataWarehouseAutomation">
-      <Version>1.2.3</Version>
+      <Version>1.2.4</Version>
     </PackageReference>
     <PackageReference Include="Handlebars.Net">
-      <Version>2.1.3</Version>
+      <Version>2.1.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient">
       <Version>5.1.0</Version>

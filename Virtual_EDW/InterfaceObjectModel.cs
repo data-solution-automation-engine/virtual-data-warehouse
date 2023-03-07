@@ -7,7 +7,7 @@ namespace Virtual_Data_Warehouse
     /// The parent object containing the list of source-to-target mappings. This is the highest level and contains the list of mappings (as individual objects
     /// but also the parameters inherited from TEAM and VDW.
     /// </summary>
-    class VDW_DataObjectMappingList : DataObjectMappings
+    class VDW_DataObjectMappingList : DataObjectMappingList
     {
         // Generic interface definitions
         //public List<DataObjectMapping> dataObjectMapping { get; set; }
