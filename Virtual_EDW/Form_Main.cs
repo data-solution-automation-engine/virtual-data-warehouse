@@ -631,7 +631,7 @@ namespace Virtual_Data_Warehouse
                                 // Validate the file contents against the schema definition.
                                 if (File.Exists(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName))
                                 {
-                                    var result = DataWarehouseAutomation.JsonHandling.ValidateJsonFileAgainstSchema(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName, fileName);
+                                    var result = JsonHandling.ValidateJsonFileAgainstSchema(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName, fileName);
 
                                     foreach (var error in result.Errors)
                                     {
