@@ -16,7 +16,6 @@ SELECT
    {{/each}}
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.recordSourceAttribute}}],
    [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
@@ -28,7 +27,6 @@ FROM
   SELECT
      STG.[{{../metadataConfiguration.loadDateTimeAttribute}}],
      STG.[{{../metadataConfiguration.eventDateTimeAttribute}}],
-     STG.[{{../metadataConfiguration.recordSourceAttribute}}],
      STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
      STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
      STG.[{{../metadataConfiguration.recordChecksumAttribute}}],

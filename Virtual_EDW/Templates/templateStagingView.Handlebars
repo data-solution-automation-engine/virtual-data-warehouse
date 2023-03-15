@@ -62,7 +62,6 @@ SELECT
          AND PSA_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
          AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change' ELSE 'No Change' 
    END AS {{../metadataConfiguration.changeDataCaptureAttribute}},
-   'PROFILER' AS {{../metadataConfiguration.recordSourceAttribute}},
    ROW_NUMBER() OVER
       (ORDER BY
          {{#each businessKeys}}{{#each businessKeyComponentMapping}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}

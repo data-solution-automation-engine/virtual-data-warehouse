@@ -10,7 +10,6 @@ INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{ta
 (
    [{{../metadataConfiguration.etlProcessAttribute}}], 
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.recordSourceAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
    {{#each dataItemMappings}}
@@ -20,7 +19,6 @@ INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{ta
 SELECT
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}], 
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.recordSourceAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}],
    {{#each dataItemMappings}}
