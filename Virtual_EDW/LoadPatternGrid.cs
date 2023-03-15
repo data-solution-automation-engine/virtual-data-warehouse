@@ -23,8 +23,8 @@ namespace Virtual_Data_Warehouse
 
             EditMode = DataGridViewEditMode.EditOnEnter;
 
-            Location = new Point(3, 191);
-            Size = new Size(1215, 325);
+            Location = new Point(4, 215);
+            Size = new Size(1417, 360);
             BackgroundColor = SystemColors.AppWorkspace;
             GridColor = SystemColors.ControlDark;
 

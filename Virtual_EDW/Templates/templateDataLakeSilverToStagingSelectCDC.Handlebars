@@ -2,6 +2,6 @@
 update omd.PARAMETER set PARAMETER_VALUE_CODE='SELECT  {{#each dataItemMappings}}
   target.{{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
    {{/each}}
-,target.OMD_RECORD_SOURCE_ID,target.OMD_INSERT_MODULE_INSTANCE_ID,target.OMD_FILE_LOCATION,target.OMD_EVENT_DATETIME,target.OMD_INSERT_DATETIME,target.OMD_HASH_DIFF,target.OMD_CURRENT_RECORD_INDICATOR,target.OMD_DELETED_RECORD_INDICATOR,target.OMD_EXPIRY_DATETIME,target.OMD_SOURCE_ROW_ID FROM VW_{{sourceDataObjects.0.name}}  AS target
-where target.OMD_INSERT_MODULE_INSTANCE_ID > ' where parameter_key_code='SILVER_TO_STAGING_SELECT_{{targetDataObject.name}}';
+,target.{{../metadataConfiguration.recordSourceAttribute}},target.{{../metadataConfiguration.etlProcessAttribute}},target.OMD_FILE_LOCATION,target.{{../metadataConfiguration.eventDateTimeAttribute}},target.[{{../metadataConfiguration.loadDateTimeAttribute}}],target.OMD_HASH_DIFF,target.OMD_CURRENT_RECORD_INDICATOR,target.OMD_DELETED_RECORD_INDICATOR,target.OMD_EXPIRY_DATETIME,target.{{../metadataConfiguration.sourceRowIdAttribute}} FROM VW_{{sourceDataObjects.0.name}}  AS target
+where target.{{../metadataConfiguration.etlProcessAttribute}} > ' where parameter_key_code='SILVER_TO_STAGING_SELECT_{{targetDataObject.name}}';
 {{/each}}

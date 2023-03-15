@@ -5,24 +5,24 @@ update omd.PARAMETER set PARAMETER_VALUE_CODE='INSERT INTO DL_{{targetDataObject
 {{#each dataItemMappings}}
   {{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
    {{/each}}
-,OMD_INSERT_MODULE_INSTANCE_ID
+,{{../metadataConfiguration.etlProcessAttribute}}
 ,OMD_FILE_LOCATION
-,OMD_EVENT_DATETIME
-,OMD_INSERT_DATETIME
+,{{../metadataConfiguration.eventDateTimeAttribute}}
+,[{{../metadataConfiguration.loadDateTimeAttribute}}]
 ,OMD_HASH_DIFF
-,OMD_RECORD_SOURCE_ID
+,{{../metadataConfiguration.recordSourceAttribute}}
 
 )
 
 SELECT  {{#each dataItemMappings}}
   vw.{{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
    {{/each}}
-,vw.OMD_INSERT_MODULE_INSTANCE_ID
+,vw.{{../metadataConfiguration.etlProcessAttribute}}
 ,vw.OMD_FILE_LOCATION
-,vw.OMD_EVENT_DATETIME
-,vw.OMD_INSERT_DATETIME
+,vw.{{../metadataConfiguration.eventDateTimeAttribute}}
+,vw.[{{../metadataConfiguration.loadDateTimeAttribute}}]
 ,vw.OMD_HASH_DIFF
-,vw.OMD_RECORD_SOURCE_ID
+,vw.{{../metadataConfiguration.recordSourceAttribute}}
 FROM VW_DL_{{targetDataObject.name}}  AS vw' where parameter_key_code='LANDING_TO_STAGING_SELECT_{{targetDataObject.name}}';
 
 {{/each}}

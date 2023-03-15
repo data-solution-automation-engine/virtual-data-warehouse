@@ -32,7 +32,7 @@ WHEN NOT MATCHED THEN  INSERT
  {{#each dataItemMappings}}
    {{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
    {{/each}}
-,OMD_RECORD_SOURCE_ID,OMD_INSERT_MODULE_INSTANCE_ID,OMD_FILE_LOCATION,OMD_EVENT_DATETIME,OMD_INSERT_DATETIME,OMD_HASH_DIFF,OMD_UPDATE_MODULE_INSTANCE_ID,OMD_CURRENT_RECORD_INDICATOR,OMD_DELETED_RECORD_INDICATOR,OMD_EXPIRY_DATETIME)  
+,{{../metadataConfiguration.recordSourceAttribute}},{{../metadataConfiguration.etlProcessAttribute}},OMD_FILE_LOCATION,{{../metadataConfiguration.eventDateTimeAttribute}},[{{../metadataConfiguration.loadDateTimeAttribute}}],OMD_HASH_DIFF,OMD_UPDATE_MODULE_INSTANCE_ID,OMD_CURRENT_RECORD_INDICATOR,OMD_DELETED_RECORD_INDICATOR,OMD_EXPIRY_DATETIME)  
 
 VALUES
 
@@ -40,5 +40,5 @@ VALUES
  {{#each dataItemMappings}}
   staged_updates.{{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
    {{/each}}
-,staged_updates.OMD_RECORD_SOURCE_ID,staged_updates.OMD_INSERT_MODULE_INSTANCE_ID,staged_updates.OMD_FILE_LOCATION,staged_updates.OMD_EVENT_DATETIME,staged_updates.OMD_INSERT_DATETIME,staged_updates.OMD_HASH_DIFF,''NULL'',''Y'',''N'',''9999-12-31'');' where parameter_key_code='DL_SILVER_INSERT_{{sourceDataObjects.0.name}}';
+,staged_updates.{{../metadataConfiguration.recordSourceAttribute}},staged_updates.{{../metadataConfiguration.etlProcessAttribute}},staged_updates.OMD_FILE_LOCATION,staged_updates.{{../metadataConfiguration.eventDateTimeAttribute}},staged_updates.[{{../metadataConfiguration.loadDateTimeAttribute}}],staged_updates.OMD_HASH_DIFF,''NULL'',''Y'',''N'',''9999-12-31'');' where parameter_key_code='DL_SILVER_INSERT_{{sourceDataObjects.0.name}}';
 {{/each}}

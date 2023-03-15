@@ -35,9 +35,9 @@ FROM   recordcount
                     ON 1 = 1; '
 , 
   
-  'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+  'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
   FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{mappingName}}] {{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}
-  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
             , OMD_HASH_DIFF
   HAVING Count(*) > 1'
 

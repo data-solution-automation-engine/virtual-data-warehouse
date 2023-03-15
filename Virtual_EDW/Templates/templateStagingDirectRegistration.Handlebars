@@ -724,7 +724,7 @@ BEGIN
 	 and p.PARAMETER_ID is null
 
 	INSERT INTO [omd].PARAMETER ( [PARAMETER_DESCRIPTION], [PARAMETER_KEY_CODE], [PARAMETER_VALUE_CODE], [PARAMETER_AREA_CODE], [INACTIVE_INDICATOR])
-	SELECT  DISTINCT  N'OMD Record Source ID', N'OMD_RECORD_SOURCE_'+UPPER(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'', N'1', N'OMD_RECORD_SOURCE_ID', N'N'
+	SELECT  DISTINCT  N'OMD Record Source ID', N'OMD_RECORD_SOURCE_'+UPPER(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'', N'1', N'{{../metadataConfiguration.recordSourceAttribute}}', N'N'
 		   from OMD.DM_MODEL dm
 		   	 left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='OMD_RECORD_SOURCE_'+UPPER(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+''
 	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}

@@ -31,7 +31,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.10";
+            const string versionNumberForApplication = "v1.6.11";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
@@ -129,7 +129,7 @@ namespace Virtual_Data_Warehouse
             tabPageSettings.Controls.Add(_templateGridView);
 
             ((ISupportInitialize)(_templateGridView)).EndInit();
-            
+
             PopulateTemplateCollectionDataGrid();
 
             _templateGridView.AutoLayout();
@@ -185,7 +185,7 @@ namespace Virtual_Data_Warehouse
 
                 if (!localConnectionKeyList.Contains(comboBoxValueConnectionKey))
                 {
-                    if (!userFeedbackList.Contains(comboBoxValueConnectionKey) && comboBoxValueConnectionKey!="")
+                    if (!userFeedbackList.Contains(comboBoxValueConnectionKey) && comboBoxValueConnectionKey != "")
                     {
                         userFeedbackList.Add(comboBoxValueConnectionKey);
                     }
@@ -227,7 +227,7 @@ namespace Virtual_Data_Warehouse
                 // Do nothing.
             }
         }
-        
+
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         public void RunFileWatcher()
         {
@@ -260,7 +260,7 @@ namespace Virtual_Data_Warehouse
         {
             if (e.GetException().GetType() == typeof(InternalBufferOverflowException))
             {
-                InformUser("File System Watcher internal buffer overflow.",EventTypes.Error);
+                InformUser("File System Watcher internal buffer overflow.", EventTypes.Error);
             }
             else
             {
@@ -272,7 +272,7 @@ namespace Virtual_Data_Warehouse
         private void FileWatcherOnChanged(object source, FileSystemEventArgs e)
         {
             // Make sure the damn thing only fires once.
-            var localFileSystemWatcher = (FileSystemWatcher) source;
+            var localFileSystemWatcher = (FileSystemWatcher)source;
             try
             {
 
@@ -295,11 +295,12 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(VdwConfigurationSettings.VdwOutputPath);
+                var psi = new ProcessStartInfo() { FileName = VdwConfigurationSettings.VdwOutputPath, UseShellExecute = true };
+                Process.Start(psi);
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the output directory. The error message is: " + ex.Message;
+                richTextBoxInformationMain.Text = $@"An error has occurred while attempting to open the directory. The error message is: {ex.Message}.";
             }
         }
 
@@ -310,10 +311,10 @@ namespace Virtual_Data_Warehouse
 
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Process.Start(ExtensionMethod.GetDefaultBrowserPath(),"http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
+            Process.Start(ExtensionMethod.GetDefaultBrowserPath(), "http://roelantvos.com/blog/articles-and-white-papers/virtualisation-software/");
         }
-        
- 
+
+
         #region Multi-threading delegates
 
         /// <summary>
@@ -452,7 +453,7 @@ namespace Virtual_Data_Warehouse
                 textBoxTemplatePath.Text += @"\";
             }
 
-            new KeyValuePair< string, TeamEnvironment > ("", null);
+            new KeyValuePair<string, TeamEnvironment>("", null);
 
             if (comboBoxEnvironments.SelectedItem != null)
             {
@@ -500,7 +501,7 @@ namespace Virtual_Data_Warehouse
             // Recreate the in-memory templates (to make sure MetadataGeneration object details are also added).
             CreateCustomTabPages();
 
-            richTextBoxInformationMain.Text = DateTime.Now+" - the global parameter file (" + GlobalParameters.VdwConfigurationFileName + ") has been updated in: " + GlobalParameters.CorePath+"\r\n\r\n";
+            richTextBoxInformationMain.Text = DateTime.Now + " - the global parameter file (" + GlobalParameters.VdwConfigurationFileName + ") has been updated in: " + GlobalParameters.CorePath + "\r\n\r\n";
         }
 
         private void openTEAMConfigurationSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -525,7 +526,7 @@ namespace Virtual_Data_Warehouse
 
         private DialogResult STAShowDialog(FileDialog dialog)
         {
-            var state = new DialogState {FileDialog = dialog};
+            var state = new DialogState { FileDialog = dialog };
             var t = new Thread(state.ThreadProcShowDialog);
             t.SetApartmentState(ApartmentState.STA);
 
@@ -573,7 +574,7 @@ namespace Virtual_Data_Warehouse
         {
             internal string classification { get; set; }
             internal string notes { get; set; }
-            internal Dictionary<string,VDW_DataObjectMappingList> itemList { get; set; }
+            internal Dictionary<string, VDW_DataObjectMappingList> itemList { get; set; }
         }
 
 
@@ -601,12 +602,12 @@ namespace Virtual_Data_Warehouse
                 // Hard-coded exclusions
                 string[] excludedFiles =
                 {
-                    "interfaceBusinessKeyComponent.json", 
+                    "interfaceBusinessKeyComponent.json",
                     "interfaceBusinessKeyComponentPart.json",
-                    "interfaceDrivingKey.json", 
-                    "interfaceHubLinkXref.json", 
+                    "interfaceDrivingKey.json",
+                    "interfaceHubLinkXref.json",
                     "interfacePhysicalModel.json",
-                    "interfaceSourceHubXref.json", 
+                    "interfaceSourceHubXref.json",
                     "interfaceSourceLinkAttributeXref.json",
                     "Development_TEAM_Model_Metadata.json",
                     "Development_TEAM_Attribute_Mapping.json",
@@ -620,9 +621,9 @@ namespace Virtual_Data_Warehouse
                 {
                     foreach (var fileName in fileEntries)
                     {
-                        if (!Array.Exists(excludedFiles, x => x == Path.GetFileName(fileName)) && 
-                            !fileName.EndsWith("TEAM_Table_Mapping.json") && 
-                            !fileName.EndsWith("TEAM_Attribute_Mapping.json") && 
+                        if (!Array.Exists(excludedFiles, x => x == Path.GetFileName(fileName)) &&
+                            !fileName.EndsWith("TEAM_Table_Mapping.json") &&
+                            !fileName.EndsWith("TEAM_Attribute_Mapping.json") &&
                             !fileName.EndsWith("TEAM_Model_Metadata.json"))
                         {
                             try
@@ -630,7 +631,7 @@ namespace Virtual_Data_Warehouse
                                 // Validate the file contents against the schema definition.
                                 if (File.Exists(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName))
                                 {
-                                    var result = DataWarehouseAutomation.JsonHandling.ValidateJsonFileAgainstSchema(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName, fileName);
+                                    var result = JsonHandling.ValidateJsonFileAgainstSchema(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName, fileName);
 
                                     foreach (var error in result.Errors)
                                     {
@@ -693,27 +694,27 @@ namespace Virtual_Data_Warehouse
             {
                 foreach (VDW_DataObjectMappingList dataObjectMappings in mappingList)
                 {
-                    if (dataObjectMappings.dataObjectMappings != null)
+                    if (dataObjectMappings.DataObjectMappings != null)
                     {
-                        foreach (DataObjectMapping dataObjectMapping in dataObjectMappings.dataObjectMappings)
+                        foreach (DataObjectMapping dataObjectMapping in dataObjectMappings.DataObjectMappings)
                         {
-                            if (dataObjectMapping.mappingName == null)
+                            if (dataObjectMapping.MappingName == null)
                             {
-                                dataObjectMapping.mappingName = dataObjectMapping.targetDataObject.name;
+                                dataObjectMapping.MappingName = dataObjectMapping.TargetDataObject.Name;
                                 InformUser(
-                                    $"The Data Object Mapping for target {dataObjectMapping.targetDataObject.name} does not have a mapping name, so the target name is used.",
+                                    $"The Data Object Mapping for target {dataObjectMapping.TargetDataObject.Name} does not have a mapping name, so the target name is used.",
                                     EventTypes.Warning);
                             }
                             // Check if there are classifications, as these are used to create the tabs.
-                            if (dataObjectMapping.mappingClassifications != null)
+                            if (dataObjectMapping.MappingClassifications != null)
                             {
-                                foreach (Classification classification in dataObjectMapping.mappingClassifications)
+                                foreach (DataClassification classification in dataObjectMapping.MappingClassifications)
                                 {
                                     if (!objectDictionary.ContainsKey(dataObjectMappings))
                                     {
                                         objectDictionary.Add(dataObjectMappings,
-                                            new Tuple<string, string, string>(classification.classification,
-                                                dataObjectMapping.mappingName, classification.notes));
+                                            new Tuple<string, string, string>(classification.Classification,
+                                                dataObjectMapping.MappingName, classification.Notes));
                                     }
                                 }
                             }
@@ -723,11 +724,11 @@ namespace Virtual_Data_Warehouse
                                 {
                                     objectDictionary.Add(dataObjectMappings,
                                         new Tuple<string, string, string>("Miscellaneous",
-                                            dataObjectMapping.mappingName, ""));
+                                            dataObjectMapping.MappingName, ""));
                                 }
 
                                 InformUser(
-                                    $"The Data Object Mapping {dataObjectMapping.mappingName} does not have a classification, and therefore will be placed under 'Miscellaneous'",
+                                    $"The Data Object Mapping {dataObjectMapping.MappingName} does not have a classification, and therefore will be placed under 'Miscellaneous'",
                                     EventTypes.Warning);
                             }
                         }
@@ -1034,7 +1035,7 @@ namespace Virtual_Data_Warehouse
 
                 textBoxOutputPath.Text = finalPath;
 
-                richTextBoxInformationMain.Text = "The code generation output will be saved at "+finalPath+".'";  
+                richTextBoxInformationMain.Text = "The code generation output will be saved at " + finalPath + ".'";
 
             }
         }
@@ -1043,11 +1044,12 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(VdwConfigurationSettings.TeamConfigurationPath);
+                var psi = new ProcessStartInfo() { FileName = VdwConfigurationSettings.TeamConfigurationPath, UseShellExecute = true };
+                Process.Start(psi);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the configuration directory. The error message is: " + exception.Message;
+                richTextBoxInformationMain.Text = $@"An error has occurred while attempting to open the directory. The error message is: {ex.Message}.";
             }
         }
 
@@ -1055,11 +1057,12 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(textBoxMetadataPath.Text);
+                var psi = new ProcessStartInfo() { FileName = VdwConfigurationSettings.VdwMetadatPath, UseShellExecute = true };
+                Process.Start(psi);
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the input directory. The error message is: " + ex;
+                richTextBoxInformationMain.Text = $@"An error has occurred while attempting to open the directory. The error message is: {ex.Message}.";
             }
         }
 
@@ -1122,7 +1125,7 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-         private void openTemplateCollectionFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openTemplateCollectionFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var theDialog = new OpenFileDialog
             {
@@ -1225,11 +1228,12 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(VdwConfigurationSettings.TemplatePath);
+                var psi = new ProcessStartInfo() { FileName = VdwConfigurationSettings.TemplatePath, UseShellExecute = true };
+                Process.Start(psi);
             }
             catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the template directory. The error message is: " + ex;
+                richTextBoxInformationMain.Text = $@"An error has occurred while attempting to open the directory. The error message is: {ex.Message}.";
             }
         }
 
@@ -1576,11 +1580,12 @@ namespace Virtual_Data_Warehouse
         {
             try
             {
-                Process.Start(GlobalParameters.CorePath);
+                var psi = new ProcessStartInfo() { FileName = GlobalParameters.CorePath, UseShellExecute = true };
+                Process.Start(psi);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                richTextBoxInformationMain.Text = "An error has occurred while attempting to open the core directory. The error message is: " + exception.Message;
+                richTextBoxInformationMain.Text = $@"An error has occurred while attempting to open the directory. The error message is: {ex.Message}.";
             }
         }
     }

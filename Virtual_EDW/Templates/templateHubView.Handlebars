@@ -8,7 +8,14 @@ DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadat
 GO
 
 CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] AS
-SELECT hub.*
+SELECT {{#each dataObjectMappings}}{{#if @first}}{{#each businessKeys}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
+    {{surrogateKey}},{{/if}}{{/each}}
+    {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    {{../metadataConfiguration.loadDateTimeAttribute}},
+    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKeys}} {{!-- The Hub business key --}}
+    {{#each businessKeyComponentMapping}}
+    {{targetDataItem.name}},{{/each}}{{/each}}
+    ROW_NUMBER() OVER ( ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}) AS DELIVERY_KEY{{/if}}{{/each}}
 FROM (
 {{#each dataObjectMappings}}{{#if @first}}
 SELECT
@@ -57,4 +64,4 @@ SELECT
   '1900-01-01',
   'Data Warehouse',{{#each dataObjectMappings}}{{#if @first}}{{#each businessKeys}}{{#each businessKeyComponentMapping}}
   'Unknown',{{/each}}{{/each}}{{/if}}{{/each}}
-  1 AS ROW_NR
+  0 AS DELIVERY_KEY

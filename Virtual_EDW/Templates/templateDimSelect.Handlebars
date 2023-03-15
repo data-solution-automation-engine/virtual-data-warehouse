@@ -15,9 +15,9 @@ FROM
   FROM
   (
      SELECT
-            *,{{#each dataObjectMappings}}{{#each dataItemMappings}}
+            *, HASHBYTES('MD5',{{#each dataObjectMappings}}{{#each dataItemMappings}}
             ISNULL(RTRIM(CONVERT(VARCHAR(100),[{{targetDataItem.name}}])),'NA')+'|'+{{/each}}{{/each}}'|'
-         AS ATTRIBUTE_CHECKSUM
+         ) AS ATTRIBUTE_CHECKSUM
     FROM
     (
       SELECT{{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}{{else}}

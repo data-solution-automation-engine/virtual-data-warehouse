@@ -42,7 +42,7 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT {{#each businessKeys}}{{#each businessKeyComponentMapping}} {{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}, {{/each}} {{/each}} [OMD_INSERT_MODULE_INSTANCE_ID]
+  'SELECT {{#each businessKeys}}{{#each businessKeyComponentMapping}} {{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}, {{/each}} {{/each}} [{{../metadataConfiguration.etlProcessAttribute}}]
 FROM   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}]
          WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/each}} )),2) 
             NOT IN 
