@@ -1,7 +1,8 @@
 {{#each dataObjectMappings}}
 --
 -- Staging Area Insert Into statement for {{targetDataObject.name}}
--- Generated at {{now}}
+--
+-- This template inserts the data delta that has been detected into the landing area table.
 --
 
 TRUNCATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
@@ -25,4 +26,5 @@ SELECT
    [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
 FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
+
 {{/each}}

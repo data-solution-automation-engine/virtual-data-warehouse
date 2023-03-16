@@ -1,7 +1,6 @@
 {{#each dataObjectMappings}}{{#if @first}}
 --
 -- Link Insert Into statement for {{targetDataObject.name}}
--- Generated at {{now}}
 --
 
 INSERT INTO [{{targetDataObject.name}}]
@@ -22,4 +21,6 @@ FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../met
 LEFT OUTER JOIN [{{targetDataObject.name}}] link_table
    ON link_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = link_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
 WHERE link_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
-{{/if}}{{/each}}
+{{/if}}
+
+{{/each}}

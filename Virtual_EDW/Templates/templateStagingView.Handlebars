@@ -1,7 +1,9 @@
 {{#each dataObjectMappings}}
 --
 -- Staging Area View definition for {{targetDataObject.name}}
--- Generated at {{now}}
+--
+-- This template implements a Full Outer Join data delta detection mechanism, by comparing the incoming data with the data available in the PSA.
+-- The resulting view only shows the data delta at the point of execution, but does not insert this into the landing area or PSA yet (that is for another template to do).
 --
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
@@ -56,11 +58,11 @@ SELECT
      ELSE STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
    END AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
    CASE 
-      WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'Delete' 
-      WHEN PSA_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'Insert' 
+      WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'D' 
+      WHEN PSA_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'C' --Inserts are also C
       WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
          AND PSA_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
-         AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change' ELSE 'No Change' 
+         AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'C' ELSE 'No Change' 
    END AS {{../metadataConfiguration.changeDataCaptureAttribute}},
    ROW_NUMBER() OVER
       (ORDER BY
@@ -73,10 +75,11 @@ FULL OUTER JOIN PSA_CTE ON {{#each businessKeys}}  {{#each businessKeyComponentM
 WHERE
 (
    CASE
-      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'Delete'{{/if}}{{/each}}{{/each}}
-      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'Insert'{{/if}}{{/each}}{{/each}}
-      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NOT NULL AND PSA_CTE.{{sourceDataItems.0.name}} IS NOT NULL AND STG_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] != PSA_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] THEN 'Change'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'D'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'C'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NOT NULL AND PSA_CTE.{{sourceDataItems.0.name}} IS NOT NULL AND STG_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] != PSA_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] THEN 'C'{{/if}}{{/each}}{{/each}}
       ELSE 'No Change'
    END
 ) != 'No Change'
+
 {{/each}}

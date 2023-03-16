@@ -16,24 +16,24 @@ INSERT INTO {{sourceDataObjects.0.name}} (
   {{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
    {{/each}}
 ,
-{{../metadataConfiguration.recordSourceAttribute}},
+OMD_RECORD_SOURCE_ID,
 OMD_FILE_LOCATION,
-{{../metadataConfiguration.eventDateTimeAttribute}},
+OMD_EVENT_DATETIME,
 OMD_HASH_DIFF,
 OMD_CURRENT_RECORD_INDICATOR,
 OMD_DELETED_RECORD_INDICATOR,
 OMD_EXPIRY_DATETIME,
 OMD_UPDATE_MODULE_INSTANCE_ID,
-[{{../metadataConfiguration.loadDateTimeAttribute}}],
-{{../metadataConfiguration.etlProcessAttribute}}
+OMD_INSERT_DATETIME,
+OMD_INSERT_MODULE_INSTANCE_ID
 )
 
 SELECT  {{#each dataItemMappings}}
   delete_insert.{{sourceDataItems.0.name}}{{#unless @last}},{{/unless}}
    {{/each}}
-,delete_insert.{{../metadataConfiguration.recordSourceAttribute}},
+,delete_insert.OMD_RECORD_SOURCE_ID,
 delete_insert.OMD_FILE_LOCATION,
-CURRENT_TIMESTAMP() AS {{../metadataConfiguration.eventDateTimeAttribute}},
+CURRENT_TIMESTAMP() AS OMD_EVENT_DATETIME,
 delete_insert.OMD_HASH_DIFF,
 ''Y'',
 ''Y'',

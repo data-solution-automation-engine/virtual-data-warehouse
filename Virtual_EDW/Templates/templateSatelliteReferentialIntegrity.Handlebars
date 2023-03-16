@@ -1,7 +1,6 @@
 {{#each dataObjectMappings}}{{#if @first}}
 --
 -- Satellite Insert Referential Integrity check for {{targetDataObject.name}}
--- Generated at {{now}}
 --
 
 SELECT
@@ -14,4 +13,6 @@ WHERE NOT EXISTS
   WHERE 1=1
      {{#each businessKeys}}AND sat.{{surrogateKey}} = hub.{{surrogateKey}}{{/each}}
 )
-{{/if}}{{/each}}
+{{/if}}
+
+{{/each}}

@@ -33,7 +33,7 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeys.0.surrogateKey}}], [{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}], [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{businessKeys.0.surrogateKey}}], [{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}], [OMD_INSERT_MODULE_INSTANCE_ID]
 FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER( TRIM(ISNULL(NULL,''NA''))  )),2) = [{{businessKeys.0.surrogateKey}}]'
 

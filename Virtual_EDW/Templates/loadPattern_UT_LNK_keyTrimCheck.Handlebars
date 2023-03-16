@@ -1,0 +1,65 @@
+DECLARE @LAST_UT_DETAIL_ID nvarchar(1000);
+DECLARE @UT_ID int = 20;
+
+{{#each dataObjectMappings}}
+
+--
+-- LNK UT key trim check for {{targetDataObject.name}} - {{sourceDataObjects.0.name}} pair
+--
+
+INSERT INTO OMD.UT_DETAIL (UT_ID, TARGET_TABLE, SOURCE_TABLE, TARGET_COLUMN, SOURCE_COLUMN, TARGET_SCHEMA, SOURCE_SCHEMA, REALM, UT_TEST_SQL, UT_DETAIL_SQL, INACTIVE_INDICATOR, NOTES)
+SELECT DISTINCT
+	@UT_ID,'{{targetDataObject.name}}','{{sourceDataObjects.0.name}}',NULL, NULL, '{{targetDataObject.dataObjectConnection.extensions.1.value}}','{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}', 'DV',
+  
+  'WITH recordcount
+     AS (SELECT Count(*)		AS Record_Count
+         FROM   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+         ),
+     testcount
+     AS (SELECT Count(*)		AS test_count
+         FROM   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+         WHERE  LEN(UPPER({{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )) != LEN(TRIM(UPPER({{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )))
+         )
+SELECT record_count,
+       test_count,
+       CASE
+         WHEN test_count = 0 THEN ''Pass''
+         ELSE ''Fail''
+       END          AS Status,
+       Getdate()    AS Test_Execution_DateTime,
+       CURRENT_USER AS Test_Executor
+FROM   recordcount,
+       testcount;  '
+, 
+  'SELECT {{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}[{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}]{{/stringcompare }}, {{/each}}{{/if}}{{/each}}[OMD_INSERT_MODULE_INSTANCE_ID]
+FROM   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+         WHERE  LEN(UPPER({{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )) != LEN(TRIM(UPPER({{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )))
+         '
+
+, 'N'
+, NULL
+
+FROM OMD.UT a
+LEFT JOIN OMD.UT_DETAIL exist ON exist.UT_ID = @UT_ID
+              and TARGET_TABLE = '{{targetDataObject.name}}' 
+              and SOURCE_TABLE = '{{sourceDataObjects.0.name}}'
+              and REALM = 'DV'
+WHERE exist.UT_DETAIL_ID is null
+
+SELECT @LAST_UT_DETAIL_ID = CONVERT(nvarchar(1000), last_value) from sys.identity_columns
+where [name] = 'UT_DETAIL_ID'
+
+
+INSERT INTO OMD.UT_DETAIL_MODULE (UT_DETAIL_ID, MODULE_ID)
+SELECT DISTINCT
+      @LAST_UT_DETAIL_ID as UT_DETAIL_ID,
+      m.MODULE_ID as MODULE_ID
+FROM OMD.UT ut
+INNER JOIN OMD.UT_DETAIL ud ON ud.TARGET_TABLE = '{{targetDataObject.name}}' 
+                            and ud.UT_ID = @UT_ID
+INNER JOIN OMD.MODULE m ON m.MODULE_CODE = 'm_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}'
+LEFT JOIN OMD.UT_DETAIL_MODULE udm ON udm.MODULE_ID = m.MODULE_ID 
+								  and udm.UT_DETAIL_ID = ud.UT_DETAIL_ID
+WHERE udm.UT_DETAIL_MODULE_ID IS NULL
+
+{{/each}}

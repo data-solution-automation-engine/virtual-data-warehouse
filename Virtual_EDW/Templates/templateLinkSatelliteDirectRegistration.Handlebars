@@ -1,12 +1,12 @@
-   DECLARE @SOURCE_TABLE VARCHAR(1000);
-   DECLARE @TARGET_TABLE VARCHAR(1000);
-   DECLARE @SYSTEM_GROUP VARCHAR(100);
+DECLARE @SOURCE_TABLE VARCHAR(1000);
+DECLARE @TARGET_TABLE VARCHAR(1000);
+DECLARE @SYSTEM_GROUP VARCHAR(100);
 
 {{#each dataObjectMappings}}
 SET @SOURCE_TABLE = '{{sourceDataObjects.0.name}}';
 SET @TARGET_TABLE = '{{targetDataObject.name}}';
 
-   SELECT @SYSTEM_GROUP = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '{{sourceDataObjects.0.name}}', 1)+1, charindex('_', '{{sourceDataObjects.0.name}}', (charindex('_', '{{sourceDataObjects.0.name}}', 1))+1) -charindex('_', '{{sourceDataObjects.0.name}}', 1)-1 )
+SELECT @SYSTEM_GROUP = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '{{sourceDataObjects.0.name}}', 1)+1, charindex('_', '{{sourceDataObjects.0.name}}', (charindex('_', '{{sourceDataObjects.0.name}}', 1))+1) -charindex('_', '{{sourceDataObjects.0.name}}', 1)-1 )
 
 /*
    Add Module into OMD.MODULE table

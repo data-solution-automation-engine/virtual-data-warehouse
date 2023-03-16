@@ -24,14 +24,6 @@
     "templateNotes": "Template to load a Hub view into a physical table (persistence), integrated with the DIRECT framework."
   },
   {
-    "templateName": "Data Vault Hub 002 Insert Into Template With Procedure",
-    "templateType": "CoreBusinessConcept",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "templateFilePath": "templateHubInsertIntoProcedure.handlebars",
-    "templateNotes": "Template to load a Hub view into a physical table (persistence), using a Stored Procedure."
-  },
-  {
     "templateName": "Data Vault Hub 003 Delta Select From Template",
     "templateType": "CoreBusinessConcept",
     "templateConnectionKey": "IntegrationConnectionInternalId",
@@ -80,14 +72,6 @@
     "templateNotes": ""
   },
   {
-    "templateName": "Data Vault Link 002 Insert Into Template With Procedure",
-    "templateType": "NaturalBusinessRelationship",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "templateFilePath": "templateLinkInsertIntoProcedure.handlebars",
-    "templateNotes": ""
-  },
-  {
     "templateName": "Data Vault Link Satellite 001 View Template",
     "templateType": "NaturalBusinessRelationshipContext",
     "templateConnectionKey": "PsaConnectionInternalId",
@@ -101,14 +85,6 @@
     "templateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "templateFilePath": "templateLinkSatelliteInsertInto.handlebars",
-    "templateNotes": ""
-  },
-  {
-    "templateName": "Data Vault LinkSatellite 002 Insert Into Template With Procedure",
-    "templateType": "NaturalBusinessRelationshipContext",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "templateFilePath": "templateLinkSatelliteInsertIntoProcedure.handlebars",
     "templateNotes": ""
   },
   {
@@ -176,14 +152,6 @@
     "templateNotes": ""
   },
   {
-    "templateName": "Persistent Staging Area 002 Insert Into Template With Procedure",
-    "templateType": "PersistentStagingArea",
-    "templateConnectionKey": "PsaConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "templateFilePath": "templatePersistentStagingInsertIntoProcedure.handlebars",
-    "templateNotes": ""
-  },
-  {
     "templateName": "Persistent Staging Area 003 Generate Tables",
     "templateType": "PersistentStagingArea",
     "templateConnectionKey": "PsaConnectionInternalId",
@@ -197,14 +165,6 @@
     "templateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "templateFilePath": "templateSatelliteView.handlebars",
-    "templateNotes": ""
-  },
-    {
-    "templateName": "Satellite 001 View Template With Delivery Key",
-    "templateType": "Context",
-    "templateConnectionKey": "PsaConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "templateFilePath": "templateSatelliteViewWithDeliveryKey.handlebars",
     "templateNotes": ""
   },
   {
@@ -221,14 +181,6 @@
     "templateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "templateFilePath": "templateSatelliteInsertInto.handlebars",
-    "templateNotes": ""
-  },
-  {
-    "templateName": "Satellite 002 Insert Into Template With Procedure",
-    "templateType": "Context",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "templateFilePath": "templateSatelliteInsertIntoProcedure.handlebars",
     "templateNotes": ""
   },
   {
@@ -270,6 +222,30 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "templateFilePath": "templateStagingTestData.handlebars",
     "templateNotes": ""
+  },
+  {
+    "templateName": "Unit Test - Hub Key Trim Check",
+    "templateType": "CoreBusinessConcept",
+    "templateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_KeyTrimCheck.sql",
+    "templateFilePath": "template_test_HUB_KeyTrimCheck.handlebars",
+    "templateNotes": "Unit test for checking leading or trailing spaces on the Hub business key."
+  },
+  {
+    "templateName": "Unit Test - Hub Key Null Check",
+    "templateType": "CoreBusinessConcept",
+    "templateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_KeyNullCheck.sql",
+    "templateFilePath": "template_test_HUB_KeyNullCheck.handlebars",
+    "templateNotes": "Unit test for checking a (hashed) NULL value in a Data Vault Hub surrogate key."
+  },
+  {
+    "templateName": "Unit Test - STG to SAT Check",
+    "templateType": "Context",
+    "templateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Sat_StagingMappingCheck.sql",
+    "templateFilePath": "template_test_SAT_StagingMappingCheck.handlebars",
+    "templateNotes": "Data Vault Sat Pattern to create unit test for checking mapping and data completeness between STG and SAT"
   },
   {
     "templateName": "Data Lake Silver Merge Insert",
@@ -366,157 +342,5 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
     "templateFilePath": "templateStagingDirectRegistration.handlebars",
     "templateNotes": "Creating DIRECT registration scripts."
-  },
-  {
-    "templateName": "Unit Test - Hub Key Trim Check",
-    "templateType": "CoreBusinessConcept",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_KeyTrimCheck.sql",
-    "templateFilePath": "template_test_Hub_KeyTrimCheck.handlebars",
-    "templateNotes": "Unit test for checking leading or trailing spaces on the Hub business key."
-  },
-  {
-    "templateName": "Unit Test - Hub Key Null Check",
-    "templateType": "CoreBusinessConcept",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_KeyNullCheck.sql",
-    "templateFilePath": "template_test_Hub_KeyNullCheck.handlebars",
-    "templateNotes": "Unit test for checking a (hashed) NULL value in a Data Vault Hub surrogate key."
-  },
-  {
-    "templateName": "Unit Test - Hub has Satellite record",
-    "templateType": "CoreBusinessConcept",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_HasSatelliteCheck.sql",
-    "templateFilePath": "template_test_Hub_HasSatRecord.handlebars",
-    "templateNotes": "Unit test for checking if a Hub has accompanying Satellite records."
-  },
-  {
-    "templateName": "Unit Test - Hub Key Definition Check",
-    "templateType": "CoreBusinessConcept",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_KeyDefinitionCheck.sql",
-    "templateFilePath": "template_test_Hub_KeyGeneratedCorrectly.handlebars",
-    "templateNotes": "Unit test for checking if a Hub Surrogate Key has been defined correctly."
-  },
-  {
-    "templateName": "Unit Test - Hub Key Uniqueness Check",
-    "templateType": "CoreBusinessConcept",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_UniqueKeyCheck.sql",
-    "templateFilePath": "template_test_Hub_UniqueKeyCheck.handlebars",
-    "templateNotes": "Unit test for checking if a Hub Business (Unique) Key is unique."
-  },
-  {
-    "templateName": "Unit Test - Link Referential Integrity Check",
-    "templateType": "NaturalBusinessRelationship",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Link_Referential_Integrity.sql",
-    "templateFilePath": "template_test_Link_ReferentialIntegrity.handlebars",
-    "templateNotes": "Unit test for checking if the Hub keys exist for a Link."
-  },
-  {
-    "templateName": "Unit Test - Link Key Trim Check",
-    "templateType": "NaturalBusinessRelationship",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Link_KeyTrimCheck.sql",
-    "templateFilePath": "template_test_Link_KeyTrimCheck.handlebars",
-    "templateNotes": "Unit test for checking leading or trailing spaces on the Hub business key."
-  },
-  {
-    "templateName": "Unit Test - Link Key Null Check",
-    "templateType": "NaturalBusinessRelationship",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Link_KeyNullCheck.sql",
-    "templateFilePath": "template_test_Link_KeyNullCheck.handlebars",
-    "templateNotes": "Unit test for checking a (hashed) NULL value in a Data Vault Link surrogate key."
-  },
-  {
-    "templateName": "Unit Test - Link Key Definition Check",
-    "templateType": "NaturalBusinessRelationship",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Link_KeyDefinitionCheck.sql",
-    "templateFilePath": "template_test_Link_KeyGeneratedCorrectly.handlebars",
-    "templateNotes": "Unit test for checking if a Link Surrogate Key has been defined correctly."
-  },
-  {
-    "templateName": "Unit Test - Link Key Uniqueness Check",
-    "templateType": "NaturalBusinessRelationship",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Link_UniqueKeyCheck.sql",
-    "templateFilePath": "template_test_Link_UniqueKeyCheck.handlebars",
-    "templateNotes": "Unit test for checking if the combination of Link Business (Unique) Keys is unique."
-  },
-  {
-    "templateName": "Unit Test - Satellite Mapping Check",
-    "templateType": "Context",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Sat_StagingMappingCheck.sql",
-    "templateFilePath": "template_test_Satellite_StagingMappingCheck.handlebars",
-    "templateNotes": "Unit test for checking mapping completeness between the Staging Layer and the (target) Satellite."
-  },
-  {
-    "templateName": "Unit Test - Satellite Unique Current Record Check",
-    "templateType": "Context",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Sat_UniqueMostRecentCheck.sql",
-    "templateFilePath": "template_test_Satellite_CurrentRecordUniqueCheck.handlebars",
-    "templateNotes": "Unit test for checking if the most recent Satellite record (following the assertion timeline) is unique."
-  },
-  {
-    "templateName": "Unit Test - Satellite Duplicate Record Check",
-    "templateType": "Context",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Sat_DuplicateRecord.sql",
-    "templateFilePath": "template_test_Satellite_DuplicateRecordCheck.handlebars",
-    "templateNotes": "Unit test for checking if there are any full-row duplicates in the Satellite."
-  },
-  {
-    "templateName": "Unit Test - Satellite Referential Integrity Check",
-    "templateType": "Context",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Sat_Referential_Integrity.sql",
-    "templateFilePath": "template_test_Satellite_ReferentialIntegrity.handlebars",
-    "templateNotes": "Unit test for checking if the Hub keys exist for a Satellite."
-  },  
-  {
-    "templateName": "Unit Test - Satellite Key Null Check",
-    "templateType": "Context",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Sat_KeyNullCheck.sql",
-    "templateFilePath": "template_test_Satellite_KeyNullCheck.handlebars",
-    "templateNotes": "Unit test for checking a (hashed) NULL value in a Satellite surrogate key."
-  },
-  {
-    "templateName": "Unit Test - Link-Satellite Duplicate Record Check",
-    "templateType": "NaturalBusinessRelationshipContext",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_LinkSat_DuplicateRecord.sql",
-    "templateFilePath": "template_test_LinkSatellite_DuplicateRecordCheck.handlebars",
-    "templateNotes": "Unit test for checking if there are any full-row duplicates in the Link-Satellite."
-  },
-  {
-    "templateName": "Unit Test - Link-Satellite Referential Integrity Check",
-    "templateType": "NaturalBusinessRelationshipContext",
-    "templateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_LinkSat_Referential_Integrity.sql",
-    "templateFilePath": "template_test_LInkSatellite_ReferentialIntegrity.handlebars",
-    "templateNotes": "Unit test for checking if the Link keys exist for a Link-Satellite."
-  },
-  {
-    "templateName": "Unit Test - Persistent Staging Area Duplicate Record Check",
-    "templateType": "PersistentStagingArea",
-    "templateConnectionKey": "PsaConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_PSA_DuplicateRecord.sql",
-    "templateFilePath": "template_test_PersistentStaging_DuplicateRecordCheck.handlebars",
-    "templateNotes": "Unit test for checking if there are any full-row duplicates in the Persistent Staging Area (PSA) object."
-  },
-  {
-    "templateName": "Unit Test - Persistent Staging Mapping Check",
-    "templateType": "PersistentStagingArea",
-    "templateConnectionKey": "PsaConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_Test_PSA_MappingCheck.sql",
-    "templateFilePath": "template_test_PersistentStaging_MappingCheck.handlebars",
-    "templateNotes": "Unit test for checking mapping completeness between the Staging Layer and the (target) Persistent Staging Area (PSA) object."
   }
 ]

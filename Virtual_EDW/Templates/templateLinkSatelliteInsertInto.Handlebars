@@ -1,7 +1,6 @@
 {{#each dataObjectMappings}}{{#if @first}}
 --
 -- Link Satellite Insert Into statement for {{targetDataObject.name}}
--- Generated at {{now}}
 --
 
 INSERT INTO [{{targetDataObject.name}}]
@@ -34,4 +33,6 @@ LEFT OUTER JOIN [{{targetDataObject.name}}] sat_table
     AND sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}] = sat_table.[{{../metadataConfiguration.loadDateTimeAttribute}}] 
     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}AND sat_view.{{../targetDataItem.name}} = sat_table.{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
 WHERE sat_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
-{{/if}}{{/each}}
+{{/if}}
+
+{{/each}}

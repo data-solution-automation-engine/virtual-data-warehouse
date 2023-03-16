@@ -1,288 +1,125 @@
-   DECLARE @SOURCE_TABLE VARCHAR(1000);
-   DECLARE @TARGET_TABLE VARCHAR(1000);
-   DECLARE @SYSTEM_GROUP VARCHAR(100);
+--
+-- DIRECT registration template for the Satellite object {{targetDataObject.name}}
+--
+
+DECLARE @SOURCE_TABLE VARCHAR(1000);
+DECLARE @TARGET_TABLE VARCHAR(1000);
+DECLARE @SYSTEM_GROUP VARCHAR(100);
 
 {{#each dataObjectMappings}}
 
-   SET @SOURCE_TABLE = '{{sourceDataObjects.0.name}}';
-   SET @TARGET_TABLE = '{{targetDataObject.name}}';
+SET @SOURCE_TABLE = '{{sourceDataObjects.0.name}}';
+SET @TARGET_TABLE = '{{targetDataObject.name}}';
 
-   SELECT @SYSTEM_GROUP = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '{{sourceDataObjects.0.name}}', 1)+1, charindex('_', '{{sourceDataObjects.0.name}}', (charindex('_', '{{sourceDataObjects.0.name}}', 1))+1) -charindex('_', '{{sourceDataObjects.0.name}}', 1)-1 )
+SELECT @SYSTEM_GROUP = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '{{sourceDataObjects.0.name}}', 1)+1, charindex('_', '{{sourceDataObjects.0.name}}', (charindex('_', '{{sourceDataObjects.0.name}}', 1))+1) -charindex('_', '{{sourceDataObjects.0.name}}', 1)-1 )
 
-/*
-   Add Module into OMD.MODULE table
-*/
+-- Add Module into OMD.MODULE table
 
-
-   INSERT INTO [omd].[MODULE]
-           ([MODULE_CODE]
-           ,[MODULE_DESCRIPTION]
-           ,[MODULE_TYPE]
-           ,[DATA_OBJECT_SOURCE]
-           ,[DATA_OBJECT_TARGET]
-           ,[AREA_CODE]
-           ,[FREQUENCY_CODE]
-           ,[INACTIVE_INDICATOR])
- 
-     
-	 SELECT 'm_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE,@TARGET_TABLE+' data processing from '+@SOURCE_TABLE,'INT','STG',
-	 'INT','INT','Continuous','N'
-	 from OMD.MODULE dm
-	 left outer join omd.module m on m.MODULE_CODE='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-	 where dm.MODULE_ID = 0
-		and m.MODULE_ID is null
-
-/*
-   Add Batch into OMD.BATCH table
-*/
-
-	 INSERT INTO [omd].[BATCH]
-           ([BATCH_CODE]
-           ,[BATCH_DESCRIPTION]
-           ,[FREQUENCY_CODE]
-           ,[INACTIVE_INDICATOR]
-           ,[NEXT_RUN_INDICATOR])
-
-	 SELECT 'b_INT_'+@TARGET_TABLE+'_'+@SOURCE_TABLE,@TARGET_TABLE+' data processing from '+@SOURCE_TABLE,'Continuous','N',NULL
-	 from OMD.MODULE dm
-	 left outer join omd.batch b on b.batch_code='b_INT_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-	 where dm.MODULE_ID = 0
-		and b.BATCH_ID is null
-
-/*
-   Add Batch-Module relationship into OMD.BATCH_MODULE table
-*/
+INSERT INTO [omd].[MODULE]
+      ([MODULE_CODE]
+      ,[MODULE_DESCRIPTION]
+      ,[MODULE_TYPE]
+      ,[DATA_OBJECT_SOURCE]
+      ,[DATA_OBJECT_TARGET]
+      ,[AREA_CODE]
+      ,[FREQUENCY_CODE]
+      ,[INACTIVE_INDICATOR])
 
 
-	 INSERT INTO [omd].[BATCH_MODULE]
-           ([BATCH_ID]
-           ,[MODULE_ID]
-           ,[INACTIVE_INDICATOR])
+SELECT 'm_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE,@TARGET_TABLE+' data processing from '+@SOURCE_TABLE,'INT','STG',
+'INT','INT','Continuous','N'
+from OMD.MODULE dm
+left outer join omd.module m on m.MODULE_CODE='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
+where dm.MODULE_ID = 0
+and m.MODULE_ID is null
 
-   select b.batch_id,m.module_id,'N'
-   from OMD.MODULE dm
-   left outer join omd.batch b on b.batch_code='b_INT_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   left outer join omd.module m on m.MODULE_CODE='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   left outer join omd.batch_module bm on b.BATCH_ID=bm.BATCH_ID and bm.MODULE_ID=m.MODULE_ID
-   where dm.MODULE_ID = 0
-		and bm.BATCH_ID is null
+-- Add Batch into OMD.BATCH table
 
+INSERT INTO [omd].[BATCH]
+      ([BATCH_CODE]
+      ,[BATCH_DESCRIPTION]
+      ,[FREQUENCY_CODE]
+      ,[INACTIVE_INDICATOR]
+      ,[NEXT_RUN_INDICATOR])
 
-/*
-   Add Batch-Batch relationship into OMD.BATCH_BATCH table
-*/
+SELECT 'b_INT_'+@TARGET_TABLE+'_'+@SOURCE_TABLE,@TARGET_TABLE+' data processing from '+@SOURCE_TABLE,'Continuous','N',NULL
+from OMD.MODULE dm
+left outer join omd.batch b on b.batch_code='b_INT_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
+where dm.MODULE_ID = 0
+and b.BATCH_ID is null
 
+-- Add Batch-Module relationship into OMD.BATCH_MODULE table
 
-   INSERT INTO [omd].[BATCH_BATCH]
-           ([PARENT_BATCH_ID]
-           ,[BATCH_ID]
-           ,[SYSTEM_GROUP]
-           ,[SEQUENCE]
-           ,[BATCH_SEQUENCE]
-           ,[NEXT_RUN_INDICATOR])
+INSERT INTO [omd].[BATCH_MODULE]
+      ([BATCH_ID]
+      ,[MODULE_ID]
+      ,[INACTIVE_INDICATOR])
 
-   select pb.BATCH_ID as PARENT_BATCH_ID,
-         cb.BATCH_ID as BATCH_ID,
-         @SYSTEM_GROUP as SYSTEM_GROUP,
-         1 as [SEQUENCE],
-         'Concurrent' as BATCH_SEQUENCE,
-         NULL as NEXT_RUN_INDICATOR
+select b.batch_id,m.module_id,'N'
+from OMD.MODULE dm
+left outer join omd.batch b on b.batch_code='b_INT_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
+left outer join omd.module m on m.MODULE_CODE='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
+left outer join omd.batch_module bm on b.BATCH_ID=bm.BATCH_ID and bm.MODULE_ID=m.MODULE_ID
+where dm.MODULE_ID = 0
+and bm.BATCH_ID is null
 
-   from OMD.MODULE dm
-   left outer join OMD.BATCH pb ON pb.BATCH_CODE = 'b_INT_SAT'
-   left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_INT_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   left outer join OMD.BATCH_BATCH bb ON cb.BATCH_ID = bb.BATCH_ID
+-- Add Batch-Batch relationship into OMD.BATCH_BATCH table
 
-   WHERE dm.MODULE_ID = 0
-         and bb.BATCH_ID is null
+INSERT INTO [omd].[BATCH_BATCH]
+         ([PARENT_BATCH_ID]
+         ,[BATCH_ID]
+         ,[SYSTEM_GROUP]
+         ,[SEQUENCE]
+         ,[BATCH_SEQUENCE]
+         ,[NEXT_RUN_INDICATOR])
 
-/*
-   Add pattern to Module into OMD.MODULE_PATTERN table
-*/
+select pb.BATCH_ID as PARENT_BATCH_ID,
+      cb.BATCH_ID as BATCH_ID,
+      @SYSTEM_GROUP as SYSTEM_GROUP,
+      1 as [SEQUENCE],
+      'Concurrent' as BATCH_SEQUENCE,
+      NULL as NEXT_RUN_INDICATOR
+from OMD.MODULE dm
+left outer join OMD.BATCH pb ON pb.BATCH_CODE = 'b_INT_SAT'
+left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_INT_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
+left outer join OMD.BATCH_BATCH bb ON cb.BATCH_ID = bb.BATCH_ID
+WHERE dm.MODULE_ID = 0
+and bb.BATCH_ID is null
 
+-- Add pattern to Module into OMD.MODULE_PATTERN table
 
-   INSERT INTO [omd].[MODULE_PATTERN]
+INSERT INTO [omd].[MODULE_PATTERN]
+      ([MODULE_ID]
+      ,[PATTERN_ID]
+      ,[INACTIVE_INDICATOR])
+
+select m.module_id, 7,'N' from omd.module m
+left outer join omd.module_pattern mp on m.module_id=mp.module_id
+where  m.MODULE_CODE='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
+   and mp.MODULE_ID is null
+
+-- Add Sat Parameters into OMD.PARAMETER table
+
+INSERT INTO [omd].PARAMETER ( [PARAMETER_DESCRIPTION], [PARAMETER_KEY_CODE], [PARAMETER_VALUE_CODE], [PARAMETER_AREA_CODE], [INACTIVE_INDICATOR]) 
+
+SELECT DISTINCT  N'Azure SQL INT Database Tablename', N'PARAMETER', N''+@TARGET_TABLE, N'SQL_INT_DATABASE_TABLENAME', N'N'
+from OMD.MODULE dm
+left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_TABLE_NAME_'+@TARGET_TABLE
+where dm.MODULE_ID = 0
+   and p.PARAMETER_ID is null
+
+-- Add Module-Parameters relationships into OMD.MODULE_PARAMETER table
+
+INSERT INTO [omd].[MODULE_PARAMETER]
          ([MODULE_ID]
-         ,[PATTERN_ID]
+         ,[PARAMETER_ID]
          ,[INACTIVE_INDICATOR])
-
-   select m.module_id, 7,'N' from omd.module m
-   left outer join omd.module_pattern mp on m.module_id=mp.module_id
-   where  m.MODULE_CODE='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-      and mp.MODULE_ID is null
-
-
-/*
-   Add Sat Parameters into OMD.PARAMETER table
-*/
-
-
---1
-   INSERT INTO [omd].PARAMETER ( [PARAMETER_DESCRIPTION], [PARAMETER_KEY_CODE], [PARAMETER_VALUE_CODE], [PARAMETER_AREA_CODE], [INACTIVE_INDICATOR]) 
-
-   SELECT DISTINCT  N'Azure SQL INT Database Tablename', N'SQL_INT_TABLE_NAME_'+@TARGET_TABLE, N''+@TARGET_TABLE, N'SQL_INT_DATABASE_TABLENAME', N'N'
-   from OMD.MODULE dm
-   left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_TABLE_NAME_'+@TARGET_TABLE
-   where dm.MODULE_ID = 0
-      and p.PARAMETER_ID is null
-
---2
-   INSERT INTO [omd].PARAMETER ( [PARAMETER_DESCRIPTION], [PARAMETER_KEY_CODE], [PARAMETER_VALUE_CODE], [PARAMETER_AREA_CODE], [INACTIVE_INDICATOR]) 
-
-   SELECT DISTINCT  N'Azure SQL INT Stored Proc Name', N'SQL_INT_SP_'+@TARGET_TABLE, N'SP_'+@TARGET_TABLE, N'SQL_INT_SP_NAME', N'N'
-            from OMD.MODULE dm
-               left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_SP_'+@TARGET_TABLE
-      where dm.MODULE_ID = 0
-      and p.PARAMETER_ID is null
-
---3
-   INSERT INTO [omd].PARAMETER ( [PARAMETER_DESCRIPTION], [PARAMETER_KEY_CODE], [PARAMETER_VALUE_CODE], [PARAMETER_AREA_CODE], [INACTIVE_INDICATOR]) 
-   SELECT DISTINCT  N'Azure SQL INT HUB SK', N'SQL_INT_SAT_SK_'+@TARGET_TABLE, '{{businessKeys.0.surrogateKey}}', N'SQL_INT_SAT_SK', N'N'
-            from OMD.MODULE dm
-               left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_SAT_SK_'+@TARGET_TABLE
-      where dm.MODULE_ID = 0
-      and p.PARAMETER_ID is null
-
---4
-   INSERT INTO [omd].PARAMETER ( [PARAMETER_DESCRIPTION], [PARAMETER_KEY_CODE], [PARAMETER_VALUE_CODE], [PARAMETER_AREA_CODE], [INACTIVE_INDICATOR]) 
-   SELECT DISTINCT  N'Azure SQL SAT Pre Command', N'PRE_SQL_'+@TARGET_TABLE+'_'+@SOURCE_TABLE, N'', N'PRE_SQL', N'N'
-            from OMD.MODULE dm
-               left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='PRE_SQL_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-      where dm.MODULE_ID = 0
-      and p.PARAMETER_ID is null
-
---5
-   INSERT INTO [omd].PARAMETER ( [PARAMETER_DESCRIPTION], [PARAMETER_KEY_CODE], [PARAMETER_VALUE_CODE], [PARAMETER_AREA_CODE], [INACTIVE_INDICATOR]) 
-   SELECT DISTINCT  N'Azure SQL SAT Post Command', N'POST_SQL_'+@TARGET_TABLE+'_'+@SOURCE_TABLE, N'', N'POST_SQL', N'N'
-            from OMD.MODULE dm
-               left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='POST_SQL_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-      where dm.MODULE_ID = 0
-      and p.PARAMETER_ID is null
-
-
-/*
-   Add Module-Parameters relationships into OMD.MODULE_PARAMETER table
-*/
-
-
---0 - Generic Parameters (SQL_INT_DATABASE_SCHEMA)
-
-   INSERT INTO [omd].[MODULE_PARAMETER]
-           ([MODULE_ID]
-           ,[PARAMETER_ID]
-           ,[INACTIVE_INDICATOR])
-
-   SELECT m.module_id, p.PARAMETER_ID,'N'
-      from  OMD.MODULE dm
-   inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_DATABASE_SCHEMA'
-   left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-   where dm.MODULE_ID = 0
-   and mp.PARAMETER_ID is null
-
---00 - Generic Parameters (SQL_MULTIACTIVE_KEY)
-
-   INSERT INTO [omd].[MODULE_PARAMETER]
-           ([MODULE_ID]
-           ,[PARAMETER_ID]
-           ,[INACTIVE_INDICATOR])
-
-   SELECT m.module_id, p.PARAMETER_ID,'N'
-      from  OMD.MODULE dm
-   inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_MULTIACTIVE_KEY'
-   left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-   where dm.MODULE_ID = 0
-   and mp.PARAMETER_ID is null
-
---000 - Generic Parameters (SQL_DRIVING_KEY)
-
-   INSERT INTO [omd].[MODULE_PARAMETER]
-           ([MODULE_ID]
-           ,[PARAMETER_ID]
-           ,[INACTIVE_INDICATOR])
-
-   SELECT m.module_id, p.PARAMETER_ID,'N'
-      from  OMD.MODULE dm
-   inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_DRIVING_KEY'
-   left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-   where dm.MODULE_ID = 0
-   and mp.PARAMETER_ID is null
-
---1
-
-   INSERT INTO [omd].[MODULE_PARAMETER]
-           ([MODULE_ID]
-           ,[PARAMETER_ID]
-           ,[INACTIVE_INDICATOR])
-
-   SELECT m.module_id, p.PARAMETER_ID,'N'
-      from  OMD.MODULE dm
-   inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_TABLE_NAME_'+@TARGET_TABLE
-   left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-   where dm.MODULE_ID = 0
-   and mp.PARAMETER_ID is null
-
---2
-
-   INSERT INTO [omd].[MODULE_PARAMETER]
-           ([MODULE_ID]
-           ,[PARAMETER_ID]
-           ,[INACTIVE_INDICATOR])
-
-   SELECT m.module_id, p.PARAMETER_ID,'N'
-      from  OMD.MODULE dm
-   inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_SP_'+@TARGET_TABLE
-   left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-   where dm.MODULE_ID = 0
-   and mp.PARAMETER_ID is null
-
---3
-
-   INSERT INTO [omd].[MODULE_PARAMETER]
-           ([MODULE_ID]
-           ,[PARAMETER_ID]
-           ,[INACTIVE_INDICATOR])
-
-   SELECT m.module_id, p.PARAMETER_ID,'N'
-      from  OMD.MODULE dm
-   inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_SAT_SK_'+@TARGET_TABLE
-   left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-   where dm.MODULE_ID = 0
-   and mp.PARAMETER_ID is null
-
---4
-
-   INSERT INTO [omd].[MODULE_PARAMETER]
-           ([MODULE_ID]
-           ,[PARAMETER_ID]
-           ,[INACTIVE_INDICATOR])
-
-   SELECT m.module_id, p.PARAMETER_ID,'N'
-      from  OMD.MODULE dm
-   inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='PRE_SQL_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-   where dm.MODULE_ID = 0
-   and mp.PARAMETER_ID is null
-
---5
-
-   INSERT INTO [omd].[MODULE_PARAMETER]
-           ([MODULE_ID]
-           ,[PARAMETER_ID]
-           ,[INACTIVE_INDICATOR])
-
-   SELECT m.module_id, p.PARAMETER_ID,'N'
-      from  OMD.MODULE dm
-   inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='POST_SQL_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
-   left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-   where dm.MODULE_ID = 0
-   and mp.PARAMETER_ID is null
+SELECT m.module_id, p.PARAMETER_ID,'N'
+   from  OMD.MODULE dm
+inner join OMD.MODULE m on m.module_code='m_200_'+@TARGET_TABLE+'_'+@SOURCE_TABLE
+inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='PARAMETER'
+left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
+where dm.MODULE_ID = 0
+and mp.PARAMETER_ID is null
 
 {{/each}}

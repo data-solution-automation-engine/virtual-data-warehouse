@@ -1,10 +1,10 @@
 DECLARE @LAST_UT_DETAIL_ID nvarchar(1000);
-DECLARE @UT_ID int = 16;
+DECLARE @UT_ID int = 13;
 
 {{#each dataObjectMappings}}
 {{#if @first}}
 --
--- HUB UT key trim check for {{targetDataObject.name}}
+-- LNK UT unique key check for {{targetDataObject.name}}
 --
 
 INSERT INTO OMD.UT_DETAIL (UT_ID, TARGET_TABLE, SOURCE_TABLE, TARGET_COLUMN, SOURCE_COLUMN, TARGET_SCHEMA, SOURCE_SCHEMA, REALM, UT_TEST_SQL, UT_DETAIL_SQL, INACTIVE_INDICATOR, NOTES)
@@ -12,18 +12,15 @@ SELECT DISTINCT
 	@UT_ID,'{{targetDataObject.name}}','ALL',NULL, NULL, '{{targetDataObject.dataObjectConnection.extensions.1.value}}','{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}', 'DV',
   
   'WITH recordcount
-     AS (SELECT Count(*)		AS Record_Count
-         FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-         ),
+     AS (SELECT Count(*) AS Record_Count
+         FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]),
      testcount
-     AS (SELECT Count(*)		AS test_count
-         FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-         WHERE  LEN([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]) != LEN(TRIM([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]))
-         )
+     AS (SELECT Count(DISTINCT [{{businessKeys.0.surrogateKey}}]) AS Test_Count
+         FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}])
 SELECT record_count,
        test_count,
        CASE
-         WHEN test_count = 0 THEN ''Pass''
+         WHEN record_count = test_count THEN ''Pass''
          ELSE ''Fail''
        END          AS Status,
        Getdate()    AS Test_Execution_DateTime,
@@ -31,15 +28,17 @@ SELECT record_count,
 FROM   recordcount,
        testcount;  '
 , 
-  'SELECT [{{businessKeys.0.surrogateKey}}], [{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}], [OMD_INSERT_MODULE_INSTANCE_ID]
-FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-WHERE  LEN([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]) != LEN(TRIM([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]))'
+  
+  'SELECT [{{businessKeys.0.surrogateKey}}] as LNK_SK, [OMD_INSERT_MODULE_INSTANCE_ID]
+    FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+    GROUP  BY [{{businessKeys.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+    HAVING Count(*) > 1 '
 
 , 'N'
 , NULL
 
 FROM OMD.UT a
-LEFT JOIN OMD.UT_DETAIL exist ON exist.UT_ID = @UT_ID
+LEFT JOIN OMD.UT_DETAIL exist ON exist.UT_ID = @UT_ID 
               and TARGET_TABLE = '{{targetDataObject.name}}' 
               and SOURCE_TABLE = 'ALL'
               and REALM = 'DV'

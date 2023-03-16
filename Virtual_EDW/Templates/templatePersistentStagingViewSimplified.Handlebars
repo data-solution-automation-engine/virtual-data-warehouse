@@ -1,7 +1,6 @@
 {{#each dataObjectMappings}}
 --
 -- Persistent Staging Area View definition for {{targetDataObject.name}}
--- Generated at {{now}}
 --
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
@@ -16,7 +15,7 @@ SELECT
    {{/each}}
    STG.[{{../metadataConfiguration.loadDateTimeAttribute}}],
    STG.[{{../metadataConfiguration.eventDateTimeAttribute}}],
-   STG.[{{../metadataConfiguration.recordSourceAttribute}}],
+   --STG.[{{../metadataConfiguration.recordSourceAttribute}}],
    STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
    STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
    STG.[{{../metadataConfiguration.recordChecksumAttribute}}]
@@ -29,4 +28,5 @@ LEFT OUTER JOIN -- Prevent reprocessing
      HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
 WHERE {{#each businessKeys}}  {{#each businessKeyComponentMapping}} {{#if @first}}
    HSTG.[{{targetDataItem.name}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
+
 {{/each}}

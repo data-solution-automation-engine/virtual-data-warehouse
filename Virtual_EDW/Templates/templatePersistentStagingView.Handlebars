@@ -1,7 +1,6 @@
 {{#each dataObjectMappings}}
 --
 -- Persistent Staging Area View definition for {{targetDataObject.name}}
--- Generated at {{now}}
 --
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
@@ -104,4 +103,5 @@ OR
   -- It's not the most recent change in the set, so the record can be inserted as-is
   KEY_ROW_NUMBER!=1
 )
+
 {{/each}}
