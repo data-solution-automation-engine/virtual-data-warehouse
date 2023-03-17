@@ -33,11 +33,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            openCoreDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             openInputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             openTemplateDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            openVDWConfigurationDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            openCoreDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             openVDWConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             openTEAMConfigurationSettingsFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,9 +70,6 @@
             textBoxTemplatePath = new System.Windows.Forms.TextBox();
             pictureBox6 = new System.Windows.Forms.PictureBox();
             groupBoxConfigurationPaths = new System.Windows.Forms.GroupBox();
-            pictureBox8 = new System.Windows.Forms.PictureBox();
-            textBoxTeamConnectionsPath = new System.Windows.Forms.TextBox();
-            label3 = new System.Windows.Forms.Label();
             pictureBox7 = new System.Windows.Forms.PictureBox();
             textBoxTeamConfigurationPath = new System.Windows.Forms.TextBox();
             label2 = new System.Windows.Forms.Label();
@@ -103,7 +100,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             groupBoxConfigurationPaths.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             groupBoxOutputOptions.SuspendLayout();
@@ -130,22 +126,6 @@
             fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             fileToolStripMenuItem.Text = "File";
             // 
-            // openCoreDirectoryToolStripMenuItem
-            // 
-            openCoreDirectoryToolStripMenuItem.Image = Properties.Resources.OpenDirectoryIcon;
-            openCoreDirectoryToolStripMenuItem.Name = "openCoreDirectoryToolStripMenuItem";
-            openCoreDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-            openCoreDirectoryToolStripMenuItem.Text = "Open Core Directory";
-            openCoreDirectoryToolStripMenuItem.Click += openCoreDirectoryToolStripMenuItem_Click;
-            // 
-            // openVDWConfigurationDirectoryToolStripMenuItem
-            // 
-            openVDWConfigurationDirectoryToolStripMenuItem.Image = Properties.Resources.OpenDirectoryIcon;
-            openVDWConfigurationDirectoryToolStripMenuItem.Name = "openVDWConfigurationDirectoryToolStripMenuItem";
-            openVDWConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-            openVDWConfigurationDirectoryToolStripMenuItem.Text = "Open Configuration Directory";
-            openVDWConfigurationDirectoryToolStripMenuItem.Click += openVDWConfigurationDirectoryToolStripMenuItem_Click;
-            // 
             // openInputDirectoryToolStripMenuItem
             // 
             openInputDirectoryToolStripMenuItem.Image = Properties.Resources.OpenDirectoryIcon;
@@ -169,6 +149,22 @@
             openOutputDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             openOutputDirectoryToolStripMenuItem.Text = "Open Output Directory";
             openOutputDirectoryToolStripMenuItem.Click += openOutputDirectoryToolStripMenuItem_Click;
+            // 
+            // openVDWConfigurationDirectoryToolStripMenuItem
+            // 
+            openVDWConfigurationDirectoryToolStripMenuItem.Image = Properties.Resources.OpenDirectoryIcon;
+            openVDWConfigurationDirectoryToolStripMenuItem.Name = "openVDWConfigurationDirectoryToolStripMenuItem";
+            openVDWConfigurationDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            openVDWConfigurationDirectoryToolStripMenuItem.Text = "Open Configuration Directory";
+            openVDWConfigurationDirectoryToolStripMenuItem.Click += openVDWConfigurationDirectoryToolStripMenuItem_Click;
+            // 
+            // openCoreDirectoryToolStripMenuItem
+            // 
+            openCoreDirectoryToolStripMenuItem.Image = Properties.Resources.OpenDirectoryIcon;
+            openCoreDirectoryToolStripMenuItem.Name = "openCoreDirectoryToolStripMenuItem";
+            openCoreDirectoryToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            openCoreDirectoryToolStripMenuItem.Text = "Open Core Directory";
+            openCoreDirectoryToolStripMenuItem.Click += openCoreDirectoryToolStripMenuItem_Click;
             // 
             // toolStripSeparator1
             // 
@@ -411,7 +407,7 @@
             groupBox1.Size = new System.Drawing.Size(704, 106);
             groupBox1.TabIndex = 117;
             groupBox1.TabStop = false;
-            groupBox1.Text = "VDW input options";
+            groupBox1.Text = "VDW input";
             // 
             // label10
             // 
@@ -484,9 +480,6 @@
             // groupBoxConfigurationPaths
             // 
             groupBoxConfigurationPaths.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            groupBoxConfigurationPaths.Controls.Add(pictureBox8);
-            groupBoxConfigurationPaths.Controls.Add(textBoxTeamConnectionsPath);
-            groupBoxConfigurationPaths.Controls.Add(label3);
             groupBoxConfigurationPaths.Controls.Add(pictureBox7);
             groupBoxConfigurationPaths.Controls.Add(textBoxTeamConfigurationPath);
             groupBoxConfigurationPaths.Controls.Add(label2);
@@ -503,41 +496,6 @@
             groupBoxConfigurationPaths.TabIndex = 100;
             groupBoxConfigurationPaths.TabStop = false;
             groupBoxConfigurationPaths.Text = "Configuration paths";
-            // 
-            // pictureBox8
-            // 
-            pictureBox8.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            pictureBox8.Image = Properties.Resources.OpenDirectoryIcon;
-            pictureBox8.Location = new System.Drawing.Point(676, 167);
-            pictureBox8.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            pictureBox8.Name = "pictureBox8";
-            pictureBox8.Size = new System.Drawing.Size(22, 23);
-            pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            pictureBox8.TabIndex = 119;
-            pictureBox8.TabStop = false;
-            pictureBox8.Click += pictureBoxOpenConnectionFile_Click;
-            // 
-            // textBoxTeamConnectionsPath
-            // 
-            textBoxTeamConnectionsPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBoxTeamConnectionsPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            textBoxTeamConnectionsPath.Location = new System.Drawing.Point(160, 167);
-            textBoxTeamConnectionsPath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            textBoxTeamConnectionsPath.Multiline = true;
-            textBoxTeamConnectionsPath.Name = "textBoxTeamConnectionsPath";
-            textBoxTeamConnectionsPath.Size = new System.Drawing.Size(508, 22);
-            textBoxTeamConnectionsPath.TabIndex = 117;
-            toolTipVdw.SetToolTip(textBoxTeamConnectionsPath, resources.GetString("textBoxTeamConnectionsPath.ToolTip"));
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(7, 171);
-            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(133, 15);
-            label3.TabIndex = 118;
-            label3.Text = "TEAM connections path";
             // 
             // pictureBox7
             // 
@@ -646,7 +604,7 @@
             groupBoxOutputOptions.Size = new System.Drawing.Size(704, 97);
             groupBoxOutputOptions.TabIndex = 89;
             groupBoxOutputOptions.TabStop = false;
-            groupBoxOutputOptions.Text = "VDW output options";
+            groupBoxOutputOptions.Text = "VDW output";
             // 
             // pictureBox5
             // 
@@ -794,7 +752,6 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
             groupBoxConfigurationPaths.ResumeLayout(false);
             groupBoxConfigurationPaths.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             groupBoxOutputOptions.ResumeLayout(false);
@@ -865,9 +822,6 @@
         private System.Windows.Forms.Label labelTemplatePath;
         internal System.Windows.Forms.TextBox textBoxTemplatePath;
         private System.Windows.Forms.PictureBox pictureBox6;
-        private System.Windows.Forms.PictureBox pictureBox8;
-        internal System.Windows.Forms.TextBox textBoxTeamConnectionsPath;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ToolTip toolTipVdw;
         private System.Windows.Forms.Label labelWelcome;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;

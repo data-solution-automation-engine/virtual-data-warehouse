@@ -71,12 +71,7 @@ namespace Virtual_Data_Warehouse
             VdwUtility.LoadVdwConfigurationFile();
 
             // Update the values on the form.
-            textBoxOutputPath.Text = VdwConfigurationSettings.VdwOutputPath;
-            textBoxTemplatePath.Text = VdwConfigurationSettings.TemplatePath;
             textBoxTeamEnvironmentsFilePath.Text = VdwConfigurationSettings.TeamEnvironmentFilePath;
-            textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.TeamConfigurationPath;
-            textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.TeamConnectionsPath;
-            textBoxMetadataPath.Text = VdwConfigurationSettings.VdwMetadatPath;
             textBoxSchemaName.Text = VdwConfigurationSettings.VdwSchema;
 
             // Then load the environments file and current working environment.
@@ -91,6 +86,24 @@ namespace Virtual_Data_Warehouse
             }
 
             VdwConfigurationSettings.ActiveEnvironment = TeamEnvironmentCollection.GetEnvironmentById(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
+
+            // Metadata path.
+            VdwConfigurationSettings.VdwMetadatPath = VdwConfigurationSettings.ActiveEnvironment.metadataPath;
+            textBoxMetadataPath.Text = VdwConfigurationSettings.VdwMetadatPath;
+
+            // Output path.
+            VdwConfigurationSettings.VdwOutputPath = VdwConfigurationSettings.ActiveEnvironment.outputPath;
+            textBoxOutputPath.Text = VdwConfigurationSettings.VdwOutputPath;
+
+            // Configuration path.
+            VdwConfigurationSettings.TeamConfigurationPath = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
+            VdwConfigurationSettings.TeamConnectionsPath = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
+            textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.TeamConfigurationPath;
+
+            // Template path.
+            VdwConfigurationSettings.TemplatePath = VdwConfigurationSettings.ActiveEnvironment.templatePath;
+            textBoxTemplatePath.Text = VdwConfigurationSettings.TemplatePath;
+
 
             // Load the configuration and connection information from file, based on the selected environment and input path.
             VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
@@ -108,31 +121,11 @@ namespace Virtual_Data_Warehouse
 
             // Re-apply in case the environment change triggered a change compared to what's in the Core file.
             textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.TeamConfigurationPath;
-            textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.TeamConnectionsPath;
             textBoxMetadataPath.Text = VdwConfigurationSettings.VdwMetadatPath;
 
             #region Template Grid
 
-            // Load the template collection into memory.
-            VdwConfigurationSettings.templateList = TemplateHandling.LoadTemplateCollection();
-
-            if ((VdwConfigurationSettings.templateList != null) && (!VdwConfigurationSettings.templateList.Any()))
-            {
-                SetTextMain("There are no templates found in the designated template directory. Please verify if there is a " + GlobalParameters.TemplateCollectionFileName + " in the " + VdwConfigurationSettings.TemplatePath + " directory, and if the file contains templates.");
-            }
-
-            // Define and populate the data grid.
-            _templateGridView = new TemplateGridView(TeamConfigurationSettings);
-            ((ISupportInitialize)(_templateGridView)).BeginInit();
-
-            _templateGridView.DoubleBuffered(true);
-            tabPageSettings.Controls.Add(_templateGridView);
-
-            ((ISupportInitialize)(_templateGridView)).EndInit();
-
-            PopulateTemplateCollectionDataGrid();
-
-            _templateGridView.AutoLayout();
+            RefreshTemplateGrid();
 
             #endregion
 
@@ -159,6 +152,30 @@ namespace Virtual_Data_Warehouse
             RunFileWatcher();
 
             startUpIndicator = false;
+        }
+
+        private void RefreshTemplateGrid()
+        {
+            // Load the template collection into memory.
+            VdwConfigurationSettings.templateList = TemplateHandling.LoadTemplateCollection();
+
+            if ((VdwConfigurationSettings.templateList != null) && (!VdwConfigurationSettings.templateList.Any()))
+            {
+                SetTextMain("There are no templates found in the designated template directory. Please verify if there is a " + GlobalParameters.TemplateCollectionFileName + " in the " + VdwConfigurationSettings.TemplatePath + " directory, and if the file contains templates.");
+            }
+
+            // Define and populate the data grid.
+            _templateGridView = new TemplateGridView(TeamConfigurationSettings);
+            ((ISupportInitialize)(_templateGridView)).BeginInit();
+
+            _templateGridView.DoubleBuffered(true);
+            tabPageSettings.Controls.Add(_templateGridView);
+
+            ((ISupportInitialize)(_templateGridView)).EndInit();
+
+            PopulateTemplateCollectionDataGrid();
+
+            _templateGridView.AutoLayout();
         }
 
         public sealed override string Text
@@ -468,7 +485,7 @@ namespace Virtual_Data_Warehouse
             // Make sure that the updated paths are accessible from anywhere in the app (global parameters)
             VdwConfigurationSettings.TeamEnvironmentFilePath = textBoxTeamEnvironmentsFilePath.Text;
             VdwConfigurationSettings.TeamConfigurationPath = textBoxTeamConfigurationPath.Text;
-            VdwConfigurationSettings.TeamConnectionsPath = textBoxTeamConnectionsPath.Text;
+            VdwConfigurationSettings.TeamConnectionsPath = textBoxTeamConfigurationPath.Text;
             VdwConfigurationSettings.TemplatePath = textBoxTemplatePath.Text;
             VdwConfigurationSettings.VdwMetadatPath = textBoxMetadataPath.Text;
             VdwConfigurationSettings.VdwOutputPath = textBoxOutputPath.Text;
@@ -479,12 +496,7 @@ namespace Virtual_Data_Warehouse
             rootPathConfigurationFile.AppendLine("/* Virtual Data Warehouse Core Settings */");
             rootPathConfigurationFile.AppendLine("/* Saved at " + DateTime.Now + " */");
             rootPathConfigurationFile.AppendLine("TeamEnvironmentFilePath|" + VdwConfigurationSettings.TeamEnvironmentFilePath + "");
-            rootPathConfigurationFile.AppendLine("TeamConfigurationPath|" + VdwConfigurationSettings.TeamConfigurationPath + "");
-            rootPathConfigurationFile.AppendLine("TeamConnectionsPath|" + VdwConfigurationSettings.TeamConnectionsPath + "");
             rootPathConfigurationFile.AppendLine("TeamSelectedEnvironment|" + VdwConfigurationSettings.TeamSelectedEnvironmentInternalId + "");
-            rootPathConfigurationFile.AppendLine("InputPath|" + VdwConfigurationSettings.VdwMetadatPath + "");
-            rootPathConfigurationFile.AppendLine("OutputPath|" + VdwConfigurationSettings.VdwOutputPath + "");
-            rootPathConfigurationFile.AppendLine("TemplatePath|" + VdwConfigurationSettings.TemplatePath + "");
             rootPathConfigurationFile.AppendLine("VdwSchema|" + VdwConfigurationSettings.VdwSchema + "");
             rootPathConfigurationFile.AppendLine("/* End of file */");
 
@@ -495,8 +507,18 @@ namespace Virtual_Data_Warehouse
                 outfile.Close();
             }
 
+            // Update the TEAM environments file to update any output and template paths.
+            VdwConfigurationSettings.ActiveEnvironment.outputPath = textBoxOutputPath.Text;
+            VdwConfigurationSettings.ActiveEnvironment.templatePath = textBoxTemplatePath.Text;
+            VdwConfigurationSettings.ActiveEnvironment.metadataPath = textBoxMetadataPath.Text;
+            VdwConfigurationSettings.ActiveEnvironment.configurationPath = textBoxTeamConfigurationPath.Text;
+            VdwConfigurationSettings.ActiveEnvironment.SaveTeamEnvironment(VdwConfigurationSettings.TeamEnvironmentFilePath);
+
             // Reload the VDW and TEAM settings, as the environment may have changed
             VdwUtility.LoadVdwConfigurationFile();
+
+            // Ensure the template overview is updated.
+            RefreshTemplateGrid();
 
             // Recreate the in-memory templates (to make sure MetadataGeneration object details are also added).
             CreateCustomTabPages();
@@ -878,7 +900,6 @@ namespace Virtual_Data_Warehouse
         }
 
 
-
         private void checkBoxGenerateInDatabase_CheckedChanged(object sender, EventArgs e)
         {
             foreach (CustomTabPage localTabPage in localCustomTabPageList)
@@ -1163,8 +1184,7 @@ namespace Virtual_Data_Warehouse
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxInformationMain.AppendText(
-                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                    richTextBoxInformationMain.AppendText("An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
                 }
             }
         }
@@ -1214,8 +1234,7 @@ namespace Virtual_Data_Warehouse
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxInformationMain.AppendText(
-                        "An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
+                    richTextBoxInformationMain.AppendText("An issue was encountered when regenerating the UI (Tab Pages). The reported error is " + ex);
                 }
             }
             catch (Exception ex)
@@ -1441,6 +1460,11 @@ namespace Virtual_Data_Warehouse
             }
         }
 
+        /// <summary>
+        ///  Changing the selected environment.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void comboBoxEnvironments_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Retrieve the updated value from the Combobox.
@@ -1460,65 +1484,17 @@ namespace Virtual_Data_Warehouse
 
             // Set any screen controls with the correct value.
             textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
-            textBoxTeamConnectionsPath.Text = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
             textBoxMetadataPath.Text = VdwConfigurationSettings.ActiveEnvironment.metadataPath;
-        }
+            textBoxOutputPath.Text = VdwConfigurationSettings.ActiveEnvironment.outputPath;
+            textBoxTemplatePath.Text = VdwConfigurationSettings.ActiveEnvironment.templatePath;
 
-        /// <summary>
-        /// Set the TEAM Connections File Path.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void pictureBoxOpenConnectionFile_Click(object sender, EventArgs e)
-        {
-            var fileBrowserDialog = new FolderBrowserDialog();
+            VdwConfigurationSettings.TeamConfigurationPath = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
+            VdwConfigurationSettings.VdwMetadatPath = VdwConfigurationSettings.ActiveEnvironment.metadataPath;
+            VdwConfigurationSettings.TemplatePath = VdwConfigurationSettings.ActiveEnvironment.templatePath;
+            VdwConfigurationSettings.VdwOutputPath = VdwConfigurationSettings.ActiveEnvironment.outputPath;
 
-            fileBrowserDialog.RootFolder = Environment.SpecialFolder.MyComputer;
-            fileBrowserDialog.SelectedPath = textBoxTeamConnectionsPath.Text;
-
-            DialogResult result = fileBrowserDialog.ShowDialog();
-
-            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fileBrowserDialog.SelectedPath))
-            {
-                string[] files = Directory.GetFiles(fileBrowserDialog.SelectedPath);
-
-                int fileCounter = 0;
-                foreach (string file in files)
-                {
-                    if (Path.GetFileName(file).StartsWith(GlobalParameters.JsonConnectionFileName))
-                    {
-                        fileCounter++;
-                    }
-                }
-
-                if (fileCounter == 0)
-                {
-                    string userFeedback = "The selected directory does not seem to contain a TEAM connections file (TEAM_connections.json).";
-                    richTextBoxInformationMain.Text = userFeedback;
-                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Warning, userFeedback));
-                }
-                else
-                {
-                    string finalPath;
-                    if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
-                    {
-                        finalPath = fileBrowserDialog.SelectedPath;
-                    }
-                    else
-                    {
-                        finalPath = fileBrowserDialog.SelectedPath + @"\";
-                    }
-
-
-                    // Update the parameters in memory.
-                    VdwConfigurationSettings.TeamConnectionsPath = finalPath;
-                    textBoxTeamConnectionsPath.Text = finalPath;
-
-                    // Report back to the user.
-                    richTextBoxInformationMain.AppendText("\r\nThe path now points to a directory that contains TEAM connections files. Please save this configuration to retain these settings.");
-                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"TEAM connections path updated to {VdwConfigurationSettings.TeamConnectionsPath}."));
-                }
-            }
+            // Ensure the template overview is updated.
+            RefreshTemplateGrid();
         }
 
         private void tabControlMain_SelectedIndexChanged(object sender, EventArgs e)

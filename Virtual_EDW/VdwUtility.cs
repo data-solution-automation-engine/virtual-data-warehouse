@@ -22,12 +22,12 @@ namespace Virtual_Data_Warehouse
             var initialConfigurationFile = new StringBuilder();
             initialConfigurationFile.AppendLine("/* Virtual Data Warehouse (VDW) Core Settings */");
             initialConfigurationFile.AppendLine("TeamEnvironmentFilePath|" + FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath);
-            initialConfigurationFile.AppendLine("TeamConfigurationPath|" + FormBase.VdwConfigurationSettings.TeamConfigurationPath);
-            initialConfigurationFile.AppendLine("TeamConnectionsPath|" + FormBase.VdwConfigurationSettings.TeamConnectionsPath);
+            //initialConfigurationFile.AppendLine("TeamConfigurationPath|" + FormBase.VdwConfigurationSettings.TeamConfigurationPath);
+            //nitialConfigurationFile.AppendLine("TeamConnectionsPath|" + FormBase.VdwConfigurationSettings.TeamConnectionsPath);
             initialConfigurationFile.AppendLine("TeamSelectedEnvironment|" + "F3958C0634E41306A16639B9445CD0B3");
-            initialConfigurationFile.AppendLine("InputPath|" + FormBase.VdwConfigurationSettings.VdwExamplesPath);
-            initialConfigurationFile.AppendLine("OutputPath|" + FormBase.VdwConfigurationSettings.VdwOutputPath);
-            initialConfigurationFile.AppendLine("TemplatePath|" + FormBase.VdwConfigurationSettings.TemplatePath);
+            //initialConfigurationFile.AppendLine("InputPath|" + FormBase.VdwConfigurationSettings.VdwExamplesPath);
+            //initialConfigurationFile.AppendLine("OutputPath|" + FormBase.VdwConfigurationSettings.VdwOutputPath);
+            //initialConfigurationFile.AppendLine("TemplatePath|" + FormBase.VdwConfigurationSettings.TemplatePath);
             initialConfigurationFile.AppendLine("VdwSchema|vdw");
             initialConfigurationFile.AppendLine("/* End of file */");
 
@@ -53,12 +53,12 @@ namespace Virtual_Data_Warehouse
                 string[] configurationArray =
                 {
                     "TeamEnvironmentFilePath",
-                    "TeamConfigurationPath",
-                    "TeamConnectionsPath",
+                    //"TeamConfigurationPath",
+                    //"TeamConnectionsPath",
                     "TeamSelectedEnvironment",
-                    "InputPath",
-                    "OutputPath",
-                    "TemplatePath",
+                    //"InputPath",
+                    //"OutputPath",
+                    //"TemplatePath",
                     "VdwSchema"
                 };
 
@@ -71,25 +71,25 @@ namespace Virtual_Data_Warehouse
                             case "TeamEnvironmentFilePath":
                                 FormBase.VdwConfigurationSettings.TeamEnvironmentFilePath = configList[configuration];
                                 break;
-                            case "TeamConfigurationPath":
-                                FormBase.VdwConfigurationSettings.TeamConfigurationPath = configList[configuration];
-                                break;
-                            case "TeamConnectionsPath":
-                                FormBase.VdwConfigurationSettings.TeamConnectionsPath = configList[configuration];
-                                break;
+                            //case "TeamConfigurationPath":
+                            //    FormBase.VdwConfigurationSettings.TeamConfigurationPath = configList[configuration];
+                            //    break;
+                            //case "TeamConnectionsPath":
+                            //    FormBase.VdwConfigurationSettings.TeamConnectionsPath = configList[configuration];
+                            //    break;
                             case "TeamSelectedEnvironment":
                                 FormBase.VdwConfigurationSettings.TeamSelectedEnvironmentInternalId =
                                     configList[configuration];
                                 break;
-                            case "InputPath":
-                                FormBase.VdwConfigurationSettings.VdwMetadatPath = configList[configuration];
-                                break;
-                            case "OutputPath":
-                                FormBase.VdwConfigurationSettings.VdwOutputPath = configList[configuration];
-                                break;
-                            case "TemplatePath":
-                                FormBase.VdwConfigurationSettings.TemplatePath = configList[configuration];
-                                break;
+                            //case "InputPath":
+                            //    FormBase.VdwConfigurationSettings.VdwMetadatPath = configList[configuration];
+                            //    break;
+                            //case "OutputPath":
+                            //    FormBase.VdwConfigurationSettings.VdwOutputPath = configList[configuration];
+                            //    break;
+                            //case "TemplatePath":
+                            //    FormBase.VdwConfigurationSettings.TemplatePath = configList[configuration];
+                            //    break;
                             case "VdwSchema":
                                 FormBase.VdwConfigurationSettings.VdwSchema = configList[configuration];
                                 break;
@@ -98,13 +98,11 @@ namespace Virtual_Data_Warehouse
                                 break;
                         }
 
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
-                            $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The entry {configuration} was loaded from the configuration file with value {configList[configuration]}."));
                     }
                     else
                     {
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
-                            $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"* The entry {configuration} was not found in the configuration file. Please make sure an entry exists ({configuration}|<value>)."));
                     }
                 }
 
@@ -112,8 +110,7 @@ namespace Virtual_Data_Warehouse
             }
             catch (Exception exception)
             {
-                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error,
-                    $"An error was encountered loading the VDW configuration file. The reported error is: \r\n\r\n{exception.Message}."));
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error was encountered loading the VDW configuration file. The reported error is: \r\n\r\n{exception.Message}."));
             }
         }
 
@@ -126,8 +123,7 @@ namespace Virtual_Data_Warehouse
             if (environmentName != null)
             {
                 // Connection information (TEAM_connections).
-                var connectionFileName = FormBase.VdwConfigurationSettings.TeamConnectionsPath + FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName +
-                                         FormBase.GlobalParameters.JsonExtension;
+                var connectionFileName = FormBase.VdwConfigurationSettings.TeamConnectionsPath + FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName + FormBase.GlobalParameters.JsonExtension;
 
                 FormBase.TeamConfigurationSettings.ConnectionDictionary = TeamConnectionFile.LoadConnectionFile(connectionFileName);
 
@@ -139,8 +135,7 @@ namespace Virtual_Data_Warehouse
                 {
                     foreach (var localConnection in FormBase.TeamConfigurationSettings.ConnectionDictionary)
                     {
-                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information,
-                            $"The connection key {localConnection.Value.ConnectionKey} is available as part of the {FormBase.VdwConfigurationSettings.ActiveEnvironment.environmentKey} environment."));
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The connection key {localConnection.Value.ConnectionKey} is available as part of the {FormBase.VdwConfigurationSettings.ActiveEnvironment.environmentKey} environment."));
 
                     }
                 }
