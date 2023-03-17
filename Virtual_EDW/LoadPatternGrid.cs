@@ -97,7 +97,7 @@ namespace Virtual_Data_Warehouse
             #region Event Handlers
 
             CurrentCellDirtyStateChanged += dataGridViewTemplateCollection_CurrentCellDirtyStateChanged;
-            DataError += dataGridViewDataError;
+            //DataError += dataGridViewDataError;
 
             #endregion
         }
