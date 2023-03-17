@@ -104,7 +104,6 @@ namespace Virtual_Data_Warehouse
             VdwConfigurationSettings.TemplatePath = VdwConfigurationSettings.ActiveEnvironment.templatePath;
             textBoxTemplatePath.Text = VdwConfigurationSettings.TemplatePath;
 
-
             // Load the configuration and connection information from file, based on the selected environment and input path.
             VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
             VdwUtility.LoadTeamConfigurationFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
@@ -1473,6 +1472,18 @@ namespace Virtual_Data_Warehouse
             VdwConfigurationSettings.TeamSelectedEnvironmentInternalId = selectedEnvironment.Value.environmentInternalId;
             VdwConfigurationSettings.ActiveEnvironment = selectedEnvironment.Value;
 
+            // Set any screen controls with the correct value.
+            textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
+            textBoxMetadataPath.Text = VdwConfigurationSettings.ActiveEnvironment.metadataPath;
+            textBoxOutputPath.Text = VdwConfigurationSettings.ActiveEnvironment.outputPath;
+            textBoxTemplatePath.Text = VdwConfigurationSettings.ActiveEnvironment.templatePath;
+
+            VdwConfigurationSettings.TeamConfigurationPath = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
+            VdwConfigurationSettings.TeamConnectionsPath = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
+            VdwConfigurationSettings.VdwMetadatPath = VdwConfigurationSettings.ActiveEnvironment.metadataPath;
+            VdwConfigurationSettings.TemplatePath = VdwConfigurationSettings.ActiveEnvironment.templatePath;
+            VdwConfigurationSettings.VdwOutputPath = VdwConfigurationSettings.ActiveEnvironment.outputPath;
+
             if (startUpIndicator != true)
             {
                 // Reload the configuration and connections file associated with this new environment.
@@ -1481,18 +1492,6 @@ namespace Virtual_Data_Warehouse
 
                 richTextBoxInformationMain.AppendText($"The '{VdwConfigurationSettings.ActiveEnvironment.environmentKey}' environment is now active.\r\n");
             }
-
-            // Set any screen controls with the correct value.
-            textBoxTeamConfigurationPath.Text = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
-            textBoxMetadataPath.Text = VdwConfigurationSettings.ActiveEnvironment.metadataPath;
-            textBoxOutputPath.Text = VdwConfigurationSettings.ActiveEnvironment.outputPath;
-            textBoxTemplatePath.Text = VdwConfigurationSettings.ActiveEnvironment.templatePath;
-
-            VdwConfigurationSettings.TeamConfigurationPath = VdwConfigurationSettings.ActiveEnvironment.configurationPath;
-            VdwConfigurationSettings.VdwMetadatPath = VdwConfigurationSettings.ActiveEnvironment.metadataPath;
-            VdwConfigurationSettings.TemplatePath = VdwConfigurationSettings.ActiveEnvironment.templatePath;
-            VdwConfigurationSettings.VdwOutputPath = VdwConfigurationSettings.ActiveEnvironment.outputPath;
-
             // Ensure the template overview is updated.
             RefreshTemplateGrid();
         }
