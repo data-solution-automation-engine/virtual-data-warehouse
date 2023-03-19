@@ -18,6 +18,7 @@ namespace Virtual_Data_Warehouse
             MyParent = myParent;
             InitializeComponent();
         }
+
         internal static TemplateGridView _templateGridView;
 
         // List of TEAM working environments.

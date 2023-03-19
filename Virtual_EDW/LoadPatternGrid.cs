@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
@@ -8,9 +9,15 @@ namespace Virtual_Data_Warehouse
 {
     public class TemplateGridView : DataGridView
     {
+        internal BindingList<LocalTeamConnection> bindingList;
+        internal BindingSource bindingSource;
+        internal TeamConfiguration TeamConfiguration;
+
         public TemplateGridView(TeamConfiguration teamConfiguration)
         {
             #region Generic properties
+
+            TeamConfiguration = teamConfiguration;
 
             // Disable resizing for performance, will be enabled after binding.
             RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
@@ -54,17 +61,32 @@ namespace Virtual_Data_Warehouse
             };
             Columns.Add(TemplateType);
 
-            DataGridViewComboBoxColumn TemplateConnectionKey = new DataGridViewComboBoxColumn
+            // Connections list (combo box) column.
+            DataGridViewComboBoxColumn TemplateConnectionKey = new DataGridViewComboBoxColumn();
+
+            TemplateConnectionKey.Name = TemplateGridColumns.TemplateConnectionKey.ToString();
+            TemplateConnectionKey.HeaderText = "Connection";
+            TemplateConnectionKey.DataPropertyName = TemplateGridColumns.TemplateConnectionKey.ToString();
+            TemplateConnectionKey.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing;
+
+            TemplateConnectionKey.DataSource = null;
+
+            bindingList = new BindingList<LocalTeamConnection>();
+            bindingSource = new BindingSource();
+
+            bindingSource.DataSource = bindingList;
+            TemplateConnectionKey.DataSource = bindingSource;
+
+            var connectionList = LocalTeamConnection.GetConnections(teamConfiguration.ConnectionDictionary);
+
+            foreach (LocalTeamConnection teamConnection in connectionList)
             {
-                Name = TemplateGridColumns.TemplateConnectionKey.ToString(),
-                HeaderText = "Connection Key",
-                DataPropertyName = TemplateGridColumns.TemplateConnectionKey.ToString(),
-                DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing,
-                DataSource = LocalTeamConnection.GetConnections(teamConfiguration.ConnectionDictionary),
-                DisplayMember = "ConnectionKey",
-                ValueMember = "ConnectionId",
-                ValueType = typeof(string)
-            };
+                bindingList.Add(teamConnection);
+            }
+
+            TemplateConnectionKey.DisplayMember = "ConnectionKey";
+            TemplateConnectionKey.ValueMember = "ConnectionId";
+            
             Columns.Add(TemplateConnectionKey);
 
             DataGridViewTextBoxColumn TemplateOutputFileConvention = new DataGridViewTextBoxColumn
@@ -97,9 +119,21 @@ namespace Virtual_Data_Warehouse
             #region Event Handlers
 
             CurrentCellDirtyStateChanged += dataGridViewTemplateCollection_CurrentCellDirtyStateChanged;
-            //DataError += dataGridViewDataError;
+            DataError += dataGridViewDataError;
 
             #endregion
+        }
+
+        public void RefreshComboboxItems()
+        {
+            bindingList.Clear();
+
+            var connectionList = LocalTeamConnection.GetConnections(TeamConfiguration.ConnectionDictionary);
+
+            foreach (LocalTeamConnection teamConnection in connectionList)
+            {
+                bindingList.Add(teamConnection);
+            }
         }
 
         private void dataGridViewDataError(object sender, DataGridViewDataErrorEventArgs e)

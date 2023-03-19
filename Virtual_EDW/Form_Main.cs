@@ -108,6 +108,15 @@ namespace Virtual_Data_Warehouse
             VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
             VdwUtility.LoadTeamConfigurationFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
 
+            // Define the data grid.
+            _templateGridView = new TemplateGridView(TeamConfigurationSettings);
+            ((ISupportInitialize)(_templateGridView)).BeginInit();
+
+            _templateGridView.DoubleBuffered(true);
+            tabPageSettings.Controls.Add(_templateGridView);
+
+            ((ISupportInitialize)(_templateGridView)).EndInit();
+
             PopulateEnvironmentComboBox();
             comboBoxEnvironments.SelectedIndex = comboBoxEnvironments.FindStringExact(VdwConfigurationSettings.TeamSelectedEnvironmentInternalId);
 
@@ -163,24 +172,8 @@ namespace Virtual_Data_Warehouse
                 SetTextMain("There are no templates found in the designated template directory. Please verify if there is a " + GlobalParameters.TemplateCollectionFileName + " in the " + VdwConfigurationSettings.TemplatePath + " directory, and if the file contains templates.");
             }
 
-            // Define and populate the data grid.
-            _templateGridView = new TemplateGridView(TeamConfigurationSettings);
-            ((ISupportInitialize)(_templateGridView)).BeginInit();
-
-            _templateGridView.DoubleBuffered(true);
-            tabPageSettings.Controls.Add(_templateGridView);
-
-            ((ISupportInitialize)(_templateGridView)).EndInit();
-
             PopulateTemplateCollectionDataGrid();
-
             _templateGridView.AutoLayout();
-        }
-
-        public sealed override string Text
-        {
-            get { return base.Text; }
-            set { base.Text = value; }
         }
 
         public void PopulateTemplateCollectionDataGrid()
@@ -194,6 +187,9 @@ namespace Virtual_Data_Warehouse
             // Handle unknown combobox values, by setting them to empty.
             var localConnectionKeyList = LocalTeamConnection.TeamConnectionKeyList(TeamConfigurationSettings.ConnectionDictionary);
             List<string> userFeedbackList = new List<string>();
+
+            // Make sure all the connections are updated in the gridview combobox.
+            _templateGridView.RefreshComboboxItems();
 
             foreach (DataRow row in templateDataTable.Rows)
             {
@@ -1493,6 +1489,7 @@ namespace Virtual_Data_Warehouse
                 richTextBoxInformationMain.AppendText($"The '{VdwConfigurationSettings.ActiveEnvironment.environmentKey}' environment is now active.\r\n");
             }
             // Ensure the template overview is updated.
+            //_templateGridView = new TemplateGridView(TeamConfigurationSettings);
             RefreshTemplateGrid();
         }
 
@@ -1562,6 +1559,12 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.Text = $@"An error has occurred while attempting to open the directory. The error message is: {ex.Message}.";
             }
+        }
+
+        public sealed override string Text
+        {
+            get { return base.Text; }
+            set { base.Text = value; }
         }
     }
 }

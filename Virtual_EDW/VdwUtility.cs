@@ -136,7 +136,6 @@ namespace Virtual_Data_Warehouse
                     foreach (var localConnection in FormBase.TeamConfigurationSettings.ConnectionDictionary)
                     {
                         FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The connection key {localConnection.Value.ConnectionKey} is available as part of the {FormBase.VdwConfigurationSettings.ActiveEnvironment.environmentKey} environment."));
-
                     }
                 }
             }
