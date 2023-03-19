@@ -2,7 +2,6 @@
 GO
 --
 -- Hub ETL procedure for {{targetDataObject.name}}, coming from {{sourceDataObjects.0.name}}
--- Generated at {{now}}
 --
 
 CREATE OR ALTER PROCEDURE [usp_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}]
@@ -75,7 +74,7 @@ BEGIN
         Main ETL block
       */
 
-       INSERT INTO [{{targetDataObject.name}}]
+       INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
        (
          [{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
          [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
@@ -89,8 +88,8 @@ BEGIN
          @ModuleInstanceId AS [MODULE_INSTANCE_ID],
          hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
          hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-       FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
-       LEFT OUTER JOIN [{{targetDataObject.name}}] hub_table
+       FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
+       LEFT OUTER JOIN [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] hub_table
           ON hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
        WHERE hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL  
 

@@ -1,6 +1,5 @@
 --
 -- Link View definition for {{generationSpecificMetadata.selectedDataObject.name}}
--- Generated at {{generationSpecificMetadata.generationDateTime}}
 --
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
@@ -17,7 +16,7 @@ SELECT
 {{#each dataItemMappings}} + ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{{/each}}{{#each businessKeys}} {{#if @first}} ) AS {{surrogateKey}},{{/if}}{{/each}}
     -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
     MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
-    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKeys}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
+    {{#each businessKeys}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
     {{#unless businessKeyClassification}}HASHBYTES('MD5',
     {{#each businessKeyComponentMapping}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{@../index }})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
@@ -37,7 +36,6 @@ FROM
     SELECT {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
         CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}}{{@../index }},{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}
         [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}
-        {{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
     FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
     WHERE {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
@@ -47,13 +45,14 @@ FROM
        {{/each}}
        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY
-       {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}},{{/stringcompare}}{{/each}}{{/each}}{{/each}}{{#each dataItemMappings}}[{{sourceDataItems.0.name}}],{{/each}}       
-       {{../metadataConfiguration.recordSourceAttribute}}{{#unless @last}}UNION{{/unless}}
+       {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}},{{/stringcompare}}{{/each}}{{/each}}{{/each}}
+       {{#each dataItemMappings}}[{{sourceDataItems.0.name}}],{{/each}}       
+       
+       {{#unless @last}}UNION{{/unless}}
   ) LINK_selection
   GROUP BY {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
-     {{targetDataItem.name}}{{@../index }}{{#unless @last}},{{/unless}}{{/each}},{{/unless}}{{/each}}
+     {{targetDataItem.name}}{{@../index }}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}}{{/each}}
      {{#each dataItemMappings}}
-     [{{targetDataItem.name}}],{{/each}}
-     {{../metadataConfiguration.recordSourceAttribute}} {{/each}}
+     [{{targetDataItem.name}}],{{/each}}{{/each}}
 ) link
 WHERE ROW_NR = 1

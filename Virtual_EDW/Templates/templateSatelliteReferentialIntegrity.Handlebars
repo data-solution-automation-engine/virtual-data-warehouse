@@ -2,6 +2,8 @@
 --
 -- Satellite Insert Referential Integrity check for {{targetDataObject.name}}
 --
+-- By convention, the parent (referencing) data object is the first object in the related data object list.
+--
 
 SELECT
     COUNT(*) AS RI_ISSUES, 

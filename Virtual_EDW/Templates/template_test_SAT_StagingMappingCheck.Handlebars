@@ -4,7 +4,7 @@ DECLARE @UT_ID int = 6;
 {{#each dataObjectMappings}}
 
 --
--- SAT UT Staging to Sattelite check for {{targetDataObject.name}} - {{sourceDataObjects.0.name}} pair
+-- SAT UT Staging to Satellite check for {{targetDataObject.name}} - {{sourceDataObjects.0.name}} pair
 --
 
 INSERT INTO OMD.UT_DETAIL (UT_ID, TARGET_TABLE, SOURCE_TABLE, TARGET_COLUMN, SOURCE_COLUMN, TARGET_SCHEMA, SOURCE_SCHEMA, REALM, UT_TEST_SQL, UT_DETAIL_SQL, INACTIVE_INDICATOR, NOTES)
