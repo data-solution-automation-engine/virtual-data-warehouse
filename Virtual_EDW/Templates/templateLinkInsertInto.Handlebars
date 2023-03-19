@@ -8,17 +8,15 @@ INSERT INTO [{{targetDataObject.name}}]
    [{{surrogateKey}}],{{/each}}{{#each dataItemMappings}}
    [{{targetDataItem.name}}],{{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
-   [{{../metadataConfiguration.loadDateTimeAttribute}}],
-   [{{../metadataConfiguration.recordSourceAttribute}}]
+   [{{../metadataConfiguration.loadDateTimeAttribute}}]
 )
 SELECT {{#each businessKeys}}
    link_view.[{{surrogateKey}}],{{/each}}{{#each dataItemMappings}}
    link_view.[{{targetDataItem.name}}],{{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
-   link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-   link_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] link_view
-LEFT OUTER JOIN [{{targetDataObject.name}}] link_table
+   link_view.[{{../metadataConfiguration.loadDateTimeAttribute}}]
+FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] link_view
+LEFT OUTER JOIN [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] link_table
    ON link_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = link_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
 WHERE link_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}

@@ -45,14 +45,13 @@ FROM
        {{/each}}
        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY
-       {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}},{{/stringcompare}}{{/each}}{{/each}}{{/each}}
-       {{#each dataItemMappings}}[{{sourceDataItems.0.name}}],{{/each}}       
-       
+       {{#each businessKeys}}{{#unless @first}}{{#each businessKeyComponentMapping}}{{#stringcompare sourceDataItems.0.isHardCodedValue "True"}}{{else}}{{sourceDataItems.0.name}}{{/stringcompare}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
+       {{#each dataItemMappings}},[{{sourceDataItems.0.name}}] -- Degenerate column{{/each}}
        {{#unless @last}}UNION{{/unless}}
   ) LINK_selection
   GROUP BY {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
      {{targetDataItem.name}}{{@../index }}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}}{{/each}}
      {{#each dataItemMappings}}
-     [{{targetDataItem.name}}],{{/each}}{{/each}}
+     ,[{{targetDataItem.name}}]{{/each}}{{/each}}
 ) link
 WHERE ROW_NR = 1
