@@ -46,7 +46,7 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteViewWithDeliveryKey.handlebars",
     "TemplateNotes": "Regular Satellite pattern extended with delivery key concept."
-  }.  
+  }, 
   {
     "TemplateName": "100 Dimension / PIT Select Template",
     "TemplateType": "Presentation",

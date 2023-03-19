@@ -165,7 +165,7 @@ namespace Virtual_Data_Warehouse
         private void RefreshTemplateGrid()
         {
             // Load the template collection into memory.
-            VdwConfigurationSettings.templateList = TemplateHandling.LoadTemplateCollection();
+            VdwConfigurationSettings.templateList = TemplateHandling.LoadTemplateCollection(VdwConfigurationSettings.VdwEventLog);
 
             if ((VdwConfigurationSettings.templateList != null) && (!VdwConfigurationSettings.templateList.Any()))
             {
@@ -1136,7 +1136,7 @@ namespace Virtual_Data_Warehouse
 
                 // Reload the files into the grid
                 VdwConfigurationSettings.templateList.Clear();
-                VdwConfigurationSettings.templateList = TemplateHandling.LoadTemplateCollection();
+                VdwConfigurationSettings.templateList = TemplateHandling.LoadTemplateCollection(VdwConfigurationSettings.VdwEventLog);
                 PopulateTemplateCollectionDataGrid();
             }
         }

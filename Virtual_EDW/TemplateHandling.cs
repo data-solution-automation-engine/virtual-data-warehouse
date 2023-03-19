@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.SqlServer.Management.Smo;
 using Newtonsoft.Json;
+using TEAM_Library;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Virtual_Data_Warehouse
 {
@@ -77,17 +81,24 @@ namespace Virtual_Data_Warehouse
             return returnMessage;
         }
 
-        internal static List<TemplateHandling> LoadTemplateCollection()
+        internal static List<TemplateHandling> LoadTemplateCollection(EventLog eventLog)
         {
             List<TemplateHandling> templateList = new List<TemplateHandling>();
 
-            // Retrieve the file contents and store in a string.
-            if (File.Exists(FormBase.VdwConfigurationSettings.TemplatePath + FormBase.GlobalParameters.TemplateCollectionFileName))
+            try
             {
-                var jsonInput = File.ReadAllText(FormBase.VdwConfigurationSettings.TemplatePath + FormBase.GlobalParameters.TemplateCollectionFileName);
+                // Retrieve the file contents and store in a string.
+                if (File.Exists(FormBase.VdwConfigurationSettings.TemplatePath + FormBase.GlobalParameters.TemplateCollectionFileName))
+                {
+                    var jsonInput = File.ReadAllText(FormBase.VdwConfigurationSettings.TemplatePath + FormBase.GlobalParameters.TemplateCollectionFileName);
 
-                //Move the (json) string into a List object (a list of the type Template).
-                templateList = JsonConvert.DeserializeObject<List<TemplateHandling>>(jsonInput);
+                    //Move the (json) string into a List object (a list of the type Template).
+                    templateList = JsonConvert.DeserializeObject<List<TemplateHandling>>(jsonInput);
+                }
+            }
+            catch (Exception exception)
+            {
+                eventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error was encountered loading the template collection from '{FormBase.VdwConfigurationSettings.TemplatePath + FormBase.GlobalParameters.TemplateCollectionFileName}. The error encountered was '{exception.Message}'."));
             }
 
             // Return the list to the instance
