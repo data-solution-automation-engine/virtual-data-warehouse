@@ -3,7 +3,7 @@
 -- Link Insert Into statement for {{targetDataObject.name}}
 --
 
-INSERT INTO [{{targetDataObject.name}}]
+INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 (  {{#each businessKeys}}
    [{{surrogateKey}}],{{/each}}{{#each dataItemMappings}}
    [{{targetDataItem.name}}],{{/each}}

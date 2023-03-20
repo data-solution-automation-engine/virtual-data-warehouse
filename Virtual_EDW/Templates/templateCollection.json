@@ -24,13 +24,21 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "100 Data Vault LinkSatellite View Template",
+    "TemplateName": "100 Data Vault Link-Satellite View Template",
     "TemplateType": "NaturalBusinessRelationshipContext",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkSatelliteView.handlebars",
     "TemplateNotes": ""
   },
+  {
+    "TemplateName": "150 Data Vault Link-Satellite View Template With Zero Record",
+    "TemplateType": "NaturalBusinessRelationshipContext",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateLinkSatelliteViewZeroRecord.handlebars",
+    "TemplateNotes": ""
+  },  
   {
     "TemplateName": "100 Data Vault Satellite View Template",
     "TemplateType": "Context",
@@ -46,7 +54,7 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteViewWithDeliveryKey.handlebars",
     "TemplateNotes": "Regular Satellite pattern extended with delivery key concept."
-  }, 
+  },
   {
     "TemplateName": "100 Dimension / PIT Select Template",
     "TemplateType": "Presentation",

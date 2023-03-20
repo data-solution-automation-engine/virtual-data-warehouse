@@ -1,6 +1,6 @@
 {{#each dataObjectMappings}}
 --
--- Satellite View definition for {{../generationSpecificMetadata.selectedDataObject.name}}
+-- Satellite View definition for {{../generationSpecificMetadata.selectedDataObject.name}}.
 --
 -- This template represents a standard Data Vault style 'Satellite' table as a view.
 -- The view shows the same data as would otherwise be the case if the table would be created and all data logistics processes run.
@@ -28,7 +28,7 @@ SELECT
     --     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
     --   ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
     --   CAST( '9999-12-31' AS DATETIME)
-    --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}},
+    --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}}],
     --CASE
     --  WHEN ( RANK() OVER (PARTITION BY {{#each businessKeys}} {{#each businessKeyComponentMapping}}
     --      {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
@@ -116,7 +116,7 @@ FROM
    ) sub
 ) combined_value
 WHERE 
-  ( [VALUE_CHANGE_INDICATOR] ='Different' and  [{{../metadataConfiguration.changeDataCaptureAttribute}}] in ('C')) 
+  ([VALUE_CHANGE_INDICATOR] = 'Different' AND  [{{../metadataConfiguration.changeDataCaptureAttribute}}] IN ('C')) 
   OR
-  ( [CDC_CHANGE_INDICATOR] = 'Different' and [TIME_CHANGE_INDICATOR] = 'Different')
+  ([CDC_CHANGE_INDICATOR] = 'Different' AND [TIME_CHANGE_INDICATOR] = 'Different')
 {{/each}}

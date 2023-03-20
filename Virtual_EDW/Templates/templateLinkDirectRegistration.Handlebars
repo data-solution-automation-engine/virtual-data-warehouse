@@ -1,6 +1,10 @@
-   DECLARE @SOURCE_TABLE VARCHAR(1000);
-   DECLARE @TARGET_TABLE VARCHAR(1000);
-   DECLARE @SYSTEM_GROUP VARCHAR(100);
+--
+-- DIRECT registration template for the Link object {{targetDataObject.name}}.
+--
+
+DECLARE @SOURCE_TABLE VARCHAR(1000);
+DECLARE @TARGET_TABLE VARCHAR(1000);
+DECLARE @SYSTEM_GROUP VARCHAR(100);
 
 {{#each dataObjectMappings}}
 

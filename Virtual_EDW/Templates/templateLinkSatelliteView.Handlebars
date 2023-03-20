@@ -1,6 +1,6 @@
 {{#each dataObjectMappings}}
 --
--- Link Satellite View definition for {{../generationSpecificMetadata.selectedDataObject.name}}
+-- Link Satellite View definition for {{../generationSpecificMetadata.selectedDataObject.name}}.
 --
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
@@ -12,44 +12,44 @@ SELECT
     HASHBYTES('MD5', {{#each businessKeys}}{{#unless @first}} +{{/unless}}{{!-- Create the Surrogate Key using the Business Key and components --}}{{#each businessKeyComponentMapping}}
        ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{/each}}{{#each businessKeys}}{{#if @first}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
-    DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
-    COALESCE (
-      LEAD (DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) ) OVER
-      ( PARTITION BY {{#each businessKeys}} {{!-- The Hub business key --}}{{#unless @first}},{{/unless}}
-          {{#each businessKeyComponentMapping}}{{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-         {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
-       ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
-       CAST( '9999-12-31' AS DATETIME)
-    ) AS LOAD_END_DATETIME,
-    CASE
-      WHEN ( RANK() OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
-          {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-         {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
-         ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}} desc )) = 1
-       THEN 'Y'
-       ELSE 'N'
-    END AS CURRENT_RECORD_INDICATOR,
-    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    [{{../metadataConfiguration.loadDateTimeAttribute}}],
+    [{{../metadataConfiguration.sourceRowIdAttribute}}],    
+    --COALESCE (
+    --  LEAD (DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) ) OVER
+    --  ( PARTITION BY {{#each businessKeys}} {{!-- The Hub business key --}}{{#unless @first}},{{/unless}}
+    --      {{#each businessKeyComponentMapping}}{{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+    --     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+    --   ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
+    --   CAST( '9999-12-31' AS DATETIME)
+    --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}}],
+    --CASE
+    --  WHEN ( RANK() OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
+    --      {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+    --     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+    --     ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}} desc )) = 1
+    --   THEN 'Y'
+    --   ELSE 'N'
+    --END AS [CURRENT_RECORD_INDICATOR],
+    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the Control Framework attributes --}}
     {{../metadataConfiguration.changeDataCaptureAttribute}},
-    {{../metadataConfiguration.sourceRowIdAttribute}},
-    {{../metadataConfiguration.recordSourceAttribute}},
-    CASE
-      WHEN {{../metadataConfiguration.changeDataCaptureAttribute}} = 'Delete' THEN 'Y'
-      ELSE 'N'
-    END AS [DELETED_RECORD_INDICATOR],
+    --{{../metadataConfiguration.recordSourceAttribute}},
+    --CASE
+    --  WHEN {{../metadataConfiguration.changeDataCaptureAttribute}} = 'Delete' THEN 'Y'
+    --  ELSE 'N'
+    --END AS [DELETED_RECORD_INDICATOR],
     HASHBYTES('MD5',
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMappings}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceDataItems.0.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
-    ) AS {{../metadataConfiguration.recordChecksumAttribute}},
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
+    ) AS [{{../metadataConfiguration.recordChecksumAttribute}}],
     {{#each dataItemMappings}}
-    {{sourceDataItems.0.name}} AS {{targetDataItem.name}},
+    [{{targetDataItem.name}}],
     {{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
           {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-         {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+         {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
     ORDER BY {{#each businessKeys}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
           {{targetDataItem.name}},{{/each}}{{/each}}
-          {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}{{../sourceDataItems.0.name}},{{/if}}{{/each}}{{/each}}
+          {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}{{../targetDataItem.name}},{{/if}}{{/each}}{{/each}}
           {{../metadataConfiguration.loadDateTimeAttribute}}
     ) AS ROW_NUMBER
 FROM
@@ -57,72 +57,59 @@ FROM
       SELECT 
          [{{../metadataConfiguration.loadDateTimeAttribute}}],
          [{{../metadataConfiguration.eventDateTimeAttribute}}],
-         [{{../metadataConfiguration.recordSourceAttribute}}],
+         --[{{../metadataConfiguration.recordSourceAttribute}}],
          [{{../metadataConfiguration.sourceRowIdAttribute}}],
          [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}}{{#each businessKeyComponentMapping}}
-         {{targetDataItem.name}},{{/each}}{{/each}}
+         [{{targetDataItem.name}}],{{/each}}{{/each}}
          {{#each dataItemMappings}}
-         {{sourceDataItems.0.name}},
+         [{{targetDataItem.name}}],
          {{/each}}
-         COMBINED_VALUE,
+         [COMBINED_VALUE],
          CASE 
            WHEN LAG(COMBINED_VALUE,1,0x00000000000000000000000000000000) OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
-             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] DESC) = COMBINED_VALUE
            THEN 'Same'
            ELSE 'Different'
-         END AS VALUE_CHANGE_INDICATOR,
+         END AS [VALUE_CHANGE_INDICATOR],
          CASE 
            WHEN LAG([{{../metadataConfiguration.changeDataCaptureAttribute}}],1,'') OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.changeDataCaptureAttribute}}]
            THEN 'Same'
            ELSE 'Different'
-         END AS CDC_CHANGE_INDICATOR,
+         END AS [CDC_CHANGE_INDICATOR],
          CASE 
            WHEN LEAD([{{../metadataConfiguration.loadDateTimeAttribute}}],1,'9999-12-31') OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.loadDateTimeAttribute}}]
            THEN 'Same'
            ELSE 'Different'
-         END AS TIME_CHANGE_INDICATOR
+         END AS [TIME_CHANGE_INDICATOR]
       FROM
       (
         SELECT
           [{{../metadataConfiguration.loadDateTimeAttribute}}],
           [{{../metadataConfiguration.eventDateTimeAttribute}}],
-          [{{../metadataConfiguration.recordSourceAttribute}}],
+          --[{{../metadataConfiguration.recordSourceAttribute}}],
           [{{../metadataConfiguration.sourceRowIdAttribute}}],
           [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}} {{#each businessKeyComponentMapping}}
           CAST ({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}],{{/each}}{{/each}}        
           {{#each dataItemMappings}}
-          [{{sourceDataItems.0.name}}],
+          [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
           {{/each}}
            HASHBYTES('MD5',{{#each dataItemMappings}}
-            ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{sourceDataItems.0.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
-           ) AS COMBINED_VALUE
+            ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
+           ) AS [COMBINED_VALUE]
         FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
         {{#if filterCriterion}}WHERE {{filterCriterion}} {{/if}}
-        UNION
-        SELECT DISTINCT
-          '1900-01-01' AS [{{../metadataConfiguration.loadDateTimeAttribute}}],
-          '1900-01-01' AS [{{../metadataConfiguration.eventDateTimeAttribute}}],
-          'Data Warehouse' AS [{{../metadataConfiguration.recordSourceAttribute}}],
-          0 AS [{{../metadataConfiguration.sourceRowIdAttribute}}],
-          'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}} {{#each businessKeyComponentMapping}}
-          CAST ({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}],{{/each}}{{/each}}        
-          {{#each dataItemMappings}}
-          {{stringcompare targetDataItem.dataItemClassification.0.classification 'MultiActive'}}[{{sourceDataItems.0.name}}]{{else}}NULL{{/stringcompare}} AS [{{sourceDataItems.0.name}}],
-          {{/each}}
-          0x00000000000000000000000000000000 AS COMBINED_VALUE
-        FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
    ) sub
 ) combined_value
 WHERE 
-  (VALUE_CHANGE_INDICATOR ='Different' and  [{{../metadataConfiguration.changeDataCaptureAttribute}}] in ('Insert', 'Change')) 
+  ([VALUE_CHANGE_INDICATOR] = 'Different' AND  [{{../metadataConfiguration.changeDataCaptureAttribute}}] IN ('C')) 
   OR
-  ( CDC_CHANGE_INDICATOR = 'Different' and TIME_CHANGE_INDICATOR = 'Different')
+  ([CDC_CHANGE_INDICATOR] = 'Different' AND [TIME_CHANGE_INDICATOR] = 'Different')
 {{/each}}

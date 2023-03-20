@@ -1,6 +1,6 @@
 {{#each dataObjectMappings}}{{#if @first}}
 --
--- Satellite Insert Into statement for {{targetDataObject.name}}
+-- Satellite Insert Into statement for {{targetDataObject.name}}.
 -- 
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'INT.SP_{{targetDataObject.name}}') AND type in (N'P'))
