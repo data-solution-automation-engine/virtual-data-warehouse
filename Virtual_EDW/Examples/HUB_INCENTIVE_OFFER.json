@@ -1,23 +1,48 @@
 {
   "metadataConfiguration": {
-    "changeDataCaptureAttribute": "CDC_OPERATION",
-    "recordSourceAttribute": "RECORD_SOURCE",
-    "loadDateTimeAttribute": "LOAD_DATETIME",
-    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
-    "eventDateTimeAttribute": "EVENT_DATETIME",
-    "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "MODULE_INSTANCE_ID",
-    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+    "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
+    "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
+    "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",
+    "expiryDateTimeAttribute": "INSCRIPTION_END_TIMESTAMP",
+    "eventDateTimeAttribute": "SOURCE_TIMESTAMP",
+    "recordChecksumAttribute": "CHECKSUM",
+    "etlProcessAttribute": "AUDIT_TRAIL_ID",
+    "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": {
       "name": "HUB_INCENTIVE_OFFER",
+      "dataItems": [
+        {
+          "name": "INCENTIVE_OFFER_SK",
+          "dataType": "binary",
+          "characterLength": 16,
+          "ordinalPosition": 1
+        },
+        {
+          "name": "AUDIT_TRAIL_ID",
+          "dataType": "int",
+          "ordinalPosition": 2
+        },
+        {
+          "name": "INSCRIPTION_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 3
+        },
+        {
+          "name": "OFFER_ID",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 4
+        }
+      ],
       "dataObjectConnection": {
         "dataConnectionString": "Integration",
         "extensions": [
           {
             "key": "database",
-            "value": "VirtualDWH",
+            "value": "200_Integration_Layer",
             "description": "database name"
           },
           {
@@ -45,12 +70,58 @@
       "sourceDataObjects": [
         {
           "name": "PSA_PROFILER_CUSTOMER_OFFER",
+          "dataItems": [
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSCRIPTION_RECORD_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHECKSUM",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 7
+            },
+            {
+              "name": "OfferID",
+              "dataType": "int",
+              "ordinalPosition": 8
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "PSA",
             "extensions": [
               {
                 "key": "database",
-                "value": "VirtualDWH",
+                "value": "150_Persistent_Staging_Area",
                 "description": "database name"
               },
               {
@@ -69,12 +140,37 @@
       ],
       "targetDataObject": {
         "name": "HUB_INCENTIVE_OFFER",
+        "dataItems": [
+          {
+            "name": "INCENTIVE_OFFER_SK",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 2
+          },
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "OFFER_ID",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 4
+          }
+        ],
         "dataObjectConnection": {
           "dataConnectionString": "Integration",
           "extensions": [
             {
               "key": "database",
-              "value": "VirtualDWH",
+              "value": "200_Integration_Layer",
               "description": "database name"
             },
             {
@@ -121,12 +217,59 @@
       "sourceDataObjects": [
         {
           "name": "PSA_PROFILER_OFFER",
+          "dataItems": [
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSCRIPTION_RECORD_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHECKSUM",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "OfferID",
+              "dataType": "int",
+              "ordinalPosition": 7
+            },
+            {
+              "name": "Offer_Long_Description",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 8
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "PSA",
             "extensions": [
               {
                 "key": "database",
-                "value": "VirtualDWH",
+                "value": "150_Persistent_Staging_Area",
                 "description": "database name"
               },
               {
@@ -145,12 +288,37 @@
       ],
       "targetDataObject": {
         "name": "HUB_INCENTIVE_OFFER",
+        "dataItems": [
+          {
+            "name": "INCENTIVE_OFFER_SK",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 2
+          },
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "OFFER_ID",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 4
+          }
+        ],
         "dataObjectConnection": {
           "dataConnectionString": "Integration",
           "extensions": [
             {
               "key": "database",
-              "value": "VirtualDWH",
+              "value": "200_Integration_Layer",
               "description": "database name"
             },
             {

@@ -1,23 +1,128 @@
 {
   "metadataConfiguration": {
-    "changeDataCaptureAttribute": "CDC_OPERATION",
-    "recordSourceAttribute": "RECORD_SOURCE",
-    "loadDateTimeAttribute": "LOAD_DATETIME",
-    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
-    "eventDateTimeAttribute": "EVENT_DATETIME",
-    "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "MODULE_INSTANCE_ID",
-    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+    "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
+    "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
+    "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",
+    "expiryDateTimeAttribute": "INSCRIPTION_END_TIMESTAMP",
+    "eventDateTimeAttribute": "SOURCE_TIMESTAMP",
+    "recordChecksumAttribute": "CHECKSUM",
+    "etlProcessAttribute": "AUDIT_TRAIL_ID",
+    "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": {
       "name": "STG_PROFILER_CUSTOMER_PERSONAL",
+      "dataItems": [
+        {
+          "name": "INSCRIPTION_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 1
+        },
+        {
+          "name": "INSCRIPTION_RECORD_ID",
+          "dataType": "int",
+          "ordinalPosition": 2
+        },
+        {
+          "name": "SOURCE_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 3
+        },
+        {
+          "name": "CHANGE_DATA_INDICATOR",
+          "dataType": "varchar",
+          "characterLength": 100,
+          "ordinalPosition": 4
+        },
+        {
+          "name": "AUDIT_TRAIL_ID",
+          "dataType": "int",
+          "ordinalPosition": 5
+        },
+        {
+          "name": "CHECKSUM",
+          "dataType": "binary",
+          "characterLength": 16,
+          "ordinalPosition": 6
+        },
+        {
+          "name": "CustomerID",
+          "dataType": "int",
+          "ordinalPosition": 7
+        },
+        {
+          "name": "Given",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 8
+        },
+        {
+          "name": "Surname",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 9
+        },
+        {
+          "name": "Suburb",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 10
+        },
+        {
+          "name": "State",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 11
+        },
+        {
+          "name": "Postcode",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 12
+        },
+        {
+          "name": "Country",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 13
+        },
+        {
+          "name": "Gender",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 14
+        },
+        {
+          "name": "DOB",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 15
+        },
+        {
+          "name": "Contact_Number",
+          "dataType": "int",
+          "ordinalPosition": 16
+        },
+        {
+          "name": "Referee_Offer_Made",
+          "dataType": "int",
+          "ordinalPosition": 17
+        },
+        {
+          "name": "Valid_From",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 18
+        }
+      ],
       "dataObjectConnection": {
         "dataConnectionString": "Staging",
         "extensions": [
           {
             "key": "database",
-            "value": "VirtualDWH",
+            "value": "100_Staging_Area",
             "description": "database name"
           },
           {
@@ -45,6 +150,77 @@
       "sourceDataObjects": [
         {
           "name": "CUSTOMER_PERSONAL",
+          "dataItems": [
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
+            },
+            {
+              "name": "Given",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 2
+            },
+            {
+              "name": "Surname",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "Suburb",
+              "dataType": "varchar",
+              "characterLength": 50,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "State",
+              "dataType": "varchar",
+              "characterLength": 3,
+              "ordinalPosition": 5
+            },
+            {
+              "name": "Postcode",
+              "dataType": "varchar",
+              "characterLength": 6,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "Country",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 7
+            },
+            {
+              "name": "Gender",
+              "dataType": "varchar",
+              "characterLength": 1,
+              "ordinalPosition": 8
+            },
+            {
+              "name": "DOB",
+              "dataType": "date",
+              "numericScale": 0,
+              "ordinalPosition": 9
+            },
+            {
+              "name": "Contact_Number",
+              "dataType": "int",
+              "ordinalPosition": 10
+            },
+            {
+              "name": "Referee_Offer_Made",
+              "dataType": "int",
+              "ordinalPosition": 11
+            },
+            {
+              "name": "Valid_From",
+              "dataType": "date",
+              "numericScale": 0,
+              "ordinalPosition": 12
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "Source",
             "extensions": [
@@ -69,12 +245,117 @@
       ],
       "targetDataObject": {
         "name": "STG_PROFILER_CUSTOMER_PERSONAL",
+        "dataItems": [
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "INSCRIPTION_RECORD_ID",
+            "dataType": "int",
+            "ordinalPosition": 2
+          },
+          {
+            "name": "SOURCE_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "CHANGE_DATA_INDICATOR",
+            "dataType": "varchar",
+            "characterLength": 100,
+            "ordinalPosition": 4
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 5
+          },
+          {
+            "name": "CHECKSUM",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 6
+          },
+          {
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 7
+          },
+          {
+            "name": "Given",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 8
+          },
+          {
+            "name": "Surname",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 9
+          },
+          {
+            "name": "Suburb",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 10
+          },
+          {
+            "name": "State",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 11
+          },
+          {
+            "name": "Postcode",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 12
+          },
+          {
+            "name": "Country",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 13
+          },
+          {
+            "name": "Gender",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 14
+          },
+          {
+            "name": "DOB",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 15
+          },
+          {
+            "name": "Contact_Number",
+            "dataType": "int",
+            "ordinalPosition": 16
+          },
+          {
+            "name": "Referee_Offer_Made",
+            "dataType": "int",
+            "ordinalPosition": 17
+          },
+          {
+            "name": "Valid_From",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 18
+          }
+        ],
         "dataObjectConnection": {
           "dataConnectionString": "Staging",
           "extensions": [
             {
               "key": "database",
-              "value": "VirtualDWH",
+              "value": "100_Staging_Area",
               "description": "database name"
             },
             {
@@ -93,6 +374,111 @@
       "relatedDataObjects": [
         {
           "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+          "dataItems": [
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSCRIPTION_RECORD_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHECKSUM",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 7
+            },
+            {
+              "name": "Given",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 8
+            },
+            {
+              "name": "Surname",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            },
+            {
+              "name": "Suburb",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 10
+            },
+            {
+              "name": "State",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 11
+            },
+            {
+              "name": "Postcode",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 12
+            },
+            {
+              "name": "Country",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 13
+            },
+            {
+              "name": "Gender",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 14
+            },
+            {
+              "name": "DOB",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 15
+            },
+            {
+              "name": "Contact_Number",
+              "dataType": "int",
+              "ordinalPosition": 16
+            },
+            {
+              "name": "Referee_Offer_Made",
+              "dataType": "int",
+              "ordinalPosition": 17
+            },
+            {
+              "name": "Valid_From",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 18
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "PSA",
             "extensions": [
@@ -119,111 +505,187 @@
         {
           "sourceDataItems": [
             {
-              "name": "Surname"
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
             }
           ],
           "targetDataItem": {
-            "name": "Surname"
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 7
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Suburb"
+              "name": "Given",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 2
             }
           ],
           "targetDataItem": {
-            "name": "Suburb"
+            "name": "Given",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 8
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "State"
+              "name": "Surname",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 3
             }
           ],
           "targetDataItem": {
-            "name": "State"
+            "name": "Surname",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 9
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Postcode"
+              "name": "Suburb",
+              "dataType": "varchar",
+              "characterLength": 50,
+              "ordinalPosition": 4
             }
           ],
           "targetDataItem": {
-            "name": "Postcode"
+            "name": "Suburb",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 10
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Country"
+              "name": "State",
+              "dataType": "varchar",
+              "characterLength": 3,
+              "ordinalPosition": 5
             }
           ],
           "targetDataItem": {
-            "name": "Country"
+            "name": "State",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 11
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Gender"
+              "name": "Postcode",
+              "dataType": "varchar",
+              "characterLength": 6,
+              "ordinalPosition": 6
             }
           ],
           "targetDataItem": {
-            "name": "Gender"
+            "name": "Postcode",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 12
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "DOB"
+              "name": "Country",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 7
             }
           ],
           "targetDataItem": {
-            "name": "DOB"
+            "name": "Country",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 13
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Contact_Number"
+              "name": "Gender",
+              "dataType": "varchar",
+              "characterLength": 1,
+              "ordinalPosition": 8
             }
           ],
           "targetDataItem": {
-            "name": "Contact_Number"
+            "name": "Gender",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 14
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Referee_Offer_Made"
+              "name": "DOB",
+              "dataType": "date",
+              "numericScale": 0,
+              "ordinalPosition": 9
             }
           ],
           "targetDataItem": {
-            "name": "Referee_Offer_Made"
+            "name": "DOB",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 15
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "CustomerID"
+              "name": "Contact_Number",
+              "dataType": "int",
+              "ordinalPosition": 10
             }
           ],
           "targetDataItem": {
-            "name": "CustomerID"
+            "name": "Contact_Number",
+            "dataType": "int",
+            "ordinalPosition": 16
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Given"
+              "name": "Referee_Offer_Made",
+              "dataType": "int",
+              "ordinalPosition": 11
             }
           ],
           "targetDataItem": {
-            "name": "Given"
+            "name": "Referee_Offer_Made",
+            "dataType": "int",
+            "ordinalPosition": 17
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Valid_From",
+              "dataType": "date",
+              "numericScale": 0,
+              "ordinalPosition": 12
+            }
+          ],
+          "targetDataItem": {
+            "name": "Valid_From",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 18
           }
         }
       ],

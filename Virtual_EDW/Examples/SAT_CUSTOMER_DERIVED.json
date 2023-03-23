@@ -11,10 +11,10 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": {
-      "name": "SAT_INCENTIVE_OFFER",
+      "name": "SAT_CUSTOMER_DERIVED",
       "dataItems": [
         {
-          "name": "INCENTIVE_OFFER_SK",
+          "name": "CUSTOMER_SK",
           "dataType": "binary",
           "characterLength": 16,
           "ordinalPosition": 1
@@ -54,7 +54,7 @@
           "ordinalPosition": 7
         },
         {
-          "name": "OFFER_DESCRIPTION",
+          "name": "REFERRAL_OFFER_CLEAN",
           "dataType": "nvarchar",
           "characterLength": 100,
           "ordinalPosition": 8
@@ -84,7 +84,7 @@
   },
   "dataObjectMappings": [
     {
-      "mappingName": "SAT_INCENTIVE_OFFER",
+      "mappingName": "SAT_CUSTOMER_DERIVED",
       "mappingClassifications": [
         {
           "classification": "Context"
@@ -92,81 +92,35 @@
       ],
       "sourceDataObjects": [
         {
-          "name": "PSA_PROFILER_OFFER",
-          "dataItems": [
-            {
-              "name": "INSCRIPTION_TIMESTAMP",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 1
-            },
-            {
-              "name": "INSCRIPTION_RECORD_ID",
-              "dataType": "int",
-              "ordinalPosition": 2
-            },
-            {
-              "name": "SOURCE_TIMESTAMP",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
-            },
-            {
-              "name": "CHANGE_DATA_INDICATOR",
-              "dataType": "varchar",
-              "characterLength": 100,
-              "ordinalPosition": 4
-            },
-            {
-              "name": "AUDIT_TRAIL_ID",
-              "dataType": "int",
-              "ordinalPosition": 5
-            },
-            {
-              "name": "CHECKSUM",
-              "dataType": "binary",
-              "characterLength": 16,
-              "ordinalPosition": 6
-            },
-            {
-              "name": "OfferID",
-              "dataType": "int",
-              "ordinalPosition": 7
-            },
-            {
-              "name": "Offer_Long_Description",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 8
-            }
-          ],
+          "name": "vw_CUSTOMER_DERIVED",
+          "dataItems": [],
           "dataObjectConnection": {
-            "dataConnectionString": "PSA",
+            "dataConnectionString": "Derived",
             "extensions": [
               {
                 "key": "database",
-                "value": "150_Persistent_Staging_Area",
+                "value": "200_Integration_Layer",
                 "description": "database name"
               },
               {
                 "key": "schema",
-                "value": "dbo",
+                "value": "bdv",
                 "description": "schema name"
               }
             ]
           },
           "dataObjectClassifications": [
             {
-              "classification": "PersistentStagingArea"
+              "classification": "Source"
             }
           ]
         }
       ],
       "targetDataObject": {
-        "name": "SAT_INCENTIVE_OFFER",
+        "name": "SAT_CUSTOMER_DERIVED",
         "dataItems": [
           {
-            "name": "INCENTIVE_OFFER_SK",
+            "name": "CUSTOMER_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 1
@@ -206,7 +160,7 @@
             "ordinalPosition": 7
           },
           {
-            "name": "OFFER_DESCRIPTION",
+            "name": "REFERRAL_OFFER_CLEAN",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 8
@@ -235,10 +189,10 @@
       },
       "relatedDataObjects": [
         {
-          "name": "HUB_INCENTIVE_OFFER",
+          "name": "HUB_CUSTOMER",
           "dataItems": [
             {
-              "name": "INCENTIVE_OFFER_SK",
+              "name": "CUSTOMER_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
@@ -255,7 +209,7 @@
               "ordinalPosition": 3
             },
             {
-              "name": "OFFER_ID",
+              "name": "CUSTOMER_ID",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 4
@@ -287,14 +241,14 @@
         {
           "sourceDataItems": [
             {
-              "name": "Offer_Long_Description",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 8
+              "name": "REFERRAL_OFFER_CLEAN",
+              "dataType": "varchar",
+              "characterLength": 7,
+              "ordinalPosition": 6
             }
           ],
           "targetDataItem": {
-            "name": "OFFER_DESCRIPTION",
+            "name": "REFERRAL_OFFER_CLEAN",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 8
@@ -323,16 +277,16 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "OfferID",
+                  "name": "CUSTOMER_ID",
                   "isHardCodedValue": false
                 }
               ],
               "targetDataItem": {
-                "name": "OFFER_ID"
+                "name": "CUSTOMER_ID"
               }
             }
           ],
-          "surrogateKey": "INCENTIVE_OFFER_SK"
+          "surrogateKey": "CUSTOMER_SK"
         }
       ],
       "filterCriterion": "",

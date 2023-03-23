@@ -1,23 +1,69 @@
 {
   "metadataConfiguration": {
-    "changeDataCaptureAttribute": "CDC_OPERATION",
-    "recordSourceAttribute": "RECORD_SOURCE",
-    "loadDateTimeAttribute": "LOAD_DATETIME",
-    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
-    "eventDateTimeAttribute": "EVENT_DATETIME",
-    "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "MODULE_INSTANCE_ID",
-    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+    "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
+    "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
+    "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",
+    "expiryDateTimeAttribute": "INSCRIPTION_END_TIMESTAMP",
+    "eventDateTimeAttribute": "SOURCE_TIMESTAMP",
+    "recordChecksumAttribute": "CHECKSUM",
+    "etlProcessAttribute": "AUDIT_TRAIL_ID",
+    "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": {
       "name": "STG_PROFILER_CUSTOMER_OFFER",
+      "dataItems": [
+        {
+          "name": "INSCRIPTION_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 1
+        },
+        {
+          "name": "INSCRIPTION_RECORD_ID",
+          "dataType": "int",
+          "ordinalPosition": 2
+        },
+        {
+          "name": "SOURCE_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 3
+        },
+        {
+          "name": "CHANGE_DATA_INDICATOR",
+          "dataType": "varchar",
+          "characterLength": 100,
+          "ordinalPosition": 4
+        },
+        {
+          "name": "AUDIT_TRAIL_ID",
+          "dataType": "int",
+          "ordinalPosition": 5
+        },
+        {
+          "name": "CHECKSUM",
+          "dataType": "binary",
+          "characterLength": 16,
+          "ordinalPosition": 6
+        },
+        {
+          "name": "CustomerID",
+          "dataType": "int",
+          "ordinalPosition": 7
+        },
+        {
+          "name": "OfferID",
+          "dataType": "int",
+          "ordinalPosition": 8
+        }
+      ],
       "dataObjectConnection": {
         "dataConnectionString": "Staging",
         "extensions": [
           {
             "key": "database",
-            "value": "VirtualDWH",
+            "value": "100_Staging_Area",
             "description": "database name"
           },
           {
@@ -45,6 +91,18 @@
       "sourceDataObjects": [
         {
           "name": "CUSTOMER_OFFER",
+          "dataItems": [
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
+            },
+            {
+              "name": "OfferID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "Source",
             "extensions": [
@@ -69,12 +127,58 @@
       ],
       "targetDataObject": {
         "name": "STG_PROFILER_CUSTOMER_OFFER",
+        "dataItems": [
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "INSCRIPTION_RECORD_ID",
+            "dataType": "int",
+            "ordinalPosition": 2
+          },
+          {
+            "name": "SOURCE_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "CHANGE_DATA_INDICATOR",
+            "dataType": "varchar",
+            "characterLength": 100,
+            "ordinalPosition": 4
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 5
+          },
+          {
+            "name": "CHECKSUM",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 6
+          },
+          {
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 7
+          },
+          {
+            "name": "OfferID",
+            "dataType": "int",
+            "ordinalPosition": 8
+          }
+        ],
         "dataObjectConnection": {
           "dataConnectionString": "Staging",
           "extensions": [
             {
               "key": "database",
-              "value": "VirtualDWH",
+              "value": "100_Staging_Area",
               "description": "database name"
             },
             {
@@ -93,6 +197,52 @@
       "relatedDataObjects": [
         {
           "name": "PSA_PROFILER_CUSTOMER_OFFER",
+          "dataItems": [
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSCRIPTION_RECORD_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHECKSUM",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 7
+            },
+            {
+              "name": "OfferID",
+              "dataType": "int",
+              "ordinalPosition": 8
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "PSA",
             "extensions": [
@@ -119,21 +269,29 @@
         {
           "sourceDataItems": [
             {
-              "name": "CustomerID"
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
             }
           ],
           "targetDataItem": {
-            "name": "CustomerID"
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 7
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "OfferID"
+              "name": "OfferID",
+              "dataType": "int",
+              "ordinalPosition": 2
             }
           ],
           "targetDataItem": {
-            "name": "OfferID"
+            "name": "OfferID",
+            "dataType": "int",
+            "ordinalPosition": 8
           }
         }
       ],

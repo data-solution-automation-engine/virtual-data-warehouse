@@ -1,23 +1,94 @@
 {
   "metadataConfiguration": {
-    "changeDataCaptureAttribute": "CDC_OPERATION",
-    "recordSourceAttribute": "RECORD_SOURCE",
-    "loadDateTimeAttribute": "LOAD_DATETIME",
-    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
-    "eventDateTimeAttribute": "EVENT_DATETIME",
-    "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "MODULE_INSTANCE_ID",
-    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+    "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
+    "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
+    "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",
+    "expiryDateTimeAttribute": "INSCRIPTION_END_TIMESTAMP",
+    "eventDateTimeAttribute": "SOURCE_TIMESTAMP",
+    "recordChecksumAttribute": "CHECKSUM",
+    "etlProcessAttribute": "AUDIT_TRAIL_ID",
+    "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": {
       "name": "STG_PROFILER_CUST_MEMBERSHIP",
+      "dataItems": [
+        {
+          "name": "INSCRIPTION_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 1
+        },
+        {
+          "name": "INSCRIPTION_RECORD_ID",
+          "dataType": "int",
+          "ordinalPosition": 2
+        },
+        {
+          "name": "SOURCE_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 3
+        },
+        {
+          "name": "CHANGE_DATA_INDICATOR",
+          "dataType": "varchar",
+          "characterLength": 100,
+          "ordinalPosition": 4
+        },
+        {
+          "name": "AUDIT_TRAIL_ID",
+          "dataType": "int",
+          "ordinalPosition": 5
+        },
+        {
+          "name": "CHECKSUM",
+          "dataType": "binary",
+          "characterLength": 16,
+          "ordinalPosition": 6
+        },
+        {
+          "name": "CustomerID",
+          "dataType": "int",
+          "ordinalPosition": 7
+        },
+        {
+          "name": "Plan_Code",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 8
+        },
+        {
+          "name": "Start_Date",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 9
+        },
+        {
+          "name": "End_Date",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 10
+        },
+        {
+          "name": "Status",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 11
+        },
+        {
+          "name": "Comment",
+          "dataType": "nvarchar",
+          "characterLength": 100,
+          "ordinalPosition": 12
+        }
+      ],
       "dataObjectConnection": {
         "dataConnectionString": "Staging",
         "extensions": [
           {
             "key": "database",
-            "value": "VirtualDWH",
+            "value": "100_Staging_Area",
             "description": "database name"
           },
           {
@@ -45,6 +116,43 @@
       "sourceDataObjects": [
         {
           "name": "CUST_MEMBERSHIP",
+          "dataItems": [
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
+            },
+            {
+              "name": "Plan_Code",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 2
+            },
+            {
+              "name": "Start_Date",
+              "dataType": "datetime",
+              "numericScale": 3,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "End_Date",
+              "dataType": "datetime",
+              "numericScale": 3,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "Status",
+              "dataType": "varchar",
+              "characterLength": 10,
+              "ordinalPosition": 5
+            },
+            {
+              "name": "Comment",
+              "dataType": "varchar",
+              "characterLength": 50,
+              "ordinalPosition": 6
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "Source",
             "extensions": [
@@ -69,12 +177,83 @@
       ],
       "targetDataObject": {
         "name": "STG_PROFILER_CUST_MEMBERSHIP",
+        "dataItems": [
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "INSCRIPTION_RECORD_ID",
+            "dataType": "int",
+            "ordinalPosition": 2
+          },
+          {
+            "name": "SOURCE_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "CHANGE_DATA_INDICATOR",
+            "dataType": "varchar",
+            "characterLength": 100,
+            "ordinalPosition": 4
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 5
+          },
+          {
+            "name": "CHECKSUM",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 6
+          },
+          {
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 7
+          },
+          {
+            "name": "Plan_Code",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 8
+          },
+          {
+            "name": "Start_Date",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 9
+          },
+          {
+            "name": "End_Date",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 10
+          },
+          {
+            "name": "Status",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 11
+          },
+          {
+            "name": "Comment",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 12
+          }
+        ],
         "dataObjectConnection": {
           "dataConnectionString": "Staging",
           "extensions": [
             {
               "key": "database",
-              "value": "VirtualDWH",
+              "value": "100_Staging_Area",
               "description": "database name"
             },
             {
@@ -93,6 +272,77 @@
       "relatedDataObjects": [
         {
           "name": "PSA_PROFILER_CUST_MEMBERSHIP",
+          "dataItems": [
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSCRIPTION_RECORD_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHECKSUM",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 7
+            },
+            {
+              "name": "Plan_Code",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 8
+            },
+            {
+              "name": "Start_Date",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 9
+            },
+            {
+              "name": "End_Date",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 10
+            },
+            {
+              "name": "Status",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 11
+            },
+            {
+              "name": "Comment",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 12
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "PSA",
             "extensions": [
@@ -119,61 +369,95 @@
         {
           "sourceDataItems": [
             {
-              "name": "Start_Date"
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
             }
           ],
           "targetDataItem": {
-            "name": "Start_Date"
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 7
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "End_Date"
+              "name": "Plan_Code",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 2
             }
           ],
           "targetDataItem": {
-            "name": "End_Date"
+            "name": "Plan_Code",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 8
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Status"
+              "name": "Start_Date",
+              "dataType": "datetime",
+              "numericScale": 3,
+              "ordinalPosition": 3
             }
           ],
           "targetDataItem": {
-            "name": "Status"
+            "name": "Start_Date",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 9
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Comment"
+              "name": "End_Date",
+              "dataType": "datetime",
+              "numericScale": 3,
+              "ordinalPosition": 4
             }
           ],
           "targetDataItem": {
-            "name": "Comment"
+            "name": "End_Date",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 10
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "CustomerID"
+              "name": "Status",
+              "dataType": "varchar",
+              "characterLength": 10,
+              "ordinalPosition": 5
             }
           ],
           "targetDataItem": {
-            "name": "CustomerID"
+            "name": "Status",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 11
           }
         },
         {
           "sourceDataItems": [
             {
-              "name": "Plan_Code"
+              "name": "Comment",
+              "dataType": "varchar",
+              "characterLength": 50,
+              "ordinalPosition": 6
             }
           ],
           "targetDataItem": {
-            "name": "Plan_Code"
+            "name": "Comment",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 12
           }
         }
       ],

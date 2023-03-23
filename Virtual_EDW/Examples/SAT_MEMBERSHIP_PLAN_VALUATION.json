@@ -1,23 +1,78 @@
 {
   "metadataConfiguration": {
-    "changeDataCaptureAttribute": "CDC_OPERATION",
-    "recordSourceAttribute": "RECORD_SOURCE",
-    "loadDateTimeAttribute": "LOAD_DATETIME",
-    "expiryDateTimeAttribute": "LOAD_END_DATETIME",
-    "eventDateTimeAttribute": "EVENT_DATETIME",
-    "recordChecksumAttribute": "HASH_FULL_RECORD",
-    "etlProcessAttribute": "MODULE_INSTANCE_ID",
-    "sourceRowIdAttribute": "SOURCE_ROW_ID"
+    "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
+    "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
+    "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",
+    "expiryDateTimeAttribute": "INSCRIPTION_END_TIMESTAMP",
+    "eventDateTimeAttribute": "SOURCE_TIMESTAMP",
+    "recordChecksumAttribute": "CHECKSUM",
+    "etlProcessAttribute": "AUDIT_TRAIL_ID",
+    "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
   "generationSpecificMetadata": {
     "selectedDataObject": {
       "name": "SAT_MEMBERSHIP_PLAN_VALUATION",
+      "dataItems": [
+        {
+          "name": "MEMBERSHIP_PLAN_SK",
+          "dataType": "binary",
+          "characterLength": 16,
+          "ordinalPosition": 1
+        },
+        {
+          "name": "PLAN_VALUATION_DATE",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 2
+        },
+        {
+          "name": "INSCRIPTION_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 3
+        },
+        {
+          "name": "INSCRIPTION_RECORD_ID",
+          "dataType": "int",
+          "ordinalPosition": 4
+        },
+        {
+          "name": "STATE_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 5
+        },
+        {
+          "name": "AUDIT_TRAIL_ID",
+          "dataType": "int",
+          "ordinalPosition": 6
+        },
+        {
+          "name": "CHANGE_DATA_INDICATOR",
+          "dataType": "varchar",
+          "characterLength": 100,
+          "ordinalPosition": 7
+        },
+        {
+          "name": "CHECKSUM",
+          "dataType": "binary",
+          "characterLength": 16,
+          "ordinalPosition": 8
+        },
+        {
+          "name": "PLAN_VALUATION_AMOUNT",
+          "dataType": "numeric",
+          "numericPrecision": 38,
+          "numericScale": 20,
+          "ordinalPosition": 9
+        }
+      ],
       "dataObjectConnection": {
         "dataConnectionString": "Integration",
         "extensions": [
           {
             "key": "database",
-            "value": "VirtualDWH",
+            "value": "200_Integration_Layer",
             "description": "database name"
           },
           {
@@ -45,12 +100,67 @@
       "sourceDataObjects": [
         {
           "name": "PSA_PROFILER_ESTIMATED_WORTH",
+          "dataItems": [
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSCRIPTION_RECORD_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHECKSUM",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "Plan_Code",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 7
+            },
+            {
+              "name": "Date_effective",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 8
+            },
+            {
+              "name": "Value_Amount",
+              "dataType": "numeric",
+              "numericPrecision": 38,
+              "numericScale": 20,
+              "ordinalPosition": 9
+            }
+          ],
           "dataObjectConnection": {
             "dataConnectionString": "PSA",
             "extensions": [
               {
                 "key": "database",
-                "value": "VirtualDWH",
+                "value": "150_Persistent_Staging_Area",
                 "description": "database name"
               },
               {
@@ -69,12 +179,67 @@
       ],
       "targetDataObject": {
         "name": "SAT_MEMBERSHIP_PLAN_VALUATION",
+        "dataItems": [
+          {
+            "name": "MEMBERSHIP_PLAN_SK",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "PLAN_VALUATION_DATE",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 2
+          },
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "INSCRIPTION_RECORD_ID",
+            "dataType": "int",
+            "ordinalPosition": 4
+          },
+          {
+            "name": "STATE_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 5
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 6
+          },
+          {
+            "name": "CHANGE_DATA_INDICATOR",
+            "dataType": "varchar",
+            "characterLength": 100,
+            "ordinalPosition": 7
+          },
+          {
+            "name": "CHECKSUM",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 8
+          },
+          {
+            "name": "PLAN_VALUATION_AMOUNT",
+            "dataType": "numeric",
+            "numericPrecision": 38,
+            "numericScale": 20,
+            "ordinalPosition": 9
+          }
+        ],
         "dataObjectConnection": {
           "dataConnectionString": "Integration",
           "extensions": [
             {
               "key": "database",
-              "value": "VirtualDWH",
+              "value": "200_Integration_Layer",
               "description": "database name"
             },
             {
@@ -90,15 +255,77 @@
           }
         ]
       },
+      "relatedDataObjects": [
+        {
+          "name": "HUB_MEMBERSHIP_PLAN",
+          "dataItems": [
+            {
+              "name": "MEMBERSHIP_PLAN_SK",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "PLAN_CODE",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "PLAN_SUFFIX",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 5
+            }
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "Integration",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "CoreBusinessConcept"
+            }
+          ]
+        }
+      ],
       "dataItemMappings": [
         {
           "sourceDataItems": [
             {
-              "name": "Date_effective"
+              "name": "Date_effective",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 8
             }
           ],
           "targetDataItem": {
             "name": "PLAN_VALUATION_DATE",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 2,
             "dataItemClassification": [
               {
                 "classification": "MultiActiveKey",
@@ -110,11 +337,35 @@
         {
           "sourceDataItems": [
             {
-              "name": "Value_Amount"
+              "name": "Value_Amount",
+              "dataType": "numeric",
+              "numericPrecision": 38,
+              "numericScale": 20,
+              "ordinalPosition": 9
             }
           ],
           "targetDataItem": {
-            "name": "PLAN_VALUATION_AMOUNT"
+            "name": "PLAN_VALUATION_AMOUNT",
+            "dataType": "numeric",
+            "numericPrecision": 38,
+            "numericScale": 20,
+            "ordinalPosition": 9
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            }
+          ],
+          "targetDataItem": {
+            "name": "STATE_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 5
           }
         }
       ],
