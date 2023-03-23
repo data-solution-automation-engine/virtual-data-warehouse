@@ -29,7 +29,7 @@ SELECT
     --     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
     --   ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
     --   CAST( '9999-12-31' AS DATETIME)
-    --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}},
+    --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}}],
     --CASE
     --  WHEN ( RANK() OVER (PARTITION BY {{#each businessKeys}} {{#each businessKeyComponentMapping}}
     --      {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
