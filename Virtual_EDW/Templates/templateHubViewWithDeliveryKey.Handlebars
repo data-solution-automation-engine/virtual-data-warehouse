@@ -1,0 +1,71 @@
+--
+-- Hub View definition for {{generationSpecificMetadata.selectedDataObject.name}}
+--
+-- This template represents a standard Data Vault style 'Hub' table as a view.
+-- The view shows the same data as would otherwise be the case if the table would be created and all data logistics processes run.
+--
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]
+GO
+
+CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] AS
+SELECT {{#each dataObjectMappings}}{{#if @first}}
+  {{#each businessKeys}} {{#if @first}}hub.[{{surrogateKey}}],{{/if}}{{/each}}
+   hub.[{{../metadataConfiguration.etlProcessAttribute}}], 
+   hub.[{{../metadataConfiguration.loadDateTimeAttribute}}],{{#each businessKeys}}{{#each businessKeyComponentMapping}}
+   hub.[{{targetDataItem.name}}],{{/each}}{{/each}}
+   ROW_NUMBER() OVER ( ORDER BY
+    [{{../metadataConfiguration.loadDateTimeAttribute}}],{{#each businessKeys}}{{#each businessKeyComponentMapping}}
+    [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/each}}      
+  ) AS DATA_DELIVERY_KEY
+  {{/if}}{{/each}}
+FROM (
+{{#each dataObjectMappings}}{{#if @first}}
+SELECT
+    HASHBYTES('MD5', {{#each businessKeys}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
+    {{#each businessKeyComponentMapping}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
+    {{/each}}
+    ) AS {{surrogateKey}},{{/if}}{{/each}}
+    -1 AS {{../metadataConfiguration.etlProcessAttribute}},
+    MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
+    --{{../metadataConfiguration.recordSourceAttribute}},{{#each businessKeys}} {{!-- The Hub business key --}}
+    {{#each businessKeyComponentMapping}}
+    {{targetDataItem.name}},{{/each}}{{/each}}
+    ROW_NUMBER() OVER (PARTITION BY {{#each businessKeys}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+       {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}
+    {{/each}}
+    ORDER BY 
+       MIN({{../metadataConfiguration.loadDateTimeAttribute}})
+    ) AS ROW_NR
+FROM 
+( {{/if}}{{/each}}
+    {{#each dataObjectMappings }}
+    SELECT {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+        CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
+        --{{../metadataConfiguration.recordSourceAttribute}},
+        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
+    FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+    WHERE {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+        {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
+        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
+    GROUP BY 
+        {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
+       -- {{../metadataConfiguration.recordSourceAttribute}}
+    {{#unless @last}}UNION{{/unless}}
+    {{/each}}
+) HUB_selection {{#each dataObjectMappings}}{{#if @first}}
+GROUP BY {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+    {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+    --{{../metadataConfiguration.recordSourceAttribute}} {{/if}}{{/each}}
+) hub
+WHERE ROW_NR = 1
+UNION
+SELECT 
+  0x00000000000000000000000000000000,
+  - 1,
+  '1900-01-01',
+  --'Data Warehouse',{{#each dataObjectMappings}}{{#if @first}}{{#each businessKeys}}{{#each businessKeyComponentMapping}}
+  'Unknown',{{/each}}{{/each}}{{/if}}{{/each}}
+  0 AS DATA_DELIVERY_KEY

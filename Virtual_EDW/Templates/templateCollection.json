@@ -8,6 +8,14 @@
     "TemplateNotes": "Standard Hub template - display the distinct list of Business Keys for a Core Business Concept."
   },
   {
+    "TemplateName": "100 Data Vault Hub View Template With Delivery Key",
+    "TemplateType": "CoreBusinessConcept",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateHubViewWithDeliveryKey.handlebars",
+    "TemplateNotes": "Standard Hub template - display the distinct list of Business Keys for a Core Business Concept."
+  },  
+  {
     "TemplateName": "100 Data Vault Link View Template",
     "TemplateType": "NaturalBusinessRelationship",
     "TemplateConnectionKey": "PsaConnectionInternalId",
