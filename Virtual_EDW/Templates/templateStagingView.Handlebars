@@ -43,7 +43,7 @@ JOIN
    ) B ON {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
    A.[{{sourceDataItems.0.name}}] = B.[{{sourceDataItems.0.name}}] AND {{/each}} {{/each}}
    A.{{../metadataConfiguration.loadDateTimeAttribute}} = B.MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-   WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'Delete'
+   WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'D'
 )
 SELECT
    {{#each dataItemMappings}}
