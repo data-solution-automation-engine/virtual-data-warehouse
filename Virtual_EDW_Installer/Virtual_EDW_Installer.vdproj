@@ -33,13 +33,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_92779B984C044DF29651C6C2936148DE"
+        "MsmKey" = "8:_9C8042CC9918421787B113AF78667ED3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9C8042CC9918421787B113AF78667ED3"
+        "MsmKey" = "8:_ABC11E1304B84CA296DCF82E96C692AE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -47,12 +47,6 @@
         {
         "MsmKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
         "OwnerKey" = "8:_7C7CC4425468465A8E774BFE2D253A37"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_E6F90EBE7E643A437E1160D445BB22FE"
-        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -169,7 +163,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v4.6.1"
+                "FrameworkVersion" = "8:v4.6.1"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=671728"
                 }
@@ -299,32 +293,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E6F90EBE7E643A437E1160D445BB22FE"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Security.Cryptography.ProtectedData, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:System.Security.Cryptography.ProtectedData.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
         }
         "FileType"
         {
@@ -426,7 +394,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Virtual Data Warehouse"
         "ProductCode" = "8:{4AF00EF6-A639-439D-8013-7D626835C38A}"
-        "PackageCode" = "8:{B0405B5F-5D09-4571-8EE3-98A53FA342D8}"
+        "PackageCode" = "8:{1EC5F4D6-A19A-4AF1-9C8B-9CFA7B71008C}"
         "UpgradeCode" = "8:{CAA37576-CF3A-4799-AF70-44CB58934E54}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -554,7 +522,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_92779B984C044DF29651C6C2936148DE"
+            "Target" = "8:_ABC11E1304B84CA296DCF82E96C692AE"
             "Folder" = "8:_AA39371B8E1D414692DAED9E5E32BDA1"
             "WorkingFolder" = "8:_6F24B026334B448F96107EBD85D46D7A"
             "Icon" = "8:_8E7FD6A35F0E43CD8A7D134E58D880F4"
@@ -568,7 +536,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_92779B984C044DF29651C6C2936148DE"
+            "Target" = "8:_ABC11E1304B84CA296DCF82E96C692AE"
             "Folder" = "8:_61028814F99B4A278EBC060C08267246"
             "WorkingFolder" = "8:_6F24B026334B448F96107EBD85D46D7A"
             "Icon" = "8:_8E7FD6A35F0E43CD8A7D134E58D880F4"
@@ -1001,9 +969,9 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_92779B984C044DF29651C6C2936148DE"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_ABC11E1304B84CA296DCF82E96C692AE"
             {
-            "SourcePath" = "8:..\\Virtual_EDW\\obj\\Debug\\net7.0-windows\\Virtual_Data_Warehouse.dll"
+            "SourcePath" = "8:..\\Virtual_EDW\\obj\\x64\\Release\\net7.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
@@ -1022,7 +990,7 @@
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
+            "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{73971441-2782-43CF-862C-1F636528858A}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
