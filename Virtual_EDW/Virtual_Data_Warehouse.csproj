@@ -258,7 +258,7 @@
     </Content>
     <Content Include="Resources\Ravos-logo-small.ico" />
     <Content Include="Schema\interfaceDataWarehouseAutomationMetadata.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
