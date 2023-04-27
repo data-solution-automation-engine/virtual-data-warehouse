@@ -15,13 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_56F403C4E2C84345BCDF34F761859E26"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7C7CC4425468465A8E774BFE2D253A37"
+        "MsmKey" = "8:_5798EA1EBEF34B82BFFCF7ED75376A26"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -33,32 +27,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9C8042CC9918421787B113AF78667ED3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_ABC11E1304B84CA296DCF82E96C692AE"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
-        "OwnerKey" = "8:_7C7CC4425468465A8E774BFE2D253A37"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7C7CC4425468465A8E774BFE2D253A37"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BCD43EDEAC99CBA134EC603F0C99282F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -163,7 +133,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.6.1"
+                "FrameworkVersion" = "8:v4.6.1 "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=671728"
                 }
@@ -171,41 +141,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_56F403C4E2C84345BCDF34F761859E26"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5798EA1EBEF34B82BFFCF7ED75376A26"
             {
-            "SourcePath" = "8:..\\Virtual_EDW\\Libraries\\Microsoft.Data.SqlClient.SNI.x86.dll"
-            "TargetName" = "8:Microsoft.Data.SqlClient.SNI.x86.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7C7CC4425468465A8E774BFE2D253A37"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.Data.SqlClient, Version=2.0.20168.4, Culture=neutral, PublicKeyToken=23ec7fc2d6eaa4a5, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_7C7CC4425468465A8E774BFE2D253A37"
-                    {
-                    "Name" = "8:Microsoft.Data.SqlClient.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:..\\Virtual_EDW\\Libraries\\Microsoft.Data.SqlClient.dll"
-            "TargetName" = "8:"
+            "SourcePath" = "8:..\\Virtual_EDW\\Virtual_Data_Warehouse.deps.json"
+            "TargetName" = "8:Virtual_Data_Warehouse.deps.json"
             "Tag" = "8:"
             "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
             "Condition" = "8:"
@@ -240,57 +179,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C8042CC9918421787B113AF78667ED3"
-            {
-            "SourcePath" = "8:..\\Virtual_EDW\\Libraries\\Microsoft.Data.SqlClient.SNI.x64.dll"
-            "TargetName" = "8:Microsoft.Data.SqlClient.SNI.x64.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BCD43EDEAC99CBA134EC603F0C99282F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_BCD43EDEAC99CBA134EC603F0C99282F"
-                    {
-                    "Name" = "8:System.Net.Http.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.Net.Http.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -394,7 +282,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Virtual Data Warehouse"
         "ProductCode" = "8:{4AF00EF6-A639-439D-8013-7D626835C38A}"
-        "PackageCode" = "8:{1EC5F4D6-A19A-4AF1-9C8B-9CFA7B71008C}"
+        "PackageCode" = "8:{220173E5-C92A-434F-8C45-FBE967536476}"
         "UpgradeCode" = "8:{CAA37576-CF3A-4799-AF70-44CB58934E54}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -971,7 +859,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_ABC11E1304B84CA296DCF82E96C692AE"
             {
-            "SourcePath" = "8:..\\Virtual_EDW\\obj\\x64\\Release\\net7.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\Virtual_EDW\\obj\\Debug\\net7.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6F24B026334B448F96107EBD85D46D7A"
