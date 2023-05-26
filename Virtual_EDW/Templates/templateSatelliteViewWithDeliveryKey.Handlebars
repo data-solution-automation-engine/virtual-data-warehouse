@@ -58,7 +58,11 @@ SELECT
           {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}{{../targetDataItem.name}},{{/if}}{{/each}}{{/each}}
           {{../metadataConfiguration.loadDateTimeAttribute}},
           {{../metadataConfiguration.sourceRowIdAttribute}}
-    ) AS DATA_DELIVERY_KEY
+    ) AS DATA_DELIVERY_KEY,
+    CONVERT(NUMERIC(38,0), LEFT(REPLACE(REPLACE(REPLACE(REPLACE(CONVERT(CHAR(27), CAST(STATE_TIMESTAMP AS DATETIME2(7))), '-', ''), ' ', ''), ':', ''), '.', ''), 21)
+    + RIGHT('0000000000' + CONVERT(VARCHAR(38), 1), 10)  
+    + RIGHT('0000000' + CONVERT(VARCHAR(38), {{../metadataConfiguration.sourceRowIdAttribute}}), 7)
+    ) AS STATE_TIMESTAMP_KEY
 FROM
    (
       SELECT 

@@ -1,0 +1,15 @@
+{{#each dataObjectMappings}}
+--
+-- Landing process for {{targetDataObject.name}}.
+--
+
+SELECT
+   {{#each dataItemMappings}}
+   [{{sourceDataItems.0.name}}],
+   {{/each}}
+  SYSDATETIME() AS [{{../metadataConfiguration.eventDateTimeAttribute}}]
+  ,'I' AS [{{../metadataConfiguration.changeDataCaptureAttribute}}]
+  ,0 AS [{{../metadataConfiguration.etlProcessAttribute}}]
+  ,'0x00' AS [{{../metadataConfiguration.recordChecksumAttribute}}]
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+{{/each}}

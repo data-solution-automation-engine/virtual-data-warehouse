@@ -1,0 +1,48 @@
+{{#each dataObjectMappings}}
+--
+-- Landing process for {{targetDataObject.name}} using a DIRECT wrapper.
+--
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'SP_{{targetDataObject.name}}') AND type in (N'P'))
+DROP PROCEDURE [SP_{{targetDataObject.name}}];
+GO
+
+CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
+AS
+
+TRUNCATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+
+INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+(
+   [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each dataItemMappings}}
+   [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+)
+SELECT
+   @AUDIT_TRAIL_ID AS [{{../metadataConfiguration.etlProcessAttribute}}]
+  ,SYSDATETIME() AS [{{../metadataConfiguration.eventDateTimeAttribute}}]
+  ,'I' AS [{{../metadataConfiguration.changeDataCaptureAttribute}}]
+  ,0x00 AS [{{../metadataConfiguration.recordChecksumAttribute}}]
+   {{#each dataItemMappings}}
+  ,[{{sourceDataItems.0.name}}]
+   {{/each}}
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+GO
+
+-- DIRECT module registration
+
+EXEC [900_Direct_Framework].[omd].[RegisterModule]
+ @ModuleCode = '100_{{targetDataObject.name}}'
+,@ModuleAreaCode = 'STG'
+,@Executable = 'EXEC [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[SP_{{targetDataObject.name}}] @AUDIT_TRAIL_ID = @ModuleInstanceId'
+,@ModuleDescription = 'Source to landing for [{{sourceDataObjects.0.name}}]'
+,@ModuleSourceDataObject = '[{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]'
+,@ModuleTargetDataObject = '[{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]'
+
+-- Run the process
+EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = '100_{{targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
+{{/each}}

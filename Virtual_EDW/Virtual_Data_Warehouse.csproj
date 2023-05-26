@@ -61,6 +61,11 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Templates\templateLanding.Handlebars" />
+    <None Remove="Templates\templateLandingTestReconciliation.Handlebars" />
+    <None Remove="Templates\templateLandingWithDirect.Handlebars" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="TEAM_Library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\TEAM_Library.dll</HintPath>
@@ -83,6 +88,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateHubView_DBT_Snowflake.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateLanding.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateLandingTestReconciliation.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateLandingWithDirect.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateLinkInsertInto.Handlebars">

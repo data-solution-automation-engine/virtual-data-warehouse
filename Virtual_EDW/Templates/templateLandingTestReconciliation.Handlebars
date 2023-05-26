@@ -1,0 +1,68 @@
+{{#each dataObjectMappings}}
+--
+-- Reconciliation Test for {{targetDataObject.name}}.
+--
+
+DECLARE @TestId INT;
+EXEC [ut].[RegisterTest]
+    -- Mandatory
+    @TemplateId = '1',
+    @Name = 'RECON_STG_{{sourceDataObjects.0.name}}',
+    -- sample with test procedure
+	@Debug='Y',
+    @TestCode = 'BEGIN
+	-- Framework required (added for unit testing)
+	--DECLARE @TestResult VARCHAR(10) = ''Fail'';
+	--DECLARE @TestOutput VARCHAR(MAX);
+	-- Local
+	DECLARE @Issues INT = 0;
+
+	BEGIN TRY
+		SELECT @Issues = COUNT(*)
+		FROM (
+			SELECT {{#each dataItemMappings}}
+                                                     [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}{{/each}}
+			FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] stg
+			EXCEPT
+			SELECT {{#each dataItemMappings}}
+                                                     [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}{{/each}}
+			FROM [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+		) sub
+
+		SET @TestOutput = CONVERT(VARCHAR(10),@Issues)+'' issues were found.'' 
+
+		IF @Issues=0
+		BEGIN
+			SET @TestResult=''Pass''
+		END
+	END TRY
+	BEGIN CATCH
+		--THROW
+		SET @TestOutput = ERROR_MESSAGE();
+		SET @TestResult=''Fail''
+	END CATCH
+
+	SELECT @TestOutput AS [OUTPUT], @TestResult AS [RESULT]
+END ',
+    @TestObject = '{{targetDataObject.dataObjectConnection.extensions.1.value}}.{{targetDataObject.name}}',
+    -- Output
+    @TestId = @TestId OUTPUT;
+
+-- Add DIRECT registration to run from control framework
+DECLARE @ModuleId INT;
+
+EXEC [omd].[RegisterModule]
+ @ModuleCode = 'RECON_STG_{{sourceDataObjects.0.name}}'
+,@ModuleAreaCode = 'Maintenance'
+,@Executable = 'EXEC [ut].[RunTest] @TestName = ''RECON_STG_{{sourceDataObjects.0.name}}'''
+-- Non mandatory
+,@ModuleDescription = 'Reconciliation Unit Test'
+,@Debug = 'Y'
+,@ModuleId = @ModuleId OUTPUT;
+
+PRINT 'The Module Id is: '+CONVERT(VARCHAR(10),@ModuleId)+'.';
+
+-- Example - running the DIRECT Module
+-- EXEC omd.RunModule @ModuleCode = 'EXEC omd.RunModule @ModuleCode = 'RECON_STG_CUSTOMER_PERSONAL''
+
+{{/each}}

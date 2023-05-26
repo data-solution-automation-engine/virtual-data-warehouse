@@ -1,0 +1,118 @@
+{{#each dataObjectMappings}}
+
+--
+-- PSA DIRECT proces for {{targetDataObject.name}} using a DIRECT wrapper.
+--
+
+--
+-- Persistent Staging Area Delta Detection Procedure for {{targetDataObject.name}}
+--
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'SP_{{targetDataObject.name}}') AND type in (N'P'))
+DROP PROCEDURE [SP_{{targetDataObject.name}}];
+GO
+
+CREATE PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
+AS
+
+WITH STG_CTE AS
+(
+SELECT
+   {{#each dataItemMappings}}
+   [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
+   {{/each}}
+   HASHBYTES('MD5',
+   {{#each dataItemMappings}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
+   {{/each}}
+   ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
+FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+),
+PSA_CTE AS
+(
+SELECT
+   A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
+   {{#each dataItemMappings}}
+   A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] A
+JOIN
+   (
+   SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+      [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+      MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
+   FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]  A
+   GROUP BY {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+      [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
+   ) B ON {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+   A.[{{sourceDataItems.0.name}}] = B.[{{sourceDataItems.0.name}}] AND {{/each}} {{/each}}
+   A.{{../metadataConfiguration.loadDateTimeAttribute}} = B.MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
+   WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'D'
+)
+INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+(
+   [{{../metadataConfiguration.loadDateTimeAttribute}}],
+   [{{../metadataConfiguration.sourceRowIdAttribute}}],
+   [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   {{#each dataItemMappings}}
+   [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
+   {{/each}}
+)
+SELECT
+   -- Framework columns
+   SYSDATETIME() [{{../metadataConfiguration.loadDateTimeAttribute}}], 
+   ROW_NUMBER() OVER
+      (ORDER BY
+         {{#each businessKeys}}{{#each businessKeyComponentMapping}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+      ) AS [{{../metadataConfiguration.sourceRowIdAttribute}}],
+   SYSDATETIME() [{{../metadataConfiguration.eventDateTimeAttribute}}],
+   CASE 
+      WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'D' 
+      WHEN PSA_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'C' --Inserts are also C
+      WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
+         AND PSA_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
+         AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'C' ELSE 'No Change' 
+   END AS {{../metadataConfiguration.changeDataCaptureAttribute}},
+   @AUDIT_TRAIL_ID AS [{{../metadataConfiguration.etlProcessAttribute}}], 
+   CASE 
+     WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL
+     THEN PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
+     ELSE STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
+   END AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
+   -- Regular columns
+   {{#each dataItemMappings}}
+   CASE 
+     WHEN STG_CTE.{{#each ../businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
+     THEN PSA_CTE.[{{sourceDataItems.0.name}}]
+     ELSE STG_CTE.[{{sourceDataItems.0.name}}] 
+   END AS [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}{{/each}}
+FROM STG_CTE
+FULL OUTER JOIN PSA_CTE ON {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+    PSA_CTE.[{{sourceDataItems.0.name}}] = STG_CTE.[{{sourceDataItems.0.name}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
+WHERE
+(
+   CASE
+      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'D'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'C'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NOT NULL AND PSA_CTE.{{sourceDataItems.0.name}} IS NOT NULL AND STG_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] != PSA_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] THEN 'C'{{/if}}{{/each}}{{/each}}
+      ELSE 'No Change'
+   END
+) != 'No Change'
+
+SELECT @@ROWCOUNT AS ROWS_INSERTED
+GO
+
+EXEC [900_Direct_Framework].[omd].[RegisterModule]
+ @ModuleCode = '150_{{targetDataObject.name}}'
+,@ModuleAreaCode = 'PSA'
+,@Executable = 'EXEC [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[SP_{{targetDataObject.name}}] @AUDIT_TRAIL_ID = @ModuleInstanceId'
+,@ModuleDescription = 'Persistent Staging Area process for [{{sourceDataObjects.0.name}}]'
+,@ModuleSourceDataObject = '[{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]'
+,@ModuleTargetDataObject = '[{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]'
+
+-- Run the process
+EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = '150_{{targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
+{{/each}}
