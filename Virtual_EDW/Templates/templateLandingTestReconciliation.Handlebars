@@ -3,10 +3,19 @@
 -- Reconciliation Test for {{targetDataObject.name}}.
 --
 
+-- Test template
+DECLARE @TemplateId INT;
+EXEC [ut].[RegisterTestTemplate]
+    @TemplateName = 'Generic-Reconciliation',
+    @TemplateNotes = 'https://github.com/data-solution-automation-engine/testing-framework/blob/main/test-library/Test%20-%20Generic%20-%20Reconciliation.md',
+    @TemplateId = @TemplateId OUTPUT;
+PRINT concat('The Test Template Id is: ', @TemplateId, '.');
+
+-- Test registration
 DECLARE @TestId INT;
 EXEC [ut].[RegisterTest]
     -- Mandatory
-    @TemplateId = '1',
+    @TemplateId = @TemplateId,
     @Name = 'RECON_STG_{{sourceDataObjects.0.name}}',
     -- sample with test procedure
 	@Debug='Y',
@@ -63,6 +72,5 @@ EXEC [omd].[RegisterModule]
 PRINT 'The Module Id is: '+CONVERT(VARCHAR(10),@ModuleId)+'.';
 
 -- Example - running the DIRECT Module
--- EXEC omd.RunModule @ModuleCode = 'EXEC omd.RunModule @ModuleCode = 'RECON_STG_CUSTOMER_PERSONAL''
-
+EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = 'RECON_STG_{{sourceDataObjects.0.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
 {{/each}}

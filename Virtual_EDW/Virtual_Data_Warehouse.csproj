@@ -61,9 +61,73 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Templates\loadPatternHubInsertIntofromSTG.Handlebars" />
+    <None Remove="Templates\loadPatternLinkInsertIntofromSTG.Handlebars" />
+    <None Remove="Templates\loadPatternLinkSatelliteInsertInto.Handlebars" />
+    <None Remove="Templates\loadPatternPersistentStagingAreaInsertInto.Handlebars" />
+    <None Remove="Templates\loadPatternSatelliteInsertInto.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_HUB_SKgenerationCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_HUB_SK_has_SAT_record.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_HUB_uniqueKeyCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_LNK_HUB_SK_existsCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_LNK_keyTrimCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_LNK_nullKeyCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_LNK_SKgenerationCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_LNK_uniqueKeyCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_LSAT_currentRecordCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_LSAT_duplicateRecordCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_LSAT_SK_has_LNK_record.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_PSA_currentRecordCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_PSA_duplicateRecordCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_PSA_STG_to_PSA_Check.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_SAT_currentRecordCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_SAT_duplicateRecordCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_SAT_nullKeyCheck.Handlebars" />
+    <None Remove="Templates\loadPattern_UT_SAT_SK_has_HUB_record.Handlebars" />
+    <None Remove="Templates\templateDataLakeSilver01.Handlebars" />
+    <None Remove="Templates\templateDataLakeSilver01CDC.Handlebars" />
+    <None Remove="Templates\templateDataLakeSilver02.Handlebars" />
+    <None Remove="Templates\templateDataLakeSilver02CDC.Handlebars" />
+    <None Remove="Templates\templateDataLakeSilver03.Handlebars" />
+    <None Remove="Templates\templateDataLakeSilverToStagingSelectCDC.Handlebars" />
+    <None Remove="Templates\templateHubDirectRegistration.Handlebars" />
+    <None Remove="Templates\templateHubInsertIntoProcedure.Handlebars" />
+    <None Remove="Templates\templateHubViewWithDeliveryKey.Handlebars" />
     <None Remove="Templates\templateLanding.Handlebars" />
     <None Remove="Templates\templateLandingTestReconciliation.Handlebars" />
+    <None Remove="Templates\templateLandingtoSilverFromView.Handlebars" />
     <None Remove="Templates\templateLandingWithDirect.Handlebars" />
+    <None Remove="Templates\templateLinkDirectRegistration.Handlebars" />
+    <None Remove="Templates\templateLinkInsertIntoProcedure.Handlebars" />
+    <None Remove="Templates\templateLinkSatelliteDirectRegistration.Handlebars" />
+    <None Remove="Templates\templateLinkSatelliteInsertIntoProcedure.Handlebars" />
+    <None Remove="Templates\templateLinkSatelliteViewZeroRecord.Handlebars" />
+    <None Remove="Templates\templatePersistentStaging.Handlebars" />
+    <None Remove="Templates\templatePersistentStagingInsertIntoProcedure.Handlebars" />
+    <None Remove="Templates\templateSatelliteDirectRegistration.Handlebars" />
+    <None Remove="Templates\templateSatelliteInsertIntoProcedure.Handlebars" />
+    <None Remove="Templates\templateSatelliteViewWithDeliveryKey.Handlebars" />
+    <None Remove="Templates\templateStagingDirectRegistration.Handlebars" />
+    <None Remove="Templates\template_test_Hub_HasSatRecord.Handlebars" />
+    <None Remove="Templates\template_test_Hub_KeyGeneratedCorrectly.Handlebars" />
+    <None Remove="Templates\template_test_HUB_KeyNullCheck.Handlebars" />
+    <None Remove="Templates\template_test_HUB_KeyTrimCheck.Handlebars" />
+    <None Remove="Templates\template_test_Hub_UniqueKeyCheck.Handlebars" />
+    <None Remove="Templates\template_test_LinkSatellite_DuplicateRecordCheck.Handlebars" />
+    <None Remove="Templates\template_test_LinkSatellite_ReferentialIntegrity.Handlebars" />
+    <None Remove="Templates\template_test_Link_KeyGeneratedCorrectly.Handlebars" />
+    <None Remove="Templates\template_test_Link_KeyNullCheck.Handlebars" />
+    <None Remove="Templates\template_test_Link_KeyTrimCheck.Handlebars" />
+    <None Remove="Templates\template_test_Link_ReferentialIntegrity.Handlebars" />
+    <None Remove="Templates\template_test_Link_UniqueKeyCheck.Handlebars" />
+    <None Remove="Templates\template_test_PersistentStaging_DuplicateRecordCheck.Handlebars" />
+    <None Remove="Templates\template_test_PersistentStaging_MappingCheck.Handlebars" />
+    <None Remove="Templates\template_test_Satellite_CurrentRecordUniqueCheck.Handlebars" />
+    <None Remove="Templates\template_test_Satellite_DuplicateRecordCheck.Handlebars" />
+    <None Remove="Templates\template_test_Satellite_KeyNullCheck.Handlebars" />
+    <None Remove="Templates\template_test_Satellite_ReferentialIntegrity.Handlebars" />
+    <None Remove="Templates\template_test_Satellite_StagingMappingCheck.Handlebars" />
+    <None Remove="Templates\template_test_SAT_StagingMappingCheck.Handlebars" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="TEAM_Library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -75,16 +139,112 @@
     <Compile Update="LoadPatternGrid.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Content Include="Templates\loadPatternHubInsertIntofromSTG.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPatternLinkInsertIntofromSTG.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPatternLinkSatelliteInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPatternPersistentStagingAreaInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPatternSatelliteInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_HUB_SKgenerationCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_HUB_SK_has_SAT_record.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_HUB_uniqueKeyCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_LNK_HUB_SK_existsCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_LNK_keyTrimCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_LNK_nullKeyCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_LNK_SKgenerationCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_LNK_uniqueKeyCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_LSAT_currentRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_LSAT_duplicateRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_LSAT_SK_has_LNK_record.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_PSA_currentRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_PSA_duplicateRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_PSA_STG_to_PSA_Check.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_SAT_currentRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_SAT_duplicateRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_SAT_nullKeyCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPattern_UT_SAT_SK_has_HUB_record.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateCollection.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateDataLakeSilver01.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateDataLakeSilver01CDC.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateDataLakeSilver02.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateDataLakeSilver02CDC.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateDataLakeSilver03.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateDataLakeSilverToStagingSelectCDC.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateHubDeltaSelect.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templateHubDirectRegistration.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateHubInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templateHubInsertIntoProcedure.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateHubView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateHubViewWithDeliveryKey.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateHubView_DBT_Snowflake.Handlebars">
@@ -96,10 +256,22 @@
     <Content Include="Templates\templateLandingTestReconciliation.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templateLandingtoSilverFromView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateLandingWithDirect.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templateLinkDirectRegistration.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateLinkInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateLinkInsertIntoProcedure.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateLinkSatelliteDirectRegistration.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateLinkSatelliteDrivingKeyInsertInto.Handlebars">
@@ -111,13 +283,22 @@
     <Content Include="Templates\templateLinkSatelliteInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templateLinkSatelliteInsertIntoProcedure.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateLinkSatelliteView.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateLinkSatelliteViewZeroRecord.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateLinkView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateLinkViewNoHash.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templatePersistentStaging.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templatePersistentStagingFullOuterJoin.Handlebars">
@@ -129,6 +310,9 @@
     <Content Include="Templates\templatePersistentStagingInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templatePersistentStagingInsertIntoProcedure.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templatePersistentStagingView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -138,13 +322,25 @@
     <Content Include="Templates\templatePersistentStagingViewWithDedup.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templateSatelliteDirectRegistration.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateSatelliteInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateSatelliteInsertIntoProcedure.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateSatelliteView.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templateSatelliteViewWithDeliveryKey.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateSatelliteViewZeroRecord.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateStagingDirectRegistration.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateStagingGenerateTables.Handlebars">
@@ -273,6 +469,66 @@
     <Content Include="Resources\Ravos-logo-small.ico" />
     <Content Include="Schema\interfaceDataWarehouseAutomationMetadata.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Hub_HasSatRecord.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Hub_KeyGeneratedCorrectly.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_HUB_KeyNullCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_HUB_KeyTrimCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Hub_UniqueKeyCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_LinkSatellite_DuplicateRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_LinkSatellite_ReferentialIntegrity.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Link_KeyGeneratedCorrectly.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Link_KeyNullCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Link_KeyTrimCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Link_ReferentialIntegrity.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Link_UniqueKeyCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_PersistentStaging_DuplicateRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_PersistentStaging_MappingCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Satellite_CurrentRecordUniqueCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Satellite_DuplicateRecordCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Satellite_KeyNullCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Satellite_ReferentialIntegrity.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_Satellite_StagingMappingCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\template_test_SAT_StagingMappingCheck.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
