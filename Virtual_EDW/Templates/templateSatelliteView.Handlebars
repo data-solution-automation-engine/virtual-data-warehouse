@@ -14,7 +14,7 @@ CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.nam
 SELECT 
     HASHBYTES('MD5', {{#each businessKeys}} {{!-- Create the Surrogate Key using the Business Key and components --}}
     {{#each businessKeyComponentMapping}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
+      ISNULL(RTRIM(CONVERT(NVARCHAR(MAX), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
     ) AS [{{surrogateKey}}],{{/each}}
     --DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
@@ -45,8 +45,8 @@ SELECT
     --  ELSE 'N'
     --END AS [DELETED_RECORD_INDICATOR],
     HASHBYTES('MD5',
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMappings}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(MAX),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMappings}}
+      ISNULL(RTRIM(CONVERT(NVARCHAR(MAX),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
     ) AS [{{../metadataConfiguration.recordChecksumAttribute}}],
     {{#each dataItemMappings}}
     [{{targetDataItem.name}}],
