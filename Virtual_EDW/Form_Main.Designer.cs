@@ -296,8 +296,6 @@
             // checkBoxSaveToFile
             // 
             checkBoxSaveToFile.AutoSize = true;
-            checkBoxSaveToFile.Checked = true;
-            checkBoxSaveToFile.CheckState = System.Windows.Forms.CheckState.Checked;
             checkBoxSaveToFile.Location = new System.Drawing.Point(7, 76);
             checkBoxSaveToFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBoxSaveToFile.Name = "checkBoxSaveToFile";

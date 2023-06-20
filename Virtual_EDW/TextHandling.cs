@@ -115,6 +115,13 @@ namespace Virtual_Data_Warehouse
                         "SELECT",
                         "FROM",
                         "INSERT",
+                        "WHILE",
+                        "PRINT",
+                        "BEGIN",
+                        "END",
+                        "DECLARE",
+                        "ALTER",
+                        "COLUMN",
                         "INTO", "OVER", "PARTITION", "IN", "ORDER", "BY", "GROUP", "AS", "WHERE", "NVARCHAR", "NOT EXISTS", "LEFT", "OUTER", "JOIN"};
                     for (int i = 0; i < keyWordSql.Length; i++)
                     {
