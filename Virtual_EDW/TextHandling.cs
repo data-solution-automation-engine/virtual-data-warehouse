@@ -122,6 +122,7 @@ namespace Virtual_Data_Warehouse
                         "DECLARE",
                         "ALTER",
                         "COLUMN",
+                        "EXEC",
                         "INTO", "OVER", "PARTITION", "IN", "ORDER", "BY", "GROUP", "AS", "WHERE", "NVARCHAR", "NOT EXISTS", "LEFT", "OUTER", "JOIN"};
                     for (int i = 0; i < keyWordSql.Length; i++)
                     {
