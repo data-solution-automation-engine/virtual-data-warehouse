@@ -69,7 +69,240 @@
       ],
       "sourceDataObjects": [
         {
-          "name": "PSA_PROFILER_CUST_MEMBERSHIP",
+          "name": "vw_CUSTOMER_DERIVED",
+          "dataItems": [],
+          "dataObjectConnection": {
+            "dataConnectionString": "Derived",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "200_Integration_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "bdv",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Source"
+            }
+          ]
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_CUSTOMER",
+        "dataItems": [
+          {
+            "name": "CUSTOMER_SK",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 2
+          },
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "CUSTOMER_ID",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 4
+          }
+        ],
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "CoreBusinessConcept"
+          }
+        ]
+      },
+      "relatedDataObjects": [
+        {
+          "name": "DIM_CUSTOMER",
+          "dataItems": [
+            {
+              "name": "DIM_CUSTOMER_SK",
+              "dataType": "int",
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSERT_MODULE_INSTANCE_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "RECORD_CHECKSUM_TYPE1",
+              "dataType": "char",
+              "ordinalPosition": 3
+            },
+            {
+              "name": "RECORD_CHECKSUM_TYPE2",
+              "dataType": "char",
+              "ordinalPosition": 4
+            },
+            {
+              "name": "CHANGE_DATETIME",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHANGE_EXPIRY_DATETIME",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 1,
+              "ordinalPosition": 7
+            },
+            {
+              "name": "CUSTOMER_SK",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 8
+            },
+            {
+              "name": "CUSTOMER_ID",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            },
+            {
+              "name": "GIVEN_NAME",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 10
+            },
+            {
+              "name": "SURNAME",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 11
+            },
+            {
+              "name": "PREF_GENDER_PRONOUN",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 12
+            },
+            {
+              "name": "SUBURB",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 13
+            },
+            {
+              "name": "POSTCODE",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 14
+            },
+            {
+              "name": "COUNTRY",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 15
+            },
+            {
+              "name": "DATE_OF_BIRTH",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 16
+            },
+            {
+              "name": "CONTACT_NUMBER",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 17
+            },
+            {
+              "name": "STATE",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 18
+            }
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "Presentation",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "300_Presentation_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Presentation"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CUSTOMER_ID",
+                  "isHardCodedValue": false
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_SK"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "classification": "CoreBusinessConcept"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_PERSONALISED_COSTING",
           "dataItems": [
             {
               "name": "INSCRIPTION_TIMESTAMP",
@@ -106,39 +339,34 @@
               "ordinalPosition": 6
             },
             {
-              "name": "CustomerID",
+              "name": "Member",
               "dataType": "int",
               "ordinalPosition": 7
             },
             {
-              "name": "Plan_Code",
+              "name": "Segment",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
             },
             {
-              "name": "Start_Date",
-              "dataType": "datetime2",
-              "numericScale": 7,
+              "name": "Plan_Code",
+              "dataType": "nvarchar",
+              "characterLength": 100,
               "ordinalPosition": 9
             },
             {
-              "name": "End_Date",
+              "name": "Date_effective",
               "dataType": "datetime2",
               "numericScale": 7,
               "ordinalPosition": 10
             },
             {
-              "name": "Status",
-              "dataType": "nvarchar",
-              "characterLength": 100,
+              "name": "Monthly_Cost",
+              "dataType": "numeric",
+              "numericPrecision": 38,
+              "numericScale": 20,
               "ordinalPosition": 11
-            },
-            {
-              "name": "Comment",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
             }
           ],
           "dataObjectConnection": {
@@ -278,7 +506,339 @@
               "ordinalPosition": 11
             },
             {
-              "name": "GENDER",
+              "name": "PREF_GENDER_PRONOUN",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 12
+            },
+            {
+              "name": "SUBURB",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 13
+            },
+            {
+              "name": "POSTCODE",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 14
+            },
+            {
+              "name": "COUNTRY",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 15
+            },
+            {
+              "name": "DATE_OF_BIRTH",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 16
+            },
+            {
+              "name": "CONTACT_NUMBER",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 17
+            },
+            {
+              "name": "STATE",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 18
+            }
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "Presentation",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "300_Presentation_Layer",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Presentation"
+            }
+          ]
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "Member",
+                  "isHardCodedValue": false
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID"
+              }
+            }
+          ],
+          "surrogateKey": "CUSTOMER_SK"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    },
+    {
+      "mappingName": "HUB_CUSTOMER",
+      "mappingClassifications": [
+        {
+          "classification": "CoreBusinessConcept"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+          "dataItems": [
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSCRIPTION_RECORD_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHECKSUM",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 7
+            },
+            {
+              "name": "Given",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 8
+            },
+            {
+              "name": "Surname",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            },
+            {
+              "name": "Suburb",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 10
+            },
+            {
+              "name": "State",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 11
+            },
+            {
+              "name": "Postcode",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 12
+            },
+            {
+              "name": "Country",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 13
+            },
+            {
+              "name": "Pronoun",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 14
+            },
+            {
+              "name": "DOB",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 15
+            },
+            {
+              "name": "Referee_Offer_Made",
+              "dataType": "int",
+              "ordinalPosition": 16
+            },
+            {
+              "name": "Valid_From",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 17
+            }
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "PersistentStagingArea"
+            }
+          ]
+        }
+      ],
+      "targetDataObject": {
+        "name": "HUB_CUSTOMER",
+        "dataItems": [
+          {
+            "name": "CUSTOMER_SK",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 2
+          },
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "CUSTOMER_ID",
+            "dataType": "nvarchar",
+            "characterLength": 100,
+            "ordinalPosition": 4
+          }
+        ],
+        "dataObjectConnection": {
+          "dataConnectionString": "Integration",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "200_Integration_Layer",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "CoreBusinessConcept"
+          }
+        ]
+      },
+      "relatedDataObjects": [
+        {
+          "name": "DIM_CUSTOMER",
+          "dataItems": [
+            {
+              "name": "DIM_CUSTOMER_SK",
+              "dataType": "int",
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSERT_MODULE_INSTANCE_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "RECORD_CHECKSUM_TYPE1",
+              "dataType": "char",
+              "ordinalPosition": 3
+            },
+            {
+              "name": "RECORD_CHECKSUM_TYPE2",
+              "dataType": "char",
+              "ordinalPosition": 4
+            },
+            {
+              "name": "CHANGE_DATETIME",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHANGE_EXPIRY_DATETIME",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 1,
+              "ordinalPosition": 7
+            },
+            {
+              "name": "CUSTOMER_SK",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 8
+            },
+            {
+              "name": "CUSTOMER_ID",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 9
+            },
+            {
+              "name": "GIVEN_NAME",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 10
+            },
+            {
+              "name": "SURNAME",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 11
+            },
+            {
+              "name": "PREF_GENDER_PRONOUN",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 12
@@ -556,7 +1116,7 @@
               "ordinalPosition": 11
             },
             {
-              "name": "GENDER",
+              "name": "PREF_GENDER_PRONOUN",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 12
@@ -650,7 +1210,7 @@
       ],
       "sourceDataObjects": [
         {
-          "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+          "name": "PSA_PROFILER_CUSTOMER_CONTACT",
           "dataItems": [
             {
               "name": "INSCRIPTION_TIMESTAMP",
@@ -692,68 +1252,15 @@
               "ordinalPosition": 7
             },
             {
-              "name": "Given",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 8
-            },
-            {
-              "name": "Surname",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
-            },
-            {
-              "name": "Suburb",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 10
-            },
-            {
-              "name": "State",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 11
-            },
-            {
-              "name": "Postcode",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
-            },
-            {
-              "name": "Country",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 13
-            },
-            {
-              "name": "Gender",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 14
-            },
-            {
-              "name": "DOB",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 15
-            },
-            {
               "name": "Contact_Number",
               "dataType": "int",
-              "ordinalPosition": 16
-            },
-            {
-              "name": "Referee_Offer_Made",
-              "dataType": "int",
-              "ordinalPosition": 17
+              "ordinalPosition": 8
             },
             {
               "name": "Valid_From",
               "dataType": "datetime2",
               "numericScale": 7,
-              "ordinalPosition": 18
+              "ordinalPosition": 9
             }
           ],
           "dataObjectConnection": {
@@ -893,7 +1400,7 @@
               "ordinalPosition": 11
             },
             {
-              "name": "GENDER",
+              "name": "PREF_GENDER_PRONOUN",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 12
@@ -987,7 +1494,7 @@
       ],
       "sourceDataObjects": [
         {
-          "name": "PSA_PROFILER_PERSONALISED_COSTING",
+          "name": "PSA_PROFILER_CUST_MEMBERSHIP",
           "dataItems": [
             {
               "name": "INSCRIPTION_TIMESTAMP",
@@ -1024,34 +1531,39 @@
               "ordinalPosition": 6
             },
             {
-              "name": "Member",
+              "name": "CustomerID",
               "dataType": "int",
               "ordinalPosition": 7
-            },
-            {
-              "name": "Segment",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 8
             },
             {
               "name": "Plan_Code",
               "dataType": "nvarchar",
               "characterLength": 100,
+              "ordinalPosition": 8
+            },
+            {
+              "name": "Start_Date",
+              "dataType": "datetime2",
+              "numericScale": 7,
               "ordinalPosition": 9
             },
             {
-              "name": "Date_effective",
+              "name": "End_Date",
               "dataType": "datetime2",
               "numericScale": 7,
               "ordinalPosition": 10
             },
             {
-              "name": "Monthly_Cost",
-              "dataType": "numeric",
-              "numericPrecision": 38,
-              "numericScale": 20,
+              "name": "Status",
+              "dataType": "nvarchar",
+              "characterLength": 100,
               "ordinalPosition": 11
+            },
+            {
+              "name": "Comment",
+              "dataType": "nvarchar",
+              "characterLength": 100,
+              "ordinalPosition": 12
             }
           ],
           "dataObjectConnection": {
@@ -1191,7 +1703,7 @@
               "ordinalPosition": 11
             },
             {
-              "name": "GENDER",
+              "name": "PREF_GENDER_PRONOUN",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 12
@@ -1261,240 +1773,7 @@
             {
               "sourceDataItems": [
                 {
-                  "name": "Member",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "CUSTOMER_ID"
-              }
-            }
-          ],
-          "surrogateKey": "CUSTOMER_SK"
-        }
-      ],
-      "filterCriterion": "",
-      "enabled": true
-    },
-    {
-      "mappingName": "HUB_CUSTOMER",
-      "mappingClassifications": [
-        {
-          "classification": "CoreBusinessConcept"
-        }
-      ],
-      "sourceDataObjects": [
-        {
-          "name": "vw_CUSTOMER_DERIVED",
-          "dataItems": [],
-          "dataObjectConnection": {
-            "dataConnectionString": "Derived",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "bdv",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Source"
-            }
-          ]
-        }
-      ],
-      "targetDataObject": {
-        "name": "HUB_CUSTOMER",
-        "dataItems": [
-          {
-            "name": "CUSTOMER_SK",
-            "dataType": "binary",
-            "characterLength": 16,
-            "ordinalPosition": 1
-          },
-          {
-            "name": "AUDIT_TRAIL_ID",
-            "dataType": "int",
-            "ordinalPosition": 2
-          },
-          {
-            "name": "INSCRIPTION_TIMESTAMP",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 3
-          },
-          {
-            "name": "CUSTOMER_ID",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 4
-          }
-        ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Integration",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "200_Integration_Layer",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
-          {
-            "classification": "CoreBusinessConcept"
-          }
-        ]
-      },
-      "relatedDataObjects": [
-        {
-          "name": "DIM_CUSTOMER",
-          "dataItems": [
-            {
-              "name": "DIM_CUSTOMER_SK",
-              "dataType": "int",
-              "ordinalPosition": 1
-            },
-            {
-              "name": "INSERT_MODULE_INSTANCE_ID",
-              "dataType": "int",
-              "ordinalPosition": 2
-            },
-            {
-              "name": "RECORD_CHECKSUM_TYPE1",
-              "dataType": "char",
-              "ordinalPosition": 3
-            },
-            {
-              "name": "RECORD_CHECKSUM_TYPE2",
-              "dataType": "char",
-              "ordinalPosition": 4
-            },
-            {
-              "name": "CHANGE_DATETIME",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 5
-            },
-            {
-              "name": "CHANGE_EXPIRY_DATETIME",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 6
-            },
-            {
-              "name": "CHANGE_DATA_INDICATOR",
-              "dataType": "varchar",
-              "characterLength": 1,
-              "ordinalPosition": 7
-            },
-            {
-              "name": "CUSTOMER_SK",
-              "dataType": "binary",
-              "characterLength": 16,
-              "ordinalPosition": 8
-            },
-            {
-              "name": "CUSTOMER_ID",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
-            },
-            {
-              "name": "GIVEN_NAME",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 10
-            },
-            {
-              "name": "SURNAME",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 11
-            },
-            {
-              "name": "GENDER",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
-            },
-            {
-              "name": "SUBURB",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 13
-            },
-            {
-              "name": "POSTCODE",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 14
-            },
-            {
-              "name": "COUNTRY",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 15
-            },
-            {
-              "name": "DATE_OF_BIRTH",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 16
-            },
-            {
-              "name": "CONTACT_NUMBER",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 17
-            },
-            {
-              "name": "STATE",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 18
-            }
-          ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Presentation",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "300_Presentation_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Presentation"
-            }
-          ]
-        }
-      ],
-      "businessKeys": [
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "CUSTOMER_ID",
+                  "name": "CustomerID",
                   "isHardCodedValue": false
                 }
               ],

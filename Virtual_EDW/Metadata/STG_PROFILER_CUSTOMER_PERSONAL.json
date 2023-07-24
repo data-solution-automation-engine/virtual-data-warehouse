@@ -89,7 +89,7 @@
           "ordinalPosition": 13
         },
         {
-          "name": "Gender",
+          "name": "Pronoun",
           "dataType": "nvarchar",
           "characterLength": 100,
           "ordinalPosition": 14
@@ -101,20 +101,15 @@
           "ordinalPosition": 15
         },
         {
-          "name": "Contact_Number",
-          "dataType": "int",
-          "ordinalPosition": 16
-        },
-        {
           "name": "Referee_Offer_Made",
           "dataType": "int",
-          "ordinalPosition": 17
+          "ordinalPosition": 16
         },
         {
           "name": "Valid_From",
           "dataType": "datetime2",
           "numericScale": 7,
-          "ordinalPosition": 18
+          "ordinalPosition": 17
         }
       ],
       "dataObjectConnection": {
@@ -193,7 +188,7 @@
               "ordinalPosition": 7
             },
             {
-              "name": "Gender",
+              "name": "Pronoun",
               "dataType": "varchar",
               "characterLength": 1,
               "ordinalPosition": 8
@@ -205,20 +200,15 @@
               "ordinalPosition": 9
             },
             {
-              "name": "Contact_Number",
-              "dataType": "int",
-              "ordinalPosition": 10
-            },
-            {
               "name": "Referee_Offer_Made",
               "dataType": "int",
-              "ordinalPosition": 11
+              "ordinalPosition": 10
             },
             {
               "name": "Valid_From",
               "dataType": "date",
               "numericScale": 0,
-              "ordinalPosition": 12
+              "ordinalPosition": 11
             }
           ],
           "dataObjectConnection": {
@@ -322,7 +312,7 @@
             "ordinalPosition": 13
           },
           {
-            "name": "Gender",
+            "name": "Pronoun",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 14
@@ -334,20 +324,15 @@
             "ordinalPosition": 15
           },
           {
-            "name": "Contact_Number",
-            "dataType": "int",
-            "ordinalPosition": 16
-          },
-          {
             "name": "Referee_Offer_Made",
             "dataType": "int",
-            "ordinalPosition": 17
+            "ordinalPosition": 16
           },
           {
             "name": "Valid_From",
             "dataType": "datetime2",
             "numericScale": 7,
-            "ordinalPosition": 18
+            "ordinalPosition": 17
           }
         ],
         "dataObjectConnection": {
@@ -451,7 +436,7 @@
               "ordinalPosition": 13
             },
             {
-              "name": "Gender",
+              "name": "Pronoun",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 14
@@ -463,20 +448,15 @@
               "ordinalPosition": 15
             },
             {
-              "name": "Contact_Number",
-              "dataType": "int",
-              "ordinalPosition": 16
-            },
-            {
               "name": "Referee_Offer_Made",
               "dataType": "int",
-              "ordinalPosition": 17
+              "ordinalPosition": 16
             },
             {
               "name": "Valid_From",
               "dataType": "datetime2",
               "numericScale": 7,
-              "ordinalPosition": 18
+              "ordinalPosition": 17
             }
           ],
           "dataObjectConnection": {
@@ -615,14 +595,14 @@
         {
           "sourceDataItems": [
             {
-              "name": "Gender",
+              "name": "Pronoun",
               "dataType": "varchar",
               "characterLength": 1,
               "ordinalPosition": 8
             }
           ],
           "targetDataItem": {
-            "name": "Gender",
+            "name": "Pronoun",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 14
@@ -647,29 +627,15 @@
         {
           "sourceDataItems": [
             {
-              "name": "Contact_Number",
+              "name": "Referee_Offer_Made",
               "dataType": "int",
               "ordinalPosition": 10
             }
           ],
           "targetDataItem": {
-            "name": "Contact_Number",
-            "dataType": "int",
-            "ordinalPosition": 16
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "Referee_Offer_Made",
-              "dataType": "int",
-              "ordinalPosition": 11
-            }
-          ],
-          "targetDataItem": {
             "name": "Referee_Offer_Made",
             "dataType": "int",
-            "ordinalPosition": 17
+            "ordinalPosition": 16
           }
         },
         {
@@ -678,14 +644,14 @@
               "name": "Valid_From",
               "dataType": "date",
               "numericScale": 0,
-              "ordinalPosition": 12
+              "ordinalPosition": 11
             }
           ],
           "targetDataItem": {
             "name": "Valid_From",
             "dataType": "datetime2",
             "numericScale": 7,
-            "ordinalPosition": 18
+            "ordinalPosition": 17
           }
         }
       ],

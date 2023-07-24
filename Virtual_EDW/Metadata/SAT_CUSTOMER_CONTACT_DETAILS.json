@@ -11,7 +11,7 @@
   },
   "generationSpecificMetadata": {
     "selectedDataObject": {
-      "name": "SAT_CUSTOMER",
+      "name": "SAT_CUSTOMER_CONTACT_DETAILS",
       "dataItems": [
         {
           "name": "CUSTOMER_SK",
@@ -54,58 +54,10 @@
           "ordinalPosition": 7
         },
         {
-          "name": "GIVEN_NAME",
+          "name": "CONTACT_NUMBER",
           "dataType": "nvarchar",
           "characterLength": 100,
           "ordinalPosition": 8
-        },
-        {
-          "name": "SURNAME",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 9
-        },
-        {
-          "name": "SUBURB",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 10
-        },
-        {
-          "name": "POSTCODE",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 11
-        },
-        {
-          "name": "STATE",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 12
-        },
-        {
-          "name": "COUNTRY",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 13
-        },
-        {
-          "name": "PREF_GENDER_PRONOUN",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 14
-        },
-        {
-          "name": "DATE_OF_BIRTH",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 15
-        },
-        {
-          "name": "REFERRAL_OFFER_MADE_INDICATOR",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 16
         }
       ],
       "dataObjectConnection": {
@@ -132,7 +84,7 @@
   },
   "dataObjectMappings": [
     {
-      "mappingName": "SAT_CUSTOMER",
+      "mappingName": "SAT_CUSTOMER_CONTACT_DETAILS",
       "mappingClassifications": [
         {
           "classification": "Context"
@@ -140,7 +92,7 @@
       ],
       "sourceDataObjects": [
         {
-          "name": "PSA_PROFILER_CUSTOMER_PERSONAL",
+          "name": "PSA_PROFILER_CUSTOMER_CONTACT",
           "dataItems": [
             {
               "name": "INSCRIPTION_TIMESTAMP",
@@ -182,63 +134,15 @@
               "ordinalPosition": 7
             },
             {
-              "name": "Given",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 8
-            },
-            {
-              "name": "Surname",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
-            },
-            {
-              "name": "Suburb",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 10
-            },
-            {
-              "name": "State",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 11
-            },
-            {
-              "name": "Postcode",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
-            },
-            {
-              "name": "Country",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 13
-            },
-            {
-              "name": "Pronoun",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 14
-            },
-            {
-              "name": "DOB",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 15
-            },
-            {
-              "name": "Referee_Offer_Made",
+              "name": "Contact_Number",
               "dataType": "int",
-              "ordinalPosition": 16
+              "ordinalPosition": 8
             },
             {
               "name": "Valid_From",
               "dataType": "datetime2",
               "numericScale": 7,
-              "ordinalPosition": 17
+              "ordinalPosition": 9
             }
           ],
           "dataObjectConnection": {
@@ -264,7 +168,7 @@
         }
       ],
       "targetDataObject": {
-        "name": "SAT_CUSTOMER",
+        "name": "SAT_CUSTOMER_CONTACT_DETAILS",
         "dataItems": [
           {
             "name": "CUSTOMER_SK",
@@ -307,58 +211,10 @@
             "ordinalPosition": 7
           },
           {
-            "name": "GIVEN_NAME",
+            "name": "CONTACT_NUMBER",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 8
-          },
-          {
-            "name": "SURNAME",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 9
-          },
-          {
-            "name": "SUBURB",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 10
-          },
-          {
-            "name": "POSTCODE",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 11
-          },
-          {
-            "name": "STATE",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 12
-          },
-          {
-            "name": "COUNTRY",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 13
-          },
-          {
-            "name": "PREF_GENDER_PRONOUN",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 14
-          },
-          {
-            "name": "DATE_OF_BIRTH",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 15
-          },
-          {
-            "name": "REFERRAL_OFFER_MADE_INDICATOR",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 16
           }
         ],
         "dataObjectConnection": {
@@ -565,62 +421,13 @@
         {
           "sourceDataItems": [
             {
-              "name": "Country",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 13
-            }
-          ],
-          "targetDataItem": {
-            "name": "COUNTRY",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 13
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "DOB",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 15
-            }
-          ],
-          "targetDataItem": {
-            "name": "DATE_OF_BIRTH",
-            "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 15
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "Pronoun",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 14
-            }
-          ],
-          "targetDataItem": {
-            "name": "PREF_GENDER_PRONOUN",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 14
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "Given",
-              "dataType": "nvarchar",
-              "characterLength": 100,
+              "name": "Contact_Number",
+              "dataType": "int",
               "ordinalPosition": 8
             }
           ],
           "targetDataItem": {
-            "name": "GIVEN_NAME",
+            "name": "CONTACT_NUMBER",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 8
@@ -629,89 +436,10 @@
         {
           "sourceDataItems": [
             {
-              "name": "Postcode",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 12
-            }
-          ],
-          "targetDataItem": {
-            "name": "POSTCODE",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 11
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "Referee_Offer_Made",
-              "dataType": "int",
-              "ordinalPosition": 16
-            }
-          ],
-          "targetDataItem": {
-            "name": "REFERRAL_OFFER_MADE_INDICATOR",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 16
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "State",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 11
-            }
-          ],
-          "targetDataItem": {
-            "name": "STATE",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 12
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "Suburb",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 10
-            }
-          ],
-          "targetDataItem": {
-            "name": "SUBURB",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 10
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "Surname",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
-            }
-          ],
-          "targetDataItem": {
-            "name": "SURNAME",
-            "dataType": "nvarchar",
-            "characterLength": 100,
-            "ordinalPosition": 9
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
               "name": "Valid_From",
               "dataType": "datetime2",
               "numericScale": 7,
-              "ordinalPosition": 17
+              "ordinalPosition": 9
             }
           ],
           "targetDataItem": {

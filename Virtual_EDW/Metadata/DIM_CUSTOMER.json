@@ -76,7 +76,7 @@
           "ordinalPosition": 11
         },
         {
-          "name": "GENDER",
+          "name": "PREF_GENDER_PRONOUN",
           "dataType": "nvarchar",
           "characterLength": 100,
           "ordinalPosition": 12
@@ -264,7 +264,7 @@
             "ordinalPosition": 11
           },
           {
-            "name": "GENDER",
+            "name": "PREF_GENDER_PRONOUN",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 12
@@ -442,25 +442,25 @@
               "ordinalPosition": 11
             },
             {
-              "name": "COUNTRY",
+              "name": "STATE",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 12
             },
             {
-              "name": "GENDER",
+              "name": "COUNTRY",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 13
             },
             {
-              "name": "DATE_OF_BIRTH",
-              "dataType": "datetime2",
-              "numericScale": 7,
+              "name": "PREF_GENDER_PRONOUN",
+              "dataType": "nvarchar",
+              "characterLength": 100,
               "ordinalPosition": 14
             },
             {
-              "name": "VALID_FROM",
+              "name": "DATE_OF_BIRTH",
               "dataType": "datetime2",
               "numericScale": 7,
               "ordinalPosition": 15
@@ -560,7 +560,7 @@
             "ordinalPosition": 11
           },
           {
-            "name": "GENDER",
+            "name": "PREF_GENDER_PRONOUN",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 12
@@ -630,7 +630,7 @@
               "name": "DATE_OF_BIRTH",
               "dataType": "datetime2",
               "numericScale": 7,
-              "ordinalPosition": 14
+              "ordinalPosition": 15
             }
           ],
           "targetDataItem": {
@@ -703,7 +703,7 @@
       ],
       "sourceDataObjects": [
         {
-          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
+          "name": "SAT_CUSTOMER_CONTACT_DETAILS",
           "dataItems": [
             {
               "name": "CUSTOMER_SK",
@@ -750,12 +750,6 @@
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
-            },
-            {
-              "name": "STATE",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
             }
           ],
           "dataObjectConnection": {
@@ -846,7 +840,7 @@
             "ordinalPosition": 11
           },
           {
-            "name": "GENDER",
+            "name": "PREF_GENDER_PRONOUN",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 12

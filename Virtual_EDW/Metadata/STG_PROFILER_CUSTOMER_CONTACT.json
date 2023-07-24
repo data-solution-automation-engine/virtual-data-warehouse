@@ -1,0 +1,360 @@
+{
+  "metadataConfiguration": {
+    "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
+    "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
+    "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",
+    "expiryDateTimeAttribute": "INSCRIPTION_END_TIMESTAMP",
+    "eventDateTimeAttribute": "SOURCE_TIMESTAMP",
+    "recordChecksumAttribute": "CHECKSUM",
+    "etlProcessAttribute": "AUDIT_TRAIL_ID",
+    "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
+  },
+  "generationSpecificMetadata": {
+    "selectedDataObject": {
+      "name": "STG_PROFILER_CUSTOMER_CONTACT",
+      "dataItems": [
+        {
+          "name": "INSCRIPTION_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 1
+        },
+        {
+          "name": "INSCRIPTION_RECORD_ID",
+          "dataType": "int",
+          "ordinalPosition": 2
+        },
+        {
+          "name": "SOURCE_TIMESTAMP",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 3
+        },
+        {
+          "name": "CHANGE_DATA_INDICATOR",
+          "dataType": "varchar",
+          "characterLength": 100,
+          "ordinalPosition": 4
+        },
+        {
+          "name": "AUDIT_TRAIL_ID",
+          "dataType": "int",
+          "ordinalPosition": 5
+        },
+        {
+          "name": "CHECKSUM",
+          "dataType": "binary",
+          "characterLength": 16,
+          "ordinalPosition": 6
+        },
+        {
+          "name": "CustomerID",
+          "dataType": "int",
+          "ordinalPosition": 7
+        },
+        {
+          "name": "Contact_Number",
+          "dataType": "int",
+          "ordinalPosition": 8
+        },
+        {
+          "name": "Valid_From",
+          "dataType": "datetime2",
+          "numericScale": 7,
+          "ordinalPosition": 9
+        }
+      ],
+      "dataObjectConnection": {
+        "dataConnectionString": "Staging",
+        "extensions": [
+          {
+            "key": "database",
+            "value": "100_Staging_Area",
+            "description": "database name"
+          },
+          {
+            "key": "schema",
+            "value": "dbo",
+            "description": "schema name"
+          }
+        ]
+      },
+      "dataObjectClassifications": [
+        {
+          "classification": "StagingArea"
+        }
+      ]
+    }
+  },
+  "dataObjectMappings": [
+    {
+      "mappingName": "STG_PROFILER_CUSTOMER_CONTACT",
+      "mappingClassifications": [
+        {
+          "classification": "StagingArea"
+        }
+      ],
+      "sourceDataObjects": [
+        {
+          "name": "CUSTOMER_CONTACT",
+          "dataItems": [
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
+            },
+            {
+              "name": "Contact_Number",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "Valid_From",
+              "dataType": "date",
+              "numericScale": 0,
+              "ordinalPosition": 3
+            }
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "Source",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "000_Source",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "Source"
+            }
+          ]
+        }
+      ],
+      "targetDataObject": {
+        "name": "STG_PROFILER_CUSTOMER_CONTACT",
+        "dataItems": [
+          {
+            "name": "INSCRIPTION_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 1
+          },
+          {
+            "name": "INSCRIPTION_RECORD_ID",
+            "dataType": "int",
+            "ordinalPosition": 2
+          },
+          {
+            "name": "SOURCE_TIMESTAMP",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 3
+          },
+          {
+            "name": "CHANGE_DATA_INDICATOR",
+            "dataType": "varchar",
+            "characterLength": 100,
+            "ordinalPosition": 4
+          },
+          {
+            "name": "AUDIT_TRAIL_ID",
+            "dataType": "int",
+            "ordinalPosition": 5
+          },
+          {
+            "name": "CHECKSUM",
+            "dataType": "binary",
+            "characterLength": 16,
+            "ordinalPosition": 6
+          },
+          {
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 7
+          },
+          {
+            "name": "Contact_Number",
+            "dataType": "int",
+            "ordinalPosition": 8
+          },
+          {
+            "name": "Valid_From",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 9
+          }
+        ],
+        "dataObjectConnection": {
+          "dataConnectionString": "Staging",
+          "extensions": [
+            {
+              "key": "database",
+              "value": "100_Staging_Area",
+              "description": "database name"
+            },
+            {
+              "key": "schema",
+              "value": "dbo",
+              "description": "schema name"
+            }
+          ]
+        },
+        "dataObjectClassifications": [
+          {
+            "classification": "StagingArea"
+          }
+        ]
+      },
+      "relatedDataObjects": [
+        {
+          "name": "PSA_PROFILER_CUSTOMER_CONTACT",
+          "dataItems": [
+            {
+              "name": "INSCRIPTION_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 1
+            },
+            {
+              "name": "INSCRIPTION_RECORD_ID",
+              "dataType": "int",
+              "ordinalPosition": 2
+            },
+            {
+              "name": "SOURCE_TIMESTAMP",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 3
+            },
+            {
+              "name": "CHANGE_DATA_INDICATOR",
+              "dataType": "varchar",
+              "characterLength": 100,
+              "ordinalPosition": 4
+            },
+            {
+              "name": "AUDIT_TRAIL_ID",
+              "dataType": "int",
+              "ordinalPosition": 5
+            },
+            {
+              "name": "CHECKSUM",
+              "dataType": "binary",
+              "characterLength": 16,
+              "ordinalPosition": 6
+            },
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 7
+            },
+            {
+              "name": "Contact_Number",
+              "dataType": "int",
+              "ordinalPosition": 8
+            },
+            {
+              "name": "Valid_From",
+              "dataType": "datetime2",
+              "numericScale": 7,
+              "ordinalPosition": 9
+            }
+          ],
+          "dataObjectConnection": {
+            "dataConnectionString": "PSA",
+            "extensions": [
+              {
+                "key": "database",
+                "value": "150_Persistent_Staging_Area",
+                "description": "database name"
+              },
+              {
+                "key": "schema",
+                "value": "dbo",
+                "description": "schema name"
+              }
+            ]
+          },
+          "dataObjectClassifications": [
+            {
+              "classification": "PersistentStagingArea"
+            }
+          ]
+        }
+      ],
+      "dataItemMappings": [
+        {
+          "sourceDataItems": [
+            {
+              "name": "CustomerID",
+              "dataType": "int",
+              "ordinalPosition": 1
+            }
+          ],
+          "targetDataItem": {
+            "name": "CustomerID",
+            "dataType": "int",
+            "ordinalPosition": 7
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Contact_Number",
+              "dataType": "int",
+              "ordinalPosition": 2
+            }
+          ],
+          "targetDataItem": {
+            "name": "Contact_Number",
+            "dataType": "int",
+            "ordinalPosition": 8
+          }
+        },
+        {
+          "sourceDataItems": [
+            {
+              "name": "Valid_From",
+              "dataType": "date",
+              "numericScale": 0,
+              "ordinalPosition": 3
+            }
+          ],
+          "targetDataItem": {
+            "name": "Valid_From",
+            "dataType": "datetime2",
+            "numericScale": 7,
+            "ordinalPosition": 9
+          }
+        }
+      ],
+      "businessKeys": [
+        {
+          "businessKeyComponentMapping": [
+            {
+              "sourceDataItems": [
+                {
+                  "name": "CustomerID",
+                  "isHardCodedValue": false
+                }
+              ],
+              "targetDataItem": {
+                "name": "CustomerID"
+              }
+            }
+          ],
+          "surrogateKey": "PROFILER_CUSTOMER_CONTACT_SK"
+        }
+      ],
+      "filterCriterion": "",
+      "enabled": true
+    }
+  ]
+}

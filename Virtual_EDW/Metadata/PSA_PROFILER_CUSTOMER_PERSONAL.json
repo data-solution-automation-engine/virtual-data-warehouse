@@ -89,7 +89,7 @@
           "ordinalPosition": 13
         },
         {
-          "name": "Gender",
+          "name": "Pronoun",
           "dataType": "nvarchar",
           "characterLength": 100,
           "ordinalPosition": 14
@@ -101,20 +101,15 @@
           "ordinalPosition": 15
         },
         {
-          "name": "Contact_Number",
-          "dataType": "int",
-          "ordinalPosition": 16
-        },
-        {
           "name": "Referee_Offer_Made",
           "dataType": "int",
-          "ordinalPosition": 17
+          "ordinalPosition": 16
         },
         {
           "name": "Valid_From",
           "dataType": "datetime2",
           "numericScale": 7,
-          "ordinalPosition": 18
+          "ordinalPosition": 17
         }
       ],
       "dataObjectConnection": {
@@ -227,7 +222,7 @@
               "ordinalPosition": 13
             },
             {
-              "name": "Gender",
+              "name": "Pronoun",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 14
@@ -239,20 +234,15 @@
               "ordinalPosition": 15
             },
             {
-              "name": "Contact_Number",
-              "dataType": "int",
-              "ordinalPosition": 16
-            },
-            {
               "name": "Referee_Offer_Made",
               "dataType": "int",
-              "ordinalPosition": 17
+              "ordinalPosition": 16
             },
             {
               "name": "Valid_From",
               "dataType": "datetime2",
               "numericScale": 7,
-              "ordinalPosition": 18
+              "ordinalPosition": 17
             }
           ],
           "dataObjectConnection": {
@@ -356,7 +346,7 @@
             "ordinalPosition": 13
           },
           {
-            "name": "Gender",
+            "name": "Pronoun",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 14
@@ -368,20 +358,15 @@
             "ordinalPosition": 15
           },
           {
-            "name": "Contact_Number",
-            "dataType": "int",
-            "ordinalPosition": 16
-          },
-          {
             "name": "Referee_Offer_Made",
             "dataType": "int",
-            "ordinalPosition": 17
+            "ordinalPosition": 16
           },
           {
             "name": "Valid_From",
             "dataType": "datetime2",
             "numericScale": 7,
-            "ordinalPosition": 18
+            "ordinalPosition": 17
           }
         ],
         "dataObjectConnection": {
@@ -522,25 +507,25 @@
               "ordinalPosition": 11
             },
             {
-              "name": "COUNTRY",
+              "name": "STATE",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 12
             },
             {
-              "name": "GENDER",
+              "name": "COUNTRY",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 13
             },
             {
-              "name": "DATE_OF_BIRTH",
-              "dataType": "datetime2",
-              "numericScale": 7,
+              "name": "PREF_GENDER_PRONOUN",
+              "dataType": "nvarchar",
+              "characterLength": 100,
               "ordinalPosition": 14
             },
             {
-              "name": "VALID_FROM",
+              "name": "DATE_OF_BIRTH",
               "dataType": "datetime2",
               "numericScale": 7,
               "ordinalPosition": 15
@@ -550,83 +535,6 @@
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 16
-            }
-          ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
-            {
-              "classification": "Context"
-            }
-          ]
-        },
-        {
-          "name": "SAT_CUSTOMER_ADDITIONAL_DETAILS",
-          "dataItems": [
-            {
-              "name": "CUSTOMER_SK",
-              "dataType": "binary",
-              "characterLength": 16,
-              "ordinalPosition": 1
-            },
-            {
-              "name": "INSCRIPTION_TIMESTAMP",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 2
-            },
-            {
-              "name": "INSCRIPTION_RECORD_ID",
-              "dataType": "int",
-              "ordinalPosition": 3
-            },
-            {
-              "name": "STATE_TIMESTAMP",
-              "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 4
-            },
-            {
-              "name": "AUDIT_TRAIL_ID",
-              "dataType": "int",
-              "ordinalPosition": 5
-            },
-            {
-              "name": "CHANGE_DATA_INDICATOR",
-              "dataType": "varchar",
-              "characterLength": 100,
-              "ordinalPosition": 6
-            },
-            {
-              "name": "CHECKSUM",
-              "dataType": "binary",
-              "characterLength": 16,
-              "ordinalPosition": 7
-            },
-            {
-              "name": "CONTACT_NUMBER",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 8
-            },
-            {
-              "name": "STATE",
-              "dataType": "nvarchar",
-              "characterLength": 100,
-              "ordinalPosition": 9
             }
           ],
           "dataObjectConnection": {
@@ -771,14 +679,14 @@
         {
           "sourceDataItems": [
             {
-              "name": "Gender",
+              "name": "Pronoun",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 14
             }
           ],
           "targetDataItem": {
-            "name": "Gender",
+            "name": "Pronoun",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 14
@@ -803,29 +711,15 @@
         {
           "sourceDataItems": [
             {
-              "name": "Contact_Number",
+              "name": "Referee_Offer_Made",
               "dataType": "int",
               "ordinalPosition": 16
             }
           ],
           "targetDataItem": {
-            "name": "Contact_Number",
-            "dataType": "int",
-            "ordinalPosition": 16
-          }
-        },
-        {
-          "sourceDataItems": [
-            {
-              "name": "Referee_Offer_Made",
-              "dataType": "int",
-              "ordinalPosition": 17
-            }
-          ],
-          "targetDataItem": {
             "name": "Referee_Offer_Made",
             "dataType": "int",
-            "ordinalPosition": 17
+            "ordinalPosition": 16
           }
         },
         {
@@ -834,14 +728,14 @@
               "name": "Valid_From",
               "dataType": "datetime2",
               "numericScale": 7,
-              "ordinalPosition": 18
+              "ordinalPosition": 17
             }
           ],
           "targetDataItem": {
             "name": "Valid_From",
             "dataType": "datetime2",
             "numericScale": 7,
-            "ordinalPosition": 18
+            "ordinalPosition": 17
           }
         }
       ],
