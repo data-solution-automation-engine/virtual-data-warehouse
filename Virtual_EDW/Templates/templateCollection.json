@@ -256,12 +256,28 @@
     "TemplateNotes": "Creating DIRECT registration scripts."
   },
   {
-    "TemplateName": "500 Data Vault Hub Generate Tables for DIRECT wrapper",
+    "TemplateName": "500 Data Vault Hub Generate Tables",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateHubGenerateTables.handlebars",
-    "TemplateNotes": "Creating tables using the DIRECT standard conventions."
+    "TemplateNotes": "Creating tables for Core Business Concepts."
+  },
+  {
+    "TemplateName": "500 Data Vault Link Generate Tables",
+    "TemplateType": "NaturalBusinessRelationship",
+    "TemplateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateLinkGenerateTables.handlebars",
+    "TemplateNotes": "Creating tables for Natural Business Relationships."
+  },
+  {
+    "TemplateName": "500 Data Vault Satellite Generate Tables",
+    "TemplateType": "Context",
+    "TemplateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateSatelliteGenerateTables.handlebars",
+    "TemplateNotes": "Creating tables for Context tables."
   },
   {
     "TemplateName": "500 Data Vault Satellite Batch/Module Registration for DIRECT",
