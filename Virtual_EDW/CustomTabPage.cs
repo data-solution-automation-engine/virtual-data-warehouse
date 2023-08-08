@@ -71,11 +71,10 @@ namespace Virtual_Data_Warehouse
         // Values for the checkboxes from main form
         public bool DisplayJsonFlag { get; set; }
         public bool GenerateInDatabaseFlag { get; set; }
-        public bool SaveOutputFileFlag { get; set; }
+        public bool SaveOutputFileFlag { get; set; } = false;
 
         internal bool StartUpIndicator = true;
-
-
+        
         /// <summary>
         /// Function can be called from the main form as well this wya.
         /// </summary>
@@ -114,7 +113,7 @@ namespace Virtual_Data_Warehouse
 
             DisplayJsonFlag = true;
             GenerateInDatabaseFlag = true;
-            SaveOutputFileFlag = true;
+            SaveOutputFileFlag = false;
 
             #region Main Tab Page
 
@@ -566,6 +565,9 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         private void GenerateFromTemplate()
         {
+            // Workaround for file output spool
+            //if (this.SaveOutputFileFlag)
+
             // Establish the current time at the start of generation, to display only messages related to the current generation run.
             var currentTime = DateTime.Now;
 

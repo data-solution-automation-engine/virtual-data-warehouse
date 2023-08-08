@@ -159,6 +159,7 @@ namespace Virtual_Data_Warehouse
             // Start monitoring the configuration directories for file changes
             RunFileWatcher();
 
+            CheckSaveToFileState();
             startUpIndicator = false;
         }
 
@@ -927,6 +928,13 @@ namespace Virtual_Data_Warehouse
 
         private void checkBoxSaveToFile_CheckedChanged(object sender, EventArgs e)
         {
+            CheckSaveToFileState();
+        }
+
+        private void CheckSaveToFileState()
+        {
+            var test = checkBoxSaveToFile.CheckState;
+
             foreach (CustomTabPage localTabPage in localCustomTabPageList)
             {
                 if (checkBoxSaveToFile.Checked)
