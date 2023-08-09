@@ -71,11 +71,11 @@ namespace Virtual_Data_Warehouse
                     outfile.Close();
                 }
 
-                returnMessage = "The file has been updated.";
+                returnMessage = $"The file '{templateFilePath}' has been updated.";
             }
             catch (Exception ex) 
             {
-                returnMessage = ("An error has occurred while creating saving the file. The error message is " + ex.Message);
+                returnMessage = ($"An error has occurred while creating saving the file '{templateFilePath}'. The error message is " + ex.Message);
             }
 
             return returnMessage;

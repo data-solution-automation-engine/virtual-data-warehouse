@@ -532,21 +532,23 @@ namespace Virtual_Data_Warehouse
 
         void SaveTemplate(object o, EventArgs e)
         {
-            RaiseOnClearMainText();
-            string backupResponse = TemplateHandling.BackupTemplateCollection(localLabelFullFilePath.Text);
-            string saveResponse = "";
+            var saveResponse = TemplateHandling.SaveTemplateCollection(localLabelFullFilePath.Text, localRichTextBoxGenerationTemplate.Text);
+            RaiseOnChangeMainText("\r\n" + saveResponse);
 
-            if (backupResponse.StartsWith("A backup was created"))
-            {
-                RaiseOnChangeMainText(backupResponse);
-                saveResponse = TemplateHandling.SaveTemplateCollection(localLabelFullFilePath.Text, localRichTextBoxGenerationTemplate.Text);
-                RaiseOnChangeMainText("\r\n\r\n" + saveResponse);
-            }
-            else
-            {
-                RaiseOnChangeMainText(backupResponse);
-                RaiseOnChangeMainText(saveResponse);
-            }
+            //RaiseOnClearMainText();
+            //string backupResponse = TemplateHandling.BackupTemplateCollection(localLabelFullFilePath.Text);
+            //string saveResponse = "";
+
+            //if (backupResponse.StartsWith("A backup was created"))
+            //{
+            //    RaiseOnChangeMainText(backupResponse);
+
+            //}
+            //else
+            //{
+            //    RaiseOnChangeMainText(backupResponse);
+            //    RaiseOnChangeMainText(saveResponse);
+            //}
         }
 
         void Generate(object o, EventArgs e)
