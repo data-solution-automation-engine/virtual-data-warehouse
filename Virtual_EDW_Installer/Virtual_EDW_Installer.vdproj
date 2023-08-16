@@ -133,7 +133,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.6.1 "
+                "FrameworkVersion" = "8:v4.6.1  "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=671728"
                 }
@@ -281,15 +281,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Virtual Data Warehouse"
-        "ProductCode" = "8:{4AF00EF6-A639-439D-8013-7D626835C38A}"
-        "PackageCode" = "8:{220173E5-C92A-434F-8C45-FBE967536476}"
+        "ProductCode" = "8:{DD960107-BA0D-4688-8E13-E6AE94F99C4D}"
+        "PackageCode" = "8:{0DB81DFB-67C0-459F-8217-BD7FB3D86EB7}"
         "UpgradeCode" = "8:{CAA37576-CF3A-4799-AF70-44CB58934E54}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.6.11"
+        "ProductVersion" = "8:1.6.12"
         "Manufacturer" = "8:RoelantVos"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.roelantvos.com/blog"

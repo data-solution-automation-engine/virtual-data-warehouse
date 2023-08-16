@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using HandlebarsDotNet;
@@ -593,7 +594,12 @@ namespace Virtual_Data_Warehouse
                     {
                         // Compile the template, and merge it with the metadata.
                         var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);
-                        var result = template(dataObjectMappingList);
+
+                        //string serializedMapping = System.Text.Json.JsonSerializer.Serialize(dataObjectMappingList);
+                        string jsonInput = File.ReadAllText(dataObjectMappingList.metadataFileName);
+                        JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
+
+                        var result = template(deserializedMapping);
 
                         // Check if the metadata needs to be displayed.
                         if (DisplayJsonFlag)

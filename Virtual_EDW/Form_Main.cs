@@ -31,7 +31,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.11";
+            const string versionNumberForApplication = "v1.6.12";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
@@ -649,7 +649,7 @@ namespace Virtual_Data_Warehouse
                                 // Validate the file contents against the schema definition.
                                 if (File.Exists(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName))
                                 {
-                                    var result = JsonHandling.ValidateJsonFileAgainstSchema(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName, fileName);
+                                    var result = JsonValidation.ValidateJsonFileAgainstSchema(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName, fileName);
 
                                     foreach (var error in result.Errors)
                                     {
