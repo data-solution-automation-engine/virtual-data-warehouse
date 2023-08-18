@@ -304,7 +304,7 @@ namespace Virtual_Data_Warehouse
             localLabelOutputFileTemplateValue.Name = $"label{classification}OutputFileTemplateValue";
             localLabelOutputFileTemplateValue.Text = @"<output file template>";
 
-            // Add 'Save Tempalte' Button
+            // Add 'Save Template' Button
             localSaveTemplate = new Button();
             tabPageGenerationTemplate.Controls.Add(localSaveTemplate);
             localSaveTemplate.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
@@ -321,6 +321,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationTemplate.Location = new Point(3, 82);
             localRichTextBoxGenerationTemplate.Size = new Size(195, 30);
             localRichTextBoxGenerationTemplate.BorderStyle = BorderStyle.None;
+            localRichTextBoxGenerationTemplate.AcceptsTab = true;
             localRichTextBoxGenerationTemplate.TextChanged += CommitTemplateToMemory;
             #endregion
 
