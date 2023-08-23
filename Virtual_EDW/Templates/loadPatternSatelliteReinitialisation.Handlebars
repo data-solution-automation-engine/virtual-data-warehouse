@@ -1,0 +1,48 @@
+{{#each dataObjectMappings}}
+{{#if enabled}}
+--
+-- Satellite Reinitialisation logic for [{{#each targetDataObject.dataObjectConnection.extensions}}{{#stringcompare key schema}}{{value}}{{/stringcompare}}{{/each}}].[{{targetDataObject.name}}]
+-- 
+
+-- Truncate the source for the Satellite, the Staging Area table.
+TRUNCATE TABLE [{{#each sourceDataObjects.0.dataObjectConnection.extensions}}{{#stringcompare key schema}}{{value}}{{/stringcompare}}{{/each}}].[{{sourceDataObjects.0.name}}]
+
+-- Copy the data from the Staging Area to the PSA.
+INSERT INTO STG.{{sourceDataObjects.0.name}}
+(
+   [OMD_INSERT_MODULE_INSTANCE_ID]
+  ,[OMD_FILE_LOCATION]
+  ,[OMD_EVENT_DATETIME]
+  ,[OMD_INSERT_DATETIME]
+  ,[OMD_HASH_DIFF]
+  ,[OMD_CURRENT_RECORD_INDICATOR]
+  ,[OMD_DELETED_RECORD_INDICATOR]
+  ,[OMD_EXPIRY_DATETIME]
+  ,[OMD_RECORD_SOURCE_ID]
+  ,[OMD_SOURCE_ROW_ID]
+{{#each dataItemMappings}}
+  ,[{{sourceDataItems.0.name}}]
+{{/each}}
+)
+SELECT 
+   [OMD_INSERT_MODULE_INSTANCE_ID]
+  ,[OMD_FILE_LOCATION]
+  ,[OMD_EVENT_DATETIME]
+  ,[OMD_EFFECTIVE_DATETIME]
+  ,[OMD_HASH_DIFF]
+  ,[OMD_CURRENT_RECORD_INDICATOR]
+  ,[OMD_DELETED_RECORD_INDICATOR]
+  ,[OMD_EXPIRY_DATETIME]
+  ,[OMD_RECORD_SOURCE_ID]
+  ,[OMD_SOURCE_ROW_ID]
+{{#each dataItemMappings}}
+  ,[{{sourceDataItems.0.name}}]
+{{/each}}
+FROM PSA.{{StringReplace sourceDataObjects.0.name "STG" "PSA"}}
+
+-- Truncate the Satellite table.
+TRUNCATE TABLE [{{#each targetDataObject.dataObjectConnection.extensions}}{{#stringcompare key schema}}{{value}}{{/stringcompare}}{{/each}}].[{{targetDataObject.name}}];
+
+-- Rerun the Satellite loading procedure.
+EXEC [SP_{{targetDataObject.name}}] 0;
+{{/if}}{{/each}}

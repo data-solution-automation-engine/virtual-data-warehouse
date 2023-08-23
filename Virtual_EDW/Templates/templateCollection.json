@@ -38,7 +38,7 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkSatelliteView.handlebars",
     "TemplateNotes": ""
-  },
+  },   
   {
     "TemplateName": "100 Data Vault Satellite View Template",
     "TemplateType": "Context",
@@ -358,7 +358,23 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}_SelectView.sql",
     "TemplateFilePath": "templateLandingtoSilverFromView.handlebars",
     "TemplateNotes": "Azure Databricks insert into Staging Area. This template generates the select column list command from the view which is created from dataframe."
-  },
+  },   
+  {
+    "TemplateName": "500 Data Vault Satellite Reinitialisation Template",
+    "TemplateType": "Context",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_reinitialise.sql",
+    "TemplateFilePath": "loadPatternSatelliteReinitialisation.handlebars",
+    "TemplateNotes": ""
+  },  
+  {
+    "TemplateName": "500 Data Vault Link-Satellite Reinitialisation Template",
+    "TemplateType": "NaturalBusinessRelationshipContext",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_reinitialise.sql",
+    "TemplateFilePath": "loadPatternLinkSatelliteReinitialisation.handlebars",
+    "TemplateNotes": ""
+  },  
   {
     "TemplateName": "900 Unit Test - Hub Key Null Check",
     "TemplateType": "CoreBusinessConcept",
