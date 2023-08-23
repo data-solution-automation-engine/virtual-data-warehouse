@@ -15,11 +15,10 @@ CREATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{t
    [{{../metadataConfiguration.eventDateTimeAttribute}}] [datetime2](7) NOT NULL,
    [{{../metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
    [{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL, 
-   [{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL DEFAULT (SYSDATETIME()),
    --[{{../metadataConfiguration.recordSourceAttribute}}] [nvarchar](100) NOT NULL,
    [{{../metadataConfiguration.recordChecksumAttribute}}] binary(16) NOT NULL,
-   {{#each dataItemMappings}}
-   [{{sourceDataItems.0.name}}] [varchar](100){{#unless @last}},{{/unless}}
+   {{#each sourceDataObjects.0.dataItems}}
+   [{{name}}] [varchar](1000){{#unless @last}},{{/unless}}
    {{/each}}
 )
 

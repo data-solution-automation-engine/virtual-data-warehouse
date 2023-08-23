@@ -13,6 +13,6 @@ CREATE TABLE [{{targetDataObject.name}}]
    ,[{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL
    ,[{{../metadataConfiguration.recordSourceAttribute}}] [nvarchar](100) NOT NULL
   {{#each relatedDataObjects}}
-   ,[{{name "LNK_", ""}}_SK] binary(16) NOT NULL
+   ,[{{StringReplace name "HUB_" ""}}_SK] binary(16) NOT NULL
 {{/each}}
 ){{/if}}{{/each}}
