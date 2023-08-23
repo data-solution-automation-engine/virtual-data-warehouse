@@ -1,6 +1,6 @@
 {{#each dataObjectMappings}}
 --
--- Staging Area table creation statement for {{targetDataObject.name}}
+-- Persistent Staging Area table creation statement for {{targetDataObject.name}}
 -- Generated at {{now}}
 --
 
@@ -9,16 +9,8 @@ DROP TABLE [{{targetDataObject.name}}]
 
 CREATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 (
-   [{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL, 
-   [{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL,
-   [{{../metadataConfiguration.eventDateTimeAttribute}}] [datetime2](7) NOT NULL,
-   [{{../metadataConfiguration.recordSourceAttribute}}] [nvarchar](100) NOT NULL,
-   [{{../metadataConfiguration.sourceRowIdAttribute}}] int NOT NULL,
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
-   [{{../metadataConfiguration.recordChecksumAttribute}}] binary(16) NOT NULL,
-   {{#each dataItemMappings}}
-   [{{sourceDataItems.0.name}}] [varchar](100){{#unless @last}},{{/unless}}
+   {{#each sourceDataObjects.0.dataItems}}
+   [{{name}}] [varchar](1000){{#unless @last}},{{/unless}}
    {{/each}}
 )
-
 {{/each}}
