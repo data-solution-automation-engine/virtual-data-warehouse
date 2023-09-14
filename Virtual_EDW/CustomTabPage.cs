@@ -595,13 +595,12 @@ namespace Virtual_Data_Warehouse
                     {
                         // Compile the template, and merge it with the metadata.
                         var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);
+                        var result = template(dataObjectMappingList);
 
                         //string jsonInput = File.ReadAllText(dataObjectMappingList.metadataFileName);
-
-                        var jsonInput = System.Text.Json.JsonSerializer.Serialize(dataObjectMappingList);
-                        JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
-
-                        var result = template(deserializedMapping);
+                        //var jsonInput = System.Text.Json.JsonSerializer.Serialize(dataObjectMappingList);
+                        //JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
+                        //var result = template(deserializedMapping);
 
                         // Check if the metadata needs to be displayed.
                         if (DisplayJsonFlag)
