@@ -661,16 +661,13 @@ namespace Virtual_Data_Warehouse
                                     VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error occurred while validating the file against the Data Warehouse Automation schema. Does the schema file exist?"));
                                 }
 
-                                // Add the deserialised file to the list of mappings.
-                                VDW_DataObjectMappingList deserialisedMapping;
-
+                                // Add the file to the list of mappings.
                                 var jsonInput = File.ReadAllText(fileName);
-                                deserialisedMapping = JsonConvert.DeserializeObject<VDW_DataObjectMappingList>(jsonInput);
+                                VDW_DataObjectMappingList deserialisedMapping = System.Text.Json.JsonSerializer.Deserialize<VDW_DataObjectMappingList>(jsonInput);
 
                                 if (deserialisedMapping != null)
                                 {
                                     deserialisedMapping.metadataFileName = fileName;
-
                                     mappingList.Add(deserialisedMapping);
                                 }
                             }
@@ -716,23 +713,23 @@ namespace Virtual_Data_Warehouse
                     {
                         foreach (DataObjectMapping dataObjectMapping in dataObjectMappings.DataObjectMappings)
                         {
-                            if (dataObjectMapping.MappingName == null)
+                            if (dataObjectMapping.Name == null)
                             {
-                                dataObjectMapping.MappingName = dataObjectMapping.TargetDataObject.Name;
+                                dataObjectMapping.Name = dataObjectMapping.TargetDataObject.Name;
                                 InformUser(
                                     $"The Data Object Mapping for target {dataObjectMapping.TargetDataObject.Name} does not have a mapping name, so the target name is used.",
                                     EventTypes.Warning);
                             }
                             // Check if there are classifications, as these are used to create the tabs.
-                            if (dataObjectMapping.MappingClassifications != null)
+                            if (dataObjectMapping.Classifications != null)
                             {
-                                foreach (DataClassification classification in dataObjectMapping.MappingClassifications)
+                                foreach (DataClassification classification in dataObjectMapping.Classifications)
                                 {
                                     if (!objectDictionary.ContainsKey(dataObjectMappings))
                                     {
                                         objectDictionary.Add(dataObjectMappings,
                                             new Tuple<string, string, string>(classification.Classification,
-                                                dataObjectMapping.MappingName, classification.Notes));
+                                                dataObjectMapping.Name, classification.Notes));
                                     }
                                 }
                             }
@@ -742,11 +739,11 @@ namespace Virtual_Data_Warehouse
                                 {
                                     objectDictionary.Add(dataObjectMappings,
                                         new Tuple<string, string, string>("Miscellaneous",
-                                            dataObjectMapping.MappingName, ""));
+                                            dataObjectMapping.Name, ""));
                                 }
 
                                 InformUser(
-                                    $"The Data Object Mapping {dataObjectMapping.MappingName} does not have a classification, and therefore will be placed under 'Miscellaneous'",
+                                    $"The Data Object Mapping {dataObjectMapping.Name} does not have a classification, and therefore will be placed under 'Miscellaneous'",
                                     EventTypes.Warning);
                             }
                         }

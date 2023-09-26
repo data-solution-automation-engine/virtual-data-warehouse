@@ -18,12 +18,12 @@ SELECT DISTINCT
   
   'WITH recordcount
      AS (SELECT Count(*) AS Record_Count
-         FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{mappingName}}]),
+         FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}]),
 
      testcount
      AS (SELECT Count(test_count) AS Test_Count
          FROM   (SELECT Count(*) AS Test_Count
-                 FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{mappingName}}] [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}]
+                 FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}]
                  WHERE  omd_current_record_indicator = ''Y''
                  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}]
                  HAVING Count(*) > 1) AS a)
@@ -42,7 +42,7 @@ FROM   recordcount
 , 
   
   'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
-  FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{mappingName}}] [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}]
+  FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}]
   WHERE  omd_current_record_indicator = ''Y''
   GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
   HAVING Count(*) > 1'

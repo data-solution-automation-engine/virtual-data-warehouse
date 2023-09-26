@@ -588,26 +588,26 @@ namespace Virtual_Data_Warehouse
                     RaiseOnChangeMainText(@"Generating code for " + targetTableName + ".\r\n");
 
                     // Only process the selected items in the total of available source-to-target mappings.
-                    ItemList.TryGetValue(targetTableName, out var dataObjectMappingList);
+                    ItemList.TryGetValue(targetTableName, out var VDW_dataObjectMappingList);
 
                     // Return the result to the user.
                     try
                     {
                         // Compile the template, and merge it with the metadata.
                         var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);
-                        var result = template(dataObjectMappingList);
+                        //var result = template(dataObjectMappingList);
 
                         //string jsonInput = File.ReadAllText(dataObjectMappingList.metadataFileName);
-                        //var jsonInput = System.Text.Json.JsonSerializer.Serialize(dataObjectMappingList);
+                        //var jsonInput = System.Text.Json.JsonSerializer.Serialize(VDW_dataObjectMappingList);
                         //JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
-                        //var result = template(deserializedMapping);
+                        var result = template(VDW_dataObjectMappingList);
 
                         // Check if the metadata needs to be displayed.
                         if (DisplayJsonFlag)
                         {
                             try
                             {
-                                var json = JsonConvert.SerializeObject(dataObjectMappingList, Formatting.Indented);
+                                var json = JsonConvert.SerializeObject(VDW_dataObjectMappingList, Formatting.Indented);
                                 localRichTextBoxGenerationOutput.AppendText(json + "\r\n\r\n");
                             }
                             catch (Exception exception)
