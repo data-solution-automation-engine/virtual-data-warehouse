@@ -19,24 +19,24 @@ INSERT INTO [INT].[{{targetDataObject.name}}]
   [{{../metadataConfiguration.loadDateTimeAttribute}}],
   {{../metadataConfiguration.etlProcessAttribute}},
   {{../metadataConfiguration.recordSourceAttribute}},
-  {{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
+  {{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}
    [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/if}}{{/each}}
 )
           SELECT 
-               CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) as  [{{targetDataObject.name}}_SK],
+               CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) as  [{{targetDataObject.name}}_SK],
    min([{{../metadataConfiguration.loadDateTimeAttribute}}]),
   @{{../metadataConfiguration.etlProcessAttribute}},
   min({{../metadataConfiguration.recordSourceAttribute}}),
-               {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+               {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
             ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA') AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/each}}
 
           FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] stg
-          WHERE  CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) NOT IN
+          WHERE  CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }},'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) NOT IN
           (
              SELECT [{{targetDataObject.name}}_SK]
              FROM [INT].[{{targetDataObject.name}}] INT
              )
-             GROUP BY  {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}{{#unless @first}},{{/unless}} [{{sourceDataItems.0.name}}]{{/stringcompare}}{{/each}}{{/each}} ;
+             GROUP BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}{{#unless @first}},{{/unless}} [{{sourceDataItems.0.name}}]{{/stringcompare}}{{/each}}{{/each}} ;
 
 SELECT @@ROWCOUNT AS ROWS_INSERTED
 GO

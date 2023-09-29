@@ -598,9 +598,11 @@ namespace Virtual_Data_Warehouse
                         //var result = template(dataObjectMappingList);
 
                         //string jsonInput = File.ReadAllText(dataObjectMappingList.metadataFileName);
-                        //var jsonInput = System.Text.Json.JsonSerializer.Serialize(VDW_dataObjectMappingList);
-                        //JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
-                        var result = template(VDW_dataObjectMappingList);
+                        var jsonInput = System.Text.Json.JsonSerializer.Serialize(VDW_dataObjectMappingList);
+                        JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
+
+                        //var result = template(VDW_dataObjectMappingList);
+                        var result = template(deserializedMapping);
 
                         // Check if the metadata needs to be displayed.
                         if (DisplayJsonFlag)

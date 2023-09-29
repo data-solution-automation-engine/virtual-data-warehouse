@@ -13,21 +13,21 @@ GO
 
 CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
 SELECT 
-    HASHBYTES('MD5', {{#each businessKeys}}{{#unless @first}} +{{/unless}}{{!-- Create the Surrogate Key using the Business Key and components --}}{{#each businessKeyComponentMapping}}
-       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{/each}}{{#each businessKeys}}{{#if @first}}
+    HASHBYTES('MD5', {{#each businessKeyDefinitions}}{{#unless @first}} +{{/unless}}{{!-- Create the Surrogate Key using the Business Key and components --}}{{#each businessKeyComponentMappings}}
+       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{/each}}{{#each businessKeyDefinitions}}{{#if @first}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
     [{{../metadataConfiguration.loadDateTimeAttribute}}],
     [{{../metadataConfiguration.sourceRowIdAttribute}}],    
     --COALESCE (
     --  LEAD (DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) ) OVER
-    --  ( PARTITION BY {{#each businessKeys}} {{!-- The Hub business key --}}{{#unless @first}},{{/unless}}
-    --      {{#each businessKeyComponentMapping}}{{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+    --  ( PARTITION BY {{#each businessKeyDefinitions}} {{!-- The Hub business key --}}{{#unless @first}},{{/unless}}
+    --      {{#each businessKeyComponentMappings}}{{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
     --     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
     --   ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
     --   CAST( '9999-12-31' AS DATETIME)
     --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}}],
     --CASE
-    --  WHEN ( RANK() OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
+    --  WHEN ( RANK() OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMappings}}
     --      {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
     --     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
     --     ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}} desc )) = 1
@@ -48,10 +48,10 @@ SELECT
     {{#each dataItemMappings}}
     [{{targetDataItem.name}}],
     {{/each}}
-    ROW_NUMBER() OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+    ROW_NUMBER() OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMappings}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
           {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
          {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
-    ORDER BY {{#each businessKeys}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+    ORDER BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
           {{targetDataItem.name}},{{/each}}{{/each}}
           {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}{{../targetDataItem.name}},{{/if}}{{/each}}{{/each}}
           {{../metadataConfiguration.loadDateTimeAttribute}}
@@ -63,14 +63,14 @@ FROM
          [{{../metadataConfiguration.eventDateTimeAttribute}}],
          --[{{../metadataConfiguration.recordSourceAttribute}}],
          [{{../metadataConfiguration.sourceRowIdAttribute}}],
-         [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}}{{#each businessKeyComponentMapping}}
+         [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
          [{{targetDataItem.name}}],{{/each}}{{/each}}
          {{#each dataItemMappings}}
          [{{targetDataItem.name}}],
          {{/each}}
          [COMBINED_VALUE],
          CASE 
-           WHEN LAG(COMBINED_VALUE,1,0x00000000000000000000000000000000) OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
+           WHEN LAG(COMBINED_VALUE,1,0x00000000000000000000000000000000) OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMappings}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
              {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] DESC) = COMBINED_VALUE
@@ -78,7 +78,7 @@ FROM
            ELSE 'Different'
          END AS [VALUE_CHANGE_INDICATOR],
          CASE 
-           WHEN LAG([{{../metadataConfiguration.changeDataCaptureAttribute}}],1,'') OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
+           WHEN LAG([{{../metadataConfiguration.changeDataCaptureAttribute}}],1,'') OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMappings}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
              {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.changeDataCaptureAttribute}}]
@@ -86,7 +86,7 @@ FROM
            ELSE 'Different'
          END AS [CDC_CHANGE_INDICATOR],
          CASE 
-           WHEN LEAD([{{../metadataConfiguration.loadDateTimeAttribute}}],1,'9999-12-31') OVER (PARTITION BY {{#each businessKeys}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMapping}}
+           WHEN LEAD([{{../metadataConfiguration.loadDateTimeAttribute}}],1,'9999-12-31') OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMappings}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
              {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.loadDateTimeAttribute}}]
@@ -100,7 +100,7 @@ FROM
           [{{../metadataConfiguration.eventDateTimeAttribute}}],
           --[{{../metadataConfiguration.recordSourceAttribute}}],
           [{{../metadataConfiguration.sourceRowIdAttribute}}],
-          [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}} {{#each businessKeyComponentMapping}}
+          [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}} {{#each businessKeyComponentMappings}}
           CAST ({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}],{{/each}}{{/each}}        
           {{#each dataItemMappings}}
           [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
@@ -116,7 +116,7 @@ FROM
           '1900-01-01' AS [{{../metadataConfiguration.eventDateTimeAttribute}}],
           --'Data Warehouse' AS [{{../metadataConfiguration.recordSourceAttribute}}],
           0 AS [{{../metadataConfiguration.sourceRowIdAttribute}}],
-          'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeys}} {{#each businessKeyComponentMapping}}
+          'N/A' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}} {{#each businessKeyComponentMappings}}
           CAST ({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}],{{/each}}{{/each}}        
           {{#each dataItemMappings}}
           {{stringcompare targetDataItem.dataItemClassification.0.classification 'MultiActive'}}[{{sourceDataItems.0.name}}]{{else}}NULL{{/stringcompare}} AS [{{sourceDataItems.0.name}}],

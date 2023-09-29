@@ -27,7 +27,7 @@ INSERT INTO [PSA].[{{targetDataObject.name}}]
 ,OMD_SOURCE_ROW_ID
 )
 SELECT
-     CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL([{{sourceDataItems.0.name}}],'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2),
+     CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL([{{sourceDataItems.0.name}}],'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2),
     {{#each dataItemMappings}}
   [{{sourceDataItems.0.name}}] as [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}

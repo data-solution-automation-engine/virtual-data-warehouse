@@ -13,7 +13,7 @@ WHERE NOT EXISTS
 (
   SELECT 1 FROM [{{../metadataConfiguration.vdwSchemaName}}].{{relatedDataObjects.0.name}} hub
   WHERE 1=1
-     {{#each businessKeys}}AND sat.{{surrogateKey}} = hub.{{surrogateKey}}{{/each}}
+     {{#each businessKeyDefinitions}}AND sat.{{surrogateKey}} = hub.{{surrogateKey}}{{/each}}
 )
 {{/if}}
 

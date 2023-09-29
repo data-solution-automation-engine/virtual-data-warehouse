@@ -7,7 +7,7 @@
 IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
 DROP TABLE [{{targetDataObject.name}}]
 
-CREATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+CREATE TABLE [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
    {{#each sourceDataObjects.0.dataItems}}
    [{{name}}] [varchar](1000){{#unless @last}},{{/unless}}

@@ -15,8 +15,8 @@ AS
 -- Includes the GROUP BY clause
 
 INSERT INTO [INT].[{{targetDataObject.name}}]
-(  {{#each businessKeys}} {{#if @first}} [{{surrogateKey}}], {{/if}}{{/each}}
-   {{#each businessKeys}}{{#unless @first}} 
+(  {{#each businessKeyDefinitions}} {{#if @first}} [{{surrogateKey}}], {{/if}}{{/each}}
+   {{#each businessKeyDefinitions}}{{#unless @first}} 
    [{{surrogateKey}}],{{/unless}} {{/each}}
    [{{../metadataConfiguration.loadDateTimeAttribute}}],
    {{../metadataConfiguration.recordSourceAttribute}},
@@ -24,14 +24,14 @@ INSERT INTO [INT].[{{targetDataObject.name}}]
 )
 
 SELECT
-   CONVERT(CHAR,HASHBYTES('SHA1',UPPER( {{#each businessKeys}} {{#unless @first}}{{!-- Create the Surrogate Key using the combined Business Keys --}}
+   CONVERT(CHAR,HASHBYTES('SHA1',UPPER( {{#each businessKeyDefinitions}} {{#unless @first}}{{!-- Create the Surrogate Key using the combined Business Keys --}}
 {{#each dataItemMappings}} RTRIM(ISNULL([{{targetDataItem.name}}], 'NA')) + '|'+{{/each}}
-{{#each businessKeyComponentMapping}}  RTRIM(ISNULL([{{targetDataItem.name}}{{@../index }}], 'NA')) {{#unless @last}} + '|' +{{/unless}}{{/each}}{{#unless @last}} +'|'+{{/unless}}{{/unless}}{{/each}}
-{{#each dataItemMappings}} +  RTRIM(ISNULL([{{targetDataItem.name}}], 'NA')) + '|'+{{/each}}{{#each businessKeys}} {{#if @first}})),2) AS [{{surrogateKey}}],{{/if}}{{/each}}
-   {{#each businessKeys}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
+{{#each businessKeyComponentMappings}}  RTRIM(ISNULL([{{targetDataItem.name}}{{@../index }}], 'NA')) {{#unless @last}} + '|' +{{/unless}}{{/each}}{{#unless @last}} +'|'+{{/unless}}{{/unless}}{{/each}}
+{{#each dataItemMappings}} +  RTRIM(ISNULL([{{targetDataItem.name}}], 'NA')) + '|'+{{/each}}{{#each businessKeyDefinitions}} {{#if @first}})),2) AS [{{surrogateKey}}],{{/if}}{{/each}}
+   {{#each businessKeyDefinitions}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
     {{#unless businessKeyClassification}}
-   CONVERT(CHAR,HASHBYTES('SHA1',UPPER( {{#each businessKeyComponentMapping}} RTRIM(ISNULL([{{targetDataItem.name}}{{@../index }}],'NA')) {{#unless @last}} +'|'+{{/unless}}{{/each}})),2) AS [{{surrogateKey}}],
-    {{/unless}}{{#if businessKeyClassification}}{{#each businessKeyComponentMapping}}[{{targetDataItem.name}}{{@../index }}]{{/each}} AS [{{surrogateKey}}],
+   CONVERT(CHAR,HASHBYTES('SHA1',UPPER( {{#each businessKeyComponentMappings}} RTRIM(ISNULL([{{targetDataItem.name}}{{@../index }}],'NA')) {{#unless @last}} +'|'+{{/unless}}{{/each}})),2) AS [{{surrogateKey}}],
+    {{/unless}}{{#if businessKeyClassification}}{{#each businessKeyComponentMappings}}[{{targetDataItem.name}}{{@../index }}]{{/each}} AS [{{surrogateKey}}],
     {{/if}} {{/unless}} {{/each}}{{#each dataItemMappings}}
     [{{targetDataItem.name}}],{{/each}}
      [{{../metadataConfiguration.loadDateTimeAttribute}}],
@@ -39,18 +39,18 @@ SELECT
   @{{../metadataConfiguration.etlProcessAttribute}}
 FROM 
 (
-    SELECT {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
+    SELECT {{#each businessKeyDefinitions}} {{#unless @first}} {{#each businessKeyComponentMappings}}
            CAST({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}[{{/stringcompare}}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}]{{/stringcompare}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}{{@../index }}],{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}
                     [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}
                     min([{{../metadataConfiguration.loadDateTimeAttribute}}]) AS [{{../metadataConfiguration.loadDateTimeAttribute}}],
                     min({{../metadataConfiguration.recordSourceAttribute}}) AS  {{../metadataConfiguration.recordSourceAttribute}}
           FROM STG.[{{sourceDataObjects.0.name}}]
-          GROUP BY   {{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}{{#unless @first}},{{/unless}} [{{sourceDataItems.0.name}}]{{/stringcompare}}{{/each}}{{/if}}{{/each}}
+          GROUP BY   {{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}{{#unless @first}},{{/unless}} [{{sourceDataItems.0.name}}]{{/stringcompare}}{{/each}}{{/if}}{{/each}}
  ) LINK_selection
-WHERE   CONVERT(CHAR,HASHBYTES('SHA1',UPPER( {{#each businessKeys}} {{#unless @first}}{{!-- Create the Surrogate Key using the combined Business Keys --}}
+WHERE   CONVERT(CHAR,HASHBYTES('SHA1',UPPER( {{#each businessKeyDefinitions}} {{#unless @first}}{{!-- Create the Surrogate Key using the combined Business Keys --}}
 {{#each dataItemMappings}} RTRIM(ISNULL([{{targetDataItem.name}}], 'NA')) + '|'+{{/each}}
-{{#each businessKeyComponentMapping}}  RTRIM(ISNULL([{{targetDataItem.name}}{{@../index }}], 'NA')) {{#unless @last}} + '|' +{{/unless}}{{/each}}{{#unless @last}} +'|'+{{/unless}}{{/unless}}{{/each}}
-{{#each dataItemMappings}} +  RTRIM(ISNULL([{{targetDataItem.name}}], 'NA')) + '|'+{{/each}}{{#each businessKeys}} {{#if @first}})),2) {{/if}}{{/each}} NOT IN 
+{{#each businessKeyComponentMappings}}  RTRIM(ISNULL([{{targetDataItem.name}}{{@../index }}], 'NA')) {{#unless @last}} + '|' +{{/unless}}{{/each}}{{#unless @last}} +'|'+{{/unless}}{{/unless}}{{/each}}
+{{#each dataItemMappings}} +  RTRIM(ISNULL([{{targetDataItem.name}}], 'NA')) + '|'+{{/each}}{{#each businessKeyDefinitions}} {{#if @first}})),2) {{/if}}{{/each}} NOT IN 
   (
 SELECT  [{{targetDataObject.name}}_SK] 
 FROM [INT].[{{targetDataObject.name}}]

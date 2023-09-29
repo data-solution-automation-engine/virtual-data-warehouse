@@ -23,7 +23,7 @@ SELECT DISTINCT
      AS (
       SELECT Count(1) AS test_count 
          FROM   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}]
-         WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER({{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )),2) 
+         WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER({{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )),2) 
             NOT IN 
           ( 
             SELECT [{{businessKeys.0.surrogateKey}}]
@@ -42,9 +42,9 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT {{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}} {{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}, {{/each}} {{/if}}{{/each}} [OMD_INSERT_MODULE_INSTANCE_ID]
+  'SELECT {{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}} {{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}, {{/each}} {{/if}}{{/each}} [OMD_INSERT_MODULE_INSTANCE_ID]
 FROM   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}]
-         WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER({{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )),2) 
+         WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER({{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )),2) 
             NOT IN 
           (
             SELECT [{{businessKeys.0.surrogateKey}}]

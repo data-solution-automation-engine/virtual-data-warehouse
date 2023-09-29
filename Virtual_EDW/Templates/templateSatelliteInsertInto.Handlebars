@@ -5,8 +5,8 @@
 -- This template inserts the data delta that has been detected by comparing the Satellite View to the existing data into the target Satellite table.
 --
 
-INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-(  {{#each businessKeys}}
+INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
+(  {{#each businessKeyDefinitions}}
    [{{surrogateKey}}],{{/each}}
    {{#each dataItemMappings}}
    [{{targetDataItem.name}}],
@@ -18,7 +18,7 @@ INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{ta
    [{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.recordChecksumAttribute}}]
 )
-SELECT {{#each businessKeys}}
+SELECT {{#each businessKeyDefinitions}}
    sat_view.[{{surrogateKey}}],{{/each}}
    {{#each dataItemMappings}}
    sat_view.[{{targetDataItem.name}}],
@@ -30,11 +30,11 @@ SELECT {{#each businessKeys}}
    sat_view.[{{../metadataConfiguration.sourceRowIdAttribute}}],
    sat_view.[{{../metadataConfiguration.recordChecksumAttribute}}]
 FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] sat_view
-LEFT OUTER JOIN [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] sat_table
-    ON sat_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+LEFT OUTER JOIN [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] sat_table
+    ON sat_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
     AND sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}] = sat_table.[{{../metadataConfiguration.loadDateTimeAttribute}}] 
     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}AND sat_view.{{../targetDataItem.name}} = sat_table.{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
-WHERE sat_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
+WHERE sat_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}
 
 {{/each}}

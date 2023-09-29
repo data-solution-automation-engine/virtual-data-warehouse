@@ -4,7 +4,7 @@ update omd.PARAMETER set PARAMETER_VALUE_CODE='MERGE INTO {{sourceDataObjects.0.
 USING (
 
 SELECT 
-sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL(updates.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING)))  as mergeKey
+sha1(UPPER(CAST({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(IFNULL(updates.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING)))  as mergeKey
 , updates.*
 
   FROM DL_{{targetDataObject.name}}  AS updates
@@ -16,14 +16,14 @@ sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRI
   FROM DL_{{targetDataObject.name}}  AS updates
 
   JOIN {{sourceDataObjects.0.name}} AS target
-ON sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL(updates.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) = sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL(target.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) 
+ON sha1(UPPER(CAST({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(IFNULL(updates.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) = sha1(UPPER(CAST({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(IFNULL(target.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) 
 
   WHERE target.OMD_CURRENT_RECORD_INDICATOR = ''Y'' AND updates.OMD_HASH_DIFF <> target.OMD_HASH_DIFF
 
 ) staged_updates
 
 ON 
-sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL(target.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) = mergeKey
+sha1(UPPER(CAST({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(IFNULL(target.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) = mergeKey
 
 
 WHEN NOT MATCHED THEN  INSERT

@@ -15,7 +15,7 @@ AS
 --
 
 INSERT INTO [INT].[{{targetDataObject.name}}]
-(  {{#each businessKeys}}
+(  {{#each businessKeyDefinitions}}
    [{{surrogateKey}}],{{/each}}
    {{#each dataItemMappings}}[{{targetDataItem.name}}],
    {{/each}}
@@ -31,7 +31,7 @@ INSERT INTO [INT].[{{targetDataObject.name}}]
   OMD_HASH_DIFF
 )
 SELECT  
-{{#each businessKeys}}
+{{#each businessKeyDefinitions}}
    SUB.[{{surrogateKey}}],{{/each}}
    {{#each dataItemMappings}}SUB.[{{targetDataItem.name}}],
    {{/each}}
@@ -48,8 +48,8 @@ SELECT
 FROM
 (
 SELECT  
-   CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) 
-AS {{#each businessKeys}} [{{surrogateKey}}],{{/each}}
+   CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2) 
+AS {{#each businessKeyDefinitions}} [{{surrogateKey}}],{{/each}}
 
    {{#each dataItemMappings}}
    [{{../sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
@@ -66,7 +66,7 @@ AS {{#each businessKeys}} [{{surrogateKey}}],{{/each}}
  CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each dataItemMappings}}
   RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),[{{../sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataItems.0.name}}]),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} +'|'+[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_DELETED_RECORD_INDICATOR] )),2) AS [OMD_HASH_DIFF],
 CAST(ROW_NUMBER() OVER (
-				PARTITION BY CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2)
+				PARTITION BY CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2)
                                                                 {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}, [{{../sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}
                                                                 ORDER BY [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../metadataConfiguration.loadDateTimeAttribute}}], [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../metadataConfiguration.sourceRowIdAttribute}}]
                                                    ) AS INT ) AS [__ROW_NUMBER__]
@@ -74,10 +74,10 @@ FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{source
 ) AS SUB
 LEFT OUTER JOIN --Prevent Processing
 [INT].[{{targetDataObject.name}}] SAT
-ON   [SAT].{{#each businessKeys}}[{{surrogateKey}}] {{/each}}= [SUB].{{#each businessKeys}}[{{surrogateKey}}]{{/each}}      
+ON   [SAT].{{#each businessKeyDefinitions}}[{{surrogateKey}}] {{/each}}= [SUB].{{#each businessKeyDefinitions}}[{{surrogateKey}}]{{/each}}      
 {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}} and  [SAT].[{{../sourceDataItems.0.name}}] = [SUB].[{{../sourceDataItems.0.name}}] {{/if}}{{/each}}{{/each}}
 and [SAT].[OMD_CURRENT_RECORD_INDICATOR]='Y' and [SAT].[OMD_DELETED_RECORD_INDICATOR]='N'  
-WHERE  ( [SAT].{{#each businessKeys}}[{{surrogateKey}}]{{/each}} IS NULL --New record. Does not exist in Sat  
+WHERE  ( [SAT].{{#each businessKeyDefinitions}}[{{surrogateKey}}]{{/each}} IS NULL --New record. Does not exist in Sat  
 OR ([SUB].[__ROW_NUMBER__] = 1 AND [SUB].[OMD_HASH_DIFF] <> [SAT].[OMD_HASH_DIFF]) --First record in HLP has a different hash diff the the lastest record in SAT  
 OR [SUB].[__ROW_NUMBER__] > 1) --Only check the first row for changes
 ;

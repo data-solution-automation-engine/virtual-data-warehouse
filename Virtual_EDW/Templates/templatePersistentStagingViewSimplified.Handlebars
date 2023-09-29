@@ -19,14 +19,14 @@ SELECT
    STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
    STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
    STG.[{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] STG
+FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}] STG
 LEFT OUTER JOIN -- Prevent reprocessing
-  [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] HSTG
-  ON{{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+  [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] HSTG
+  ON{{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
      HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItems.0.name}}] AND{{/each}} {{/each}}
      HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
      HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
-WHERE {{#each businessKeys}}  {{#each businessKeyComponentMapping}} {{#if @first}}
+WHERE {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}} {{#if @first}}
    HSTG.[{{targetDataItem.name}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
 
 {{/each}}

@@ -38,52 +38,52 @@ FROM
      COALESCE(maxsub.[LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}], 'N/A') AS [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}],
      CAST(ROW_NUMBER() OVER
         (  PARTITION BY
-             {{#each businessKeys}}{{#each businessKeyComponentMapping}}STG.[{{sourceDataItems.0.name}}],
+             {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}STG.[{{sourceDataItems.0.name}}],
              {{/each}}{{/each}}
              STG.[{{../metadataConfiguration.sourceRowIdAttribute}}]
            ORDER BY
-             {{#each businessKeys}}{{#each businessKeyComponentMapping}}STG.[{{sourceDataItems.0.name}}],
+             {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}STG.[{{sourceDataItems.0.name}}],
              {{/each}}{{/each}}
              STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
              STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
       )  AS INT
     ) AS KEY_ROW_NUMBER
-  FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] STG
+  FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}] STG
   LEFT OUTER JOIN -- Prevent reprocessing
-    [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] HSTG
+    [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] HSTG
     ON
-       {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+       {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
        HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItems.0.name}}] AND{{/each}} {{/each}}
        HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
        HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
   LEFT OUTER JOIN -- max HSTG checksum
   (
-      SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+      SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
          A.[{{sourceDataItems.0.name}}], {{/each}} {{/each}}
          A.[{{../metadataConfiguration.sourceRowIdAttribute}}],  
          A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
          A.[{{../metadataConfiguration.changeDataCaptureAttribute}}] AS [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}]
-      FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] A
+      FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] A
       JOIN
       (
-        SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+        SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
           B.[{{sourceDataItems.0.name}}], {{/each}} {{/each}}
           B.[{{../metadataConfiguration.sourceRowIdAttribute}}],  
           MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-        FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] B
-        GROUP BY {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+        FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] B
+        GROUP BY {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
           B.[{{sourceDataItems.0.name}}],{{/each}} {{/each}}
           B.[{{../metadataConfiguration.sourceRowIdAttribute}}]
      ) C ON
-         {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
          A.[{{targetDataItem.name}}] = C.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
          A.[{{../metadataConfiguration.sourceRowIdAttribute}}] = C.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
          A.[{{../metadataConfiguration.loadDateTimeAttribute}}] = C.[MAX_{{../metadataConfiguration.loadDateTimeAttribute}}]
   ) maxsub ON
-     {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+     {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
      STG.[{{sourceDataItems.0.name}}] = maxsub.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
      STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = maxsub.[{{../metadataConfiguration.sourceRowIdAttribute}}] 
-  WHERE {{#each businessKeys}}  {{#each businessKeyComponentMapping}} {{#if @first}}
+  WHERE {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}} {{#if @first}}
      HSTG.[{{targetDataItem.name}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
 ) sub
 WHERE

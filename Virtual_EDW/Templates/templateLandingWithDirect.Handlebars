@@ -10,9 +10,9 @@ GO
 CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
 AS
 
-TRUNCATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+TRUNCATE TABLE [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 
-INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
    [{{../metadataConfiguration.etlProcessAttribute}}], 
    [{{../metadataConfiguration.eventDateTimeAttribute}}],
@@ -30,7 +30,7 @@ SELECT
    {{#each dataItemMappings}}
   ,[{{sourceDataItems.0.name}}]
    {{/each}}
-FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
 GO
 
 -- DIRECT module registration
@@ -38,10 +38,10 @@ GO
 EXEC [900_Direct_Framework].[omd].[RegisterModule]
  @ModuleCode = '100_{{targetDataObject.name}}'
 ,@ModuleAreaCode = 'STG'
-,@Executable = 'EXEC [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[SP_{{targetDataObject.name}}] @AUDIT_TRAIL_ID = @ModuleInstanceId'
+,@Executable = 'EXEC [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[SP_{{targetDataObject.name}}] @AUDIT_TRAIL_ID = @ModuleInstanceId'
 ,@ModuleDescription = 'Source to landing for [{{sourceDataObjects.0.name}}]'
-,@ModuleSourceDataObject = '[{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]'
-,@ModuleTargetDataObject = '[{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]'
+,@ModuleSourceDataObject = '[{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]'
+,@ModuleTargetDataObject = '[{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]'
 
 -- Run the process
 EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = '100_{{targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'

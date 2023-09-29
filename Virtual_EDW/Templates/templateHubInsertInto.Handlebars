@@ -5,24 +5,24 @@
 -- This template inserts the data delta that has been detected by comparing the Hub View to the existing Hub data into the target Hub table.
 --
 
-INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
-   [{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
+   [{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}
    [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
    [{{../metadataConfiguration.etlProcessAttribute}}],
    [{{../metadataConfiguration.loadDateTimeAttribute}}]
    --,[{{../metadataConfiguration.recordSourceAttribute}}]
 )
 SELECT
-   hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
+   hub_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}
    hub_view.[{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
    -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
    hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}]
    --,hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
 FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
-LEFT OUTER JOIN [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] hub_table
-   ON hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
-WHERE hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
+LEFT OUTER JOIN [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] hub_table
+   ON hub_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+WHERE hub_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}
 
 {{/each}}
