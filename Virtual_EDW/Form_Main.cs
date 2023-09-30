@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
@@ -26,6 +27,13 @@ namespace Virtual_Data_Warehouse
 
         public FormMain()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
+
+            this.Font = SystemFonts.IconTitleFont;
+
+            this.Location = Screen.PrimaryScreen.WorkingArea.Location;
+            this.StartPosition = FormStartPosition.Manual;
+
             localCustomTabPageList = new List<CustomTabPage>();
 
             InitializeComponent();
@@ -946,6 +954,11 @@ namespace Virtual_Data_Warehouse
         }
 
         private void buttonRefreshMetadata_Click(object sender, EventArgs e)
+        {
+            RefreshMetadata();
+        }
+
+        private void RefreshMetadata()
         {
             // Get the total of tab pages to create
             var templateList = GetMetadata();
