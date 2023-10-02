@@ -67,8 +67,10 @@
     <None Remove="Templates\loadPatternHubInsertIntofromSTG.Handlebars" />
     <None Remove="Templates\loadPatternLinkInsertIntofromSTG.Handlebars" />
     <None Remove="Templates\loadPatternLinkSatelliteInsertInto.Handlebars" />
+    <None Remove="Templates\loadPatternLinkSatelliteReinitialisation.Handlebars" />
     <None Remove="Templates\loadPatternPersistentStagingAreaInsertInto.Handlebars" />
     <None Remove="Templates\loadPatternSatelliteInsertInto.Handlebars" />
+    <None Remove="Templates\loadPatternSatelliteReinitialisation.Handlebars" />
     <None Remove="Templates\loadPattern_UT_HUB_SKgenerationCheck.Handlebars" />
     <None Remove="Templates\loadPattern_UT_HUB_SK_has_SAT_record.Handlebars" />
     <None Remove="Templates\loadPattern_UT_HUB_uniqueKeyCheck.Handlebars" />
@@ -101,16 +103,20 @@
     <None Remove="Templates\templateLandingtoSilverFromView.Handlebars" />
     <None Remove="Templates\templateLandingWithDirect.Handlebars" />
     <None Remove="Templates\templateLinkDirectRegistration.Handlebars" />
+    <None Remove="Templates\templateLinkGenerateTables.Handlebars" />
     <None Remove="Templates\templateLinkInsertIntoProcedure.Handlebars" />
     <None Remove="Templates\templateLinkSatelliteDirectRegistration.Handlebars" />
     <None Remove="Templates\templateLinkSatelliteInsertIntoProcedure.Handlebars" />
     <None Remove="Templates\templateLinkSatelliteViewZeroRecord.Handlebars" />
     <None Remove="Templates\templatePersistentStaging.Handlebars" />
     <None Remove="Templates\templatePersistentStagingInsertIntoProcedure.Handlebars" />
+    <None Remove="Templates\templatePersistentStagingStoredProcedureDelta.Handlebars" />
+    <None Remove="Templates\templatePersistentStagingStoredProcedureFOJ.Handlebars" />
     <None Remove="Templates\templateSatelliteDirectRegistration.Handlebars" />
     <None Remove="Templates\templateSatelliteInsertIntoProcedure.Handlebars" />
     <None Remove="Templates\templateSatelliteViewWithDeliveryKey.Handlebars" />
     <None Remove="Templates\templateStagingDirectRegistration.Handlebars" />
+    <None Remove="Templates\templateStagingStoredProcedureDelta.Handlebars" />
     <None Remove="Templates\template_test_Hub_HasSatRecord.Handlebars" />
     <None Remove="Templates\template_test_Hub_KeyGeneratedCorrectly.Handlebars" />
     <None Remove="Templates\template_test_HUB_KeyNullCheck.Handlebars" />
@@ -160,10 +166,16 @@
     <Content Include="Templates\loadPatternLinkSatelliteInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\loadPatternLinkSatelliteReinitialisation.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\loadPatternPersistentStagingAreaInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\loadPatternSatelliteInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\loadPatternSatelliteReinitialisation.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\loadPattern_UT_HUB_SKgenerationCheck.Handlebars">
@@ -277,6 +289,9 @@
     <Content Include="Templates\templateLinkDirectRegistration.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\templateLinkGenerateTables.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\templateLinkInsertInto.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -310,12 +325,6 @@
     <Content Include="Templates\templateLinkViewNoHash.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\templatePersistentStaging.Handlebars">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\templatePersistentStagingFullOuterJoin.Handlebars">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Templates\templatePersistentStagingGenerateTables.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -323,6 +332,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templatePersistentStagingInsertIntoProcedure.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templatePersistentStagingStoredProcedureDelta.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templatePersistentStagingStoredProcedureFOJ.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templatePersistentStagingView.Handlebars">
@@ -359,6 +374,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateStagingInsertInto.Handlebars">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\templateStagingStoredProcedureDelta.Handlebars">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\templateStagingView.Handlebars">
