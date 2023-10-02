@@ -1,6 +1,30 @@
 [
   {
-    "TemplateName": "100 Data Vault Hub View Template",
+    "TemplateName": "100 Staging Area Stored Procedure Delta",
+    "TemplateType": "StagingArea",
+    "TemplateConnectionKey": "StagingConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateStagingStoredProcedureDelta.handlebars",
+    "TemplateNotes": "This template prepares a data delta / differental using a full outer join, and loads this into the landing area."
+  },
+  {
+    "TemplateName": "150 Persistent Staging Area Stored Procedure Delta",
+    "TemplateType": "PersistentStagingArea",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templatePersistentStagingStoredProcedureDelta.handlebars",
+    "TemplateNotes": "This template expects a data delta / differental to be prepared in a landing area, and merges these changes into the existing PSA object."
+  },
+  {
+    "TemplateName": "150 Persistent Staging Area Stored Procedure Full Outer Join",
+    "TemplateType": "PersistentStagingArea",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templatePersistentStagingStoredProcedureFOJ.handlebars",
+    "TemplateNotes": "This template expects a full copy of incoming data to be placed in a landing area, and performs a full outer join to detects data changes."
+  },
+  {
+    "TemplateName": "200 Data Vault Hub View",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -8,7 +32,7 @@
     "TemplateNotes": "Standard Hub template - display the distinct list of Business Keys for a Core Business Concept."
   },
   {
-    "TemplateName": "100 Data Vault Hub View Template With Delivery Key",
+    "TemplateName": "200 Data Vault Hub View With Delivery Key",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -56,7 +80,7 @@
     "TemplateNotes": "Taken from earlier VDW versions, demonstrating one possible DIM / PIT template."
   },
   {
-    "TemplateName": "100 Persistent Staging Area View Template",
+    "TemplateName": "150 Persistent Staging Area View",
     "TemplateType": "PersistentStagingArea",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -64,7 +88,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "100 Staging Area View Template",
+    "TemplateName": "100 Staging Area View",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -72,7 +96,7 @@
     "TemplateNotes": "This Staging Area Template is an example of delta detection using a Full Outer Join (FOJ) type interface.In most cases the data delta from the source into the Staging Area is handled by a dedicated ETL tool, or at the very least using different techniques (of which this is only one example)."
   },
   {
-    "TemplateName": "105 Persistent Staging Area View Template With Deduplication",
+    "TemplateName": "150 Persistent Staging Area View With Deduplication",
     "TemplateType": "PersistentStagingArea",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -80,7 +104,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "106 Persistent Staging Area Simplified View Template",
+    "TemplateName": "150 Persistent Staging Area View Simplified",
     "TemplateType": "PersistentStagingArea",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -120,7 +144,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "200 Data Vault Hub Insert Into Template",
+    "TemplateName": "200 Data Vault Hub Insert Into",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -128,7 +152,7 @@
     "TemplateNotes": "Template to load a Hub view into a physical table (persistence)."
   },
   {
-    "TemplateName": "200 Data Vault Link Insert Into Template",
+    "TemplateName": "200 Data Vault Link Insert Into",
     "TemplateType": "NaturalBusinessRelationship",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -136,7 +160,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "200 Data Vault Link-Satellite Driving Key Insert Into Template",
+    "TemplateName": "200 Data Vault Link-Satellite Driving Key Insert Into",
     "TemplateType": "NaturalBusinessRelationshipContextDrivingKey",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -144,7 +168,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "200 Data Vault Link-Satellite Insert Into Template",
+    "TemplateName": "200 Data Vault Link-Satellite Insert Into",
     "TemplateType": "NaturalBusinessRelationshipContext",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -152,7 +176,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "200 Data Vault Satellite Insert Into Template",
+    "TemplateName": "200 Data Vault Satellite Insert Into",
     "TemplateType": "Context",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -160,7 +184,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "200 Persistent Staging Area Insert Into Template",
+    "TemplateName": "100 Persistent Staging Area Insert Into",
     "TemplateType": "PersistentStagingArea",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -168,7 +192,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "200 Staging Area Insert Into Template",
+    "TemplateName": "100 Staging Area Insert Into",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -176,15 +200,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "210 Persistent Staging Area Full Outer Join Insert Template",
-    "TemplateType": "PersistentStagingArea",
-    "TemplateConnectionKey": "PsaConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "TemplateFilePath": "templatePersistentStagingFullOuterJoin.handlebars",
-    "TemplateNotes": ""
-  },
-  {
-    "TemplateName": "250 Data Vault Hub Insert Into Template with DIRECT wrapper",
+    "TemplateName": "200 Data Vault Hub Insert Into with DIRECT wrapper",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -192,7 +208,7 @@
     "TemplateNotes": "Template to load a Hub view into a physical table (persistence), integrated with the DIRECT framework."
   },
   {
-    "TemplateName": "300 Data Vault Hub Delta Select From Template",
+    "TemplateName": "200 Data Vault Hub Delta Select From",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -208,7 +224,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "300 Persistent Staging Area Generate Tables",
+    "TemplateName": "150 Persistent Staging Area Generate Tables",
     "TemplateType": "PersistentStagingArea",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -216,7 +232,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "300 Staging Area Generate Tables",
+    "TemplateName": "100 Staging Area Generate Tables",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "StagingConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -224,7 +240,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "310 Staging Area Batch/Module Registration for DIRECT",
+    "TemplateName": "100 Staging Area Batch/Module Registration for DIRECT",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "StagingConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
@@ -232,7 +248,7 @@
     "TemplateNotes": "Creating DIRECT registration scripts."
   },
   {
-    "TemplateName": "320 Staging Area Generate Test Data",
+    "TemplateName": "100 Staging Area Generate Test Data",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "StagingConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -240,7 +256,7 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "400 Data Vault Hub View using DBT and Snowflake syntax",
+    "TemplateName": "200 Data Vault Hub View using DBT and Snowflake syntax",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -248,7 +264,7 @@
     "TemplateNotes": "Standard Hub Template - display the distinct list of Business Keys for a Core Business Concept."
   },
   {
-    "TemplateName": "500 Data Vault Hub Batch/Module Registration for DIRECT",
+    "TemplateName": "200 Data Vault Hub Batch/Module Registration for DIRECT",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
@@ -256,7 +272,7 @@
     "TemplateNotes": "Creating DIRECT registration scripts."
   },
   {
-    "TemplateName": "500 Data Vault Hub Generate Tables",
+    "TemplateName": "200 Data Vault Hub Generate Tables",
     "TemplateType": "CoreBusinessConcept",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -304,7 +320,7 @@
     "TemplateNotes": "Creating DIRECT registration scripts."
   },
   {
-    "TemplateName": "600 Data Lake Silver Insert Delete",
+    "TemplateName": "100 Data Lake Silver Insert Delete",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "SourceConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_InsertDelete.sql",
@@ -312,7 +328,7 @@
     "TemplateNotes": "Azure Databricks template to insert records for the deleted Business Keys."
   },
   {
-    "TemplateName": "600 Data Lake Silver Insert Delete with CDC",
+    "TemplateName": "100 Data Lake Silver Insert Delete with CDC",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "SourceConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_InsertDelete.sql",
@@ -320,7 +336,7 @@
     "TemplateNotes": "Azure Databricks template to insert records for the deleted Business Keys, for CDC data."
   },
   {
-    "TemplateName": "600 Data Lake Silver Merge Insert",
+    "TemplateName": "100 Data Lake Silver Merge Insert",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "SourceConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_MergeInsert.sql",
@@ -328,7 +344,7 @@
     "TemplateNotes": "Azure Databricks template to insert new records. Update the changed records, and insert new records for the changed records."
   },
   {
-    "TemplateName": "600 Data Lake Silver Merge Insert with CDC",
+    "TemplateName": "100 Data Lake Silver Merge Insert with CDC",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "SourceConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_MergeInsesrt.sql",
@@ -336,7 +352,7 @@
     "TemplateNotes": "Azure Databricks template to insert new records. Update the changed records and insert new records for the changed records for the CDC files."
   },
   {
-    "TemplateName": "600 Data Lake Silver To Staging with CDC Select",
+    "TemplateName": "100 Data Lake Silver To Staging with CDC Select",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "SourceConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
@@ -344,7 +360,7 @@
     "TemplateNotes": "Azure Databricks Staging Area tempalte that selects CDC records from the Data Lake Silver table and inserts them into Data Warehouse STG layer tables."
   },
   {
-    "TemplateName": "600 Data Lake Silver Update Deleted Records",
+    "TemplateName": "100 Data Lake Silver Update Deleted Records",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "SourceConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_UpdateDeleted.sql",
@@ -352,7 +368,7 @@
     "TemplateNotes": "Azure Databricks template to update the deleted records."
   },
   {
-    "TemplateName": "600 Landing to Data Lake Silver Select Columns From View",
+    "TemplateName": "100 Landing to Data Lake Silver Select Columns From View",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "SourceConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_SelectView.sql",
@@ -416,19 +432,11 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "900 Unit Test - Landing Reconciliation",
+    "TemplateName": "100 Unit Test - Landing Reconciliation",
     "TemplateType": "StagingArea",
     "TemplateConnectionKey": "StagingConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_TEST_RECON.sql",
     "TemplateFilePath": "templateLandingTestReconciliation.handlebars",
     "TemplateNotes": ""
-  },  
-  {
-    "TemplateName": "Persistent Staging Area Stored Procedure",
-    "TemplateType": "PersistentStagingArea",
-    "TemplateConnectionKey": "PsaConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "TemplateFilePath": "templatePersistentStaging.handlebars",
-    "TemplateNotes": "This template expects a full copy of incoming data to be placed in a landing area, and performs a full outer join to detects data changes."
   }
 ]

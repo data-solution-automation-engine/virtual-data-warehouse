@@ -187,6 +187,7 @@ namespace Virtual_Data_Warehouse
             localTabControl = new TabControl();
             localPanel.Controls.Add(localTabControl);
             localTabControl.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            localTabControl.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localTabControl.Location = new Point(416, 9);
             localTabControl.Size = new Size(896, 570);
             localTabControl.Name = $"tabControl{classification}";
@@ -215,6 +216,7 @@ namespace Virtual_Data_Warehouse
             // Add 'Template' Tab Page to on Sub Tab
             tabPageGenerationTemplate = new TabPage($"{_inputNiceName} Template");
             localTabControl.TabPages.Add(tabPageGenerationTemplate);
+            tabPageGenerationTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             tabPageGenerationTemplate.BackColor = Color.Transparent;
             tabPageGenerationTemplate.Name = $"{_inputNiceName} Template";
             tabPageGenerationTemplate.BorderStyle = BorderStyle.None;
@@ -223,6 +225,7 @@ namespace Virtual_Data_Warehouse
             // Add 'Template ComboBox' to Template tab
             localComboBoxGenerationTemplate = new ComboBox();
             tabPageGenerationTemplate.Controls.Add(localComboBoxGenerationTemplate);
+            localComboBoxGenerationTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localComboBoxGenerationTemplate.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localComboBoxGenerationTemplate.Location = new Point(108, 8);
             localComboBoxGenerationTemplate.Size = new Size(496, 21);
@@ -232,6 +235,7 @@ namespace Virtual_Data_Warehouse
             // Add 'Active Template' Label
             localLabelActiveTemplate = new Label();
             tabPageGenerationTemplate.Controls.Add(localLabelActiveTemplate);
+            localLabelActiveTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localLabelActiveTemplate.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelActiveTemplate.Location = new Point(2, 11);
             localLabelActiveTemplate.Size = new Size(77, 13);
@@ -241,6 +245,7 @@ namespace Virtual_Data_Warehouse
             // Add 'File Path' Label
             localLabelFilePath = new Label();
             tabPageGenerationTemplate.Controls.Add(localLabelFilePath);
+            localLabelFilePath.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localLabelFilePath.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelFilePath.Location = new Point(2, 34);
             localLabelFilePath.Size = new Size(60, 13);
@@ -250,6 +255,7 @@ namespace Virtual_Data_Warehouse
             // Add 'Full Path' Label
             localLabelFullFilePath = new Label();
             tabPageGenerationTemplate.Controls.Add(localLabelFullFilePath);
+            localLabelFullFilePath.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localLabelFullFilePath.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelFullFilePath.Location = new Point(105, 34);
             localLabelFullFilePath.Size = new Size(750, 13);
@@ -260,6 +266,7 @@ namespace Virtual_Data_Warehouse
             localLabelActiveConnectionKey = new Label();
             tabPageGenerationTemplate.Controls.Add(localLabelActiveConnectionKey);
             localLabelActiveConnectionKey.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            localLabelActiveConnectionKey.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localLabelActiveConnectionKey.Location = new Point(2, 57);
             localLabelActiveConnectionKey.Size = new Size(100, 13);
             localLabelActiveConnectionKey.Name = $"label{classification}ConnectionKey";
@@ -268,6 +275,7 @@ namespace Virtual_Data_Warehouse
             // Add 'Active Connection Key Value' Label
             localLabelActiveConnectionKeyValue = new Label();
             tabPageGenerationTemplate.Controls.Add(localLabelActiveConnectionKeyValue);
+            localLabelActiveConnectionKeyValue.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localLabelActiveConnectionKeyValue.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelActiveConnectionKeyValue.Location = new Point(105, 57);
             localLabelActiveConnectionKeyValue.Size = new Size(240, 13);
@@ -278,6 +286,7 @@ namespace Virtual_Data_Warehouse
             localLabelOutputFileTemplate = new Label();
             tabPageGenerationTemplate.Controls.Add(localLabelOutputFileTemplate);
             localLabelOutputFileTemplate.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            localLabelOutputFileTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localLabelOutputFileTemplate.Location = new Point(350, 57);
             localLabelOutputFileTemplate.Size = new Size(100, 13);
             localLabelOutputFileTemplate.Name = $"label{classification}OutputFileTemplate";
@@ -287,6 +296,7 @@ namespace Virtual_Data_Warehouse
             localLabelOutputFileTemplateValue = new Label();
             tabPageGenerationTemplate.Controls.Add(localLabelOutputFileTemplateValue);
             localLabelOutputFileTemplateValue.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            localLabelOutputFileTemplateValue.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localLabelOutputFileTemplateValue.Location = new Point(460, 57);
             localLabelOutputFileTemplateValue.Size = new Size(250, 13);
             localLabelOutputFileTemplateValue.Name = $"label{classification}OutputFileTemplateValue";

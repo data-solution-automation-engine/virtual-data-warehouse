@@ -1,6 +1,8 @@
 {{#each dataObjectMappings}}
 --
 -- Persistent Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT wrapper.
+-- This template expects a full copy of incoming data to be available in a landing area, and performs a full outer join to detects data changes.
+-- Generated from template '150 Persistent Staging Area Stored Procedure Full Outer Join'.
 --
 
 CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
@@ -31,12 +33,14 @@ JOIN
    (
    SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
       [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+      MAX({{../metadataConfiguration.sourceRowIdAttribute}}) AS MAX_{{../metadataConfiguration.sourceRowIdAttribute}},  
       MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
    FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]  A
    GROUP BY {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
       [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
    ) B ON {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
    A.[{{sourceDataItems.0.name}}] = B.[{{sourceDataItems.0.name}}] AND {{/each}} {{/each}}
+   A.[{{../metadataConfiguration.sourceRowIdAttribute}}] = B.MAX_{{../metadataConfiguration.sourceRowIdAttribute}} AND   
    A.{{../metadataConfiguration.loadDateTimeAttribute}} = B.MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
    WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'D'
 )
@@ -111,4 +115,5 @@ EXEC [900_Direct_Framework].[omd].[RegisterModule]
 -- Run the process
 -- EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = '150_{{../../targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
 {{/stringcompare}}{{/each}}
+
 {{/each}}
