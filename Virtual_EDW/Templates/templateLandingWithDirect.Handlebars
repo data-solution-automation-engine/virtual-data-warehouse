@@ -35,7 +35,7 @@ GO
 
 -- DIRECT module registration
 
-EXEC [900_Direct_Framework].[omd].[RegisterModule]
+EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[RegisterModule]
  @ModuleCode = '100_{{targetDataObject.name}}'
 ,@ModuleAreaCode = 'STG'
 ,@Executable = 'EXEC [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[SP_{{targetDataObject.name}}] @AUDIT_TRAIL_ID = @ModuleInstanceId'
@@ -44,5 +44,5 @@ EXEC [900_Direct_Framework].[omd].[RegisterModule]
 ,@ModuleTargetDataObject = '[{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]'
 
 -- Run the process
-EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = '100_{{targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
+EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[RunModule] @ModuleCode = '100_{{targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
 {{/each}}

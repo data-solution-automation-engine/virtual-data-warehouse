@@ -107,7 +107,7 @@ EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{looku
 ,@ModuleTargetDataObject = '[{{lookupExtension ../../targetDataObject.extensions "datastore"}}].[{{lookupExtension ../../targetDataObject.extensions "location"}}].[{{../../targetDataObject.name}}]'
 
 -- Run the process
--- EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = '100_{{../../targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
+-- EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[RunModule] @ModuleCode = '100_{{../../targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
 {{/stringcompare}}{{/each}}
 
 {{/each}}
