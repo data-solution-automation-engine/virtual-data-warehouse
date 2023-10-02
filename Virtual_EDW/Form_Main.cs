@@ -39,7 +39,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.12";
+            const string versionNumberForApplication = "v2.0.0";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
@@ -710,8 +710,7 @@ namespace Virtual_Data_Warehouse
 
             // First step, re-ordering and flattening.
             // In the Tuple, Item1 is the classification, Item2 is the mapping name and Item 3 is notes.
-            Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>> objectDictionary =
-                new Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>>();
+            Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>> objectDictionary = new Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>>();
 
             if (mappingList.Any())
             {
@@ -724,9 +723,7 @@ namespace Virtual_Data_Warehouse
                             if (dataObjectMapping.Name == null)
                             {
                                 dataObjectMapping.Name = dataObjectMapping.TargetDataObject.Name;
-                                InformUser(
-                                    $"The Data Object Mapping for target {dataObjectMapping.TargetDataObject.Name} does not have a mapping name, so the target name is used.",
-                                    EventTypes.Warning);
+                                InformUser($"The Data Object Mapping for target {dataObjectMapping.TargetDataObject.Name} does not have a mapping name, so the target name is used.", EventTypes.Warning);
                             }
                             // Check if there are classifications, as these are used to create the tabs.
                             if (dataObjectMapping.Classifications != null)
@@ -735,9 +732,7 @@ namespace Virtual_Data_Warehouse
                                 {
                                     if (!objectDictionary.ContainsKey(dataObjectMappings))
                                     {
-                                        objectDictionary.Add(dataObjectMappings,
-                                            new Tuple<string, string, string>(classification.Classification,
-                                                dataObjectMapping.Name, classification.Notes));
+                                        objectDictionary.Add(dataObjectMappings, new Tuple<string, string, string>(classification.Classification, dataObjectMapping.TargetDataObject.Name, classification.Notes));
                                     }
                                 }
                             }
@@ -745,22 +740,16 @@ namespace Virtual_Data_Warehouse
                             {
                                 if (!objectDictionary.ContainsKey(dataObjectMappings))
                                 {
-                                    objectDictionary.Add(dataObjectMappings,
-                                        new Tuple<string, string, string>("Miscellaneous",
-                                            dataObjectMapping.Name, ""));
+                                    objectDictionary.Add(dataObjectMappings, new Tuple<string, string, string>("Miscellaneous", dataObjectMapping.TargetDataObject.Name, ""));
                                 }
 
-                                InformUser(
-                                    $"The Data Object Mapping {dataObjectMapping.Name} does not have a classification, and therefore will be placed under 'Miscellaneous'",
-                                    EventTypes.Warning);
+                                InformUser($"The Data Object Mapping {dataObjectMapping.Name} does not have a classification, and therefore will be placed under 'Miscellaneous'", EventTypes.Warning);
                             }
                         }
                     }
                     else
                     {
-                        InformUser(
-                            $"There are no valid Data Object Mappings found in the file {dataObjectMappings.metadataFileName}. Please check the Event Log, and if this file has valid Json contents.",
-                            EventTypes.Warning);
+                        InformUser($"There are no valid Data Object Mappings found in the file {dataObjectMappings.metadataFileName}. Please check the Event Log, and if this file has valid Json contents.", EventTypes.Warning);
                     }
                 }
             }
@@ -791,8 +780,7 @@ namespace Virtual_Data_Warehouse
             foreach (var classification in classificationDictionary)
             {
                 LocalTemplate localTemplateMapping = new LocalTemplate();
-                Dictionary<string, VDW_DataObjectMappingList> itemList =
-                    new Dictionary<string, VDW_DataObjectMappingList>();
+                Dictionary<string, VDW_DataObjectMappingList> itemList = new Dictionary<string, VDW_DataObjectMappingList>();
 
                 foreach (var objectRow in objectDictionary)
                 {
@@ -842,12 +830,39 @@ namespace Virtual_Data_Warehouse
             }
 
             List<LocalTemplate> finalMappingList = GetMetadata();
-            var sortedMappingList = finalMappingList.OrderBy(x => x.classification);
+
+            // Reorder.
+            Dictionary<string, LocalTemplate> sortedMappingList = new Dictionary<string, LocalTemplate>();
+            foreach (var mapping in finalMappingList)
+            {
+                string orderNumber = mapping.classification switch
+                {
+                    "Source" => "0",
+                    "Staging" => "11",
+                    "StagingArea" => "10",
+                    "PersistentStaging" => "20",
+                    "Persistent Staging" => "21",
+                    "PersistentStagingArea" => "22",
+                    "Core Business Concept" => "30",
+                    "CoreBusinessConcept" => "31",
+                    "Context" => "40",
+                    "Natural Business Relationship" => "50",
+                    "NaturalBusinessRelationship" => "51",
+                    "Natural Business Relationship Context" => "60",
+                    "NaturalBusinessRelationshipContext" => "61",
+                    "Natural Business Relationship Context Driving Key" => "70",
+                    "NaturalBusinessRelationshipContextDrivingKey" => "71",
+                    "Presentation" => "80",
+                    _ => "900"
+                };
+
+                sortedMappingList.Add(orderNumber, mapping);
+            }
 
             // Add the Custom Tab Pages
-            foreach (var template in sortedMappingList)
+            foreach (var template in sortedMappingList.OrderBy(x => x.Key))
             {
-                CustomTabPage localCustomTabPage = new CustomTabPage(template.classification, template.notes, template.itemList);
+                CustomTabPage localCustomTabPage = new CustomTabPage(template.Value.classification, template.Value.notes, template.Value.itemList);
                 localCustomTabPage.OnChangeMainText += UpdateMainInformationTextBox;
                 localCustomTabPage.OnClearMainText += ClearMainInformationTextBox;
 
@@ -1577,6 +1592,12 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.Text = $@"An error has occurred while attempting to open the directory. The error message is: {ex.Message}.";
             }
+        }
+
+        private void refreshMetadataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RefreshMetadata();
+            richTextBoxInformationMain.Text = $@"The metadata has been reloaded from the repository.";
         }
 
         public sealed override string Text

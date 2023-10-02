@@ -96,14 +96,19 @@ WHERE
 SELECT @@ROWCOUNT AS ROWS_INSERTED
 GO
 
+{{!--  Integration with the control framework --}}
+{{#each extensions}}
+{{#stringcompare key "hasControlFramework"}}
+-- Integration with the control framework, module registration
 EXEC [900_Direct_Framework].[omd].[RegisterModule]
- @ModuleCode = '150_{{targetDataObject.name}}'
+ @ModuleCode = '150_{{../../targetDataObject.name}}'
 ,@ModuleAreaCode = 'PSA'
-,@Executable = 'EXEC [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[SP_{{targetDataObject.name}}] @AUDIT_TRAIL_ID = @ModuleInstanceId'
-,@ModuleDescription = 'Persistent Staging Area process for [{{sourceDataObjects.0.name}}]'
-,@ModuleSourceDataObject = '[{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]'
-,@ModuleTargetDataObject = '[{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]'
+,@Executable = 'EXEC [{{lookupExtension ../../targetDataObject.extensions "datastore"}}].[{{lookupExtension ../../targetDataObject.extensions "location"}}].[SP_{{../../targetDataObject.name}}] @AUDIT_TRAIL_ID = @ModuleInstanceId'
+,@ModuleDescription = 'Persistent Staging Area process for [{{../../sourceDataObjects.0.name}}]'
+,@ModuleSourceDataObject = '[{{lookupExtension ../../sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension ../../sourceDataObjects.0.extensions "location"}}].[{{../../sourceDataObjects.0.name}}]'
+,@ModuleTargetDataObject = '[{{lookupExtension ../../targetDataObject.extensions "datastore"}}].[{{lookupExtension ../../targetDataObject.extensions "location"}}].[{{../../targetDataObject.name}}]'
 
 -- Run the process
-EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = '150_{{targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
+-- EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = '150_{{../../targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
+{{/stringcompare}}{{/each}}
 {{/each}}

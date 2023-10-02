@@ -121,6 +121,7 @@ namespace Virtual_Data_Warehouse
             // Base properties of the custom tab page
             Name = $"{classification}";
             Text = _inputNiceName;
+            Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             BackColor = Color.Transparent;
             BorderStyle = BorderStyle.None;
             UseVisualStyleBackColor = true;
@@ -134,64 +135,49 @@ namespace Virtual_Data_Warehouse
             localPanel.Dock = DockStyle.Fill;
             localPanel.AutoSize = true;
 
-            // Add 'Generate' Button 
-            var localButtonGenerate = new Button();
-            localPanel.Controls.Add(localButtonGenerate);
-            localButtonGenerate.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-            localButtonGenerate.Location = new Point(17, 542);
-            localButtonGenerate.Name = $"Generate{classification}";
-            localButtonGenerate.Size = new Size(170, 40);
-            localButtonGenerate.Text = $"Generate {_inputNiceName}";
-            localButtonGenerate.Click += Generate;
-
-            // Add 'Processing' Label
-            var localLabelProcessing = new Label();
-            localPanel.Controls.Add(localLabelProcessing);
-            localLabelProcessing.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
-            localLabelProcessing.Location = new Point(14, 12);
-            localLabelProcessing.Size = new Size(280, 13);
-            localLabelProcessing.Name = $"label{classification}Processing";
-            localLabelProcessing.Text = $"{_inputNiceName} Processing";
-
-
             // Add 'Select All' CheckBox
             _localCheckBoxSelectAll = new CheckBox();
             localPanel.Controls.Add(_localCheckBoxSelectAll);
             _localCheckBoxSelectAll.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
-            _localCheckBoxSelectAll.Location = new Point(346, 11);
-            _localCheckBoxSelectAll.Size = new Size(69, 17);
+            _localCheckBoxSelectAll.Location = new Point(19, 12);
+            _localCheckBoxSelectAll.Size = new Size(90, 17);
             _localCheckBoxSelectAll.Name = "checkBoxSelectAll";
             _localCheckBoxSelectAll.Checked = true;
             _localCheckBoxSelectAll.Text = "Select all";
             _localCheckBoxSelectAll.CheckedChanged += SelectAllCheckBoxItems;
 
+            // Add 'Generate' Button 
+            var localButtonGenerate = new Button();
+            localPanel.Controls.Add(localButtonGenerate);
+            localButtonGenerate.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            localButtonGenerate.Location = new Point(116, 9);
+            localButtonGenerate.Name = $"Generate{classification}";
+            localButtonGenerate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            localButtonGenerate.Size = new Size(120, 22);
+            localButtonGenerate.Text = $"Generate";
+            localButtonGenerate.Click += Generate;
+
+            // Add 'Filter' Text Box
+            _localTextBoxFilter = new TextBox();
+            localPanel.Controls.Add(_localTextBoxFilter);
+            _localTextBoxFilter.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            _localTextBoxFilter.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            _localTextBoxFilter.Location = new Point(266, 9);
+            _localTextBoxFilter.Size = new Size(144, 9);
+            _localTextBoxFilter.Name = $"textBoxFilterCriterion{_inputNiceName}";
+            _localTextBoxFilter.TextChanged += FilterItemList;
+            _localTextBoxFilter.PlaceholderText = "Add a filter";
+
             // Add Checked List Box
             _localCheckedListBox = new CheckedListBox();
             localPanel.Controls.Add(_localCheckedListBox);
             _localCheckedListBox.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
-            _localCheckedListBox.Location = new Point(17, 31);
-            _localCheckedListBox.Size = new Size(393, 510);
+            _localCheckedListBox.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            _localCheckedListBox.Location = new Point(17, 32);
+            _localCheckedListBox.Size = new Size(393, 562);
             _localCheckedListBox.BorderStyle = BorderStyle.FixedSingle;
             _localCheckedListBox.CheckOnClick = true;
             _localCheckedListBox.Name = $"checkedListBox{classification}";
-
-            // Add 'Filter' Group Box
-            var localGroupBoxFilter = new GroupBox();
-            localPanel.Controls.Add(localGroupBoxFilter);
-            localGroupBoxFilter.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-            localGroupBoxFilter.Location = new Point(247, 539);
-            localGroupBoxFilter.Size = new Size(163, 43);
-            localGroupBoxFilter.Text = "Filter Criterion";
-            localGroupBoxFilter.Name = $"groupBoxFilter{_inputNiceName}";
-
-            // Add 'Filter' Text Box
-            _localTextBoxFilter = new TextBox();
-            localGroupBoxFilter.Controls.Add(_localTextBoxFilter);
-            _localTextBoxFilter.Anchor = (AnchorStyles.Bottom | AnchorStyles.Left);
-            _localTextBoxFilter.Location = new Point(6, 15);
-            _localTextBoxFilter.Size = new Size(151, 20);
-            _localTextBoxFilter.Name = $"textBoxFilterCriterion{_inputNiceName}";
-            _localTextBoxFilter.TextChanged += FilterItemList;
 
             #endregion
 
@@ -202,7 +188,7 @@ namespace Virtual_Data_Warehouse
             localPanel.Controls.Add(localTabControl);
             localTabControl.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
             localTabControl.Location = new Point(416, 9);
-            localTabControl.Size = new Size(896, 573);
+            localTabControl.Size = new Size(896, 570);
             localTabControl.Name = $"tabControl{classification}";
             localTabControl.BackColor = Color.White;
             localTabControl.SelectedIndexChanged += SubTabClick;
@@ -210,6 +196,7 @@ namespace Virtual_Data_Warehouse
             // Add 'Generation Output' Tab Page on Sub Tab
             tabPageGenerationOutput = new TabPage($"{_inputNiceName} Generation Output");
             localTabControl.TabPages.Add(tabPageGenerationOutput);
+            tabPageGenerationOutput.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             tabPageGenerationOutput.BackColor = Color.Transparent;
             tabPageGenerationOutput.Name = $"{_inputNiceName} Generation Output";
             tabPageGenerationOutput.BorderStyle = BorderStyle.None;
@@ -219,6 +206,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationOutput = new RichTextBox();
             tabPageGenerationOutput.Controls.Add(localRichTextBoxGenerationOutput);
             localRichTextBoxGenerationOutput.Dock = DockStyle.Fill;
+            localRichTextBoxGenerationOutput.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localRichTextBoxGenerationOutput.Text = $"No {_inputNiceName} logic has been generated at the moment.";
             localRichTextBoxGenerationOutput.Location = new Point(3, 6);
             localRichTextBoxGenerationOutput.Size = new Size(882, 535);
@@ -308,6 +296,7 @@ namespace Virtual_Data_Warehouse
             localSaveTemplate = new Button();
             tabPageGenerationTemplate.Controls.Add(localSaveTemplate);
             localSaveTemplate.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
+            localSaveTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localSaveTemplate.Location = new Point(610, 7);
             localSaveTemplate.Size = new Size(101, 23);
             localSaveTemplate.Text = $"Save";
@@ -318,6 +307,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationTemplate = new RichTextBox();
             tabPageGenerationTemplate.Controls.Add(localRichTextBoxGenerationTemplate);
             localRichTextBoxGenerationTemplate.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            localRichTextBoxGenerationTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localRichTextBoxGenerationTemplate.Location = new Point(3, 82);
             localRichTextBoxGenerationTemplate.Size = new Size(195, 30);
             localRichTextBoxGenerationTemplate.BorderStyle = BorderStyle.None;
@@ -425,13 +415,13 @@ namespace Virtual_Data_Warehouse
 
         public void SetItemList(Dictionary<string, VDW_DataObjectMappingList> itemList)
         {
-            // Copy the input variable to the local item list
+            // Copy the input variable to the local item list.
             this.ItemList = itemList;
 
-            // Clear the existing checkboxes
+            // Clear the existing checkboxes.
             _localCheckedListBox.Items.Clear();
 
-            // Add items to the Checked List Box, if it satisfies the filter criterion
+            // Add items to the Checked List Box, if it satisfies the filter criterion.
             if (itemList != null && itemList.Count > 0)
             {
                 foreach (string item in itemList.Keys)
@@ -443,7 +433,7 @@ namespace Virtual_Data_Warehouse
                 }
             }
 
-            // Report back to the user if there is not metadata available
+            // Report back to the user if there is not metadata available.
             if (_localCheckedListBox.Items.Count == 0)
             {
                 RaiseOnChangeMainText($"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.");
