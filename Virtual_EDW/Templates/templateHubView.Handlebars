@@ -35,15 +35,13 @@ FROM
     {{#each dataObjectMappings }}
     SELECT {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
         CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
-        --{{../metadataConfiguration.recordSourceAttribute}},
         MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
     FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
     WHERE {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
-        {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
-        {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
-    GROUP BY 
-        {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
-       -- {{../metadataConfiguration.recordSourceAttribute}}
+        {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}{{#if filterCriterion}}{{#stringcompare filterCriterion ""}}{{else}}AND {{filterCriterion}}{{/stringcompare}}{{/if}}
+    GROUP BY
+{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{!-- Exclude hard-coded values from the group by --}}{{#if extensions}}{{#each extensions}}{{#stringcompare key "isHardCodedValue"}}{{/stringcompare}}{{/each}}{{else}}        {{name}}{{#unless @last}},{{/unless}}{{/if}}{{/each}}{{/each}}{{/each}}
+    --
     {{#unless @last}}UNION{{/unless}}
     {{/each}}
 ) HUB_selection {{#each dataObjectMappings}}{{#if @first}}
