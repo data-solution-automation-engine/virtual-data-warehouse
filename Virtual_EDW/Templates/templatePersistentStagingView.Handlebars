@@ -1,9 +1,13 @@
 {{#each dataObjectMappings}}
+
+CREATE OR ALTER VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] 
+AS
+
 --
 -- Persistent Staging Area View definition for {{targetDataObject.name}}
 --
-
-CREATE OR ALTER VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
+-- Generated from template '150 Persistent Staging Area View'.
+--
 
 SELECT
    {{#each dataItemMappings}}

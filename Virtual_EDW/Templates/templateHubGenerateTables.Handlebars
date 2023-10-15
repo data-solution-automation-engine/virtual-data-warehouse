@@ -12,7 +12,7 @@ CREATE TABLE [{{targetDataObject.name}}]
    [{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL, 
    [{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL,
    [{{../metadataConfiguration.recordSourceAttribute}}] [nvarchar](100) NOT NULL,
-   {{#each businessKeys.0.businessKeyComponentMapping}}
+   {{#each businessKeyDefinitions.0.businessKeyComponentMappings}}
    [{{targetDataItem.name}}] [nvarchar](100) NOT NULL{{#unless @last}},{{/unless}}
    {{/each}}
 ){{/if}}

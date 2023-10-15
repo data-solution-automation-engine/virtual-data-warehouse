@@ -1,13 +1,12 @@
 {{#each dataObjectMappings}}
+CREATE OR ALTER VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] 
+AS
 --
 -- Link Satellite View definition for {{../generationSpecificMetadata.selectedDataObject.name}}.
 --
+-- Generated from template '200 Data Vault Link-Satellite View'.
+--
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject.name}}]
-GO
-
-CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
 SELECT 
     HASHBYTES('MD5', {{#each businessKeyDefinitions}}{{#unless @first}} +{{/unless}}{{!-- Create the Surrogate Key using the Business Key and components --}}{{#each businessKeyComponentMappings}}
        ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{/each}}{{#each businessKeyDefinitions}}{{#if @first}}
@@ -42,16 +41,8 @@ SELECT
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
     ) AS [{{../metadataConfiguration.recordChecksumAttribute}}],
     {{#each dataItemMappings}}
-    [{{targetDataItem.name}}],
+    [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
     {{/each}}
-    ROW_NUMBER() OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#unless @first}},{{/unless}}{{#each businessKeyComponentMappings}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-          {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-         {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
-    ORDER BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
-          {{targetDataItem.name}},{{/each}}{{/each}}
-          {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}{{../targetDataItem.name}},{{/if}}{{/each}}{{/each}}
-          {{../metadataConfiguration.loadDateTimeAttribute}}
-    ) AS ROW_NUMBER
 FROM
    (
       SELECT 
@@ -104,8 +95,8 @@ FROM
            HASHBYTES('MD5',{{#each dataItemMappings}}
             ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
            ) AS [COMBINED_VALUE]
-        FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
-        {{#if filterCriterion}}WHERE {{filterCriterion}} {{/if}}
+        FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
+       {{#if filterCriterion}}{{#stringcompare filterCriterion ""}}{{else}}WHERE {{filterCriterion}}{{/stringcompare}}{{/if}}
    ) sub
 ) combined_value
 WHERE 

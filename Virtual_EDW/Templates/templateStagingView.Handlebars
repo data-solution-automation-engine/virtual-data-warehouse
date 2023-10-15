@@ -1,16 +1,17 @@
 {{#each dataObjectMappings}}
+
+CREATE OR ALTER VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] 
+AS
+
 --
 -- Staging Area View definition for {{targetDataObject.name}}.
 --
 -- This template implements a Full Outer Join data delta detection mechanism, by comparing the incoming data with the data available in the PSA.
 -- The resulting view only shows the data delta at the point of execution, but does not insert this into the landing area or PSA yet (that is for another template to do).
 --
+-- Generated from template '100 Staging Area View'.
+--
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
-GO
-
-CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
 WITH STG_CTE AS
 (
 SELECT

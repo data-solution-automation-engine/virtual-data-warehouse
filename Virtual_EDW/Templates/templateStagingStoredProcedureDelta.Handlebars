@@ -1,12 +1,15 @@
 {{#each dataObjectMappings}}
+
+CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
+AS
+
 --
 -- Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT wrapper.
 -- This template prepares a data delta / differental using a full outer join, and loads this into the landing area.
 -- The resulting view only shows the data delta at the point of execution, but does not insert this into the landing area or PSA yet (that is for another template to do).
+--
 -- Generated from template '100 Staging Area Stored Procedure Delta'.
-
-CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
-AS
+--
 
 TRUNCATE TABLE [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}];
 

@@ -18,7 +18,7 @@ SELECT DISTINCT
      testcount
      AS (SELECT Count(*)		AS test_count
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-         WHERE  LEN([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]) != LEN(TRIM([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]))
+         WHERE  LEN([{{businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}]) != LEN(TRIM([{{businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}]))
          )
 SELECT record_count,
        test_count,
@@ -31,9 +31,9 @@ SELECT record_count,
 FROM   recordcount,
        testcount;  '
 , 
-  'SELECT [{{businessKeys.0.surrogateKey}}], [{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}], [{{businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}], [OMD_INSERT_MODULE_INSTANCE_ID]
 FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-WHERE  LEN([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]) != LEN(TRIM([{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]))'
+WHERE  LEN([{{businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}]) != LEN(TRIM([{{businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}]))'
 
 , 'N'
 , NULL

@@ -16,9 +16,9 @@ SELECT DISTINCT
 
      testcount
      AS (SELECT Sum(test_count) AS Test_Count
-         FROM   (SELECT Count(DISTINCT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}]) AS test_count
+         FROM   (SELECT Count(DISTINCT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}]) AS test_count
                  FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] {{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}
-                 GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}]
+                 GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}]
                           , OMD_HASH_DIFF
                  HAVING Count(*) > 1) AS a)
 
@@ -35,9 +35,9 @@ FROM   recordcount
                     ON 1 = 1; '
 , 
   
-  'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+  'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
   FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] {{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}
-  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
             , OMD_HASH_DIFF
   HAVING Count(*) > 1'
 

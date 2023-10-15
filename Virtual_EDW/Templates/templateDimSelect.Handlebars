@@ -5,13 +5,13 @@
 
 SELECT
   [PIT_EFFECTIVE_DATETIME],{{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}{{else}}
-  LEAD(PIT_EFFECTIVE_DATETIME,1,'9999-12-31') OVER (PARTITION BY [{{name}}.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PIT_EXPIRY_DATETIME,{{/stringcompare}}{{/each}}{{/each}}
+  LEAD(PIT_EFFECTIVE_DATETIME,1,'9999-12-31') OVER (PARTITION BY [{{name}}.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PIT_EXPIRY_DATETIME,{{/stringcompare}}{{/each}}{{/each}}
   *
 FROM
 (
   SELECT
      *,{{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}{{else}}
-     LAG(ATTRIBUTE_CHECKSUM, 1, 0x00000000000000000000000000000000) OVER(PARTITION BY [{{name}}.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PREVIOUS_ATTRIBUTE_CHECKSUM{{/stringcompare}}{{/each}}{{/each}}
+     LAG(ATTRIBUTE_CHECKSUM, 1, 0x00000000000000000000000000000000) OVER(PARTITION BY [{{name}}.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PREVIOUS_ATTRIBUTE_CHECKSUM{{/stringcompare}}{{/each}}{{/each}}
   FROM
   (
      SELECT
@@ -21,7 +21,7 @@ FROM
     FROM
     (
       SELECT{{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}{{else}}
-          {{name}}.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}} AS [{{name}}.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}],
+          {{name}}.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}} AS [{{name}}.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}],
 {{/stringcompare}}{{/each}}
           -- Data Item Mappings for {{sourceDataObjects.0.name}}
 {{#each dataItemMappings}}
@@ -32,31 +32,31 @@ FROM
       (
          -- Creation of time slices
          SELECT
-            {{dataObjectMappings.1.businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}},
+            {{dataObjectMappings.1.businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}},
             PIT_EFFECTIVE_DATETIME,
-            LEAD(PIT_EFFECTIVE_DATETIME,1,'9999-12-31') OVER (PARTITION BY {{dataObjectMappings.1.businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}} ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PIT_EXPIRY_DATETIME
+            LEAD(PIT_EFFECTIVE_DATETIME,1,'9999-12-31') OVER (PARTITION BY {{dataObjectMappings.1.businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}} ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PIT_EXPIRY_DATETIME
          FROM
          (
             -- Selection of time ranges
 {{#each dataObjectMappings}}
 {{#each sourceDataObjects}}
 {{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}
-            SELECT {{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}, {{../../../metadataConfiguration.loadDateTimeAttribute}} AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+            SELECT {{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}, {{../../../metadataConfiguration.loadDateTimeAttribute}} AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
 {{else}}
-            SELECT {{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}, CONVERT(DATETIME2(7), '1900-01-01') AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+            SELECT {{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}, CONVERT(DATETIME2(7), '1900-01-01') AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
             UNION
-            SELECT {{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}, {{../../../metadataConfiguration.loadDateTimeAttribute}} AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+            SELECT {{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}, {{../../../metadataConfiguration.loadDateTimeAttribute}} AS PIT_EFFECTIVE_DATETIME FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
 {{/stringcompare}}
 {{/each}}{{#unless @last}}            UNION{{/unless}}{{/each}}         ) PIT
       ) TimeRanges
 {{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}
       LEFT OUTER JOIN {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
-         ON TimeRanges.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}} = {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.[{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]
+         ON TimeRanges.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}} = {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.[{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}]
        AND {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}} <= TimeRanges.PIT_EFFECTIVE_DATETIME
        AND {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.{{../../../metadataConfiguration.expiryDateTimeAttribute}} >= TimeRanges.PIT_EXPIRY_DATETIME
 {{else}}
       INNER JOIN {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
-         ON TimeRanges.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}} = {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.[{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]
+         ON TimeRanges.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}} = {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.[{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}]
 {{/stringcompare}}
 {{/each}}{{/each}}
 

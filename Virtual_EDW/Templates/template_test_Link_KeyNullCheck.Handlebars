@@ -18,7 +18,7 @@ SELECT DISTINCT
      AS (
       SELECT Count(1) AS test_count 
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-         WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER( TRIM(ISNULL(NULL,''NA''))  )),2) = [{{businessKeys.0.surrogateKey}}]
+         WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER( TRIM(ISNULL(NULL,''NA''))  )),2) = [{{businessKeyDefinitions.0.surrogateKey}}]
         )
 
 SELECT record_count,
@@ -33,9 +33,9 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeys.0.surrogateKey}}], [{{businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}], [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}], [{{businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}], [{{../metadataConfiguration.etlProcessAttribute}}]
 FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER( TRIM(ISNULL(NULL,''NA''))  )),2) = [{{businessKeys.0.surrogateKey}}]'
+WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER( TRIM(ISNULL(NULL,''NA''))  )),2) = [{{businessKeyDefinitions.0.surrogateKey}}]'
 
 , 'N'
 , NULL

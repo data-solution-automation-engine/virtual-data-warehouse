@@ -11,7 +11,7 @@ CREATE PROCEDURE [PSA].[SP_{{targetDataObject.name}}] @{{../metadataConfiguratio
 AS
 INSERT INTO [PSA].[{{targetDataObject.name}}]
 (
-   [{{businessKeys.0.surrogateKey}}],
+   [{{businessKeyDefinitions.0.surrogateKey}}],
    {{#each dataItemMappings}}
    [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}

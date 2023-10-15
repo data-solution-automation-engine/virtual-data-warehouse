@@ -1,17 +1,18 @@
+CREATE OR ALTER VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] 
+AS
+
 --
 -- Hub View definition for {{generationSpecificMetadata.selectedDataObject.name}}
 --
 -- This template represents a standard Data Vault style 'Hub' table as a view.
 -- The view shows the same data as would otherwise be the case if the table would be created and all data logistics processes run.
 --
+-- Generated from template '200 Data Vault Hub View'.
+--
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]
-GO
-
-CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] AS
 SELECT hub.*
-FROM (
+FROM 
+(
 {{#each dataObjectMappings}}{{#if @first}}
 SELECT
     HASHBYTES('MD5', {{#each businessKeyDefinitions}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}

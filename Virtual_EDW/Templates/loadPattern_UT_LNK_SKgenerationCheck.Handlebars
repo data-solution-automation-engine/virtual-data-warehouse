@@ -26,7 +26,7 @@ SELECT DISTINCT
          WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER({{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )),2) 
             NOT IN 
           ( 
-            SELECT [{{businessKeys.0.surrogateKey}}]
+            SELECT [{{businessKeyDefinitions.0.surrogateKey}}]
             FROM [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
           )
      )
@@ -47,7 +47,7 @@ FROM   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sour
          WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER({{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL(CONVERT(nvarchar(max),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}} '{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'False'}}'{{/stringcompare }}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}), ''NA'')){{#unless @last}}+''|''+{{/unless}}{{/each}} {{/if}}{{/each}} )),2) 
             NOT IN 
           (
-            SELECT [{{businessKeys.0.surrogateKey}}]
+            SELECT [{{businessKeyDefinitions.0.surrogateKey}}]
             FROM [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
           )'
 

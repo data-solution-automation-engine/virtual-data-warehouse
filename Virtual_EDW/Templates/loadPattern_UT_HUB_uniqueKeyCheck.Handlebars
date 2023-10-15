@@ -15,7 +15,7 @@ SELECT DISTINCT
      AS (SELECT Count(*) AS Record_Count
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]),
      testcount
-     AS (SELECT Count(DISTINCT [{{businessKeys.0.surrogateKey}}]) AS Test_Count
+     AS (SELECT Count(DISTINCT [{{businessKeyDefinitions.0.surrogateKey}}]) AS Test_Count
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}])
 SELECT record_count,
        test_count,
@@ -29,9 +29,9 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeys.0.surrogateKey}}] as HUB_SK, [OMD_INSERT_MODULE_INSTANCE_ID]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}] as HUB_SK, [OMD_INSERT_MODULE_INSTANCE_ID]
     FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-    GROUP  BY [{{businessKeys.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+    GROUP  BY [{{businessKeyDefinitions.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
     HAVING Count(*) > 1 '
 
 , 'N'

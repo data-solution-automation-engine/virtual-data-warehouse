@@ -1,12 +1,14 @@
 {{#each dataObjectMappings}}
---
--- Persistent Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT wrapper.
--- This template expects a full copy of incoming data to be available in a landing area, and performs a full outer join to detects data changes.
--- Generated from template '150 Persistent Staging Area Stored Procedure Delta'.
---
 
 CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
 AS
+
+--
+-- Persistent Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT wrapper.
+-- This template expects a full copy of incoming data to be available in a landing area, and performs a full outer join to detects data changes.
+--
+-- Generated from template '150 Persistent Staging Area Stored Procedure Delta'.
+--
 
 INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
@@ -131,7 +133,7 @@ EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{looku
 ,@ModuleTargetDataObject = '[{{lookupExtension ../../targetDataObject.extensions "datastore"}}].[{{lookupExtension ../../targetDataObject.extensions "location"}}].[{{../../targetDataObject.name}}]'
 
 -- Run the process
--- EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[RunModule] @ModuleCode = '150_{{../../targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
+--EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[RunModule] @ModuleCode = '150_{{../../targetDataObject.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
 {{/stringcompare}}{{/each}}
 
 {{/each}}
