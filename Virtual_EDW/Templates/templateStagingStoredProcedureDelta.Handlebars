@@ -6,7 +6,7 @@ AS
 --
 -- Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT wrapper.
 -- This template prepares a data delta / differental using a full outer join, and loads this into the landing area.
--- The resulting view only shows the data delta at the point of execution, but does not insert this into the landing area or PSA yet (that is for another template to do).
+-- The resulting data set contains the data delta at the point of execution.
 --
 -- Generated from template '100 Staging Area Stored Procedure Delta'.
 --
@@ -34,17 +34,20 @@ SELECT
    A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
 FROM [{{lookupExtension relatedDataObjects.0.extensions "datastore"}}].[{{lookupExtension relatedDataObjects.0.extensions "location"}}].[{{relatedDataObjects.0.name}}] A
+ -- Most recently arrived PSA record which is not logically deleted
 JOIN
    (
    SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
       [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+      MAX({{../metadataConfiguration.sourceRowIdAttribute}}) AS MAX_{{../metadataConfiguration.sourceRowIdAttribute}},  
       MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
    FROM [{{lookupExtension relatedDataObjects.0.extensions "datastore"}}].[{{lookupExtension relatedDataObjects.0.extensions "location"}}].[{{relatedDataObjects.0.name}}] A
    GROUP BY {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
       [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
    ) B ON {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
    A.[{{sourceDataItems.0.name}}] = B.[{{sourceDataItems.0.name}}] AND {{/each}} {{/each}}
-   A.{{../metadataConfiguration.loadDateTimeAttribute}} = B.MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
+   A.[{{../metadataConfiguration.sourceRowIdAttribute}}] = B.[MAX_{{../metadataConfiguration.sourceRowIdAttribute}}] AND
+   A.[{{../metadataConfiguration.loadDateTimeAttribute}}] = B.[MAX_{{../metadataConfiguration.loadDateTimeAttribute}}]
    WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'D'
 )
 INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
@@ -55,6 +58,7 @@ INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{loo
    {{/each}}
    [{{../metadataConfiguration.recordChecksumAttribute}}],
    [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   {{!-- Source row Id implemented for when not using identify column in the staging table --}}
    --[{{../metadataConfiguration.sourceRowIdAttribute}}],
    [{{../metadataConfiguration.eventDateTimeAttribute}}]
 )
@@ -78,9 +82,9 @@ SELECT
          AND PSA_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
          AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'C' ELSE 'No Change' 
    END AS {{../metadataConfiguration.changeDataCaptureAttribute}},
-  {{!-- Example source row id when not using identify column in the staging table --}}
-   --ROW_NUMBER() OVER ( ORDER BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}} AS {{../metadataConfiguration.sourceRowIdAttribute}},
-   GETDATE() {{../metadataConfiguration.eventDateTimeAttribute}}
+  {{!-- Source row Id implemented for when not using identify column in the staging table --}}
+   --ROW_NUMBER() OVER ( ORDER BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}) AS {{../metadataConfiguration.sourceRowIdAttribute}},
+   SYSDATETIME() AS [{{../metadataConfiguration.eventDateTimeAttribute}}]
 FROM STG_CTE
 FULL OUTER JOIN PSA_CTE ON {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
     PSA_CTE.[{{sourceDataItems.0.name}}] = STG_CTE.[{{sourceDataItems.0.name}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}

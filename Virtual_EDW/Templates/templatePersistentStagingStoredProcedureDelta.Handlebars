@@ -69,7 +69,7 @@ FROM
        HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItems.0.name}}] AND{{/each}} {{/each}}
        HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
        HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
-  -- max HSTG checksum
+  -- Most recently arrived PSA record
   LEFT OUTER JOIN 
   (
       SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}

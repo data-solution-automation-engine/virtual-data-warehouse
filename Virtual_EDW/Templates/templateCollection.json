@@ -8,6 +8,14 @@
     "TemplateNotes": "This template prepares a data delta / differental using a full outer join, and loads this into the landing area."
   },
   {
+    "TemplateName": "100 Staging Area Stored Procedure Landing",
+    "TemplateType": "StagingArea",
+    "TemplateConnectionKey": "StagingConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateStagingStoredProcedureLanding.handlebars",
+    "TemplateNotes": "This template copies all data available in the source data object into the landing area."
+  },
+  {
     "TemplateName": "150 Persistent Staging Area Stored Procedure Delta",
     "TemplateType": "PersistentStagingArea",
     "TemplateConnectionKey": "PsaConnectionInternalId",
