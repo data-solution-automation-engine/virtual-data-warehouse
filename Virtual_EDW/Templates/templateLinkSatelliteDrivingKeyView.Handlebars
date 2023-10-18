@@ -18,12 +18,12 @@ SELECT
     --COALESCE (
     --  LEAD (DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) ) OVER
     --  ( PARTITION BY 
-    --       {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{../../targetDataItem.name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
+    --       {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{../../targetDataItem.name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
     --   ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
     --   CAST( '9999-12-31' AS DATETIME)
     --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}}],
     --CASE
-    --  WHEN ( LEAD ({{../metadataConfiguration.loadDateTimeAttribute}}) OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{../../targetDataItem.name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
+    --  WHEN ( LEAD ({{../metadataConfiguration.loadDateTimeAttribute}}) OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{../../targetDataItem.name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
     --     ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}})) IS NULL
     --   THEN 'Y'
     --   ELSE 'N'
@@ -52,14 +52,15 @@ FROM
     {{#each dataItemMappings}}
     [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
     {{/each}}
-    {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringdiff dataItemClassification.0.classification "DrivingKey"}}LAG ([{{../name}}], 1, '0')  OVER (
-        PARTITION BY {{#each ../../../../businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
+    {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringdiff classifications.0.classification "DrivingKey"}}LAG ([{{../name}}], 1, '0')  OVER (
+        PARTITION BY {{#each ../../../../businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
         ORDER BY [{{../../../../../metadataConfiguration.loadDateTimeAttribute}}]
    ) AS PREVIOUS_FOLLOWER_KEY{{@index}}    {{/stringdiff}}{{/each}}{{/each}}{{/each}}
   FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
   WHERE NOT
   ([{{../metadataConfiguration.sourceRowIdAttribute}}]>1 AND [{{../metadataConfiguration.changeDataCaptureAttribute}}] ='D')
-  {{#if filterCriterion}}AND {{filterCriterion}} {{/if}}  
+ {{#if filterCriterion}}{{#stringcompare filterCriterion ""}}{{else}}AND {{filterCriterion}}{{/stringcompare}}{{/if}}
+
   /* -- Dummy record only for example purposes.
   UNION
   SELECT 
@@ -68,7 +69,7 @@ FROM
     [{{../metadataConfiguration.eventDateTimeAttribute}}],
     [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
     [{{targetDataItem.name}}],{{/each}}{{/each}}
-    {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringdiff dataItemClassification.0.classification "DrivingKey"}}'{{@index}}'  AS PREVIOUS_FOLLOWER_KEY{{@index}}{{/stringdiff}}{{/each}}{{/each}}{{/each}}
+    {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringdiff classifications.0.classification "DrivingKey"}}'{{@index}}'  AS PREVIOUS_FOLLOWER_KEY{{@index}}{{/stringdiff}}{{/each}}{{/each}}{{/each}}
   FROM 
   (
      SELECT
@@ -79,8 +80,8 @@ FROM
           'C' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}
           {{#each businessKeyComponentMappings}}[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
           {{/each}}{{/each}}DENSE_RANK() OVER (
-                PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
-                ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}], [{{../metadataConfiguration.sourceRowIdAttribute}}], {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}} ASC
+                PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
+                ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}], [{{../metadataConfiguration.sourceRowIdAttribute}}], {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}} ASC
            ) AS ROWVERSION
         FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
    ) dummysub
@@ -88,9 +89,9 @@ FROM
    */
 ) sub
 WHERE 
-    {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringdiff dataItemClassification.0.classification "DrivingKey"}}{{../../targetDataItem.name}} != PREVIOUS_FOLLOWER_KEY{{@index}}{{/stringdiff}}{{/each}}{{/each}}{{/each}}
+    {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringdiff classifications.0.classification "DrivingKey"}}{{../../targetDataItem.name}} != PREVIOUS_FOLLOWER_KEY{{@index}}{{/stringdiff}}{{/each}}{{/each}}{{/each}}
 -- ORDER BY 
-{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each SourceDataItems}}{{#stringcompare dataItemClassification.0.classification "DrivingKey"}}--   [{{../../targetDataItem.name}}],{{/stringcompare}}{{/each}}{{/each}}{{/each}}
+{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}--   [{{../../targetDataItem.name}}],{{/stringcompare}}{{/each}}{{/each}}{{/each}}
 --   [{{../metadataConfiguration.loadDateTimeAttribute}}]
 
 {{/each}}

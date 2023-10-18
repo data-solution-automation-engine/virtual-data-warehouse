@@ -4,8 +4,8 @@ CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfigura
 AS
 
 --
--- Persistent Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT wrapper.
--- This template expects a full copy of incoming data to be available in a landing area, and performs a full outer join to detects data changes.
+-- Persistent Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT control framework wrapper.
+-- This template expects a full copy of incoming data to be available in the source object e.g. the source or landing area, and performs a full outer join to detects data changes.
 --
 -- Generated from template '150 Persistent Staging Area Stored Procedure Full Outer Join'.
 --

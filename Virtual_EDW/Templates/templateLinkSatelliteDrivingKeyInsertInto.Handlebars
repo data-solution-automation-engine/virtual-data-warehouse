@@ -31,7 +31,7 @@ FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] sa
 LEFT OUTER JOIN [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] sat_table
     ON sat_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
     AND sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}] = sat_table.[{{../metadataConfiguration.loadDateTimeAttribute}}] 
-    {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}AND sat_view.{{../targetDataItem.name}} = sat_table.{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
+    {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}}AND sat_view.{{../targetDataItem.name}} = sat_table.{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
 WHERE sat_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}
 

@@ -80,9 +80,9 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "100 Dimension / PIT Select",
+    "TemplateName": "300 Dimension / PIT Select",
     "TemplateType": "Presentation",
-    "TemplateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateDimSelect.handlebars",
     "TemplateNotes": "Taken from earlier VDW versions, demonstrating one possible DIM / PIT template."

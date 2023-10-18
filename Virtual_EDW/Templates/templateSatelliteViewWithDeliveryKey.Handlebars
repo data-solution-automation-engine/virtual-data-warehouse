@@ -26,14 +26,14 @@ SELECT
     --  ( PARTITION BY {{#each businessKeyDefinitions}}
     --      {{#each businessKeyComponentMappings}}
     --      {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-    --     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+    --     {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
     --   ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
     --   CAST( '9999-12-31' AS DATETIME)
     --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}}],
     --CASE
     --  WHEN ( RANK() OVER (PARTITION BY {{#each businessKeyDefinitions}} {{#each businessKeyComponentMappings}}
     --      {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-    --     {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+    --     {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
     --     ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}} desc )) = 1
     --   THEN 'Y'
     --   ELSE 'N'
@@ -55,7 +55,7 @@ SELECT
     ROW_NUMBER() OVER (
           ORDER BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
           {{targetDataItem.name}},{{/each}}{{/each}}
-          {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}}{{../targetDataItem.name}},{{/if}}{{/each}}{{/each}}
+          {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}}{{../targetDataItem.name}},{{/if}}{{/each}}{{/each}}
           {{../metadataConfiguration.loadDateTimeAttribute}},
           {{../metadataConfiguration.sourceRowIdAttribute}}
     ) AS DATA_DELIVERY_KEY,
@@ -79,7 +79,7 @@ FROM
          CASE 
            WHEN LAG(COMBINED_VALUE,1,0x00000000000000000000000000000000) OVER (PARTITION BY {{#each businessKeyDefinitions}} {{#each businessKeyComponentMappings}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}} 
-             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
+             {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] DESC) = COMBINED_VALUE
            THEN 'Same'
            ELSE 'Different'
@@ -87,7 +87,7 @@ FROM
          CASE 
            WHEN LAG([{{../metadataConfiguration.changeDataCaptureAttribute}}],1,'') OVER (PARTITION BY {{#each businessKeyDefinitions}} {{#each businessKeyComponentMappings}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
+             {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.changeDataCaptureAttribute}}]
            THEN 'Same'
            ELSE 'Different'
@@ -95,7 +95,7 @@ FROM
          CASE 
            WHEN LEAD([{{../metadataConfiguration.loadDateTimeAttribute}}],1,'9999-12-31') OVER (PARTITION BY {{#each businessKeyDefinitions}} {{#each businessKeyComponentMappings}}
               {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-             {{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
+             {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}},{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
              ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}] ASC, [{{../metadataConfiguration.eventDateTimeAttribute}}] ASC, [{{../metadataConfiguration.changeDataCaptureAttribute}}] ASC) = [{{../metadataConfiguration.loadDateTimeAttribute}}]
            THEN 'Same'
            ELSE 'Different'

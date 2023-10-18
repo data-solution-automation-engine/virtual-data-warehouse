@@ -4,7 +4,7 @@ CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfigura
 AS
 
 --
--- Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT wrapper.
+-- Staging Area Stored Procedure for {{targetDataObject.name}} using a DIRECT control framework wrapper.
 -- This template copies all data available in the source data object into the landing area.
 -- When the data is available in the landing area, subsequent processes can be used to load the data into downstream objects or used to derive data delta.
 --
