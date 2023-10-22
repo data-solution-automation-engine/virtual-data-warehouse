@@ -1,16 +1,17 @@
-{{#each dataObjectMappings}}
 --
--- Persistent Staging Area table creation statement for {{targetDataObject.name}}
--- Generated at {{now}}
+-- Presentation table creation statement for {{generationSpecificMetadata.selectedDataObject.name}}
 --
 
-IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
-DROP TABLE [{{targetDataObject.name}}]
+DROP TABLE IF EXISTS [{{generationSpecificMetadata.selectedDataObject.name}}]
 
-CREATE TABLE [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
+CREATE TABLE [{{lookupExtension generationSpecificMetadata.selectedDataObject.extensions "datastore"}}].[{{lookupExtension generationSpecificMetadata.selectedDataObject.extensions "location"}}].[{{generationSpecificMetadata.selectedDataObject.name}}]
 (
-   {{#each sourceDataObjects.0.dataItems}}
-   [{{name}}] [varchar](1000){{#unless @last}},{{/unless}}
+   {{#each generationSpecificMetadata.selectedDataObject.dataItems}}
+   [{{name}}] {{dataType}}{{#stringcompare dataType int}}{{else}}({{characterLength}}{{numericScale}}){{/stringcompare}},
    {{/each}}
+   [{{metadataConfiguration.eventDateTimeAttribute}}] DATETIME2(7),
+   [{{metadataConfiguration.changeDataCaptureAttribute}}] CHAR(1),
+   [{{metadataConfiguration.etlProcessAttribute}}] INT,
+   [{{metadataConfiguration.sourceRowIdAttribute}}] INT,
+   [{{metadataConfiguration.recordChecksumAttribute}}] BINARY(16)
 )
-{{/each}}

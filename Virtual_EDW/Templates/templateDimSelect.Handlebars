@@ -8,10 +8,10 @@ AS
 --
 
 SELECT
-  [PIT_EFFECTIVE_DATETIME],{{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare classifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}{{else}}
-  LEAD(PIT_EFFECTIVE_DATETIME,1,'9999-12-31') OVER (PARTITION BY [{{name}}.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS PIT_EXPIRY_DATETIME,{{/stringcompare}}{{/each}}{{/each}}{{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare classifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}{{else}}
-  [{{name}}.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}],{{/stringcompare}}{{/each}}{{/each}}  {{#each dataObjectMappings}}{{#each dataItemMappings}}
-  [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+   [PIT_EFFECTIVE_DATETIME]{{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare classifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}{{else}}
+  ,LEAD(PIT_EFFECTIVE_DATETIME,1,'9999-12-31') OVER (PARTITION BY [{{name}}.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}] ORDER BY PIT_EFFECTIVE_DATETIME ASC) AS [PIT_EXPIRY_DATETIME]{{/stringcompare}}{{/each}}{{/each}}{{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare classifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}{{else}}
+  ,[{{name}}.{{../../businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}]{{/stringcompare}}{{/each}}{{/each}}  {{#each dataObjectMappings}}{{#each dataItemMappings}}
+  ,[{{targetDataItem.name}}]{{/each}}{{/each}}
 FROM
 (
   SELECT

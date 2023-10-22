@@ -1,0 +1,20 @@
+{{#each dataObjectMappings}}{{#if @first}}
+--
+-- Table creation statement for {{targetDataObject.name}}
+--
+
+IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
+  DROP TABLE [{{targetDataObject.name}}];
+
+CREATE TABLE [{{targetDataObject.name}}]
+(
+    [{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] binary(16) NOT NULL
+   ,[{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL
+   ,[{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL
+   ,[{{../metadataConfiguration.recordSourceAttribute}}] [nvarchar](100) NOT NULL
+  {{#each relatedDataObjects}}
+{{/each}}
+    {{#each dataItemMappings}}
+   ,[{{targetDataItem.name}}] [nvarchar](1000) NOT NULL
+         {{/each}}
+){{/if}}{{/each}}
