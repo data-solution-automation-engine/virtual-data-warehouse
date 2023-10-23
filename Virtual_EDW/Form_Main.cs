@@ -845,13 +845,18 @@ namespace Virtual_Data_Warehouse
                     "PersistentStagingArea" => "22",
                     "Core Business Concept" => "30",
                     "CoreBusinessConcept" => "31",
+                    "Hub" => "32",
                     "Context" => "40",
+                    "Satellite" => "41",
                     "Natural Business Relationship" => "50",
                     "NaturalBusinessRelationship" => "51",
+                    "Link" => "52",
                     "Natural Business Relationship Context" => "60",
                     "NaturalBusinessRelationshipContext" => "61",
+                    "Link-Satellite" => "62",
                     "Natural Business Relationship Context Driving Key" => "70",
                     "NaturalBusinessRelationshipContextDrivingKey" => "71",
+                    "Link-Satellite Driving Key" => "72",
                     "Presentation" => "80",
                     _ => "900"
                 };

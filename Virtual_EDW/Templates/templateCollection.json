@@ -193,7 +193,7 @@
   },
   {
     "TemplateName": "200 Data Vault Hub Batch/Module Registration for DIRECT",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
     "TemplateFilePath": "templateHubDirectRegistration.handlebars",
@@ -201,7 +201,7 @@
   },
   {
     "TemplateName": "200 Data Vault Hub Delta Select From",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateHubDeltaSelect.handlebars",
@@ -209,7 +209,7 @@
   },
   {
     "TemplateName": "200 Data Vault Hub Generate Tables",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateHubGenerateTables.handlebars",
@@ -217,7 +217,7 @@
   },
   {
     "TemplateName": "200 Data Vault Hub Insert Into",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateHubInsertInto.handlebars",
@@ -225,7 +225,7 @@
   },
   {
     "TemplateName": "200 Data Vault Hub Insert Into with DIRECT wrapper",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateHubInsertIntoDirectWrapper.handlebars",
@@ -233,7 +233,7 @@
   },
   {
     "TemplateName": "200 Data Vault Hub View",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateHubView.handlebars",
@@ -241,7 +241,7 @@
   },
   {
     "TemplateName": "200 Data Vault Hub View using DBT and Snowflake syntax",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateHubView_DBT_Snowflake.handlebars",
@@ -249,7 +249,7 @@
   },
   {
     "TemplateName": "200 Data Vault Hub View With Delivery Key",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateHubViewWithDeliveryKey.handlebars",
@@ -257,7 +257,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link Generate Tables",
-    "TemplateType": "NaturalBusinessRelationship",
+    "TemplateType": "Link",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkGenerateTables.handlebars",
@@ -265,7 +265,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link Insert Into",
-    "TemplateType": "NaturalBusinessRelationship",
+    "TemplateType": "Link",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkInsertInto.handlebars",
@@ -273,7 +273,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link View",
-    "TemplateType": "NaturalBusinessRelationship",
+    "TemplateType": "Link",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkView.handlebars",
@@ -281,7 +281,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link View Without Hash Keys",
-    "TemplateType": "NaturalBusinessRelationship",
+    "TemplateType": "Link",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkViewNoHash.Handlebars",
@@ -289,7 +289,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link-Satellite Driving Key Insert Into",
-    "TemplateType": "NaturalBusinessRelationshipContextDrivingKey",
+    "TemplateType": "Link-Satellite Driving Key",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkSatelliteDrivingKeyInsertInto.handlebars",
@@ -297,7 +297,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link-Satellite Driving Key View",
-    "TemplateType": "NaturalBusinessRelationshipContextDrivingKey",
+    "TemplateType": "Link-Satellite Driving Key",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkSatelliteDrivingKeyView.handlebars",
@@ -305,7 +305,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link-Satellite Insert Into",
-    "TemplateType": "NaturalBusinessRelationshipContext",
+    "TemplateType": "Link-Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkSatelliteInsertInto.handlebars",
@@ -313,7 +313,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link-Satellite Reinitialisation",
-    "TemplateType": "NaturalBusinessRelationshipContext",
+    "TemplateType": "Link-Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_reinitialise.sql",
     "TemplateFilePath": "loadPatternLinkSatelliteReinitialisation.handlebars",
@@ -321,7 +321,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link-Satellite View",
-    "TemplateType": "NaturalBusinessRelationshipContext",
+    "TemplateType": "Link-Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkSatelliteView.handlebars",
@@ -329,7 +329,7 @@
   },
   {
     "TemplateName": "200 Data Vault Link-Satellite View With Zero Record",
-    "TemplateType": "NaturalBusinessRelationshipContext",
+    "TemplateType": "Link-Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkSatelliteViewZeroRecord.handlebars",
@@ -337,7 +337,7 @@
   },
   {
     "TemplateName": "200 Data Vault Satellite Batch/Module Registration for DIRECT",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
     "TemplateFilePath": "templateSatelliteDirectRegistration.handlebars",
@@ -345,15 +345,15 @@
   },
   {
     "TemplateName": "200 Data Vault Satellite Generate Tables",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteGenerateTables.handlebars",
-    "TemplateNotes": "Creating tables for Context tables."
+    "TemplateNotes": "Creating tables for Satellite tables."
   },
   {
     "TemplateName": "200 Data Vault Satellite Insert Into",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteInsertInto.handlebars",
@@ -361,7 +361,7 @@
   },
   {
     "TemplateName": "200 Data Vault Satellite Referential Integrity",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteReferentialIntegrity.handlebars",
@@ -369,7 +369,7 @@
   },
   {
     "TemplateName": "200 Data Vault Satellite Reinitialisation",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_reinitialise.sql",
     "TemplateFilePath": "loadPatternSatelliteReinitialisation.handlebars",
@@ -377,7 +377,7 @@
   },
   {
     "TemplateName": "200 Data Vault Satellite View",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteView.handlebars",
@@ -385,7 +385,7 @@
   },
   {
     "TemplateName": "200 Data Vault Satellite View With Delivery Key",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteViewWithDeliveryKey.handlebars",
@@ -393,7 +393,7 @@
   },
   {
     "TemplateName": "200 Data Vault Satellite View With Zero Record",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteViewZeroRecord.handlebars",
@@ -401,7 +401,7 @@
   },
   {
     "TemplateName": "200 Link Batch/Module Registration for DIRECT",
-    "TemplateType": "NaturalBusinessRelationship",
+    "TemplateType": "Link",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
     "TemplateFilePath": "templateLinkDirectRegistration.handlebars",
@@ -409,7 +409,7 @@
   },
   {
     "TemplateName": "200 Link-Satellite Batch/Module Registration for DIRECT",
-    "TemplateType": "NaturalBusinessRelationshipContext",
+    "TemplateType": "Link-Satellite",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
     "TemplateFilePath": "templateLinkSatelliteDirectRegistration.handlebars",
@@ -417,7 +417,7 @@
   },
   {
     "TemplateName": "200 Unit Test - Satellite from Staging Layer Check",
-    "TemplateType": "Context",
+    "TemplateType": "Satellite",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Sat_StagingMappingCheck.sql",
     "TemplateFilePath": "template_test_SAT_StagingMappingCheck.handlebars",
@@ -449,7 +449,7 @@
   },
   {
     "TemplateName": "900 Unit Test - Hub Key Null Check",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_KeyNullCheck.sql",
     "TemplateFilePath": "template_test_HUB_KeyNullCheck.handlebars",
@@ -457,7 +457,7 @@
   },
   {
     "TemplateName": "900 Unit Test - Hub Key Trim Check",
-    "TemplateType": "CoreBusinessConcept",
+    "TemplateType": "Hub",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}_Test_Hub_KeyTrimCheck.sql",
     "TemplateFilePath": "template_test_HUB_KeyTrimCheck.handlebars",
