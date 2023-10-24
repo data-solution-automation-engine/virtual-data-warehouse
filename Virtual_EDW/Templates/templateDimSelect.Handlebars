@@ -50,16 +50,26 @@ FROM
 {{/each}}{{#unless @last}}            UNION{{/unless}}{{/each}}         ) PIT
       ) TimeRanges
 {{#each dataObjectMappings}}{{#each sourceDataObjects}}{{stringcompare dataObjectClassifications.0.classification 'CoreBusinessConcept'}}{{sourceData}}
-      LEFT OUTER JOIN {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
-         ON TimeRanges.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}} = {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.[{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]
-       AND {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.{{../../../metadataConfiguration.loadDateTimeAttribute}} <= TimeRanges.PIT_EFFECTIVE_DATETIME
-       AND {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.{{../../../metadataConfiguration.expiryDateTimeAttribute}} >= TimeRanges.PIT_EXPIRY_DATETIME
+      LEFT OUTER JOIN
+        (
+          SELECT
+            *,
+            LEAD ( {{../../../metadataConfiguration.loadDateTimeAttribute}},1,'9999-12-31') OVER 
+            ( 
+                PARTITION BY {{#each ../../businessKeys}}{{#each businessKeyComponentMapping}}
+                   [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/each}}{{#each dataItemMappings}}{{#each targetDataItem.dataItemClassification}}{{#if classification}},{{../sourceDataItems.0.name}}{{/if}}{{/each}}{{/each}}
+                ORDER BY [{{../../../metadataConfiguration.loadDateTimeAttribute}}], [{{../../../metadataConfiguration.sourceRowIdAttribute}}] ASC
+            ) AS [{{../../../metadataConfiguration.expiryDateTimeAttribute}}]
+            FROM {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
+        ) {{name}}_inline
+         ON TimeRanges.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}} = {{name}}_inline.[{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]
+       AND {{name}}_inline.{{../../../metadataConfiguration.loadDateTimeAttribute}} <= TimeRanges.PIT_EFFECTIVE_DATETIME
+       AND {{name}}_inline.{{../../../metadataConfiguration.expiryDateTimeAttribute}} >= TimeRanges.PIT_EXPIRY_DATETIME
 {{else}}
       INNER JOIN {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}
          ON TimeRanges.{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}} = {{../../../metadataConfiguration.vdwSchemaName}}.{{name}}.[{{../../businessKeys.0.businessKeyComponentMapping.0.targetDataItem.name}}]
 {{/stringcompare}}
 {{/each}}{{/each}}
-
     ) SUB_TIMELINES
   ) SUB_CHECKSUM
 ) SUB_FINAL

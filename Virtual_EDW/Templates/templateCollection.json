@@ -38,7 +38,7 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateLinkSatelliteView.handlebars",
     "TemplateNotes": ""
-  },   
+  },
   {
     "TemplateName": "100 Data Vault Satellite View Template",
     "TemplateType": "Context",
@@ -48,12 +48,20 @@
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "100 Dimension / PIT Select Template",
-    "TemplateType": "Presentation",
-    "TemplateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateName": "100 Landing",
+    "TemplateType": "StagingArea",
+    "TemplateConnectionKey": "StagingConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "TemplateFilePath": "templateDimSelect.handlebars",
-    "TemplateNotes": "Taken from earlier VDW versions, demonstrating one possible DIM / PIT template."
+    "TemplateFilePath": "templateLanding.handlebars",
+    "TemplateNotes": ""
+  },
+  {
+    "TemplateName": "100 Landing With Direct Wrapper",
+    "TemplateType": "StagingArea",
+    "TemplateConnectionKey": "StagingConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateLandingWithDirect.handlebars",
+    "TemplateNotes": "This template performs a full copy of a source data object into the landing area, using a DIRECT wrapper"
   },
   {
     "TemplateName": "100 Persistent Staging Area View Template",
@@ -272,12 +280,12 @@
     "TemplateNotes": "Creating tables for Natural Business Relationships."
   },
   {
-    "TemplateName": "500 Data Vault Satellite Generate Tables",
-    "TemplateType": "Context",
-    "TemplateConnectionKey": "IntegrationConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "TemplateFilePath": "templateSatelliteGenerateTables.handlebars",
-    "TemplateNotes": "Creating tables for Context tables."
+    "TemplateName": "500 Data Vault Link-Satellite Reinitialisation Template",
+    "TemplateType": "NaturalBusinessRelationshipContext",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_reinitialise.sql",
+    "TemplateFilePath": "loadPatternLinkSatelliteReinitialisation.handlebars",
+    "TemplateNotes": ""
   },
   {
     "TemplateName": "500 Data Vault Satellite Batch/Module Registration for DIRECT",
@@ -286,6 +294,22 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}_DIRECT.sql",
     "TemplateFilePath": "templateSatelliteDirectRegistration.handlebars",
     "TemplateNotes": "Creating DIRECT registration scripts."
+  },
+  {
+    "TemplateName": "500 Data Vault Satellite Generate Tables",
+    "TemplateType": "Context",
+    "TemplateConnectionKey": "IntegrationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateSatelliteGenerateTables.handlebars",
+    "TemplateNotes": "Creating tables for Context tables."
+  },
+  {
+    "TemplateName": "500 Data Vault Satellite Reinitialisation Template",
+    "TemplateType": "Context",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_reinitialise.sql",
+    "TemplateFilePath": "loadPatternSatelliteReinitialisation.handlebars",
+    "TemplateNotes": ""
   },
   {
     "TemplateName": "500 Link Batch/Module Registration for DIRECT",
@@ -358,23 +382,7 @@
     "TemplateOutputFileConvention": "{targetDataObject.name}_SelectView.sql",
     "TemplateFilePath": "templateLandingtoSilverFromView.handlebars",
     "TemplateNotes": "Azure Databricks insert into Staging Area. This template generates the select column list command from the view which is created from dataframe."
-  },   
-  {
-    "TemplateName": "500 Data Vault Satellite Reinitialisation Template",
-    "TemplateType": "Context",
-    "TemplateConnectionKey": "PsaConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_reinitialise.sql",
-    "TemplateFilePath": "loadPatternSatelliteReinitialisation.handlebars",
-    "TemplateNotes": ""
-  },  
-  {
-    "TemplateName": "500 Data Vault Link-Satellite Reinitialisation Template",
-    "TemplateType": "NaturalBusinessRelationshipContext",
-    "TemplateConnectionKey": "PsaConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_reinitialise.sql",
-    "TemplateFilePath": "loadPatternLinkSatelliteReinitialisation.handlebars",
-    "TemplateNotes": ""
-  },  
+  },
   {
     "TemplateName": "900 Unit Test - Hub Key Null Check",
     "TemplateType": "CoreBusinessConcept",
@@ -392,6 +400,14 @@
     "TemplateNotes": "Unit test for checking leading or trailing spaces on the Hub business key."
   },
   {
+    "TemplateName": "900 Unit Test - Landing Reconciliation",
+    "TemplateType": "StagingArea",
+    "TemplateConnectionKey": "StagingConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}_TEST_RECON.sql",
+    "TemplateFilePath": "templateLandingTestReconciliation.handlebars",
+    "TemplateNotes": ""
+  },
+  {
     "TemplateName": "900 Unit Test - STG to SAT Check",
     "TemplateType": "Context",
     "TemplateConnectionKey": "IntegrationConnectionInternalId",
@@ -400,29 +416,29 @@
     "TemplateNotes": "Data Vault Sat Pattern to create unit test for checking mapping and data completeness between STG and SAT"
   },
   {
-    "TemplateName": "100 Landing With Direct Wrapper",
-    "TemplateType": "StagingArea",
-    "TemplateConnectionKey": "StagingConnectionInternalId",
+    "TemplateName": "Daily snapshot",
+    "TemplateType": "Presentation",
+    "TemplateConnectionKey": "IntegrationConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "TemplateFilePath": "templateLandingWithDirect.handlebars",
-    "TemplateNotes": "This template performs a full copy of a source data object into the landing area, using a DIRECT wrapper"
-  },
-  {
-    "TemplateName": "100 Landing",
-    "TemplateType": "StagingArea",
-    "TemplateConnectionKey": "StagingConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
-    "TemplateFilePath": "templateLanding.handlebars",
+    "TemplateFilePath": "templatePresentationDailySnapshot.handlebars",
     "TemplateNotes": ""
   },
   {
-    "TemplateName": "900 Unit Test - Landing Reconciliation",
-    "TemplateType": "StagingArea",
-    "TemplateConnectionKey": "StagingConnectionInternalId",
-    "TemplateOutputFileConvention": "{targetDataObject.name}_TEST_RECON.sql",
-    "TemplateFilePath": "templateLandingTestReconciliation.handlebars",
+    "TemplateName": "Dimension / PIT Select Template",
+    "TemplateType": "Presentation",
+    "TemplateConnectionKey": "PsaConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templateDimSelect.handlebars",
+    "TemplateNotes": "Taken from earlier VDW versions, demonstrating one possible DIM / PIT template."
+  },
+  {
+    "TemplateName": "Generate Tables",
+    "TemplateType": "Presentation",
+    "TemplateConnectionKey": "PresentationConnectionInternalId",
+    "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
+    "TemplateFilePath": "templatePresentationGenerateTables.handlebars",
     "TemplateNotes": ""
-  },  
+  },
   {
     "TemplateName": "Persistent Staging Area Stored Procedure",
     "TemplateType": "PersistentStagingArea",

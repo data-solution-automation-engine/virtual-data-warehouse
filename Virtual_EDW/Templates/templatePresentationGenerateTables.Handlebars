@@ -1,0 +1,20 @@
+{{#each dataObjectMappings}}{{#if @first}}
+--
+-- Table creation statement for {{targetDataObject.name}}
+--
+
+IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
+  DROP TABLE [{{targetDataObject.name}}];
+
+CREATE TABLE [{{targetDataObject.name}}]
+(
+    {{#each dataItemMappings}}
+    [{{targetDataItem.name}}] [{{targetDataItem.dataType}}]{{#stringcompare targetDataItem.dataType "int"}}{{else}}{{#stringcompare targetDataItem.dataType "nvarchar"}}(1000){{else}}{{#stringcompare targetDataItem.dataType "datetime2"}}(7){{else}}{{#stringcompare targetDataItem.dataType "decimal"}}{{else}}{{#stringcompare targetDataItem.dataType "binary"}}(16){{else}}({{characterLength}}{{#stringcompare targetDataItem.dataType "numeric"}}{numericPrecision}},{{/stringcompare}}{{numericScale}}){{/stringcompare}}{{/stringcompare}}{{/stringcompare}}{{/stringcompare}}{{/stringcompare}},
+         {{/each}}
+   [SNAPSHOT_DATE] [datetime2](7) NOT NULL,
+   [{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL,
+   [{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL,
+   [{{../metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
+   [{{../metadataConfiguration.eventDateTimeAttribute}}] [datetime2](7) NOT NULL,
+   [{{../metadataConfiguration.recordChecksumAttribute}}] [binary](16) NOT NULL,
+){{/if}}{{/each}}
