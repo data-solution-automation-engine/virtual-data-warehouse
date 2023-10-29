@@ -221,6 +221,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationOutput.Dock = DockStyle.Fill;
             localRichTextBoxGenerationOutput.Text = $"No {_inputNiceName} logic has been generated at the moment.";
             localRichTextBoxGenerationOutput.Location = new Point(3, 6);
+            localRichTextBoxGenerationOutput.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localRichTextBoxGenerationOutput.Size = new Size(882, 535);
             localRichTextBoxGenerationOutput.BorderStyle = BorderStyle.None;
             
@@ -321,6 +322,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationTemplate.Location = new Point(3, 82);
             localRichTextBoxGenerationTemplate.Size = new Size(195, 30);
             localRichTextBoxGenerationTemplate.BorderStyle = BorderStyle.None;
+            localRichTextBoxGenerationTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localRichTextBoxGenerationTemplate.AcceptsTab = true;
             localRichTextBoxGenerationTemplate.TextChanged += CommitTemplateToMemory;
             #endregion

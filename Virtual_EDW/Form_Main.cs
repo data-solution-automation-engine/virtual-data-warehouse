@@ -26,12 +26,14 @@ namespace Virtual_Data_Warehouse
 
         public FormMain()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
+
             localCustomTabPageList = new List<CustomTabPage>();
 
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.12";
+            const string versionNumberForApplication = "v1.6.13";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
