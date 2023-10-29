@@ -4,7 +4,6 @@ using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using HandlebarsDotNet;
@@ -640,7 +639,10 @@ namespace Virtual_Data_Warehouse
                             {
                                 try
                                 {
-                                    VdwUtility.CreateVdwSchema(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) });
+                                    if (localConnection.TechnologyConnectionType == TechnologyConnectionType.SqlServer)
+                                    {
+                                        VdwUtility.CreateVdwSchema(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) });
+                                    }
                                 }
                                 catch
                                 {
@@ -651,7 +653,7 @@ namespace Virtual_Data_Warehouse
 
                                 try
                                 {
-                                    VdwUtility.ExecuteInDatabase(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) }, result);
+                                    VdwUtility.ExecuteInDatabaseSqlServer(localConnection, result);
                                 }
                                 catch
                                 {

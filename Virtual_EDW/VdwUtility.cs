@@ -8,6 +8,11 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.Win32;
 using TEAM_Library;
+using System.Data.SqlClient;
+using Microsoft.SqlServer.Management.Sdk.Sfc;
+using System.Data;
+using Snowflake.Data.Client;
+using System.Linq;
 
 
 namespace Virtual_Data_Warehouse
@@ -118,14 +123,14 @@ namespace Virtual_Data_Warehouse
         /// Load the connection information from file, based on the selected environment.
         /// </summary>
         /// <param name="environmentName"></param>
-        public static void LoadTeamConnectionsFileForVdw(string environmentName)
+        public static void LoadTeamConnectionsFileForVdw(string environmentName, EventLog eventLog)
         {
             if (environmentName != null)
             {
                 // Connection information (TEAM_connections).
                 var connectionFileName = FormBase.VdwConfigurationSettings.TeamConnectionsPath + FormBase.GlobalParameters.JsonConnectionFileName + '_' + environmentName + FormBase.GlobalParameters.JsonExtension;
 
-                FormBase.TeamConfigurationSettings.ConnectionDictionary = TeamConnectionFile.LoadConnectionFile(connectionFileName);
+                FormBase.TeamConfigurationSettings.ConnectionDictionary = TeamConnectionFile.LoadConnectionFile(connectionFileName, eventLog);
 
                 if (FormBase.TeamConfigurationSettings.ConnectionDictionary is null)
                 {
@@ -192,14 +197,14 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         /// <param name="connection"></param>
         /// <returns></returns>
-        public static void CreateVdwSchema(SqlConnection connection)
+        public static void CreateVdwSchema(Microsoft.Data.SqlClient.SqlConnection connection)
         {
             try
             {
                 connection.Open();
 
                 // Execute the check to see if the schema exists or not
-                var checkCommand = new SqlCommand($"SELECT CASE WHEN EXISTS (SELECT * FROM sys.schemas WHERE name = '{FormBase.VdwConfigurationSettings.VdwSchema}') THEN 1 ELSE 0 END", connection);
+                var checkCommand = new Microsoft.Data.SqlClient.SqlCommand($"SELECT CASE WHEN EXISTS (SELECT * FROM sys.schemas WHERE name = '{FormBase.VdwConfigurationSettings.VdwSchema}') THEN 1 ELSE 0 END", connection);
                 var exists = (int)checkCommand.ExecuteScalar() == 1;
 
                 if (exists == false)
@@ -208,7 +213,7 @@ namespace Virtual_Data_Warehouse
 
                     createStatement.AppendLine("IF SCHEMA_ID('" + FormBase.VdwConfigurationSettings.VdwSchema + "') IS NULL EXEC('CREATE SCHEMA " + FormBase.VdwConfigurationSettings.VdwSchema + "')");
 
-                    var commandVersion = new SqlCommand(createStatement.ToString(), connection);
+                    var commandVersion = new Microsoft.Data.SqlClient.SqlCommand(createStatement.ToString(), connection);
 
                     commandVersion.ExecuteNonQuery();
 
@@ -227,28 +232,64 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        public static void ExecuteInDatabase(SqlConnection connection, string query)
+        public static void ExecuteInDatabaseSqlServer(TeamConnection teamConnection, string query)
         {
-            try
+            if (teamConnection.TechnologyConnectionType == TechnologyConnectionType.SqlServer)
             {
-                connection.Open();
+                var connectionString = teamConnection.CreateSqlServerConnectionString(false);
 
-                var server = new Server(new ServerConnection(connection));
-                server.ConnectionContext.ExecuteNonQuery(query);
+                Microsoft.Data.SqlClient.SqlConnection sqlConnection = new Microsoft.Data.SqlClient.SqlConnection(connectionString);
 
-                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully."));
+                try
+                {
+                    sqlConnection.Open();
+
+                    var server = new Server(new ServerConnection(sqlConnection));
+                    server.ConnectionContext.ExecuteNonQuery(query);
+
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Information, $"The SQL statement was executed successfully."));
+                }
+
+                catch (Exception exception)
+                {
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue executing the code against the database. The reported error is {exception.Message}, {exception.InnerException.Message}"));
+                }
+                finally
+                {
+                    sqlConnection.Close();
+                    sqlConnection.Dispose();
+                }
             }
-            catch (Exception exception)
+            else if (teamConnection.TechnologyConnectionType == TechnologyConnectionType.Snowflake)
             {
-                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue executing the code against the database. The reported error is {exception.Message}, {exception.InnerException.Message}"));
+                IDbConnection conn = new SnowflakeDbConnection();
+                conn.ConnectionString = teamConnection.CreateSnowflakeSSOConnectionString(false);
+
+                try
+                {
+                    conn.Open();
+                    IDbCommand cmd = conn.CreateCommand();
+                    cmd.CommandText = $"USE WAREHOUSE {teamConnection.DatabaseServer.Warehouse}";
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception exception)
+                {
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"There was an issue executing the code against the database. The reported error is {exception.Message}."));
+                }
+                finally
+                {
+                    conn.Close();
+                    conn.Dispose();
+                }
             }
-            finally
+            else
             {
-                connection.Close();
-                connection.Dispose();
+                var errorMessage = $"VDW was not able to assert the connection type.";
+                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
             }
         }
-
         public static void SaveOutputToDisk(string targetFile, string textContent)
         {
             try
