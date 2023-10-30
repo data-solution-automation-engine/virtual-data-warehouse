@@ -34,9 +34,10 @@ SELECT
 FROM 
 ( {{/if}}{{/each}}
     {{#each dataObjectMappings }}
-    SELECT {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
+    {{#if enabled}}{{#stringcompare enabled "true"}}
+    SELECT {{#each ../businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
         CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
-        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
+        MIN({{../../metadataConfiguration.loadDateTimeAttribute}}) AS {{../../metadataConfiguration.loadDateTimeAttribute}}
     FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
     WHERE {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
         {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}{{#if filterCriterion}}{{#stringcompare filterCriterion ""}}{{else}}AND {{filterCriterion}}{{/stringcompare}}{{/if}}
@@ -44,6 +45,7 @@ FROM
 {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{!-- Exclude hard-coded values from the group by --}}{{#if extensions}}{{#each extensions}}{{#stringcompare key "isHardCodedValue"}}{{/stringcompare}}{{/each}}{{else}}        {{name}}{{#unless @last}},{{/unless}}{{/if}}{{/each}}{{/each}}{{/each}}
     --
     {{#unless @last}}UNION{{/unless}}
+   {{/stringcompare}}{{/if}}
     {{/each}}
 ) HUB_selection {{#each dataObjectMappings}}{{#if @first}}
 GROUP BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
