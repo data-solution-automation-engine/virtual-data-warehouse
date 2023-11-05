@@ -381,7 +381,7 @@
     "TemplateConnectionKey": "PsaConnectionInternalId",
     "TemplateOutputFileConvention": "{targetDataObject.name}.sql",
     "TemplateFilePath": "templateSatelliteView.handlebars",
-    "TemplateNotes": ""
+    "TemplateNotes": "This template requires a Persistent Staging Area (PSA) or equivalent raw transactional data store. It creates a view representing the data as a Data Vault Satellite."
   },
   {
     "TemplateName": "200 Data Vault Satellite View With Delivery Key",
