@@ -1,5 +1,5 @@
 {
-  "metadataConfiguration": {
+  "conventions": {
     "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
     "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
     "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",

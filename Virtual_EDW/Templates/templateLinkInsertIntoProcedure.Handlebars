@@ -7,7 +7,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'INT.SP_{{tar
 DROP PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}];
 GO
 
-CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}] @{{../metadataConfiguration.etlProcessAttribute}} int
+CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}] @{{../conventions.etlProcessAttribute}} int
 AS
 
 --
@@ -18,9 +18,9 @@ INSERT INTO [INT].[{{targetDataObject.name}}]
 (  {{#each businessKeyDefinitions}} {{#if @first}} [{{surrogateKey}}], {{/if}}{{/each}}
    {{#each businessKeyDefinitions}}{{#unless @first}} 
    [{{surrogateKey}}],{{/unless}} {{/each}}
-   [{{../metadataConfiguration.loadDateTimeAttribute}}],
-   {{../metadataConfiguration.recordSourceAttribute}},
-   {{../metadataConfiguration.etlProcessAttribute}}
+   [{{../conventions.loadDateTimeAttribute}}],
+   {{../conventions.recordSourceAttribute}},
+   {{../conventions.etlProcessAttribute}}
 )
 
 SELECT
@@ -34,16 +34,16 @@ SELECT
     {{/unless}}{{#if businessKeyClassification}}{{#each businessKeyComponentMappings}}[{{targetDataItem.name}}{{@../index }}]{{/each}} AS [{{surrogateKey}}],
     {{/if}} {{/unless}} {{/each}}{{#each dataItemMappings}}
     [{{targetDataItem.name}}],{{/each}}
-     [{{../metadataConfiguration.loadDateTimeAttribute}}],
-     {{../metadataConfiguration.recordSourceAttribute}},
-  @{{../metadataConfiguration.etlProcessAttribute}}
+     [{{../conventions.loadDateTimeAttribute}}],
+     {{../conventions.recordSourceAttribute}},
+  @{{../conventions.etlProcessAttribute}}
 FROM 
 (
     SELECT {{#each businessKeyDefinitions}} {{#unless @first}} {{#each businessKeyComponentMappings}}
            CAST({{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}[{{/stringcompare}}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}]{{/stringcompare}} AS NVARCHAR(100)) AS [{{targetDataItem.name}}{{@../index }}],{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}
                     [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}
-                    min([{{../metadataConfiguration.loadDateTimeAttribute}}]) AS [{{../metadataConfiguration.loadDateTimeAttribute}}],
-                    min({{../metadataConfiguration.recordSourceAttribute}}) AS  {{../metadataConfiguration.recordSourceAttribute}}
+                    min([{{../conventions.loadDateTimeAttribute}}]) AS [{{../conventions.loadDateTimeAttribute}}],
+                    min({{../conventions.recordSourceAttribute}}) AS  {{../conventions.recordSourceAttribute}}
           FROM STG.[{{sourceDataObjects.0.name}}]
           GROUP BY   {{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}{{#unless @first}},{{/unless}} [{{sourceDataItems.0.name}}]{{/stringcompare}}{{/each}}{{/if}}{{/each}}
  ) LINK_selection

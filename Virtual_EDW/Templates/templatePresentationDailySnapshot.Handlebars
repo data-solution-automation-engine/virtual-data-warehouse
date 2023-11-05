@@ -53,11 +53,11 @@ BEGIN
      INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
       (        {{#each businessKeys}}[{{surrogateKey}}]{{/each}}
         [SNAPSHOT_DATE]
-       ,[{{../metadataConfiguration.eventDateTimeAttribute}}]
-       ,[{{../metadataConfiguration.changeDataCaptureAttribute}}]
-       ,[{{../metadataConfiguration.etlProcessAttribute}}]
-       ,[{{../metadataConfiguration.sourceRowIdAttribute}}]
-       ,[{{../metadataConfiguration.recordChecksumAttribute}}]
+       ,[{{../conventions.eventDateTimeAttribute}}]
+       ,[{{../conventions.changeDataCaptureAttribute}}]
+       ,[{{../conventions.etlProcessAttribute}}]
+       ,[{{../conventions.sourceRowIdAttribute}}]
+       ,[{{../conventions.recordChecksumAttribute}}]
 {{#each dataItemMappings}}
        ,{{stringwrap targetDataItem.name "[" "]"}}
 {{/each}} 
@@ -65,13 +65,13 @@ BEGIN
       SELECT 
          @CurrentSnapshotDate  
         ,GETUTCDATE()                 
-        ,[{{../metadataConfiguration.changeDataCaptureAttribute}}]
-        ,0 AS [{{../metadataConfiguration.etlProcessAttribute}}]
+        ,[{{../conventions.changeDataCaptureAttribute}}]
+        ,0 AS [{{../conventions.etlProcessAttribute}}]
         ,0
         ,HASHBYTES('MD5',
-         ISNULL(RTRIM(CONVERT(NVARCHAR(MAX),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMappings}}
+         ISNULL(RTRIM(CONVERT(NVARCHAR(MAX),{{../conventions.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMappings}}
          ISNULL(RTRIM(CONVERT(NVARCHAR(MAX),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
-         ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
+         ) AS [{{../conventions.recordChecksumAttribute}}]
         {{#each dataItemMappings}}
          ,{{stringwrap sourceDataItems.0.name "[" "]"}}{{sourceDataItems.0.dataQueryCode}}
 {{/each}} 

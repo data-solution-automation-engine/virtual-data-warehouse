@@ -7,9 +7,9 @@ SELECT
    {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}],
    {{/each}}
-  SYSDATETIME() AS [{{../metadataConfiguration.eventDateTimeAttribute}}]
-  ,'I' AS [{{../metadataConfiguration.changeDataCaptureAttribute}}]
-  ,0 AS [{{../metadataConfiguration.etlProcessAttribute}}]
-  ,'0x00' AS [{{../metadataConfiguration.recordChecksumAttribute}}]
+  SYSDATETIME() AS [{{../conventions.eventDateTimeAttribute}}]
+  ,'I' AS [{{../conventions.changeDataCaptureAttribute}}]
+  ,0 AS [{{../conventions.etlProcessAttribute}}]
+  ,'0x00' AS [{{../conventions.recordChecksumAttribute}}]
 FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
 {{/each}}

@@ -8,10 +8,10 @@
 SELECT
     COUNT(*) AS RI_ISSUES, 
     '{{targetDataObject.name}}'
-FROM [{{../metadataConfiguration.vdwSchemaName}}].{{targetDataObject.name}} sat
+FROM [{{../conventions.vdwSchemaName}}].{{targetDataObject.name}} sat
 WHERE NOT EXISTS
 (
-  SELECT 1 FROM [{{../metadataConfiguration.vdwSchemaName}}].{{relatedDataObjects.0.name}} hub
+  SELECT 1 FROM [{{../conventions.vdwSchemaName}}].{{relatedDataObjects.0.name}} hub
   WHERE 1=1
      {{#each businessKeyDefinitions}}AND sat.{{surrogateKey}} = hub.{{surrogateKey}}{{/each}}
 )

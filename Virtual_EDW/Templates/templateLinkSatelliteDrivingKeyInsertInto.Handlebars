@@ -11,26 +11,26 @@ INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{loo
    {{#each dataItemMappings}}
    [{{targetDataItem.name}}],
    {{/each}}
-   [{{../metadataConfiguration.loadDateTimeAttribute}}],
-   [{{../metadataConfiguration.sourceRowIdAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../metadataConfiguration.etlProcessAttribute}}],
-   [{{../metadataConfiguration.recordChecksumAttribute}}]
+   [{{../conventions.loadDateTimeAttribute}}],
+   [{{../conventions.sourceRowIdAttribute}}],
+   [{{../conventions.changeDataCaptureAttribute}}],
+   [{{../conventions.etlProcessAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}]
 )
 SELECT {{#each businessKeyDefinitions}}{{#if @first}}
    sat_view.[{{surrogateKey}}],{{/if}}{{/each}}
    {{#each dataItemMappings}}
    sat_view.[{{targetDataItem.name}}],
    {{/each}}
-   sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-   sat_view.[{{../metadataConfiguration.sourceRowIdAttribute}}],
-   sat_view.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],   
-   sat_view.[{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] sat_view
+   sat_view.[{{../conventions.loadDateTimeAttribute}}],
+   sat_view.[{{../conventions.sourceRowIdAttribute}}],
+   sat_view.[{{../conventions.changeDataCaptureAttribute}}],
+   -1 AS [{{../conventions.etlProcessAttribute}}],   
+   sat_view.[{{../conventions.recordChecksumAttribute}}]
+FROM [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}] sat_view
 LEFT OUTER JOIN [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] sat_table
     ON sat_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = sat_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
-    AND sat_view.[{{../metadataConfiguration.loadDateTimeAttribute}}] = sat_table.[{{../metadataConfiguration.loadDateTimeAttribute}}] 
+    AND sat_view.[{{../conventions.loadDateTimeAttribute}}] = sat_table.[{{../conventions.loadDateTimeAttribute}}] 
     {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}}AND sat_view.{{../targetDataItem.name}} = sat_table.{{../targetDataItem.name}}{{/if}}{{/each}}{{/each}}
 WHERE sat_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL
 {{/if}}

@@ -9,11 +9,11 @@
 
 INSERT INTO [{{../targetDataObject.dataObjectConnection.extensions.0.value}}].[{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[{{../targetDataObject.name}}]
 (
-   [{{../../metadataConfiguration.etlProcessAttribute}}], 
-   [{{../../metadataConfiguration.eventDateTimeAttribute}}],
-   --[{{../../metadataConfiguration.recordSourceAttribute}}],
-   [{{../../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../../metadataConfiguration.recordChecksumAttribute}}],
+   [{{../../conventions.etlProcessAttribute}}], 
+   [{{../../conventions.eventDateTimeAttribute}}],
+   --[{{../../conventions.recordSourceAttribute}}],
+   [{{../../conventions.changeDataCaptureAttribute}}],
+   [{{../../conventions.recordChecksumAttribute}}],
    {{#each ../dataItemMappings}}
    [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}} -- Data Type is {{sourceDataItems.0.dataType}}
    {{/each}}

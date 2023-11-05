@@ -45,7 +45,7 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}]	AS HUB_SK, [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}]	AS HUB_SK, [{{../conventions.etlProcessAttribute}}]
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].['+@HUB+']
          WHERE  [{{businessKeyDefinitions.0.surrogateKey}}]
             NOT IN 

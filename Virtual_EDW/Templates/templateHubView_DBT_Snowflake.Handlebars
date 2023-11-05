@@ -13,37 +13,37 @@ SELECT
       COALESCE(RTRIM(CAST({{targetDataItem.name}} AS NVARCHAR(100))), 'N/A') || '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
-    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
-    MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
-    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKeyDefinitions}} {{!-- The Hub business key --}}
+    -1 AS {{../conventions.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    MIN({{../conventions.loadDateTimeAttribute}}) AS {{../conventions.loadDateTimeAttribute}},
+    {{../conventions.recordSourceAttribute}},{{#each businessKeyDefinitions}} {{!-- The Hub business key --}}
     {{#each businessKeyComponentMappings}}
     {{targetDataItem.name}},{{/each}}{{/each}}
     ROW_NUMBER() OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
        {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}
     {{/each}}
     ORDER BY 
-       MIN({{../metadataConfiguration.loadDateTimeAttribute}})
+       MIN({{../conventions.loadDateTimeAttribute}})
     ) AS ROW_NR
 FROM 
 ( {{/if}}{{/each}}
     {{#each dataObjectMappings }}
     SELECT {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
         CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
-        {{../metadataConfiguration.recordSourceAttribute}},
-        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
+        {{../conventions.recordSourceAttribute}},
+        MIN({{../conventions.loadDateTimeAttribute}}) AS {{../conventions.loadDateTimeAttribute}}
     FROM VDW.{{sourceDataObjects.0.name}}
     WHERE {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
         {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY         
         {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}},{{/stringcompare}}{{/each}}{{/each}}{{/each}}        
-        {{../metadataConfiguration.recordSourceAttribute}}
+        {{../conventions.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}
 ) HUB_selection {{#each dataObjectMappings}}{{#if @first}}
 GROUP BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
     {{targetDataItem.name}},{{/each}}{{/each}}
-    {{../metadataConfiguration.recordSourceAttribute}} {{/if}}{{/each}}
+    {{../conventions.recordSourceAttribute}} {{/if}}{{/each}}
 ) hub
 WHERE ROW_NR = 1
 UNION

@@ -79,16 +79,16 @@ BEGIN
          [{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}
          [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
          [MODULE_INSTANCE_ID],
-         [{{../metadataConfiguration.loadDateTimeAttribute}}],
-         [{{../metadataConfiguration.recordSourceAttribute}}]
+         [{{../conventions.loadDateTimeAttribute}}],
+         [{{../conventions.recordSourceAttribute}}]
        )
        SELECT
          hub_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}
          hub_view.[{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
          @ModuleInstanceId AS [MODULE_INSTANCE_ID],
-         hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-         hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-       FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
+         hub_view.[{{../conventions.loadDateTimeAttribute}}],
+         hub_view.[{{../conventions.recordSourceAttribute}}]
+       FROM [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
        LEFT OUTER JOIN [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] hub_table
           ON hub_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
        WHERE hub_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL  

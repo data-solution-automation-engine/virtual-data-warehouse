@@ -1,5 +1,5 @@
 {{#each dataObjectMappings}}
-CREATE OR ALTER VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] 
+CREATE OR ALTER VIEW [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}] 
 AS
 --
 -- Link Satellite View definition for {{../generationSpecificMetadata.selectedDataObject.name}}
@@ -13,75 +13,75 @@ SELECT
     ) AS {{surrogateKey}},{{/if}}{{/each}}
     {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}--[{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}
     {{/each}}
-    [{{../metadataConfiguration.loadDateTimeAttribute}}],
-    [{{../metadataConfiguration.sourceRowIdAttribute}}],
+    [{{../conventions.loadDateTimeAttribute}}],
+    [{{../conventions.sourceRowIdAttribute}}],
     --COALESCE (
-    --  LEAD (DATEADD(mcs,[{{../metadataConfiguration.sourceRowIdAttribute}}], {{../metadataConfiguration.loadDateTimeAttribute}}) ) OVER
+    --  LEAD (DATEADD(mcs,[{{../conventions.sourceRowIdAttribute}}], {{../conventions.loadDateTimeAttribute}}) ) OVER
     --  ( PARTITION BY 
     --       {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{../../targetDataItem.name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
-    --   ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}}),
+    --   ORDER BY {{../conventions.loadDateTimeAttribute}}),
     --   CAST( '9999-12-31' AS DATETIME)
-    --) AS [{{../metadataConfiguration.expiryDateTimeAttribute}}],
+    --) AS [{{../conventions.expiryDateTimeAttribute}}],
     --CASE
-    --  WHEN ( LEAD ({{../metadataConfiguration.loadDateTimeAttribute}}) OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{../../targetDataItem.name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
-    --     ORDER BY {{../metadataConfiguration.loadDateTimeAttribute}})) IS NULL
+    --  WHEN ( LEAD ({{../conventions.loadDateTimeAttribute}}) OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{../../targetDataItem.name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
+    --     ORDER BY {{../conventions.loadDateTimeAttribute}})) IS NULL
     --   THEN 'Y'
     --   ELSE 'N'
     --END AS CURRENT_RECORD_INDICATOR,
-    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the Control Framework attributes --}}
-    {{../metadataConfiguration.changeDataCaptureAttribute}},
+    -1 AS {{../conventions.etlProcessAttribute}}, {{!-- List out the Control Framework attributes --}}
+    {{../conventions.changeDataCaptureAttribute}},
     --CASE
-    --  WHEN {{../metadataConfiguration.changeDataCaptureAttribute}} = 'D' THEN 'Y'
+    --  WHEN {{../conventions.changeDataCaptureAttribute}} = 'D' THEN 'Y'
     --  ELSE 'N'
     --END AS [DELETED_RECORD_INDICATOR],
     HASHBYTES('MD5',
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +
+      ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{../conventions.changeDataCaptureAttribute}})), 'N/A') + '#~!' +
       {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}ISNULL(RTRIM(CONVERT(NVARCHAR(100),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
-     {{/each}}{{/each}}) AS [{{../metadataConfiguration.recordChecksumAttribute}}],
+     {{/each}}{{/each}}) AS [{{../conventions.recordChecksumAttribute}}],
     {{#each dataItemMappings}}
     [{{targetDataItem.name}}]{{# unless @last}},{{/unless}}
     {{/each}}     
 FROM
 (
   SELECT 
-    [{{../metadataConfiguration.loadDateTimeAttribute}}],
-    [{{../metadataConfiguration.sourceRowIdAttribute}}],
-    [{{../metadataConfiguration.eventDateTimeAttribute}}],
-    [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
+    [{{../conventions.loadDateTimeAttribute}}],
+    [{{../conventions.sourceRowIdAttribute}}],
+    [{{../conventions.eventDateTimeAttribute}}],
+    [{{../conventions.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
     [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}{{/each}}
     {{#each dataItemMappings}}
     [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
     {{/each}}
     {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringdiff classifications.0.classification "DrivingKey"}}LAG ([{{../name}}], 1, '0')  OVER (
         PARTITION BY {{#each ../../../../businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
-        ORDER BY [{{../../../../../metadataConfiguration.loadDateTimeAttribute}}]
+        ORDER BY [{{../../../../../conventions.loadDateTimeAttribute}}]
    ) AS PREVIOUS_FOLLOWER_KEY{{@index}}    {{/stringdiff}}{{/each}}{{/each}}{{/each}}
   FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
   WHERE NOT
-  ([{{../metadataConfiguration.sourceRowIdAttribute}}]>1 AND [{{../metadataConfiguration.changeDataCaptureAttribute}}] ='D')
+  ([{{../conventions.sourceRowIdAttribute}}]>1 AND [{{../conventions.changeDataCaptureAttribute}}] ='D')
  {{#if filterCriterion}}{{#stringcompare filterCriterion ""}}{{else}}AND {{filterCriterion}}{{/stringcompare}}{{/if}}
 
   /* -- Dummy record only for example purposes.
   UNION
   SELECT 
-    [{{../metadataConfiguration.loadDateTimeAttribute}}],
-    [{{../metadataConfiguration.sourceRowIdAttribute}}],
-    [{{../metadataConfiguration.eventDateTimeAttribute}}],
-    [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
+    [{{../conventions.loadDateTimeAttribute}}],
+    [{{../conventions.sourceRowIdAttribute}}],
+    [{{../conventions.eventDateTimeAttribute}}],
+    [{{../conventions.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
     [{{targetDataItem.name}}],{{/each}}{{/each}}
     {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringdiff classifications.0.classification "DrivingKey"}}'{{@index}}'  AS PREVIOUS_FOLLOWER_KEY{{@index}}{{/stringdiff}}{{/each}}{{/each}}{{/each}}
   FROM 
   (
      SELECT
-          '1900-01-01' AS [{{../metadataConfiguration.loadDateTimeAttribute}}],
-          1 AS [{{../metadataConfiguration.sourceRowIdAttribute}}],
-          '1900-01-01' AS [{{../metadataConfiguration.eventDateTimeAttribute}}],
-          --'Data Warehouse' AS [{{../metadataConfiguration.recordSourceAttribute}}],
-          'C' AS  [{{../metadataConfiguration.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}
+          '1900-01-01' AS [{{../conventions.loadDateTimeAttribute}}],
+          1 AS [{{../conventions.sourceRowIdAttribute}}],
+          '1900-01-01' AS [{{../conventions.eventDateTimeAttribute}}],
+          --'Data Warehouse' AS [{{../conventions.recordSourceAttribute}}],
+          'C' AS  [{{../conventions.changeDataCaptureAttribute}}],{{#each businessKeyDefinitions}}
           {{#each businessKeyComponentMappings}}[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
           {{/each}}{{/each}}DENSE_RANK() OVER (
                 PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}}
-                ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}], [{{../metadataConfiguration.sourceRowIdAttribute}}], {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}} ASC
+                ORDER BY [{{../conventions.loadDateTimeAttribute}}], [{{../conventions.sourceRowIdAttribute}}], {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}{{name}}{{#unless @last}},{{/unless}}{{/stringcompare}}{{/each}}{{/each}}{{/each}} ASC
            ) AS ROWVERSION
         FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
    ) dummysub
@@ -92,6 +92,6 @@ WHERE
     {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringdiff classifications.0.classification "DrivingKey"}}{{../../targetDataItem.name}} != PREVIOUS_FOLLOWER_KEY{{@index}}{{/stringdiff}}{{/each}}{{/each}}{{/each}}
 -- ORDER BY 
 {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare classifications.0.classification "DrivingKey"}}--   [{{../../targetDataItem.name}}],{{/stringcompare}}{{/each}}{{/each}}{{/each}}
---   [{{../metadataConfiguration.loadDateTimeAttribute}}]
+--   [{{../conventions.loadDateTimeAttribute}}]
 
 {{/each}}

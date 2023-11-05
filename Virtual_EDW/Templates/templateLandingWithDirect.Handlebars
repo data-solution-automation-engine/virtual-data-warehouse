@@ -7,26 +7,26 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'SP_{{targetD
 DROP PROCEDURE [SP_{{targetDataObject.name}}];
 GO
 
-CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
+CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../conventions.etlProcessAttribute}} INT
 AS
 
 TRUNCATE TABLE [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 
 INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
-   [{{../metadataConfiguration.etlProcessAttribute}}], 
-   [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   [{{../conventions.etlProcessAttribute}}], 
+   [{{../conventions.eventDateTimeAttribute}}],
+   [{{../conventions.changeDataCaptureAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}],
    {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
 )
 SELECT
-   @AUDIT_TRAIL_ID AS [{{../metadataConfiguration.etlProcessAttribute}}]
-  ,SYSDATETIME() AS [{{../metadataConfiguration.eventDateTimeAttribute}}]
-  ,'I' AS [{{../metadataConfiguration.changeDataCaptureAttribute}}]
-  ,0x00 AS [{{../metadataConfiguration.recordChecksumAttribute}}]
+   @AUDIT_TRAIL_ID AS [{{../conventions.etlProcessAttribute}}]
+  ,SYSDATETIME() AS [{{../conventions.eventDateTimeAttribute}}]
+  ,'I' AS [{{../conventions.changeDataCaptureAttribute}}]
+  ,0x00 AS [{{../conventions.recordChecksumAttribute}}]
    {{#each dataItemMappings}}
   ,[{{sourceDataItems.0.name}}]
    {{/each}}

@@ -41,7 +41,7 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}]	AS LSAT_SK, [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}]	AS LSAT_SK, [{{../conventions.etlProcessAttribute}}]
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
          WHERE  [{{businessKeyDefinitions.0.surrogateKey}}]
             NOT IN 

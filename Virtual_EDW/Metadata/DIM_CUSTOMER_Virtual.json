@@ -1,5 +1,5 @@
 {
-  "metadataConfiguration": {
+  "conventions": {
     "changeDataCaptureAttribute": "CDC_OPERATION",
     "recordSourceAttribute": "RECORD_SOURCE",
     "loadDateTimeAttribute": "LOAD_DATETIME",

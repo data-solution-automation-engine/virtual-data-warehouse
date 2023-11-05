@@ -48,7 +48,7 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{surrogateKey}}], [{{../conventions.etlProcessAttribute}}]
 FROM   [{{../targetDataObject.dataObjectConnection.extensions.1.value}}].[{{../targetDataObject.name}}] [{{../targetDataObject.dataObjectConnection.extensions.1.value}}]
          WHERE  {{surrogateKey}}
             NOT IN 

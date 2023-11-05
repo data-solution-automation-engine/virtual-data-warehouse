@@ -13,7 +13,7 @@ namespace Virtual_Data_Warehouse
         //public List<DataObjectMapping> dataObjectMapping { get; set; }
 
         // TEAM and VDW specific details
-        public MetadataConfiguration metadataConfiguration { get; set; }
+        public MetadataConfiguration conventions { get; set; }
         public GenerationSpecificMetadata generationSpecificMetadata { get; set; }
         public string metadataFileName { get; set; }
     }

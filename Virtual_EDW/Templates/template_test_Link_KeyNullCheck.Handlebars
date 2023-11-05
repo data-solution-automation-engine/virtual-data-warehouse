@@ -33,7 +33,7 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}], [{{businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}], [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}], [{{businessKeyDefinitions.0.businessKeyComponentMappings.0.targetDataItem.name}}], [{{../conventions.etlProcessAttribute}}]
 FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
 WHERE  CONVERT(CHAR,HASHBYTES(''SHA1'',UPPER( TRIM(ISNULL(NULL,''NA''))  )),2) = [{{businessKeyDefinitions.0.surrogateKey}}]'
 

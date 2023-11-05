@@ -7,7 +7,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'INT.SP_{{tar
 DROP PROCEDURE [INT].[SP_{{targetDataObject.name}}];
 GO
 
-CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} int
+CREATE PROCEDURE [INT].[SP_{{targetDataObject.name}}] @{{../conventions.etlProcessAttribute}} int
 AS
 
 --
@@ -22,13 +22,13 @@ INSERT INTO [INT].[{{targetDataObject.name}}]
    {{/each}}
   OMD_EFFECTIVE_DATETIME ,
   OMD_EXPIRY_DATETIME,
-  {{../metadataConfiguration.eventDateTimeAttribute}},
+  {{../conventions.eventDateTimeAttribute}},
   OMD_CURRENT_RECORD_INDICATOR,
   OMD_DELETED_RECORD_INDICATOR,
-  {{../metadataConfiguration.etlProcessAttribute}} ,
+  {{../conventions.etlProcessAttribute}} ,
   OMD_UPDATE_MODULE_INSTANCE_ID,
-  {{../metadataConfiguration.recordSourceAttribute}},
-  {{../metadataConfiguration.sourceRowIdAttribute}},
+  {{../conventions.recordSourceAttribute}},
+  {{../conventions.sourceRowIdAttribute}},
   OMD_HASH_DIFF
 )
 SELECT  
@@ -37,15 +37,15 @@ SELECT
    {{#each dataItemMappings}}
    SUB.[{{targetDataItem.name}}],
    {{/each}}
-  SUB.[{{../metadataConfiguration.loadDateTimeAttribute}}],
+  SUB.[{{../conventions.loadDateTimeAttribute}}],
   SUB.OMD_EXPIRY_DATETIME,
-  SUB.{{../metadataConfiguration.eventDateTimeAttribute}},
+  SUB.{{../conventions.eventDateTimeAttribute}},
   SUB.OMD_CURRENT_RECORD_INDICATOR,
   SUB.OMD_DELETED_RECORD_INDICATOR,
-  SUB.{{../metadataConfiguration.etlProcessAttribute}} ,
+  SUB.{{../conventions.etlProcessAttribute}} ,
   SUB.OMD_UPDATE_MODULE_INSTANCE_ID ,
-  SUB.{{../metadataConfiguration.recordSourceAttribute}},
-  SUB.{{../metadataConfiguration.sourceRowIdAttribute}},
+  SUB.{{../conventions.recordSourceAttribute}},
+  SUB.{{../conventions.sourceRowIdAttribute}},
   SUB.OMD_HASH_DIFF
 FROM
 (
@@ -55,21 +55,21 @@ SELECT
    {{#each dataItemMappings}}
    [{{../sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{targetDataItem.name}}],
    {{/each}}
-  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../metadataConfiguration.loadDateTimeAttribute}}],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../conventions.loadDateTimeAttribute}}],
   '9999-12-31 00:00:00.0000000' AS [OMD_EXPIRY_DATETIME],
-  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../metadataConfiguration.eventDateTimeAttribute}}],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../conventions.eventDateTimeAttribute}}],
   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_CURRENT_RECORD_INDICATOR],
   [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_DELETED_RECORD_INDICATOR],
- @{{../metadataConfiguration.etlProcessAttribute}} AS [{{../metadataConfiguration.etlProcessAttribute}}],
+ @{{../conventions.etlProcessAttribute}} AS [{{../conventions.etlProcessAttribute}}],
   NULL AS [OMD_UPDATE_MODULE_INSTANCE_ID],
-  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../metadataConfiguration.recordSourceAttribute}}],
-  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../metadataConfiguration.sourceRowIdAttribute}}],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../conventions.recordSourceAttribute}}],
+  [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../conventions.sourceRowIdAttribute}}],
  CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each dataItemMappings}}
   RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),[{{../sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{targetDataItem.name}}]),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} +'|'+[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[OMD_DELETED_RECORD_INDICATOR])),2) AS [OMD_HASH_DIFF],
 CAST(ROW_NUMBER() OVER (
 				PARTITION BY CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL(CONVERT(NVARCHAR(MAX),{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}} [{{/stringcompare }}{{sourceDataItems.0.name}}{{stringcompare sourceDataItems.0.isHardCodedValue 'True'}}] {{/stringcompare }}),'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2)
                                                                {{#each dataItemMappings}}{{#each targetDataItem.classifications}}{{#if classification}}, [{{../sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}
-                                                                ORDER BY [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../metadataConfiguration.loadDateTimeAttribute}}], [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../metadataConfiguration.sourceRowIdAttribute}}]
+                                                                ORDER BY [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../conventions.loadDateTimeAttribute}}], [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../conventions.sourceRowIdAttribute}}]
                                                    ) AS INT ) AS [ROW_NUMBER]
 FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] {{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}
 ) AS SUB

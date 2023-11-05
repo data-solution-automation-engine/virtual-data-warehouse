@@ -9,9 +9,9 @@ CREATE TABLE [{{lookupExtension generationSpecificMetadata.selectedDataObject.ex
    {{#each generationSpecificMetadata.selectedDataObject.dataItems}}
    [{{name}}] {{dataType}}{{#stringcompare dataType int}}{{else}}({{characterLength}}{{numericScale}}){{/stringcompare}},
    {{/each}}
-   [{{metadataConfiguration.eventDateTimeAttribute}}] DATETIME2(7),
-   [{{metadataConfiguration.changeDataCaptureAttribute}}] CHAR(1),
-   [{{metadataConfiguration.etlProcessAttribute}}] INT,
-   [{{metadataConfiguration.sourceRowIdAttribute}}] INT,
-   [{{metadataConfiguration.recordChecksumAttribute}}] BINARY(16)
+   [{{conventions.eventDateTimeAttribute}}] DATETIME2(7),
+   [{{conventions.changeDataCaptureAttribute}}] CHAR(1),
+   [{{conventions.etlProcessAttribute}}] INT,
+   [{{conventions.sourceRowIdAttribute}}] INT,
+   [{{conventions.recordChecksumAttribute}}] BINARY(16)
 )

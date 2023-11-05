@@ -1,4 +1,4 @@
-CREATE OR ALTER VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] 
+CREATE OR ALTER VIEW [{{conventions.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] 
 AS
 --
 -- Link View definition for {{generationSpecificMetadata.selectedDataObject.name}}.
@@ -19,8 +19,8 @@ SELECT
     ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{@../index }})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
 {{#each dataItemMappings}} + 
 ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{{/each}}{{#each businessKeyDefinitions}} {{#if @first}} ) AS {{surrogateKey}},{{/if}}{{/each}}
-    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
-    MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
+    -1 AS {{../conventions.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    MIN({{../conventions.loadDateTimeAttribute}}) AS {{../conventions.loadDateTimeAttribute}},
     {{#each businessKeyDefinitions}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
     {{#unless businessKeyClassification}}HASHBYTES('MD5',
     {{#each businessKeyComponentMappings}}
@@ -33,7 +33,7 @@ ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{
       {{targetDataItem.name}}{{@../index }}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
      {{#each dataItemMappings}},[{{targetDataItem.name}}]{{/each}}
     ORDER BY 
-       MIN({{../metadataConfiguration.loadDateTimeAttribute}})
+       MIN({{../conventions.loadDateTimeAttribute}})
     ) AS ROW_NR
 FROM 
 ({{/if}}{{/each}}
@@ -41,7 +41,7 @@ FROM
     SELECT {{#each businessKeyDefinitions}} {{#unless @first}} {{#each businessKeyComponentMappings}}
         CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}}{{@../index }},{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}
         [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}
-        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
+        MIN({{../conventions.loadDateTimeAttribute}}) AS {{../conventions.loadDateTimeAttribute}}
     FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
     WHERE {{#each businessKeyDefinitions}} {{#unless @first}} {{#each businessKeyComponentMappings}}
        {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{#unless @last}} AND{{/unless}}{{/unless}} {{/each}}

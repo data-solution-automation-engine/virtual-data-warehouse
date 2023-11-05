@@ -1,6 +1,6 @@
 {{#each dataObjectMappings}}
 
-CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} INT
+CREATE OR ALTER PROCEDURE [SP_{{targetDataObject.name}}] @{{../conventions.etlProcessAttribute}} INT
 AS
 
 --
@@ -23,34 +23,34 @@ SELECT
    {{#each dataItemMappings}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
    {{/each}}
-   ) AS [{{../metadataConfiguration.recordChecksumAttribute}}],
+   ) AS [{{../conventions.recordChecksumAttribute}}],
   {{!-- Source row Id implemented for when not using identify column in the staging table --}}
-   ROW_NUMBER() OVER ( ORDER BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}[{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}}{{/each}}) AS {{../metadataConfiguration.sourceRowIdAttribute}}
+   ROW_NUMBER() OVER ( ORDER BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}[{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}}{{/each}}) AS {{../conventions.sourceRowIdAttribute}}
 FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
 )
 INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
-   [{{../metadataConfiguration.etlProcessAttribute}}], 
+   [{{../conventions.etlProcessAttribute}}], 
    {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}],
    {{/each}}
-   [{{../metadataConfiguration.recordChecksumAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}],
+   [{{../conventions.changeDataCaptureAttribute}}],
    {{!-- Source row Id implemented for when not using identify column in the staging table --}}
-   --[{{../metadataConfiguration.sourceRowIdAttribute}}],
-   [{{../metadataConfiguration.eventDateTimeAttribute}}]
+   --[{{../conventions.sourceRowIdAttribute}}],
+   [{{../conventions.eventDateTimeAttribute}}]
 )
 SELECT
-   @AUDIT_TRAIL_ID AS [{{../metadataConfiguration.etlProcessAttribute}}],
+   @AUDIT_TRAIL_ID AS [{{../conventions.etlProcessAttribute}}],
       {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}],
    {{/each}}
-   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}],
   {{!-- Because no CDC is applied, the change data indicator is always 'I'--}}
-   'I' {{../metadataConfiguration.changeDataCaptureAttribute}},
+   'I' {{../conventions.changeDataCaptureAttribute}},
   {{!-- Source row Id implemented for when not using identify column in the staging table --}}
-   --ROW_NUMBER() OVER ( ORDER BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}) AS {{../metadataConfiguration.sourceRowIdAttribute}},
-  SYSDATETIME() AS [{{../metadataConfiguration.eventDateTimeAttribute}}]
+   --ROW_NUMBER() OVER ( ORDER BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}) AS {{../conventions.sourceRowIdAttribute}},
+  SYSDATETIME() AS [{{../conventions.eventDateTimeAttribute}}]
 FROM STG_CTE 
 
 SELECT @@ROWCOUNT AS ROWS_INSERTED

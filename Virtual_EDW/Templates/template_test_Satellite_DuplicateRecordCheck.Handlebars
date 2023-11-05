@@ -41,9 +41,9 @@ FROM   recordcount
                     ON 1 = 1; '
 , 
   
-  'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [{{../conventions.etlProcessAttribute}}]
   FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}]
-  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
+  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [{{../conventions.etlProcessAttribute}}]
             , OMD_HASH_DIFF
   HAVING Count(*) > 1'
 
