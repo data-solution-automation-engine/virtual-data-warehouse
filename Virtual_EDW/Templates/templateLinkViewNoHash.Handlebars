@@ -1,15 +1,15 @@
 --
--- Link View definition for {{generationSpecificMetadata.selectedDataObject.name}} with natural business key.
+-- Link View definition for [{{dataObjectMappings.0.targetDataObject.name}}] with natural business key.
 --
 -- This template represents a standard Data Vault style 'Link' table as a view, but using a natural business key instead of a hash key.
 -- The view shows the same data as would otherwise be the case if the table would be created and all data logistics processes run.
 --
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{conventions.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{conventions.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{conventions.vdwSchemaName}}].[{{dataObjectMappings.0.targetDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{conventions.vdwSchemaName}}].[{{dataObjectMappings.0.targetDataObject.name}}]
 GO
 
-CREATE VIEW [{{conventions.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] AS
+CREATE VIEW [{{conventions.vdwSchemaName}}].[{{dataObjectMappings.0.targetDataObject.name}}] AS
 SELECT link.*
 FROM 
 ( {{#each dataObjectMappings}}{{#if @first}}

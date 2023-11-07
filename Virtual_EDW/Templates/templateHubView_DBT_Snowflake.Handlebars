@@ -1,7 +1,6 @@
 \{{ config(materialized='view') }}  
 --
--- Hub View definition for {{generationSpecificMetadata.selectedDataObject}}
--- Generated at {{generationSpecificMetadata.generationDateTime}}
+-- Hub View definition for {{dataObjectMappings.0.targetDataObject}}
 --
 
 SELECT hub.*

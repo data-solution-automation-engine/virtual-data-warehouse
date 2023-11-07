@@ -1,12 +1,12 @@
 --
--- Presentation table creation statement for {{generationSpecificMetadata.selectedDataObject.name}}
+-- Presentation table creation statement for [{{dataObjectMappings.0.targetDataObject.name}}]
 --
 
-DROP TABLE IF EXISTS [{{generationSpecificMetadata.selectedDataObject.name}}]
+DROP TABLE IF EXISTS [{{dataObjectMappings.0.targetDataObject.name}}]
 
-CREATE TABLE [{{lookupExtension generationSpecificMetadata.selectedDataObject.extensions "datastore"}}].[{{lookupExtension generationSpecificMetadata.selectedDataObject.extensions "location"}}].[{{generationSpecificMetadata.selectedDataObject.name}}]
+CREATE TABLE [{{lookupExtension dataObjectMappings.0.targetDataObject.extensions "datastore"}}].[{{lookupExtension dataObjectMappings.0.targetDataObject.extensions "location"}}].[{{dataObjectMappings.0.targetDataObject.name}}]
 (
-   {{#each generationSpecificMetadata.selectedDataObject.dataItems}}
+   {{#each dataObjectMappings.0.targetDataObject.dataItems}}
    [{{name}}] {{dataType}}{{#stringcompare dataType int}}{{else}}({{characterLength}}{{numericScale}}){{/stringcompare}},
    {{/each}}
    [{{conventions.eventDateTimeAttribute}}] DATETIME2(7),

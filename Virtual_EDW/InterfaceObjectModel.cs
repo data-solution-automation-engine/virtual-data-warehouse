@@ -14,7 +14,7 @@ namespace Virtual_Data_Warehouse
 
         // TEAM and VDW specific details
         public MetadataConfiguration conventions { get; set; }
-        public GenerationSpecificMetadata generationSpecificMetadata { get; set; }
+        //public GenerationSpecificMetadata generationSpecificMetadata { get; set; }
         public string metadataFileName { get; set; }
     }
 

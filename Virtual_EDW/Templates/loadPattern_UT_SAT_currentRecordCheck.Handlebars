@@ -18,14 +18,14 @@ SELECT DISTINCT
   
   'WITH recordcount
      AS (SELECT Count(*) AS Record_Count
-         FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}]),
+         FROM   [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}]),
 
      testcount
      AS (SELECT Count(test_count) AS Test_Count
          FROM   (SELECT Count(*) AS Test_Count
-                 FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}]
+                 FROM   [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}]
                  WHERE  omd_current_record_indicator = ''Y''
-                 GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}]
+                 GROUP  BY [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}]
                  HAVING Count(*) > 1) AS a)
 
 SELECT record_count,
@@ -41,10 +41,10 @@ FROM   recordcount
                     ON 1 = 1; '
 , 
   
-  'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
-  FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}]
+  'SELECT [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+  FROM   [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}]
   WHERE  omd_current_record_indicator = ''Y''
-  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
+  GROUP  BY [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [OMD_INSERT_MODULE_INSTANCE_ID]
   HAVING Count(*) > 1'
 
 , 'N'

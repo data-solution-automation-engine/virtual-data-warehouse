@@ -609,7 +609,13 @@ namespace Virtual_Data_Warehouse
                         {
                             try
                             {
-                                var json = JsonConvert.SerializeObject(VDW_dataObjectMappingList, Formatting.Indented);
+                                var json = JsonConvert.SerializeObject(VDW_dataObjectMappingList, Formatting.Indented,
+                                    new JsonSerializerSettings
+                                    {
+                                        ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                                        NullValueHandling = NullValueHandling.Ignore
+                                    });
+
                                 localRichTextBoxGenerationOutput.AppendText(json + "\r\n\r\n");
                             }
                             catch (Exception exception)

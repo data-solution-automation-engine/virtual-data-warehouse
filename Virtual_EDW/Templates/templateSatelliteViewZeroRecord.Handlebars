@@ -1,6 +1,6 @@
 {{#each dataObjectMappings}}
 --
--- Satellite View definition for {{../generationSpecificMetadata.selectedDataObject.name}}.
+-- Satellite View definition for {{../dataObjectMappings.0.targetDataObject.name}}.
 --
 -- This template represents a standard Data Vault style 'Satellite' table as a view.
 -- The view shows the same data as would otherwise be the case if the table would be created and all data logistics processes run.
@@ -9,8 +9,8 @@
 -- This is not a recommended approach, but used to show the impacts of this design decision on the overall solution.
 --
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../conventions.vdwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../conventions.vdwSchemaName}}].[{{../generationSpecificMetadata.selectedDataObject.name}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../conventions.vdwSchemaName}}].[{{../dataObjectMappings.0.targetDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{../conventions.vdwSchemaName}}].[{{../dataObjectMappings.0.targetDataObject.name}}]
 GO
 
 CREATE VIEW [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}] AS
