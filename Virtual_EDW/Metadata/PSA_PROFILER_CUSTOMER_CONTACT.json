@@ -9,164 +9,104 @@
     "etlProcessAttribute": "AUDIT_TRAIL_ID",
     "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
-  "generationSpecificMetadata": {
-    "selectedDataObject": {
-      "name": "PSA_PROFILER_CUSTOMER_CONTACT",
-      "dataItems": [
-        {
-          "name": "INSCRIPTION_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 1
-        },
-        {
-          "name": "INSCRIPTION_RECORD_ID",
-          "dataType": "int",
-          "ordinalPosition": 2
-        },
-        {
-          "name": "SOURCE_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 3
-        },
-        {
-          "name": "CHANGE_DATA_INDICATOR",
-          "dataType": "varchar",
-          "characterLength": 100,
-          "ordinalPosition": 4
-        },
-        {
-          "name": "AUDIT_TRAIL_ID",
-          "dataType": "int",
-          "ordinalPosition": 5
-        },
-        {
-          "name": "CHECKSUM",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 6
-        },
-        {
-          "name": "CustomerID",
-          "dataType": "int",
-          "ordinalPosition": 7
-        },
-        {
-          "name": "Contact_Number",
-          "dataType": "int",
-          "ordinalPosition": 8
-        },
-        {
-          "name": "Valid_From",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 9
-        }
-      ],
-      "dataObjectConnection": {
-        "dataConnectionString": "PSA",
-        "extensions": [
-          {
-            "key": "database",
-            "value": "150_Persistent_Staging_Area",
-            "description": "database name"
-          },
-          {
-            "key": "schema",
-            "value": "dbo",
-            "description": "schema name"
-          }
-        ]
-      },
-      "dataObjectClassifications": [
-        {
-          "classification": "PersistentStagingArea"
-        }
-      ]
-    }
-  },
   "dataObjectMappings": [
     {
-      "mappingName": "PSA_PROFILER_CUSTOMER_CONTACT",
-      "mappingClassifications": [
-        {
-          "classification": "PersistentStagingArea"
-        }
-      ],
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "dd102082-3667-40e5-a36e-f7c5a8e91adb",
           "name": "STG_PROFILER_CUSTOMER_CONTACT",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
               "name": "SOURCE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "21a6f46c-adbc-49bf-b507-cf610200885b",
               "name": "CustomerID",
               "dataType": "int",
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "8553da9a-beaf-4cbe-9a5b-64370c9412d3",
               "name": "Contact_Number",
               "dataType": "int",
               "ordinalPosition": 8
             },
             {
+              "dataItemType": "dataItem",
+              "id": "342ab409-6831-4490-bafa-fe8ab6a6dd71",
               "name": "Valid_From",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 9
+              "ordinalPosition": 9,
+              "numericScale": 7
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Staging",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "100_Staging_Area",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "Staging",
+            "id": "bbc31ce0-8e0b-49ac-9b38-8ae93d2f7b44"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "StagingArea"
+              "classification": "StagingArea",
+              "group": "Solution Layer",
+              "id": "b32a59cd-c2f4-4ded-a378-dc51b692cb93"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "100_Staging_Area",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -175,74 +115,96 @@
         "name": "PSA_PROFILER_CUSTOMER_CONTACT",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
             "name": "INSCRIPTION_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 1
+            "ordinalPosition": 1,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
             "name": "INSCRIPTION_RECORD_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
             "name": "SOURCE_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 3
+            "ordinalPosition": 3,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "247bf085-d755-44a8-b3d4-a8e595548393",
             "name": "CHANGE_DATA_INDICATOR",
             "dataType": "varchar",
             "characterLength": 100,
             "ordinalPosition": 4
           },
           {
+            "dataItemType": "dataItem",
+            "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
             "name": "AUDIT_TRAIL_ID",
             "dataType": "int",
             "ordinalPosition": 5
           },
           {
+            "dataItemType": "dataItem",
+            "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
             "name": "CHECKSUM",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 6
           },
           {
+            "dataItemType": "dataItem",
+            "id": "21a6f46c-adbc-49bf-b507-cf610200885b",
             "name": "CustomerID",
             "dataType": "int",
             "ordinalPosition": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "8553da9a-beaf-4cbe-9a5b-64370c9412d3",
             "name": "Contact_Number",
             "dataType": "int",
             "ordinalPosition": 8
           },
           {
+            "dataItemType": "dataItem",
+            "id": "342ab409-6831-4490-bafa-fe8ab6a6dd71",
             "name": "Valid_From",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 9
+            "ordinalPosition": 9,
+            "numericScale": 7
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "PSA",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "150_Persistent_Staging_Area",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "PersistentStagingArea"
+            "key": "datastore",
+            "value": "150_Persistent_Staging_Area",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "e8f88381-314b-46bb-be3e-125d67073a01",
+        "dataConnection": {
+          "name": "PSA",
+          "id": "ef0fd46d-a6fa-4e82-a579-69cf4e768f86"
+        },
+        "classifications": [
+          {
+            "classification": "PersistentStagingArea",
+            "group": "Solution Layer",
+            "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
           }
         ]
       },
@@ -251,47 +213,59 @@
           "name": "HUB_CUSTOMER",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
               "name": "CUSTOMER_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0",
               "name": "CUSTOMER_ID",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 4
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "CoreBusinessConcept"
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "4be15484-6450-4e43-a417-64c9a539de88",
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+          },
+          "classifications": [
+            {
+              "classification": "Hub",
+              "group": "Physical",
+              "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
             }
           ]
         },
@@ -299,70 +273,90 @@
           "name": "SAT_CUSTOMER_CONTACT_DETAILS",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
               "name": "CUSTOMER_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 2
+              "ordinalPosition": 2,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 3
             },
             {
+              "dataItemType": "dataItem",
+              "id": "8fb58083-39e1-4e1f-b37c-ceffe75b39cc",
               "name": "STATE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 4
+              "ordinalPosition": 4,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "ee7dcce5-82b5-4b93-843c-62b28edc52c2",
               "name": "CONTACT_NUMBER",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "Context"
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "fbbd80b4-5a79-4835-88af-3a6bdd58aa30",
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+          },
+          "classifications": [
+            {
+              "classification": "Satellite",
+              "group": "Conceptual",
+              "id": "290ffd52-8a37-4e47-a5cf-04eb0b27f6dd"
             }
           ]
         }
@@ -371,9 +365,11 @@
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "CustomerID",
               "dataType": "int",
-              "ordinalPosition": 7
+              "ordinalPosition": 7,
+              "id": "21a6f46c-adbc-49bf-b507-cf610200885b"
             }
           ],
           "targetDataItem": {
@@ -385,60 +381,123 @@
                 "classification": "MultiActiveKey",
                 "notes": "The attribute that supports granularity shift in describing context."
               }
-            ]
-          }
+            ],
+            "id": "21a6f46c-adbc-49bf-b507-cf610200885b"
+          },
+          "id": "ac3207ee-dc1c-4785-b2bc-3300b5fbdb07"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Contact_Number",
               "dataType": "int",
-              "ordinalPosition": 8
+              "ordinalPosition": 8,
+              "id": "8553da9a-beaf-4cbe-9a5b-64370c9412d3"
             }
           ],
           "targetDataItem": {
             "name": "Contact_Number",
             "dataType": "int",
-            "ordinalPosition": 8
-          }
+            "ordinalPosition": 8,
+            "id": "8553da9a-beaf-4cbe-9a5b-64370c9412d3"
+          },
+          "id": "625bf61c-8c39-4f03-935c-5f4506ba4f20"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Valid_From",
               "dataType": "datetime2",
+              "ordinalPosition": 9,
               "numericScale": 7,
-              "ordinalPosition": 9
+              "id": "342ab409-6831-4490-bafa-fe8ab6a6dd71"
             }
           ],
           "targetDataItem": {
             "name": "Valid_From",
             "dataType": "datetime2",
             "numericScale": 7,
-            "ordinalPosition": 9
-          }
-        }
-      ],
-      "businessKeys": [
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "CustomerID",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "CustomerID"
-              }
-            }
-          ],
-          "surrogateKey": "PROFILER_CUSTOMER_CONTACT_SK"
+            "ordinalPosition": 9,
+            "id": "342ab409-6831-4490-bafa-fe8ab6a6dd71"
+          },
+          "id": "b7fe7917-47dc-42c5-9d30-1e10ee1487f5"
         }
       ],
       "filterCriterion": "",
-      "enabled": true
+      "enabled": true,
+      "name": "STG_PROFILER_CUSTOMER_CONTACT to PSA_PROFILER_CUSTOMER_CONTACT",
+      "classifications": [
+        {
+          "classification": "PersistentStagingArea",
+          "group": "Solution Layer",
+          "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
+        }
+      ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "PROFILER_CUSTOMER_CONTACT_SK",
+          "id": "3250670f-2209-4e54-ba35-acffeaafc5f2",
+          "name": "STG_PROFILER_CUSTOMER_CONTACT to PSA_PROFILER_CUSTOMER_CONTACT for PROFILER_CUSTOMER_CONTACT_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "CustomerID",
+                  "id": "21a6f46c-adbc-49bf-b507-cf610200885b"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CustomerID",
+                "id": "21a6f46c-adbc-49bf-b507-cf610200885b"
+              }
+            }
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "dbf602aa-0b71-4e9c-8e49-480832b77912"
+    }
+  ],
+  "name": "PSA_PROFILER_CUSTOMER_CONTACT",
+  "classifications": [
+    {
+      "classification": "PersistentStagingArea",
+      "group": "Solution Layer",
+      "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
     }
   ]
 }

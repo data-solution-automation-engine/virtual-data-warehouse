@@ -9,134 +9,60 @@
     "etlProcessAttribute": "AUDIT_TRAIL_ID",
     "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
-  "generationSpecificMetadata": {
-    "selectedDataObject": {
-      "name": "STG_PROFILER_PLAN",
-      "dataItems": [
-        {
-          "name": "INSCRIPTION_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 1
-        },
-        {
-          "name": "INSCRIPTION_RECORD_ID",
-          "dataType": "int",
-          "ordinalPosition": 2
-        },
-        {
-          "name": "SOURCE_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 3
-        },
-        {
-          "name": "CHANGE_DATA_INDICATOR",
-          "dataType": "varchar",
-          "characterLength": 100,
-          "ordinalPosition": 4
-        },
-        {
-          "name": "AUDIT_TRAIL_ID",
-          "dataType": "int",
-          "ordinalPosition": 5
-        },
-        {
-          "name": "CHECKSUM",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 6
-        },
-        {
-          "name": "Plan_Code",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 7
-        },
-        {
-          "name": "Plan_Desc",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 8
-        },
-        {
-          "name": "Renewal_Plan_Code",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 9
-        }
-      ],
-      "dataObjectConnection": {
-        "dataConnectionString": "Staging",
-        "extensions": [
-          {
-            "key": "database",
-            "value": "100_Staging_Area",
-            "description": "database name"
-          },
-          {
-            "key": "schema",
-            "value": "dbo",
-            "description": "schema name"
-          }
-        ]
-      },
-      "dataObjectClassifications": [
-        {
-          "classification": "StagingArea"
-        }
-      ]
-    }
-  },
   "dataObjectMappings": [
     {
-      "mappingName": "STG_PROFILER_PLAN",
-      "mappingClassifications": [
-        {
-          "classification": "StagingArea"
-        }
-      ],
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "bc6542bb-493e-4829-82b0-dc28cdbe898a",
           "name": "PLAN",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
               "name": "Plan_Code",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "e2629ffe-f8e3-43b9-a25e-b3f7e958092e",
               "name": "Plan_Desc",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "c36e9bac-856d-4a29-9ded-f2300a276159",
               "name": "Renewal_Plan_Code",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 3
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Source",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "000_Source",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "Source",
+            "id": "9ec83c72-1bda-4e21-8cb0-09d6d4d56482"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "Source"
+              "classification": "Source",
+              "group": "Solution Layer",
+              "id": "81ef9ebd-26e2-4a25-98e0-775a89ca2d5f"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "000_Source",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -145,76 +71,98 @@
         "name": "STG_PROFILER_PLAN",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
             "name": "INSCRIPTION_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 1
+            "ordinalPosition": 1,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
             "name": "INSCRIPTION_RECORD_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
             "name": "SOURCE_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 3
+            "ordinalPosition": 3,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "247bf085-d755-44a8-b3d4-a8e595548393",
             "name": "CHANGE_DATA_INDICATOR",
             "dataType": "varchar",
             "characterLength": 100,
             "ordinalPosition": 4
           },
           {
+            "dataItemType": "dataItem",
+            "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
             "name": "AUDIT_TRAIL_ID",
             "dataType": "int",
             "ordinalPosition": 5
           },
           {
+            "dataItemType": "dataItem",
+            "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
             "name": "CHECKSUM",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 6
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
             "name": "Plan_Code",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "e2629ffe-f8e3-43b9-a25e-b3f7e958092e",
             "name": "Plan_Desc",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 8
           },
           {
+            "dataItemType": "dataItem",
+            "id": "c36e9bac-856d-4a29-9ded-f2300a276159",
             "name": "Renewal_Plan_Code",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 9
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Staging",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "100_Staging_Area",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "StagingArea"
+            "key": "datastore",
+            "value": "100_Staging_Area",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "f167976e-d42d-4322-bff0-941b00110f82",
+        "dataConnection": {
+          "name": "Staging",
+          "id": "bbc31ce0-8e0b-49ac-9b38-8ae93d2f7b44"
+        },
+        "classifications": [
+          {
+            "classification": "StagingArea",
+            "group": "Solution Layer",
+            "id": "b32a59cd-c2f4-4ded-a378-dc51b692cb93"
           }
         ]
       },
@@ -223,76 +171,98 @@
           "name": "PSA_PROFILER_PLAN",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
               "name": "SOURCE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
               "name": "Plan_Code",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "e2629ffe-f8e3-43b9-a25e-b3f7e958092e",
               "name": "Plan_Desc",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
             },
             {
+              "dataItemType": "dataItem",
+              "id": "c36e9bac-856d-4a29-9ded-f2300a276159",
               "name": "Renewal_Plan_Code",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 9
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "PSA",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "150_Persistent_Staging_Area",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "PersistentStagingArea"
+              "key": "datastore",
+              "value": "150_Persistent_Staging_Area",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "3fbe0dbe-37e1-4f6d-8968-d64695c94a61",
+          "dataConnection": {
+            "name": "PSA",
+            "id": "ef0fd46d-a6fa-4e82-a579-69cf4e768f86"
+          },
+          "classifications": [
+            {
+              "classification": "PersistentStagingArea",
+              "group": "Solution Layer",
+              "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
             }
           ]
         }
@@ -301,72 +271,137 @@
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Plan_Code",
               "dataType": "varchar",
               "characterLength": 100,
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
             }
           ],
           "targetDataItem": {
             "name": "Plan_Code",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 7
-          }
+            "ordinalPosition": 7,
+            "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
+          },
+          "id": "0950b0bd-272b-4d49-bbb3-d196c2959a25"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Plan_Desc",
               "dataType": "varchar",
               "characterLength": 100,
-              "ordinalPosition": 2
+              "ordinalPosition": 2,
+              "id": "e2629ffe-f8e3-43b9-a25e-b3f7e958092e"
             }
           ],
           "targetDataItem": {
             "name": "Plan_Desc",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 8
-          }
+            "ordinalPosition": 8,
+            "id": "e2629ffe-f8e3-43b9-a25e-b3f7e958092e"
+          },
+          "id": "805c6872-2f3b-41e5-96fa-9041aa434c38"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Renewal_Plan_Code",
               "dataType": "varchar",
               "characterLength": 100,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "id": "c36e9bac-856d-4a29-9ded-f2300a276159"
             }
           ],
           "targetDataItem": {
             "name": "Renewal_Plan_Code",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 9
-          }
-        }
-      ],
-      "businessKeys": [
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "Plan_Code",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "Plan_Code"
-              }
-            }
-          ],
-          "surrogateKey": "PROFILER_PLAN_SK"
+            "ordinalPosition": 9,
+            "id": "c36e9bac-856d-4a29-9ded-f2300a276159"
+          },
+          "id": "57340453-e3ef-4c4a-8469-6bfc64913eb3"
         }
       ],
       "filterCriterion": "",
-      "enabled": true
+      "enabled": true,
+      "name": "PLAN to STG_PROFILER_PLAN",
+      "classifications": [
+        {
+          "classification": "StagingArea",
+          "group": "Solution Layer",
+          "id": "b32a59cd-c2f4-4ded-a378-dc51b692cb93"
+        }
+      ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "PROFILER_PLAN_SK",
+          "id": "b8e2088d-becc-4c30-896e-815ca0a2de29",
+          "name": "PLAN to STG_PROFILER_PLAN for PROFILER_PLAN_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "Plan_Code",
+                  "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
+                }
+              ],
+              "targetDataItem": {
+                "name": "Plan_Code",
+                "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
+              }
+            }
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "7f70f6a4-459c-4846-8bf7-fe82f5d2595c"
+    }
+  ],
+  "name": "STG_PROFILER_PLAN",
+  "classifications": [
+    {
+      "classification": "StagingArea",
+      "group": "Solution Layer",
+      "id": "b32a59cd-c2f4-4ded-a378-dc51b692cb93"
     }
   ]
 }

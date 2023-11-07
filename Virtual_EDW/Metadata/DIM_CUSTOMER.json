@@ -9,191 +9,67 @@
     "etlProcessAttribute": "AUDIT_TRAIL_ID",
     "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
-  "generationSpecificMetadata": {
-    "selectedDataObject": {
-      "name": "DIM_CUSTOMER",
-      "dataItems": [
-        {
-          "name": "DIM_CUSTOMER_SK",
-          "dataType": "int",
-          "ordinalPosition": 1
-        },
-        {
-          "name": "INSERT_MODULE_INSTANCE_ID",
-          "dataType": "int",
-          "ordinalPosition": 2
-        },
-        {
-          "name": "RECORD_CHECKSUM_TYPE1",
-          "dataType": "char",
-          "ordinalPosition": 3
-        },
-        {
-          "name": "RECORD_CHECKSUM_TYPE2",
-          "dataType": "char",
-          "ordinalPosition": 4
-        },
-        {
-          "name": "CHANGE_DATETIME",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 5
-        },
-        {
-          "name": "CHANGE_EXPIRY_DATETIME",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 6
-        },
-        {
-          "name": "CHANGE_DATA_INDICATOR",
-          "dataType": "varchar",
-          "characterLength": 1,
-          "ordinalPosition": 7
-        },
-        {
-          "name": "CUSTOMER_SK",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 8
-        },
-        {
-          "name": "CUSTOMER_ID",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 9
-        },
-        {
-          "name": "GIVEN_NAME",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 10
-        },
-        {
-          "name": "SURNAME",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 11
-        },
-        {
-          "name": "PREF_GENDER_PRONOUN",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 12
-        },
-        {
-          "name": "SUBURB",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 13
-        },
-        {
-          "name": "POSTCODE",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 14
-        },
-        {
-          "name": "COUNTRY",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 15
-        },
-        {
-          "name": "DATE_OF_BIRTH",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 16
-        },
-        {
-          "name": "CONTACT_NUMBER",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 17
-        },
-        {
-          "name": "STATE",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 18
-        }
-      ],
-      "dataObjectConnection": {
-        "dataConnectionString": "Presentation",
-        "extensions": [
-          {
-            "key": "database",
-            "value": "300_Presentation_Layer",
-            "description": "database name"
-          },
-          {
-            "key": "schema",
-            "value": "dbo",
-            "description": "schema name"
-          }
-        ]
-      },
-      "dataObjectClassifications": [
-        {
-          "classification": "Presentation"
-        }
-      ]
-    }
-  },
   "dataObjectMappings": [
     {
-      "mappingName": "DIM_CUSTOMER",
-      "mappingClassifications": [
-        {
-          "classification": "Presentation"
-        }
-      ],
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "4be15484-6450-4e43-a417-64c9a539de88",
           "name": "HUB_CUSTOMER",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
               "name": "CUSTOMER_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0",
               "name": "CUSTOMER_ID",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 4
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "CoreBusinessConcept"
+              "classification": "Hub",
+              "group": "Physical",
+              "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -202,128 +78,168 @@
         "name": "DIM_CUSTOMER",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "1efd763a-5d5b-4972-acf8-e830126da19c",
             "name": "DIM_CUSTOMER_SK",
             "dataType": "int",
             "ordinalPosition": 1
           },
           {
+            "dataItemType": "dataItem",
+            "id": "fae478be-ac8a-42fe-a5e6-f6aa408cc829",
             "name": "INSERT_MODULE_INSTANCE_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "5ec6b66d-9842-412f-a722-58b3dbd6f374",
             "name": "RECORD_CHECKSUM_TYPE1",
             "dataType": "char",
             "ordinalPosition": 3
           },
           {
+            "dataItemType": "dataItem",
+            "id": "d90cd418-d37c-4ca2-8f14-07e86d982578",
             "name": "RECORD_CHECKSUM_TYPE2",
             "dataType": "char",
             "ordinalPosition": 4
           },
           {
+            "dataItemType": "dataItem",
+            "id": "26c92342-b4f1-49dc-9c10-bf25b9b14231",
             "name": "CHANGE_DATETIME",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 5
+            "ordinalPosition": 5,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "2a5c1ac8-a742-4eef-bba0-6f9fe399587d",
             "name": "CHANGE_EXPIRY_DATETIME",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 6
+            "ordinalPosition": 6,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "247bf085-d755-44a8-b3d4-a8e595548393",
             "name": "CHANGE_DATA_INDICATOR",
             "dataType": "varchar",
             "characterLength": 1,
             "ordinalPosition": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
             "name": "CUSTOMER_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 8
           },
           {
+            "dataItemType": "dataItem",
+            "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0",
             "name": "CUSTOMER_ID",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 9
           },
           {
+            "dataItemType": "dataItem",
+            "id": "dc989400-4725-412a-adef-a4bd78dcdd7b",
             "name": "GIVEN_NAME",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 10
           },
           {
+            "dataItemType": "dataItem",
+            "id": "12d32c3d-3507-42f9-afe4-1200db6314fa",
             "name": "SURNAME",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 11
           },
           {
+            "dataItemType": "dataItem",
+            "id": "081382a8-ace8-46b0-8287-9bc450e88b55",
             "name": "PREF_GENDER_PRONOUN",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 12
           },
           {
+            "dataItemType": "dataItem",
+            "id": "145cb4ca-51ee-43d4-a4ff-bcf495335133",
             "name": "SUBURB",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 13
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7bf43e1e-0679-478f-b356-fc3516530e46",
             "name": "POSTCODE",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 14
           },
           {
+            "dataItemType": "dataItem",
+            "id": "08f50193-793f-4275-82ee-bf6e3542eadb",
             "name": "COUNTRY",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 15
           },
           {
+            "dataItemType": "dataItem",
+            "id": "ffea1023-1a0d-4efc-99e3-be60cb1b87bd",
             "name": "DATE_OF_BIRTH",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 16
+            "ordinalPosition": 16,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "ee7dcce5-82b5-4b93-843c-62b28edc52c2",
             "name": "CONTACT_NUMBER",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 17
           },
           {
+            "dataItemType": "dataItem",
+            "id": "97ae5476-5623-4fc0-8c03-951f4235c74a",
             "name": "STATE",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 18
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Presentation",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "300_Presentation_Layer",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "Presentation"
+            "key": "datastore",
+            "value": "300_Presentation_Layer",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "f23885e0-a72a-4745-881d-b5ad54466acb",
+        "dataConnection": {
+          "name": "Presentation",
+          "id": "62c4fa4d-d6bc-4a78-8c66-59f5aac39a34"
+        },
+        "classifications": [
+          {
+            "classification": "Presentation",
+            "group": "Solution Layer",
+            "id": "13348a99-750c-4981-ace5-d5c1f925710a"
           }
         ]
       },
@@ -331,165 +247,245 @@
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "CUSTOMER_ID",
               "dataType": "nvarchar",
               "characterLength": 100,
-              "ordinalPosition": 4
+              "ordinalPosition": 4,
+              "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0"
             }
           ],
           "targetDataItem": {
             "name": "CUSTOMER_ID",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 9
-          }
-        }
-      ],
-      "businessKeys": [
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "CUSTOMER_SK",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "CUSTOMER_SK"
-              }
-            }
-          ],
-          "surrogateKey": "DIM_CUSTOMER_SK"
+            "ordinalPosition": 9,
+            "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0"
+          },
+          "id": "41f7a0e8-da8f-4b91-8e9f-d78e98df5da0"
         }
       ],
       "filterCriterion": "",
-      "enabled": true
-    },
-    {
-      "mappingName": "DIM_CUSTOMER",
-      "mappingClassifications": [
+      "enabled": true,
+      "name": "HUB_CUSTOMER to DIM_CUSTOMER",
+      "classifications": [
         {
-          "classification": "Presentation"
+          "classification": "Presentation",
+          "group": "Solution Layer",
+          "id": "13348a99-750c-4981-ace5-d5c1f925710a"
         }
       ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "DIM_CUSTOMER_SK",
+          "id": "7318031b-cc4e-412c-9025-53eddbe721bf",
+          "name": "HUB_CUSTOMER to DIM_CUSTOMER for DIM_CUSTOMER_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "CUSTOMER_SK",
+                  "id": "8ea68aa4-c17b-478c-9c14-02000556923d"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_SK",
+                "id": "8ea68aa4-c17b-478c-9c14-02000556923d"
+              }
+            }
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "603b6810-7b92-4133-b759-6cd376df54f5"
+    },
+    {
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "2a410aab-f709-4153-aa18-6781c2ba58f5",
           "name": "SAT_CUSTOMER",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
               "name": "CUSTOMER_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 2
+              "ordinalPosition": 2,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 3
             },
             {
+              "dataItemType": "dataItem",
+              "id": "8fb58083-39e1-4e1f-b37c-ceffe75b39cc",
               "name": "STATE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 4
+              "ordinalPosition": 4,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "dc989400-4725-412a-adef-a4bd78dcdd7b",
               "name": "GIVEN_NAME",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
             },
             {
+              "dataItemType": "dataItem",
+              "id": "12d32c3d-3507-42f9-afe4-1200db6314fa",
               "name": "SURNAME",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 9
             },
             {
+              "dataItemType": "dataItem",
+              "id": "145cb4ca-51ee-43d4-a4ff-bcf495335133",
               "name": "SUBURB",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 10
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7bf43e1e-0679-478f-b356-fc3516530e46",
               "name": "POSTCODE",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 11
             },
             {
+              "dataItemType": "dataItem",
+              "id": "97ae5476-5623-4fc0-8c03-951f4235c74a",
               "name": "STATE",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 12
             },
             {
+              "dataItemType": "dataItem",
+              "id": "08f50193-793f-4275-82ee-bf6e3542eadb",
               "name": "COUNTRY",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 13
             },
             {
+              "dataItemType": "dataItem",
+              "id": "081382a8-ace8-46b0-8287-9bc450e88b55",
               "name": "PREF_GENDER_PRONOUN",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 14
             },
             {
+              "dataItemType": "dataItem",
+              "id": "ffea1023-1a0d-4efc-99e3-be60cb1b87bd",
               "name": "DATE_OF_BIRTH",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 15
+              "ordinalPosition": 15,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "6ed921ae-d613-4f9f-bed3-22756cf09b96",
               "name": "REFERRAL_OFFER_MADE_INDICATOR",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 16
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "Context"
+              "classification": "Satellite",
+              "group": "Conceptual",
+              "id": "290ffd52-8a37-4e47-a5cf-04eb0b27f6dd"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -498,128 +494,168 @@
         "name": "DIM_CUSTOMER",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "1efd763a-5d5b-4972-acf8-e830126da19c",
             "name": "DIM_CUSTOMER_SK",
             "dataType": "int",
             "ordinalPosition": 1
           },
           {
+            "dataItemType": "dataItem",
+            "id": "fae478be-ac8a-42fe-a5e6-f6aa408cc829",
             "name": "INSERT_MODULE_INSTANCE_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "5ec6b66d-9842-412f-a722-58b3dbd6f374",
             "name": "RECORD_CHECKSUM_TYPE1",
             "dataType": "char",
             "ordinalPosition": 3
           },
           {
+            "dataItemType": "dataItem",
+            "id": "d90cd418-d37c-4ca2-8f14-07e86d982578",
             "name": "RECORD_CHECKSUM_TYPE2",
             "dataType": "char",
             "ordinalPosition": 4
           },
           {
+            "dataItemType": "dataItem",
+            "id": "26c92342-b4f1-49dc-9c10-bf25b9b14231",
             "name": "CHANGE_DATETIME",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 5
+            "ordinalPosition": 5,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "2a5c1ac8-a742-4eef-bba0-6f9fe399587d",
             "name": "CHANGE_EXPIRY_DATETIME",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 6
+            "ordinalPosition": 6,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "247bf085-d755-44a8-b3d4-a8e595548393",
             "name": "CHANGE_DATA_INDICATOR",
             "dataType": "varchar",
             "characterLength": 1,
             "ordinalPosition": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
             "name": "CUSTOMER_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 8
           },
           {
+            "dataItemType": "dataItem",
+            "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0",
             "name": "CUSTOMER_ID",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 9
           },
           {
+            "dataItemType": "dataItem",
+            "id": "dc989400-4725-412a-adef-a4bd78dcdd7b",
             "name": "GIVEN_NAME",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 10
           },
           {
+            "dataItemType": "dataItem",
+            "id": "12d32c3d-3507-42f9-afe4-1200db6314fa",
             "name": "SURNAME",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 11
           },
           {
+            "dataItemType": "dataItem",
+            "id": "081382a8-ace8-46b0-8287-9bc450e88b55",
             "name": "PREF_GENDER_PRONOUN",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 12
           },
           {
+            "dataItemType": "dataItem",
+            "id": "145cb4ca-51ee-43d4-a4ff-bcf495335133",
             "name": "SUBURB",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 13
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7bf43e1e-0679-478f-b356-fc3516530e46",
             "name": "POSTCODE",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 14
           },
           {
+            "dataItemType": "dataItem",
+            "id": "08f50193-793f-4275-82ee-bf6e3542eadb",
             "name": "COUNTRY",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 15
           },
           {
+            "dataItemType": "dataItem",
+            "id": "ffea1023-1a0d-4efc-99e3-be60cb1b87bd",
             "name": "DATE_OF_BIRTH",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 16
+            "ordinalPosition": 16,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "ee7dcce5-82b5-4b93-843c-62b28edc52c2",
             "name": "CONTACT_NUMBER",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 17
           },
           {
+            "dataItemType": "dataItem",
+            "id": "97ae5476-5623-4fc0-8c03-951f4235c74a",
             "name": "STATE",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 18
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Presentation",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "300_Presentation_Layer",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "Presentation"
+            "key": "datastore",
+            "value": "300_Presentation_Layer",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "f23885e0-a72a-4745-881d-b5ad54466acb",
+        "dataConnection": {
+          "name": "Presentation",
+          "id": "62c4fa4d-d6bc-4a78-8c66-59f5aac39a34"
+        },
+        "classifications": [
+          {
+            "classification": "Presentation",
+            "group": "Solution Layer",
+            "id": "13348a99-750c-4981-ace5-d5c1f925710a"
           }
         ]
       },
@@ -627,149 +663,221 @@
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "DATE_OF_BIRTH",
               "dataType": "datetime2",
+              "ordinalPosition": 15,
               "numericScale": 7,
-              "ordinalPosition": 15
+              "id": "ffea1023-1a0d-4efc-99e3-be60cb1b87bd"
             }
           ],
           "targetDataItem": {
             "name": "DATE_OF_BIRTH",
             "dataType": "datetime2",
             "numericScale": 7,
-            "ordinalPosition": 16
-          }
+            "ordinalPosition": 16,
+            "id": "ffea1023-1a0d-4efc-99e3-be60cb1b87bd"
+          },
+          "id": "d4734b55-1bf0-4a51-b38f-d7e17681e943"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "GIVEN_NAME",
               "dataType": "nvarchar",
               "characterLength": 100,
-              "ordinalPosition": 8
+              "ordinalPosition": 8,
+              "id": "dc989400-4725-412a-adef-a4bd78dcdd7b"
             }
           ],
           "targetDataItem": {
             "name": "GIVEN_NAME",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 10
-          }
+            "ordinalPosition": 10,
+            "id": "dc989400-4725-412a-adef-a4bd78dcdd7b"
+          },
+          "id": "696dcf11-b8e8-4565-8cfc-c7438f7bb46f"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "SUBURB",
               "dataType": "nvarchar",
               "characterLength": 100,
-              "ordinalPosition": 10
+              "ordinalPosition": 10,
+              "id": "145cb4ca-51ee-43d4-a4ff-bcf495335133"
             }
           ],
           "targetDataItem": {
             "name": "SUBURB",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 13
-          }
-        }
-      ],
-      "businessKeys": [
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "CUSTOMER_SK",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "CUSTOMER_SK"
-              }
-            }
-          ],
-          "surrogateKey": "DIM_CUSTOMER_SK"
+            "ordinalPosition": 13,
+            "id": "145cb4ca-51ee-43d4-a4ff-bcf495335133"
+          },
+          "id": "11bba5d6-c8aa-4e69-b12c-a121430b7673"
         }
       ],
       "filterCriterion": "",
-      "enabled": true
-    },
-    {
-      "mappingName": "DIM_CUSTOMER",
-      "mappingClassifications": [
+      "enabled": true,
+      "name": "SAT_CUSTOMER to DIM_CUSTOMER",
+      "classifications": [
         {
-          "classification": "Presentation"
+          "classification": "Presentation",
+          "group": "Solution Layer",
+          "id": "13348a99-750c-4981-ace5-d5c1f925710a"
         }
       ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "DIM_CUSTOMER_SK",
+          "id": "7318031b-cc4e-412c-9025-53eddbe721bf",
+          "name": "SAT_CUSTOMER to DIM_CUSTOMER for DIM_CUSTOMER_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "CUSTOMER_SK",
+                  "id": "8ea68aa4-c17b-478c-9c14-02000556923d"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_SK",
+                "id": "8ea68aa4-c17b-478c-9c14-02000556923d"
+              }
+            }
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "cfc2ff2b-7eaa-4112-a855-232c9f63ebd6"
+    },
+    {
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "fbbd80b4-5a79-4835-88af-3a6bdd58aa30",
           "name": "SAT_CUSTOMER_CONTACT_DETAILS",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
               "name": "CUSTOMER_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 2
+              "ordinalPosition": 2,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 3
             },
             {
+              "dataItemType": "dataItem",
+              "id": "8fb58083-39e1-4e1f-b37c-ceffe75b39cc",
               "name": "STATE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 4
+              "ordinalPosition": 4,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "ee7dcce5-82b5-4b93-843c-62b28edc52c2",
               "name": "CONTACT_NUMBER",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "Context"
+              "classification": "Satellite",
+              "group": "Conceptual",
+              "id": "290ffd52-8a37-4e47-a5cf-04eb0b27f6dd"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -778,128 +886,168 @@
         "name": "DIM_CUSTOMER",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "1efd763a-5d5b-4972-acf8-e830126da19c",
             "name": "DIM_CUSTOMER_SK",
             "dataType": "int",
             "ordinalPosition": 1
           },
           {
+            "dataItemType": "dataItem",
+            "id": "fae478be-ac8a-42fe-a5e6-f6aa408cc829",
             "name": "INSERT_MODULE_INSTANCE_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "5ec6b66d-9842-412f-a722-58b3dbd6f374",
             "name": "RECORD_CHECKSUM_TYPE1",
             "dataType": "char",
             "ordinalPosition": 3
           },
           {
+            "dataItemType": "dataItem",
+            "id": "d90cd418-d37c-4ca2-8f14-07e86d982578",
             "name": "RECORD_CHECKSUM_TYPE2",
             "dataType": "char",
             "ordinalPosition": 4
           },
           {
+            "dataItemType": "dataItem",
+            "id": "26c92342-b4f1-49dc-9c10-bf25b9b14231",
             "name": "CHANGE_DATETIME",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 5
+            "ordinalPosition": 5,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "2a5c1ac8-a742-4eef-bba0-6f9fe399587d",
             "name": "CHANGE_EXPIRY_DATETIME",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 6
+            "ordinalPosition": 6,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "247bf085-d755-44a8-b3d4-a8e595548393",
             "name": "CHANGE_DATA_INDICATOR",
             "dataType": "varchar",
             "characterLength": 1,
             "ordinalPosition": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
             "name": "CUSTOMER_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 8
           },
           {
+            "dataItemType": "dataItem",
+            "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0",
             "name": "CUSTOMER_ID",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 9
           },
           {
+            "dataItemType": "dataItem",
+            "id": "dc989400-4725-412a-adef-a4bd78dcdd7b",
             "name": "GIVEN_NAME",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 10
           },
           {
+            "dataItemType": "dataItem",
+            "id": "12d32c3d-3507-42f9-afe4-1200db6314fa",
             "name": "SURNAME",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 11
           },
           {
+            "dataItemType": "dataItem",
+            "id": "081382a8-ace8-46b0-8287-9bc450e88b55",
             "name": "PREF_GENDER_PRONOUN",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 12
           },
           {
+            "dataItemType": "dataItem",
+            "id": "145cb4ca-51ee-43d4-a4ff-bcf495335133",
             "name": "SUBURB",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 13
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7bf43e1e-0679-478f-b356-fc3516530e46",
             "name": "POSTCODE",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 14
           },
           {
+            "dataItemType": "dataItem",
+            "id": "08f50193-793f-4275-82ee-bf6e3542eadb",
             "name": "COUNTRY",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 15
           },
           {
+            "dataItemType": "dataItem",
+            "id": "ffea1023-1a0d-4efc-99e3-be60cb1b87bd",
             "name": "DATE_OF_BIRTH",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 16
+            "ordinalPosition": 16,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "ee7dcce5-82b5-4b93-843c-62b28edc52c2",
             "name": "CONTACT_NUMBER",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 17
           },
           {
+            "dataItemType": "dataItem",
+            "id": "97ae5476-5623-4fc0-8c03-951f4235c74a",
             "name": "STATE",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 18
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Presentation",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "300_Presentation_Layer",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "Presentation"
+            "key": "datastore",
+            "value": "300_Presentation_Layer",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "f23885e0-a72a-4745-881d-b5ad54466acb",
+        "dataConnection": {
+          "name": "Presentation",
+          "id": "62c4fa4d-d6bc-4a78-8c66-59f5aac39a34"
+        },
+        "classifications": [
+          {
+            "classification": "Presentation",
+            "group": "Solution Layer",
+            "id": "13348a99-750c-4981-ace5-d5c1f925710a"
           }
         ]
       },
@@ -907,40 +1055,97 @@
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "CONTACT_NUMBER",
               "dataType": "nvarchar",
               "characterLength": 100,
-              "ordinalPosition": 8
+              "ordinalPosition": 8,
+              "id": "ee7dcce5-82b5-4b93-843c-62b28edc52c2"
             }
           ],
           "targetDataItem": {
             "name": "CONTACT_NUMBER",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 17
-          }
-        }
-      ],
-      "businessKeys": [
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "CUSTOMER_SK",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "CUSTOMER_SK"
-              }
-            }
-          ],
-          "surrogateKey": "DIM_CUSTOMER_SK"
+            "ordinalPosition": 17,
+            "id": "ee7dcce5-82b5-4b93-843c-62b28edc52c2"
+          },
+          "id": "0ab33cf9-911d-4f9d-bf3c-d6c00480caeb"
         }
       ],
       "filterCriterion": "",
-      "enabled": true
+      "enabled": true,
+      "name": "SAT_CUSTOMER_CONTACT_DETAILS to DIM_CUSTOMER",
+      "classifications": [
+        {
+          "classification": "Presentation",
+          "group": "Solution Layer",
+          "id": "13348a99-750c-4981-ace5-d5c1f925710a"
+        }
+      ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "DIM_CUSTOMER_SK",
+          "id": "7318031b-cc4e-412c-9025-53eddbe721bf",
+          "name": "SAT_CUSTOMER_CONTACT_DETAILS to DIM_CUSTOMER for DIM_CUSTOMER_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "CUSTOMER_SK",
+                  "id": "8ea68aa4-c17b-478c-9c14-02000556923d"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_SK",
+                "id": "8ea68aa4-c17b-478c-9c14-02000556923d"
+              }
+            }
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "e8ac5f77-cf5e-47dd-bb21-5db6d5731f44"
+    }
+  ],
+  "name": "DIM_CUSTOMER",
+  "classifications": [
+    {
+      "classification": "Presentation",
+      "group": "Solution Layer",
+      "id": "13348a99-750c-4981-ace5-d5c1f925710a"
     }
   ]
 }

@@ -9,168 +9,83 @@
     "etlProcessAttribute": "AUDIT_TRAIL_ID",
     "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
-  "generationSpecificMetadata": {
-    "selectedDataObject": {
-      "name": "STG_PROFILER_CUST_MEMBERSHIP",
-      "dataItems": [
-        {
-          "name": "INSCRIPTION_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 1
-        },
-        {
-          "name": "INSCRIPTION_RECORD_ID",
-          "dataType": "int",
-          "ordinalPosition": 2
-        },
-        {
-          "name": "SOURCE_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 3
-        },
-        {
-          "name": "CHANGE_DATA_INDICATOR",
-          "dataType": "varchar",
-          "characterLength": 100,
-          "ordinalPosition": 4
-        },
-        {
-          "name": "AUDIT_TRAIL_ID",
-          "dataType": "int",
-          "ordinalPosition": 5
-        },
-        {
-          "name": "CHECKSUM",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 6
-        },
-        {
-          "name": "CustomerID",
-          "dataType": "int",
-          "ordinalPosition": 7
-        },
-        {
-          "name": "Plan_Code",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 8
-        },
-        {
-          "name": "Start_Date",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 9
-        },
-        {
-          "name": "End_Date",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 10
-        },
-        {
-          "name": "Status",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 11
-        },
-        {
-          "name": "Comment",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 12
-        }
-      ],
-      "dataObjectConnection": {
-        "dataConnectionString": "Staging",
-        "extensions": [
-          {
-            "key": "database",
-            "value": "100_Staging_Area",
-            "description": "database name"
-          },
-          {
-            "key": "schema",
-            "value": "dbo",
-            "description": "schema name"
-          }
-        ]
-      },
-      "dataObjectClassifications": [
-        {
-          "classification": "StagingArea"
-        }
-      ]
-    }
-  },
   "dataObjectMappings": [
     {
-      "mappingName": "STG_PROFILER_CUST_MEMBERSHIP",
-      "mappingClassifications": [
-        {
-          "classification": "StagingArea"
-        }
-      ],
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "db1bf76d-9e40-4e97-bf40-ed707862e8b9",
           "name": "CUST_MEMBERSHIP",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "21a6f46c-adbc-49bf-b507-cf610200885b",
               "name": "CustomerID",
               "dataType": "int",
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
               "name": "Plan_Code",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "0488eae4-45e3-4bc2-a40d-06c49a36b8a0",
               "name": "Start_Date",
               "dataType": "datetime",
-              "numericScale": 3,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 3
             },
             {
+              "dataItemType": "dataItem",
+              "id": "2d429ccb-8197-4b88-bf18-3811591dbd2b",
               "name": "End_Date",
               "dataType": "datetime",
-              "numericScale": 3,
-              "ordinalPosition": 4
+              "ordinalPosition": 4,
+              "numericScale": 3
             },
             {
+              "dataItemType": "dataItem",
+              "id": "a1d1a3f0-705c-4e5d-be12-97c1306b17d6",
               "name": "Status",
               "dataType": "varchar",
               "characterLength": 10,
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "09254416-95e4-477e-8373-aa73def81049",
               "name": "Comment",
               "dataType": "varchar",
               "characterLength": 50,
               "ordinalPosition": 6
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Source",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "000_Source",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "Source",
+            "id": "9ec83c72-1bda-4e21-8cb0-09d6d4d56482"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "Source"
+              "classification": "Source",
+              "group": "Solution Layer",
+              "id": "81ef9ebd-26e2-4a25-98e0-775a89ca2d5f"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "000_Source",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -179,93 +94,121 @@
         "name": "STG_PROFILER_CUST_MEMBERSHIP",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
             "name": "INSCRIPTION_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 1
+            "ordinalPosition": 1,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
             "name": "INSCRIPTION_RECORD_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
             "name": "SOURCE_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 3
+            "ordinalPosition": 3,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "247bf085-d755-44a8-b3d4-a8e595548393",
             "name": "CHANGE_DATA_INDICATOR",
             "dataType": "varchar",
             "characterLength": 100,
             "ordinalPosition": 4
           },
           {
+            "dataItemType": "dataItem",
+            "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
             "name": "AUDIT_TRAIL_ID",
             "dataType": "int",
             "ordinalPosition": 5
           },
           {
+            "dataItemType": "dataItem",
+            "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
             "name": "CHECKSUM",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 6
           },
           {
+            "dataItemType": "dataItem",
+            "id": "21a6f46c-adbc-49bf-b507-cf610200885b",
             "name": "CustomerID",
             "dataType": "int",
             "ordinalPosition": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
             "name": "Plan_Code",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 8
           },
           {
+            "dataItemType": "dataItem",
+            "id": "0488eae4-45e3-4bc2-a40d-06c49a36b8a0",
             "name": "Start_Date",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 9
+            "ordinalPosition": 9,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "2d429ccb-8197-4b88-bf18-3811591dbd2b",
             "name": "End_Date",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 10
+            "ordinalPosition": 10,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "a1d1a3f0-705c-4e5d-be12-97c1306b17d6",
             "name": "Status",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 11
           },
           {
+            "dataItemType": "dataItem",
+            "id": "09254416-95e4-477e-8373-aa73def81049",
             "name": "Comment",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 12
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Staging",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "100_Staging_Area",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "StagingArea"
+            "key": "datastore",
+            "value": "100_Staging_Area",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "a2fa9ad3-0de4-4f15-b741-5afa0aed903b",
+        "dataConnection": {
+          "name": "Staging",
+          "id": "bbc31ce0-8e0b-49ac-9b38-8ae93d2f7b44"
+        },
+        "classifications": [
+          {
+            "classification": "StagingArea",
+            "group": "Solution Layer",
+            "id": "b32a59cd-c2f4-4ded-a378-dc51b692cb93"
           }
         ]
       },
@@ -274,93 +217,121 @@
           "name": "PSA_PROFILER_CUST_MEMBERSHIP",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
               "name": "SOURCE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "21a6f46c-adbc-49bf-b507-cf610200885b",
               "name": "CustomerID",
               "dataType": "int",
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
               "name": "Plan_Code",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
             },
             {
+              "dataItemType": "dataItem",
+              "id": "0488eae4-45e3-4bc2-a40d-06c49a36b8a0",
               "name": "Start_Date",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 9
+              "ordinalPosition": 9,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "2d429ccb-8197-4b88-bf18-3811591dbd2b",
               "name": "End_Date",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 10
+              "ordinalPosition": 10,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "a1d1a3f0-705c-4e5d-be12-97c1306b17d6",
               "name": "Status",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 11
             },
             {
+              "dataItemType": "dataItem",
+              "id": "09254416-95e4-477e-8373-aa73def81049",
               "name": "Comment",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 12
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "PSA",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "150_Persistent_Staging_Area",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "PersistentStagingArea"
+              "key": "datastore",
+              "value": "150_Persistent_Staging_Area",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "2a22eb5f-9fdc-49e0-b636-4f7daece661a",
+          "dataConnection": {
+            "name": "PSA",
+            "id": "ef0fd46d-a6fa-4e82-a579-69cf4e768f86"
+          },
+          "classifications": [
+            {
+              "classification": "PersistentStagingArea",
+              "group": "Solution Layer",
+              "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
             }
           ]
         }
@@ -369,129 +340,208 @@
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "CustomerID",
               "dataType": "int",
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "id": "21a6f46c-adbc-49bf-b507-cf610200885b"
             }
           ],
           "targetDataItem": {
             "name": "CustomerID",
             "dataType": "int",
-            "ordinalPosition": 7
-          }
+            "ordinalPosition": 7,
+            "id": "21a6f46c-adbc-49bf-b507-cf610200885b"
+          },
+          "id": "649cb4e1-2c01-4d28-9a5d-bbd98793ebcb"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Plan_Code",
               "dataType": "varchar",
               "characterLength": 100,
-              "ordinalPosition": 2
+              "ordinalPosition": 2,
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
             }
           ],
           "targetDataItem": {
             "name": "Plan_Code",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 8
-          }
+            "ordinalPosition": 8,
+            "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
+          },
+          "id": "27623395-d243-45da-a61c-eee7d81090d0"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Start_Date",
               "dataType": "datetime",
+              "ordinalPosition": 3,
               "numericScale": 3,
-              "ordinalPosition": 3
+              "id": "0488eae4-45e3-4bc2-a40d-06c49a36b8a0"
             }
           ],
           "targetDataItem": {
             "name": "Start_Date",
             "dataType": "datetime2",
             "numericScale": 7,
-            "ordinalPosition": 9
-          }
+            "ordinalPosition": 9,
+            "id": "0488eae4-45e3-4bc2-a40d-06c49a36b8a0"
+          },
+          "id": "58390129-14ca-4c1e-b150-251cebc8f0dd"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "End_Date",
               "dataType": "datetime",
+              "ordinalPosition": 4,
               "numericScale": 3,
-              "ordinalPosition": 4
+              "id": "2d429ccb-8197-4b88-bf18-3811591dbd2b"
             }
           ],
           "targetDataItem": {
             "name": "End_Date",
             "dataType": "datetime2",
             "numericScale": 7,
-            "ordinalPosition": 10
-          }
+            "ordinalPosition": 10,
+            "id": "2d429ccb-8197-4b88-bf18-3811591dbd2b"
+          },
+          "id": "2409a17b-e5d0-47cb-b1bc-dde0650aba75"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Status",
               "dataType": "varchar",
               "characterLength": 10,
-              "ordinalPosition": 5
+              "ordinalPosition": 5,
+              "id": "a1d1a3f0-705c-4e5d-be12-97c1306b17d6"
             }
           ],
           "targetDataItem": {
             "name": "Status",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 11
-          }
+            "ordinalPosition": 11,
+            "id": "a1d1a3f0-705c-4e5d-be12-97c1306b17d6"
+          },
+          "id": "399d8ce2-dcd1-4258-9841-06afecd77d73"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Comment",
               "dataType": "varchar",
               "characterLength": 50,
-              "ordinalPosition": 6
+              "ordinalPosition": 6,
+              "id": "09254416-95e4-477e-8373-aa73def81049"
             }
           ],
           "targetDataItem": {
             "name": "Comment",
             "dataType": "nvarchar",
             "characterLength": 100,
-            "ordinalPosition": 12
-          }
+            "ordinalPosition": 12,
+            "id": "09254416-95e4-477e-8373-aa73def81049"
+          },
+          "id": "36bd5d65-f79b-4ef2-9467-4e9903e79454"
         }
       ],
-      "businessKeys": [
+      "filterCriterion": "",
+      "enabled": true,
+      "name": "CUST_MEMBERSHIP to STG_PROFILER_CUST_MEMBERSHIP",
+      "classifications": [
         {
-          "businessKeyComponentMapping": [
+          "classification": "StagingArea",
+          "group": "Solution Layer",
+          "id": "b32a59cd-c2f4-4ded-a378-dc51b692cb93"
+        }
+      ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "PROFILER_CUST_MEMBERSHIP_SK",
+          "id": "199875bf-1397-4194-a5fd-7bd3e87184c8",
+          "name": "CUST_MEMBERSHIP to STG_PROFILER_CUST_MEMBERSHIP for PROFILER_CUST_MEMBERSHIP_SK",
+          "businessKeyComponentMappings": [
             {
               "sourceDataItems": [
                 {
+                  "dataItemType": "dataItem",
                   "name": "CustomerID",
-                  "isHardCodedValue": false
+                  "id": "21a6f46c-adbc-49bf-b507-cf610200885b"
                 }
               ],
               "targetDataItem": {
-                "name": "CustomerID"
+                "name": "CustomerID",
+                "id": "21a6f46c-adbc-49bf-b507-cf610200885b"
               }
             },
             {
               "sourceDataItems": [
                 {
+                  "dataItemType": "dataItem",
                   "name": "Plan_Code",
-                  "isHardCodedValue": false
+                  "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
                 }
               ],
               "targetDataItem": {
-                "name": "Plan_Code"
+                "name": "Plan_Code",
+                "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
               }
             }
-          ],
-          "surrogateKey": "PROFILER_CUST_MEMBERSHIP_SK"
+          ]
         }
       ],
-      "filterCriterion": "",
-      "enabled": true
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "b967ff4a-3eb0-4d49-95f9-9c8a3ea179cf"
+    }
+  ],
+  "name": "STG_PROFILER_CUST_MEMBERSHIP",
+  "classifications": [
+    {
+      "classification": "StagingArea",
+      "group": "Solution Layer",
+      "id": "b32a59cd-c2f4-4ded-a378-dc51b692cb93"
     }
   ]
 }

@@ -9,163 +9,122 @@
     "etlProcessAttribute": "AUDIT_TRAIL_ID",
     "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
-  "generationSpecificMetadata": {
-    "selectedDataObject": {
-      "name": "LNK_CUSTOMER_COSTING",
-      "dataItems": [
-        {
-          "name": "CUSTOMER_COSTING_SK",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 1
-        },
-        {
-          "name": "AUDIT_TRAIL_ID",
-          "dataType": "int",
-          "ordinalPosition": 2
-        },
-        {
-          "name": "INSCRIPTION_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 3
-        },
-        {
-          "name": "MEMBERSHIP_PLAN_SK",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 4
-        },
-        {
-          "name": "CUSTOMER_SK",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 5
-        },
-        {
-          "name": "SEGMENT_SK",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 6
-        }
-      ],
-      "dataObjectConnection": {
-        "dataConnectionString": "Integration",
-        "extensions": [
-          {
-            "key": "database",
-            "value": "200_Integration_Layer",
-            "description": "database name"
-          },
-          {
-            "key": "schema",
-            "value": "dbo",
-            "description": "schema name"
-          }
-        ]
-      },
-      "dataObjectClassifications": [
-        {
-          "classification": "NaturalBusinessRelationship"
-        }
-      ]
-    }
-  },
   "dataObjectMappings": [
     {
-      "mappingName": "LNK_CUSTOMER_COSTING",
-      "mappingClassifications": [
-        {
-          "classification": "NaturalBusinessRelationship"
-        }
-      ],
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "a80d595d-4335-492d-abc2-b1356fd6660f",
           "name": "PSA_PROFILER_PERSONALISED_COSTING",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
               "name": "SOURCE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "572e196c-3e1f-48de-84f8-51206152ee4f",
               "name": "Member",
               "dataType": "int",
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "a1b81506-5b57-4e97-a322-7d365d628874",
               "name": "Segment",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
               "name": "Plan_Code",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 9
             },
             {
+              "dataItemType": "dataItem",
+              "id": "12549ee5-25c1-4e28-9e7c-ad0b41b763c7",
               "name": "Date_effective",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 10
+              "ordinalPosition": 10,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "d6e255f4-c5c9-4354-a93e-589a43ed80e0",
               "name": "Monthly_Cost",
               "dataType": "numeric",
-              "numericPrecision": 38,
+              "ordinalPosition": 11,
               "numericScale": 20,
-              "ordinalPosition": 11
+              "numericPrecision": 38
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "PSA",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "150_Persistent_Staging_Area",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "PSA",
+            "id": "ef0fd46d-a6fa-4e82-a579-69cf4e768f86"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "PersistentStagingArea"
+              "classification": "PersistentStagingArea",
+              "group": "Solution Layer",
+              "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "150_Persistent_Staging_Area",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -174,59 +133,75 @@
         "name": "LNK_CUSTOMER_COSTING",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "5bafe0d4-51aa-4a7a-9102-b5d55accbb2a",
             "name": "CUSTOMER_COSTING_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 1
           },
           {
+            "dataItemType": "dataItem",
+            "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
             "name": "AUDIT_TRAIL_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
             "name": "INSCRIPTION_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 3
+            "ordinalPosition": 3,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "a7d97c16-ec08-4c47-bb43-82c8989e5fb6",
             "name": "MEMBERSHIP_PLAN_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 4
           },
           {
+            "dataItemType": "dataItem",
+            "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
             "name": "CUSTOMER_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 5
           },
           {
+            "dataItemType": "dataItem",
+            "id": "0569d467-e4ba-4da4-972f-656ff2dc195e",
             "name": "SEGMENT_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 6
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Integration",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "200_Integration_Layer",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "NaturalBusinessRelationship"
+            "key": "datastore",
+            "value": "200_Integration_Layer",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "c57eb0e6-6c87-42ca-a02e-64cad03d56b8",
+        "dataConnection": {
+          "name": "Integration",
+          "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+        },
+        "classifications": [
+          {
+            "classification": "Link",
+            "group": "Physical",
+            "id": "52de812a-7fbd-458b-82df-0a3fdda633c9"
           }
         ]
       },
@@ -235,53 +210,67 @@
           "name": "HUB_MEMBERSHIP_PLAN",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "a7d97c16-ec08-4c47-bb43-82c8989e5fb6",
               "name": "MEMBERSHIP_PLAN_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "d2ae5882-6677-45d5-ac98-25b5c512b09e",
               "name": "PLAN_CODE",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "0ddde8dd-78d3-4d95-958f-7a021e0d8f67",
               "name": "PLAN_SUFFIX",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 5
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "CoreBusinessConcept"
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "b2cf8473-d7f8-4baf-9a71-969241d269f9",
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+          },
+          "classifications": [
+            {
+              "classification": "Hub",
+              "group": "Physical",
+              "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
             }
           ]
         },
@@ -289,47 +278,59 @@
           "name": "HUB_CUSTOMER",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "8ea68aa4-c17b-478c-9c14-02000556923d",
               "name": "CUSTOMER_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0",
               "name": "CUSTOMER_ID",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 4
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "CoreBusinessConcept"
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "4be15484-6450-4e43-a417-64c9a539de88",
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+          },
+          "classifications": [
+            {
+              "classification": "Hub",
+              "group": "Physical",
+              "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
             }
           ]
         },
@@ -337,163 +338,262 @@
           "name": "HUB_SEGMENT",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "0569d467-e4ba-4da4-972f-656ff2dc195e",
               "name": "SEGMENT_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "f13639b0-a4d2-437c-8253-5cb3b61c57b0",
               "name": "SEGMENT_CODE",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 4
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "CoreBusinessConcept"
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "aafad487-fb0f-4525-99e1-3415e30b41ad",
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+          },
+          "classifications": [
+            {
+              "classification": "Hub",
+              "group": "Physical",
+              "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
             }
           ]
         }
       ],
-      "businessKeys": [
+      "filterCriterion": "",
+      "enabled": true,
+      "name": "PSA_PROFILER_PERSONALISED_COSTING to LNK_CUSTOMER_COSTING",
+      "classifications": [
         {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "Plan_Code",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "PLAN_CODE"
-              }
-            },
-            {
-              "sourceDataItems": [
-                {
-                  "name": "'XYZ'",
-                  "isHardCodedValue": true
-                }
-              ],
-              "targetDataItem": {
-                "name": "PLAN_SUFFIX"
-              }
-            },
-            {
-              "sourceDataItems": [
-                {
-                  "name": "Member",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "CUSTOMER_ID"
-              }
-            },
-            {
-              "sourceDataItems": [
-                {
-                  "name": "Segment+'TEST'",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "SEGMENT_CODE"
-              }
-            }
-          ],
-          "surrogateKey": "CUSTOMER_COSTING_SK"
-        },
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "Plan_Code",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "PLAN_CODE"
-              }
-            },
-            {
-              "sourceDataItems": [
-                {
-                  "name": "'XYZ'",
-                  "isHardCodedValue": true
-                }
-              ],
-              "targetDataItem": {
-                "name": "PLAN_SUFFIX"
-              }
-            }
-          ],
-          "surrogateKey": "MEMBERSHIP_PLAN_SK"
-        },
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "Member",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "CUSTOMER_ID"
-              }
-            }
-          ],
-          "surrogateKey": "CUSTOMER_SK"
-        },
-        {
-          "businessKeyComponentMapping": [
-            {
-              "sourceDataItems": [
-                {
-                  "name": "Segment+'TEST'",
-                  "isHardCodedValue": false
-                }
-              ],
-              "targetDataItem": {
-                "name": "SEGMENT_CODE"
-              }
-            }
-          ],
-          "surrogateKey": "SEGMENT_SK"
+          "classification": "Link",
+          "group": "Physical",
+          "id": "52de812a-7fbd-458b-82df-0a3fdda633c9"
         }
       ],
-      "filterCriterion": "",
-      "enabled": true
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "CUSTOMER_COSTING_SK",
+          "id": "be9418fc-8ae6-4653-b1c2-bf013c7c3d3a",
+          "name": "PSA_PROFILER_PERSONALISED_COSTING to LNK_CUSTOMER_COSTING for CUSTOMER_COSTING_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "Plan_Code",
+                  "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE",
+                "id": "d2ae5882-6677-45d5-ac98-25b5c512b09e"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "\u0027XYZ\u0027",
+                  "id": "42195a9b-8d96-44dc-bfec-f32c06616148",
+                  "extensions": [
+                    {
+                      "key": "isHardCodedValue",
+                      "value": "true",
+                      "notes": "Hard-coded value"
+                    }
+                  ]
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX",
+                "id": "0ddde8dd-78d3-4d95-958f-7a021e0d8f67"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "Member",
+                  "id": "572e196c-3e1f-48de-84f8-51206152ee4f"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID",
+                "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "Segment\u002B\u0027TEST\u0027",
+                  "id": "2c4cbeee-252d-41af-a60d-b908a9042f25"
+                }
+              ],
+              "targetDataItem": {
+                "name": "SEGMENT_CODE",
+                "id": "f13639b0-a4d2-437c-8253-5cb3b61c57b0"
+              }
+            }
+          ]
+        },
+        {
+          "surrogateKey": "MEMBERSHIP_PLAN_SK",
+          "id": "3c038f81-ddd7-4ddc-935c-c7d4bc99a453",
+          "name": "PSA_PROFILER_PERSONALISED_COSTING to LNK_CUSTOMER_COSTING for MEMBERSHIP_PLAN_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "Plan_Code",
+                  "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_CODE",
+                "id": "d2ae5882-6677-45d5-ac98-25b5c512b09e"
+              }
+            },
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "\u0027XYZ\u0027",
+                  "id": "42195a9b-8d96-44dc-bfec-f32c06616148",
+                  "extensions": [
+                    {
+                      "key": "isHardCodedValue",
+                      "value": "true",
+                      "notes": "Hard-coded value"
+                    }
+                  ]
+                }
+              ],
+              "targetDataItem": {
+                "name": "PLAN_SUFFIX",
+                "id": "0ddde8dd-78d3-4d95-958f-7a021e0d8f67"
+              }
+            }
+          ]
+        },
+        {
+          "surrogateKey": "CUSTOMER_SK",
+          "id": "adcd57b4-e543-4b6d-9206-853ea9ddee19",
+          "name": "PSA_PROFILER_PERSONALISED_COSTING to LNK_CUSTOMER_COSTING for CUSTOMER_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "Member",
+                  "id": "572e196c-3e1f-48de-84f8-51206152ee4f"
+                }
+              ],
+              "targetDataItem": {
+                "name": "CUSTOMER_ID",
+                "id": "9072ae9e-5c34-4eef-817c-65c820ecfde0"
+              }
+            }
+          ]
+        },
+        {
+          "surrogateKey": "SEGMENT_SK",
+          "id": "bce7d8b5-8f75-4daa-984e-160616921d03",
+          "name": "PSA_PROFILER_PERSONALISED_COSTING to LNK_CUSTOMER_COSTING for SEGMENT_SK",
+          "businessKeyComponentMappings": [
+            {
+              "sourceDataItems": [
+                {
+                  "dataItemType": "dataItem",
+                  "name": "Segment\u002B\u0027TEST\u0027",
+                  "id": "2c4cbeee-252d-41af-a60d-b908a9042f25"
+                }
+              ],
+              "targetDataItem": {
+                "name": "SEGMENT_CODE",
+                "id": "f13639b0-a4d2-437c-8253-5cb3b61c57b0"
+              }
+            }
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "0927bf50-cdd5-43b4-b148-4014ec270d0d"
+    }
+  ],
+  "name": "LNK_CUSTOMER_COSTING",
+  "classifications": [
+    {
+      "classification": "Link",
+      "group": "Physical",
+      "id": "52de812a-7fbd-458b-82df-0a3fdda633c9"
     }
   ]
 }
