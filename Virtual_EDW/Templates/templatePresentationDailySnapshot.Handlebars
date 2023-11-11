@@ -8,9 +8,9 @@ AS
 -- Create using '300 Presentation Daily Snapshot' template.
 --
 
-DECLARE @SnapshotEndDate DATE       = GETUTCDATE();
-DECLARE @SnapshotStartDate DATE      = CONVERT(DATE,'2023-10-01'); -- A starting point.
-DECLARE @CurrentSnapshotDate DATE = @SnapshotStartDate;
+DECLARE @SnapshotEndDate DATETIME2(7)       = GETUTCDATE();
+DECLARE @SnapshotStartDate DATETIME2(7)      = CONVERT(DATE,'2023-10-01'); -- A starting point.
+DECLARE @CurrentSnapshotDate DATETIME2(7) = @SnapshotStartDate;
 
 {{! -- Only apply this if the object is a procedure, as identified in the extension -- }}
 {{#each sourceDataObjects.0.extensions}}{{#stringcompare key objectType}}{{#stringcompare value procedure}}
