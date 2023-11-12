@@ -35,7 +35,6 @@ namespace Virtual_Data_Warehouse
             BackgroundColor = SystemColors.AppWorkspace;
             GridColor = SystemColors.ControlDark;
 
-            //BorderStyle = BorderStyle.FixedSingle;
             Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             BorderStyle = BorderStyle.None;
 
@@ -171,22 +170,8 @@ namespace Virtual_Data_Warehouse
 
         public void AutoLayout()
         {
-            //AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-
-            //Columns[ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            //Disable the auto size again(to enable manual resizing).
-            //for (var i = 0; i < Columns.Count - 1; i++)
-            //{
-            //    Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            //    Columns[i].Width = Columns[i].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
-            //}
-
             try
             {
-                //dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                //dataGridView.Columns[dataGridView.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
                 // Disable the auto size again (to enable manual resizing).
                 for (var i = 0; i < Columns.Count - 1; i++)
                 {
