@@ -29,97 +29,103 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAlert));
-            this.labelProgressMessage = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonClose = new System.Windows.Forms.Button();
-            this.richTextBoxMetadataLog = new System.Windows.Forms.RichTextBox();
-            this.buttonShowLog = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            labelProgressMessage = new System.Windows.Forms.Label();
+            progressBar1 = new System.Windows.Forms.ProgressBar();
+            buttonCancel = new System.Windows.Forms.Button();
+            buttonClose = new System.Windows.Forms.Button();
+            richTextBoxMetadataLog = new System.Windows.Forms.RichTextBox();
+            buttonShowLog = new System.Windows.Forms.Button();
+            SuspendLayout();
             // 
             // labelProgressMessage
             // 
-            this.labelProgressMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.labelProgressMessage.AutoSize = true;
-            this.labelProgressMessage.Location = new System.Drawing.Point(9, 456);
-            this.labelProgressMessage.Name = "labelProgressMessage";
-            this.labelProgressMessage.Size = new System.Drawing.Size(48, 13);
-            this.labelProgressMessage.TabIndex = 0;
-            this.labelProgressMessage.Text = "Progress";
+            labelProgressMessage.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            labelProgressMessage.AutoSize = true;
+            labelProgressMessage.Location = new System.Drawing.Point(10, 526);
+            labelProgressMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            labelProgressMessage.Name = "labelProgressMessage";
+            labelProgressMessage.Size = new System.Drawing.Size(51, 13);
+            labelProgressMessage.TabIndex = 0;
+            labelProgressMessage.Text = "Progress";
             // 
             // progressBar1
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.progressBar1.Location = new System.Drawing.Point(12, 430);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(358, 23);
-            this.progressBar1.TabIndex = 1;
+            progressBar1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            progressBar1.Location = new System.Drawing.Point(14, 496);
+            progressBar1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            progressBar1.Name = "progressBar1";
+            progressBar1.Size = new System.Drawing.Size(418, 27);
+            progressBar1.TabIndex = 1;
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCancel.Location = new System.Drawing.Point(464, 430);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(109, 40);
-            this.buttonCancel.TabIndex = 2;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            buttonCancel.Location = new System.Drawing.Point(541, 496);
+            buttonCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            buttonCancel.Name = "buttonCancel";
+            buttonCancel.Size = new System.Drawing.Size(127, 46);
+            buttonCancel.TabIndex = 2;
+            buttonCancel.Text = "Cancel";
+            buttonCancel.UseVisualStyleBackColor = true;
+            buttonCancel.Click += buttonCancel_Click;
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClose.Location = new System.Drawing.Point(694, 430);
-            this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size(109, 40);
-            this.buttonClose.TabIndex = 3;
-            this.buttonClose.Text = "Close";
-            this.buttonClose.UseVisualStyleBackColor = true;
-            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            buttonClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            buttonClose.Location = new System.Drawing.Point(810, 496);
+            buttonClose.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            buttonClose.Name = "buttonClose";
+            buttonClose.Size = new System.Drawing.Size(127, 46);
+            buttonClose.TabIndex = 3;
+            buttonClose.Text = "Close";
+            buttonClose.UseVisualStyleBackColor = true;
+            buttonClose.Click += buttonClose_Click;
             // 
             // richTextBoxMetadataLog
             // 
-            this.richTextBoxMetadataLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBoxMetadataLog.BackColor = System.Drawing.SystemColors.Info;
-            this.richTextBoxMetadataLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.richTextBoxMetadataLog.HideSelection = false;
-            this.richTextBoxMetadataLog.Location = new System.Drawing.Point(12, 12);
-            this.richTextBoxMetadataLog.Name = "richTextBoxMetadataLog";
-            this.richTextBoxMetadataLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.richTextBoxMetadataLog.Size = new System.Drawing.Size(791, 412);
-            this.richTextBoxMetadataLog.TabIndex = 4;
-            this.richTextBoxMetadataLog.Text = "";
+            richTextBoxMetadataLog.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            richTextBoxMetadataLog.BackColor = System.Drawing.SystemColors.Info;
+            richTextBoxMetadataLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            richTextBoxMetadataLog.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            richTextBoxMetadataLog.HideSelection = false;
+            richTextBoxMetadataLog.Location = new System.Drawing.Point(14, 14);
+            richTextBoxMetadataLog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            richTextBoxMetadataLog.Name = "richTextBoxMetadataLog";
+            richTextBoxMetadataLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            richTextBoxMetadataLog.Size = new System.Drawing.Size(922, 475);
+            richTextBoxMetadataLog.TabIndex = 4;
+            richTextBoxMetadataLog.Text = "";
             // 
             // buttonShowLog
             // 
-            this.buttonShowLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonShowLog.Location = new System.Drawing.Point(579, 430);
-            this.buttonShowLog.Name = "buttonShowLog";
-            this.buttonShowLog.Size = new System.Drawing.Size(109, 40);
-            this.buttonShowLog.TabIndex = 5;
-            this.buttonShowLog.Text = "Show Log File";
-            this.buttonShowLog.UseVisualStyleBackColor = true;
-            this.buttonShowLog.Click += new System.EventHandler(this.buttonShowLog_Click);
+            buttonShowLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            buttonShowLog.Location = new System.Drawing.Point(676, 496);
+            buttonShowLog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            buttonShowLog.Name = "buttonShowLog";
+            buttonShowLog.Size = new System.Drawing.Size(127, 46);
+            buttonShowLog.TabIndex = 5;
+            buttonShowLog.Text = "Show Log File";
+            buttonShowLog.UseVisualStyleBackColor = true;
+            buttonShowLog.Click += buttonShowLog_Click;
             // 
             // FormAlert
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(815, 482);
-            this.Controls.Add(this.buttonShowLog);
-            this.Controls.Add(this.richTextBoxMetadataLog);
-            this.Controls.Add(this.buttonClose);
-            this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.labelProgressMessage);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "FormAlert";
-            this.Text = "Processing Metadata";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            ClientSize = new System.Drawing.Size(951, 556);
+            Controls.Add(buttonShowLog);
+            Controls.Add(richTextBoxMetadataLog);
+            Controls.Add(buttonClose);
+            Controls.Add(buttonCancel);
+            Controls.Add(progressBar1);
+            Controls.Add(labelProgressMessage);
+            Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            Name = "FormAlert";
+            Text = "Processing Metadata";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

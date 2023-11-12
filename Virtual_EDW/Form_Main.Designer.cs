@@ -92,6 +92,7 @@
             backgroundWorkerEventLog = new System.ComponentModel.BackgroundWorker();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             toolTipVdw = new System.Windows.Forms.ToolTip(components);
+            clearEventLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             menuStripMainMenu.SuspendLayout();
             SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -252,7 +253,7 @@
             // 
             // helpToolStripMenuItem
             // 
-            helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { helpToolStripMenuItem1, displayEventLogToolStripMenuItem, aboutToolStripMenuItem });
+            helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { helpToolStripMenuItem1, displayEventLogToolStripMenuItem, clearEventLogToolStripMenuItem, aboutToolStripMenuItem });
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             helpToolStripMenuItem.Text = "Help";
@@ -261,7 +262,7 @@
             // 
             helpToolStripMenuItem1.Image = Properties.Resources.HelpIconSmall;
             helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            helpToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
+            helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             helpToolStripMenuItem1.Text = "Help";
             helpToolStripMenuItem1.Click += helpToolStripMenuItem1_Click;
             // 
@@ -269,7 +270,7 @@
             // 
             displayEventLogToolStripMenuItem.Image = Properties.Resources.log_file;
             displayEventLogToolStripMenuItem.Name = "displayEventLogToolStripMenuItem";
-            displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             displayEventLogToolStripMenuItem.Text = "Display Event Log";
             displayEventLogToolStripMenuItem.Click += displayEventLogToolStripMenuItem_Click;
             // 
@@ -277,7 +278,7 @@
             // 
             aboutToolStripMenuItem.Image = Properties.Resources.RavosLogo;
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             aboutToolStripMenuItem.Text = "About";
             aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
             // 
@@ -288,6 +289,7 @@
             checkBoxGenerateInDatabase.Location = new System.Drawing.Point(7, 23);
             checkBoxGenerateInDatabase.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBoxGenerateInDatabase.Name = "checkBoxGenerateInDatabase";
+            checkBoxGenerateInDatabase.Size = new System.Drawing.Size(198, 17);
             checkBoxGenerateInDatabase.Size = new System.Drawing.Size(198, 17);
             checkBoxGenerateInDatabase.TabIndex = 7;
             checkBoxGenerateInDatabase.Text = "Generate in database (SQL Server)";
@@ -389,10 +391,10 @@
             tabPageSettings.Controls.Add(groupBox1);
             tabPageSettings.Controls.Add(groupBoxConfigurationPaths);
             tabPageSettings.Controls.Add(groupBoxOutputOptions);
-            tabPageSettings.Location = new System.Drawing.Point(4, 24);
+            tabPageSettings.Location = new System.Drawing.Point(4, 22);
             tabPageSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPageSettings.Name = "tabPageSettings";
-            tabPageSettings.Size = new System.Drawing.Size(1433, 584);
+            tabPageSettings.Size = new System.Drawing.Size(1433, 586);
             tabPageSettings.TabIndex = 8;
             tabPageSettings.Text = "Settings";
             tabPageSettings.UseVisualStyleBackColor = true;
@@ -421,7 +423,7 @@
             label10.Location = new System.Drawing.Point(7, 30);
             label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label10.Name = "label10";
-            label10.Size = new System.Drawing.Size(140, 15);
+            label10.Size = new System.Drawing.Size(135, 13);
             label10.TabIndex = 94;
             label10.Text = "Metadata directory (json)";
             // 
@@ -455,7 +457,7 @@
             labelTemplatePath.Location = new System.Drawing.Point(7, 60);
             labelTemplatePath.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             labelTemplatePath.Name = "labelTemplatePath";
-            labelTemplatePath.Size = new System.Drawing.Size(105, 15);
+            labelTemplatePath.Size = new System.Drawing.Size(101, 13);
             labelTemplatePath.TabIndex = 98;
             labelTemplatePath.Text = "Template directory";
             // 
@@ -534,7 +536,7 @@
             label2.Location = new System.Drawing.Point(7, 140);
             label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(140, 15);
+            label2.Size = new System.Drawing.Size(137, 13);
             label2.TabIndex = 115;
             label2.Text = "TEAM configuration path";
             // 
@@ -544,7 +546,7 @@
             label1.Location = new System.Drawing.Point(7, 59);
             label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(111, 15);
+            label1.Size = new System.Drawing.Size(105, 13);
             label1.TabIndex = 113;
             label1.Text = "Active environment";
             // 
@@ -556,7 +558,7 @@
             comboBoxEnvironments.Location = new System.Drawing.Point(160, 55);
             comboBoxEnvironments.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             comboBoxEnvironments.Name = "comboBoxEnvironments";
-            comboBoxEnvironments.Size = new System.Drawing.Size(508, 23);
+            comboBoxEnvironments.Size = new System.Drawing.Size(508, 21);
             comboBoxEnvironments.TabIndex = 112;
             comboBoxEnvironments.SelectedIndexChanged += comboBoxEnvironments_SelectedIndexChanged;
             // 
@@ -591,7 +593,7 @@
             labelTEAMConfigurationFile.Location = new System.Drawing.Point(7, 30);
             labelTEAMConfigurationFile.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             labelTEAMConfigurationFile.Name = "labelTEAMConfigurationFile";
-            labelTEAMConfigurationFile.Size = new System.Drawing.Size(133, 15);
+            labelTEAMConfigurationFile.Size = new System.Drawing.Size(128, 13);
             labelTEAMConfigurationFile.TabIndex = 84;
             labelTEAMConfigurationFile.Text = "TEAM environments file";
             // 
@@ -631,7 +633,7 @@
             textBoxSchemaName.Location = new System.Drawing.Point(160, 27);
             textBoxSchemaName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             textBoxSchemaName.Name = "textBoxSchemaName";
-            textBoxSchemaName.Size = new System.Drawing.Size(507, 23);
+            textBoxSchemaName.Size = new System.Drawing.Size(507, 22);
             textBoxSchemaName.TabIndex = 91;
             // 
             // label12
@@ -640,7 +642,7 @@
             label12.Location = new System.Drawing.Point(7, 30);
             label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label12.Name = "label12";
-            label12.Size = new System.Drawing.Size(110, 15);
+            label12.Size = new System.Drawing.Size(105, 13);
             label12.TabIndex = 92;
             label12.Text = "VDW schema name";
             // 
@@ -650,7 +652,7 @@
             OutputPathLabel.Location = new System.Drawing.Point(7, 60);
             OutputPathLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             OutputPathLabel.Name = "OutputPathLabel";
-            OutputPathLabel.Size = new System.Drawing.Size(135, 15);
+            OutputPathLabel.Size = new System.Drawing.Size(131, 13);
             OutputPathLabel.TabIndex = 82;
             OutputPathLabel.Text = "Output (spool) directory";
             // 
@@ -669,10 +671,10 @@
             // 
             tabPageHome.Controls.Add(labelWelcome);
             tabPageHome.Controls.Add(pictureBox2);
-            tabPageHome.Location = new System.Drawing.Point(4, 24);
+            tabPageHome.Location = new System.Drawing.Point(4, 22);
             tabPageHome.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tabPageHome.Name = "tabPageHome";
-            tabPageHome.Size = new System.Drawing.Size(1433, 584);
+            tabPageHome.Size = new System.Drawing.Size(1433, 586);
             tabPageHome.TabIndex = 12;
             tabPageHome.Text = "Home";
             tabPageHome.UseVisualStyleBackColor = true;
@@ -680,10 +682,10 @@
             // labelWelcome
             // 
             labelWelcome.AutoSize = true;
-            labelWelcome.Location = new System.Drawing.Point(237, 36);
+            labelWelcome.Location = new System.Drawing.Point(152, 36);
             labelWelcome.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             labelWelcome.Name = "labelWelcome";
-            labelWelcome.Size = new System.Drawing.Size(217, 15);
+            labelWelcome.Size = new System.Drawing.Size(214, 13);
             labelWelcome.TabIndex = 85;
             labelWelcome.Text = "Welcome to the Virtual Data Warehouse";
             // 
@@ -693,7 +695,7 @@
             pictureBox2.Location = new System.Drawing.Point(40, 36);
             pictureBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new System.Drawing.Size(187, 175);
+            pictureBox2.Size = new System.Drawing.Size(104, 100);
             pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             pictureBox2.TabIndex = 18;
             pictureBox2.TabStop = false;
@@ -725,9 +727,17 @@
             toolTipVdw.InitialDelay = 300;
             toolTipVdw.ReshowDelay = 100;
             // 
+            // clearEventLogToolStripMenuItem
+            // 
+            clearEventLogToolStripMenuItem.Image = Properties.Resources.log_file;
+            clearEventLogToolStripMenuItem.Name = "clearEventLogToolStripMenuItem";
+            clearEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            clearEventLogToolStripMenuItem.Text = "Clear Event Log";
+            clearEventLogToolStripMenuItem.Click += clearEventLogToolStripMenuItem_Click;
+            // 
             // FormMain
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.Control;
@@ -832,6 +842,7 @@
         private System.Windows.Forms.ToolStripMenuItem openCoreDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshMetadataToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem clearEventLogToolStripMenuItem;
     }
 }
 
