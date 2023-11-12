@@ -232,7 +232,7 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        public static void ExecuteInDatabaseSqlServer(TeamConnection teamConnection, string query)
+        public static void ExecuteInDatabase(TeamConnection teamConnection, string query)
         {
             if (teamConnection.TechnologyConnectionType == TechnologyConnectionType.SqlServer)
             {

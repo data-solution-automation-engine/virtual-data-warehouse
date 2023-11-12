@@ -613,7 +613,7 @@ namespace Virtual_Data_Warehouse
                             }
                             catch (Exception exception)
                             {
-                                RaiseOnChangeMainText("An error was encountered while parsing the Json metadata. The error message is: " + exception.Message);
+                                RaiseOnChangeMainText($"An error was encountered while parsing the Json metadata. The error message is: {exception.Message}.");
                             }
                         }
 
@@ -644,20 +644,20 @@ namespace Virtual_Data_Warehouse
                                         VdwUtility.CreateVdwSchema(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) });
                                     }
                                 }
-                                catch
+                                catch (Exception exception)
                                 {
-                                    var errorMessage = $"There was an issue creating the schema '{FormBase.VdwConfigurationSettings.VdwSchema}' against connection '{localConnection.ConnectionKey}'.";
+                                    var errorMessage = $"There was an issue creating the schema '{FormBase.VdwConfigurationSettings.VdwSchema}' against connection '{localConnection.ConnectionKey}'. The error message is {exception.Message}.";
                                     RaiseOnChangeMainText(errorMessage);
                                     FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
                                 }
 
                                 try
                                 {
-                                    VdwUtility.ExecuteInDatabaseSqlServer(localConnection, result);
+                                    VdwUtility.ExecuteInDatabase(localConnection, result);
                                 }
-                                catch
+                                catch (Exception exception)
                                 {
-                                    var errorMessage = $"There was an issue executing the query '{result}' against connection '{localConnection.ConnectionKey}'.";
+                                    var errorMessage = $"There was an issue executing the query '{result}' against connection '{localConnection.ConnectionKey}'. The reported error is {exception.Message}.";
                                     RaiseOnChangeMainText(errorMessage);
                                     FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
                                 }
