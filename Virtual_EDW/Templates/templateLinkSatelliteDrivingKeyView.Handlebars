@@ -11,7 +11,7 @@ SELECT
     HASHBYTES('MD5', {{#each businessKeyDefinitions}}{{#unless @first}} +{{/unless}}{{!-- Create the Surrogate Key using the Business Key components --}}{{#each businessKeyComponentMappings}}
        ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{/each}}{{#each businessKeyDefinitions}}{{#if @first}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
-    {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}--[{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
+    {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}--[{{targetDataItem.name}}],
     {{/each}}{{/each}}[{{../conventions.loadDateTimeAttribute}}],
     [{{../conventions.sourceRowIdAttribute}}],
     --COALESCE (
