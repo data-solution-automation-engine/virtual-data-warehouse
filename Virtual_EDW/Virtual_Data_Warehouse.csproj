@@ -593,5 +593,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.4" />
+    <PackageReference Include="Snowflake.Data" Version="2.1.2" />
   </ItemGroup>
 </Project>

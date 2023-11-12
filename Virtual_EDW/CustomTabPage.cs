@@ -4,7 +4,6 @@ using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using HandlebarsDotNet;
@@ -221,6 +220,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationOutput.Dock = DockStyle.Fill;
             localRichTextBoxGenerationOutput.Text = $"No {_inputNiceName} logic has been generated at the moment.";
             localRichTextBoxGenerationOutput.Location = new Point(3, 6);
+            localRichTextBoxGenerationOutput.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localRichTextBoxGenerationOutput.Size = new Size(882, 535);
             localRichTextBoxGenerationOutput.BorderStyle = BorderStyle.None;
             
@@ -321,6 +321,7 @@ namespace Virtual_Data_Warehouse
             localRichTextBoxGenerationTemplate.Location = new Point(3, 82);
             localRichTextBoxGenerationTemplate.Size = new Size(195, 30);
             localRichTextBoxGenerationTemplate.BorderStyle = BorderStyle.None;
+            localRichTextBoxGenerationTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localRichTextBoxGenerationTemplate.AcceptsTab = true;
             localRichTextBoxGenerationTemplate.TextChanged += CommitTemplateToMemory;
             #endregion
@@ -638,7 +639,10 @@ namespace Virtual_Data_Warehouse
                             {
                                 try
                                 {
-                                    VdwUtility.CreateVdwSchema(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) });
+                                    if (localConnection.TechnologyConnectionType == TechnologyConnectionType.SqlServer)
+                                    {
+                                        VdwUtility.CreateVdwSchema(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) });
+                                    }
                                 }
                                 catch
                                 {
@@ -649,7 +653,7 @@ namespace Virtual_Data_Warehouse
 
                                 try
                                 {
-                                    VdwUtility.ExecuteInDatabase(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) }, result);
+                                    VdwUtility.ExecuteInDatabaseSqlServer(localConnection, result);
                                 }
                                 catch
                                 {

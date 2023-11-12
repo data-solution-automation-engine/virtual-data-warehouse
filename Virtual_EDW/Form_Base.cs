@@ -10,11 +10,13 @@ namespace Virtual_Data_Warehouse
 
         public FormBase()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
             InitializeComponent();
         }
 
         public FormBase(FormMain myParent)
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
             MyParent = myParent;
             InitializeComponent();
         }

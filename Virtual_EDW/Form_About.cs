@@ -9,6 +9,7 @@ namespace Virtual_Data_Warehouse
 
         public FormAbout()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
             InitializeComponent();
             FormBorderStyle = FormBorderStyle.FixedSingle;
         }

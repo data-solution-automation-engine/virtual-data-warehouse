@@ -26,12 +26,14 @@ namespace Virtual_Data_Warehouse
 
         public FormMain()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
+
             localCustomTabPageList = new List<CustomTabPage>();
 
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.12";
+            const string versionNumberForApplication = "v1.6.13";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
@@ -105,7 +107,7 @@ namespace Virtual_Data_Warehouse
             textBoxTemplatePath.Text = VdwConfigurationSettings.TemplatePath;
 
             // Load the configuration and connection information from file, based on the selected environment and input path.
-            VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
+            VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey, VdwConfigurationSettings.VdwEventLog);
             VdwUtility.LoadTeamConfigurationFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
 
             // Define the data grid.
@@ -1491,7 +1493,7 @@ namespace Virtual_Data_Warehouse
             if (startUpIndicator != true)
             {
                 // Reload the configuration and connections file associated with this new environment.
-                VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
+                VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey, VdwConfigurationSettings.VdwEventLog);
                 VdwUtility.LoadTeamConfigurationFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey);
 
                 richTextBoxInformationMain.AppendText($"The '{VdwConfigurationSettings.ActiveEnvironment.environmentKey}' environment is now active.\r\n");
@@ -1567,6 +1569,12 @@ namespace Virtual_Data_Warehouse
             {
                 richTextBoxInformationMain.Text = $@"An error has occurred while attempting to open the directory. The error message is: {ex.Message}.";
             }
+        }
+
+        private void clearEventLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            VdwConfigurationSettings.VdwEventLog.Clear();
+            VdwConfigurationSettings.VdwEventLog.errorReportedHighWaterMark = 0;
         }
 
         public sealed override string Text

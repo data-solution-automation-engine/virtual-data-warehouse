@@ -146,6 +146,7 @@ namespace Virtual_Data_Warehouse
 
         public FormAlert()
         {
+            AutoScaleMode = AutoScaleMode.Dpi;
             InitializeComponent();
         }
 
