@@ -588,6 +588,7 @@
     <PackageReference Include="Handlebars.Net">
       <Version>2.1.4</Version>
     </PackageReference>
+    <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Microsoft.Data.SqlClient">
       <Version>5.1.2</Version>
     </PackageReference>
