@@ -16,7 +16,8 @@
           "Microsoft.SqlServer.SqlManagementObjects": "170.13.0",
           "Microsoft.Windows.Compatibility": "7.0.1",
           "Newtonsoft.Json": "13.0.3",
-          "TEAM_Library": "1.0.0.0"
+          "TEAM_Library": "1.0.0.0",
+          "Snowflake.Data": "2.1.2.0"
         },
         "runtime": {
           "Virtual_Data_Warehouse.dll": {}
