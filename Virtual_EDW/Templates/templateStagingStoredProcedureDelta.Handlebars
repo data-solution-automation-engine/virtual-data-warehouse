@@ -13,42 +13,61 @@ AS
 
 TRUNCATE TABLE [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}];
 
-WITH STG_CTE AS
+WITH SOURCE_CTE AS
 (
-SELECT
-   {{#each dataItemMappings}}
-   [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
-   {{/each}}
-   HASHBYTES('MD5',
-   {{#each dataItemMappings}}
-      ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
-   {{/each}}
-   ) AS [{{../conventions.recordChecksumAttribute}}]
-FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
+  -- Incoming data, a full data set must be available here.
+  SELECT
+     {{#each dataItemMappings}}
+     [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],
+     {{/each}}
+     HASHBYTES('MD5',
+     {{#each dataItemMappings}}
+        ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
+     {{/each}}
+     ) AS [{{../conventions.recordChecksumAttribute}}]
+  FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
 ),
 PSA_CTE AS
 (
-SELECT
-   A.[{{../conventions.recordChecksumAttribute}}] AS [{{../conventions.recordChecksumAttribute}}], 
-   {{#each dataItemMappings}}
-   A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
-   {{/each}}
-FROM [{{lookupExtension relatedDataObjects.0.extensions "datastore"}}].[{{lookupExtension relatedDataObjects.0.extensions "location"}}].[{{relatedDataObjects.0.name}}] A
- -- Most recently arrived PSA record which is not logically deleted
-JOIN
-   (
-   SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
-      [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
-      MAX({{../conventions.sourceRowIdAttribute}}) AS MAX_{{../conventions.sourceRowIdAttribute}},  
-      MAX({{../conventions.loadDateTimeAttribute}}) AS MAX_{{../conventions.loadDateTimeAttribute}}
+   -- Query the most recently arrived PSA record which is not logically deleted
+   SELECT
+      A.[{{../conventions.recordChecksumAttribute}}] AS [{{../conventions.recordChecksumAttribute}}], 
+      {{#each dataItemMappings}}
+      A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
+      {{/each}}
    FROM [{{lookupExtension relatedDataObjects.0.extensions "datastore"}}].[{{lookupExtension relatedDataObjects.0.extensions "location"}}].[{{relatedDataObjects.0.name}}] A
-   GROUP BY {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
-      [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
-   ) B ON {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
-   A.[{{sourceDataItems.0.name}}] = B.[{{sourceDataItems.0.name}}] AND {{/each}} {{/each}}
-   A.[{{../conventions.sourceRowIdAttribute}}] = B.[MAX_{{../conventions.sourceRowIdAttribute}}] AND
-   A.[{{../conventions.loadDateTimeAttribute}}] = B.[MAX_{{../conventions.loadDateTimeAttribute}}]
-   WHERE {{../conventions.changeDataCaptureAttribute}} != 'D'
+   JOIN
+   (
+      SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+         B.[{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+         {{../conventions.loadDateTimeAttribute}} AS MAX_{{../conventions.loadDateTimeAttribute}},
+         MAX({{../conventions.sourceRowIdAttribute}}) OVER 
+         (
+         PARTITION BY              
+         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+            [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+            {{../conventions.loadDateTimeAttribute}}
+         ORDER BY              
+         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+            [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+            {{../conventions.loadDateTimeAttribute}}              
+         ) AS MAX_{{../conventions.sourceRowIdAttribute}},  
+         ROW_NUMBER() OVER 
+         (
+         PARTITION BY              {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+            [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}} {{/each}} {{/each}}
+         ORDER BY
+            {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+            [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+            {{../conventions.loadDateTimeAttribute}} DESC             
+         ) AS MAX_ROWNUM
+      FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] B
+   ) C ON         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+      A.[{{targetDataItem.name}}] = C.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
+      A.[{{../conventions.sourceRowIdAttribute}}] = C.[MAX_{{../conventions.sourceRowIdAttribute}}] AND
+      A.[{{../conventions.loadDateTimeAttribute}}] = C.[MAX_{{../conventions.loadDateTimeAttribute}}] AND
+      1 = C.[MAX_ROWNUM]
+   WHERE {{../conventions.changeDataCaptureAttribute}} != 'D'         
 )
 INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
@@ -66,34 +85,34 @@ SELECT
    @AUDIT_TRAIL_ID AS [{{../conventions.etlProcessAttribute}}],
    {{#each dataItemMappings}}
    CASE 
-     WHEN STG_CTE.{{#each ../businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
+     WHEN SOURCE_CTE.{{#each ../businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
      THEN PSA_CTE.[{{sourceDataItems.0.name}}]
-     ELSE STG_CTE.[{{sourceDataItems.0.name}}] 
+     ELSE SOURCE_CTE.[{{sourceDataItems.0.name}}] 
    END AS [{{sourceDataItems.0.name}}],{{/each}}
    CASE 
-     WHEN STG_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL
+     WHEN SOURCE_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL
      THEN PSA_CTE.[{{../conventions.recordChecksumAttribute}}]
-     ELSE STG_CTE.[{{../conventions.recordChecksumAttribute}}]
+     ELSE SOURCE_CTE.[{{../conventions.recordChecksumAttribute}}]
    END AS [{{../conventions.recordChecksumAttribute}}], 
    CASE 
-      WHEN STG_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'D' 
+      WHEN SOURCE_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'D' 
       WHEN PSA_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'C' --Inserts are also C
-      WHEN STG_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
+      WHEN SOURCE_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
          AND PSA_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
-         AND STG_CTE.[{{../conventions.recordChecksumAttribute}}]  != PSA_CTE.[{{../conventions.recordChecksumAttribute}}] THEN 'C' ELSE 'No Change' 
+         AND SOURCE_CTE.[{{../conventions.recordChecksumAttribute}}]  != PSA_CTE.[{{../conventions.recordChecksumAttribute}}] THEN 'C' ELSE 'No Change' 
    END AS {{../conventions.changeDataCaptureAttribute}},
   {{!-- Source row Id implemented for when not using identify column in the staging table --}}
-   --ROW_NUMBER() OVER ( ORDER BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}) AS {{../conventions.sourceRowIdAttribute}},
+   --ROW_NUMBER() OVER ( ORDER BY  {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}CASE WHEN SOURCE_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE SOURCE_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}) AS {{../conventions.sourceRowIdAttribute}},
    SYSDATETIME() AS [{{../conventions.eventDateTimeAttribute}}]
-FROM STG_CTE
+FROM SOURCE_CTE
 FULL OUTER JOIN PSA_CTE ON {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
-    PSA_CTE.[{{sourceDataItems.0.name}}] = STG_CTE.[{{sourceDataItems.0.name}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
+    PSA_CTE.[{{sourceDataItems.0.name}}] = SOURCE_CTE.[{{sourceDataItems.0.name}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
 WHERE
 (
    CASE
-      WHEN {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'D'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}SOURCE_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'D'{{/if}}{{/each}}{{/each}}
       WHEN {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'C'{{/if}}{{/each}}{{/each}}
-      WHEN {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NOT NULL AND PSA_CTE.{{sourceDataItems.0.name}} IS NOT NULL AND STG_CTE.[{{../../../conventions.recordChecksumAttribute}}] != PSA_CTE.[{{../../../conventions.recordChecksumAttribute}}] THEN 'C'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NOT NULL AND PSA_CTE.{{sourceDataItems.0.name}} IS NOT NULL AND SOURCE_CTE.[{{../../../conventions.recordChecksumAttribute}}] != PSA_CTE.[{{../../../conventions.recordChecksumAttribute}}] THEN 'C'{{/if}}{{/each}}{{/each}}
       ELSE 'No Change'
    END
 ) != 'No Change'

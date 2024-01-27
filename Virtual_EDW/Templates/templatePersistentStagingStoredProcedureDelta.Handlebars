@@ -48,17 +48,16 @@ FROM
      STG.[{{sourceDataItems.0.name}}],
      {{/each}}
      COALESCE(maxsub.[LKP_{{../conventions.recordChecksumAttribute}}], 'N/A') AS [LKP_{{../conventions.recordChecksumAttribute}}],
-     COALESCE(maxsub.[LKP_{{../conventions.changeDataCaptureAttribute}}], 'N/A') AS [LKP_{{../conventions.changeDataCaptureAttribute}}],
+     COALESCE(maxsub.[LKP_{{../conventions.changeDataCaptureAttribute}}], 'C') AS [LKP_{{../conventions.changeDataCaptureAttribute}}],
      CAST(ROW_NUMBER() OVER
         (  PARTITION BY
-             {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}STG.[{{sourceDataItems.0.name}}],
+             {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}STG.[{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
              {{/each}}{{/each}}
-             STG.[{{../conventions.sourceRowIdAttribute}}]
            ORDER BY
              {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}STG.[{{sourceDataItems.0.name}}],
              {{/each}}{{/each}}
-             STG.[{{../conventions.sourceRowIdAttribute}}],
-             STG.[{{../conventions.loadDateTimeAttribute}}]
+             STG.[{{../conventions.loadDateTimeAttribute}}],
+             STG.[{{../conventions.sourceRowIdAttribute}}]             
       )  AS INT
     ) AS KEY_ROW_NUMBER
   FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}] STG
@@ -69,7 +68,7 @@ FROM
        HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItems.0.name}}] AND{{/each}} {{/each}}
        HSTG.[{{../conventions.sourceRowIdAttribute}}] = STG.[{{../conventions.sourceRowIdAttribute}}] AND
        HSTG.[{{../conventions.loadDateTimeAttribute}}] = STG.[{{../conventions.loadDateTimeAttribute}}]
-  -- Most recently arrived PSA record
+  -- Query the most recently arrived PSA record which is not logically deleted.
   LEFT OUTER JOIN 
   (
       SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
@@ -82,15 +81,34 @@ FROM
       (
         SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
           B.[{{sourceDataItems.0.name}}], {{/each}} {{/each}}
-          MAX({{../conventions.sourceRowIdAttribute}}) AS MAX_{{../conventions.sourceRowIdAttribute}},  
-          MAX({{../conventions.loadDateTimeAttribute}}) AS MAX_{{../conventions.loadDateTimeAttribute}}
+          {{../conventions.loadDateTimeAttribute}} AS MAX_{{../conventions.loadDateTimeAttribute}},
+          MAX({{../conventions.sourceRowIdAttribute}}) OVER 
+          (
+            PARTITION BY              
+            {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+              [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+              {{../conventions.loadDateTimeAttribute}}
+            ORDER BY              
+            {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+              [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+              {{../conventions.loadDateTimeAttribute}}              
+          ) AS MAX_{{../conventions.sourceRowIdAttribute}},  
+          ROW_NUMBER() OVER 
+          (
+            PARTITION BY              {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+              [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}} {{/each}} {{/each}}
+            ORDER BY
+              {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+              [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+              {{../conventions.loadDateTimeAttribute}} DESC             
+          ) AS MAX_ROWNUM
         FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] B
-        GROUP BY {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
-          B.[{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}{{/each}} {{/each}}
      ) C ON         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
          A.[{{targetDataItem.name}}] = C.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
          A.[{{../conventions.sourceRowIdAttribute}}] = C.[MAX_{{../conventions.sourceRowIdAttribute}}] AND
-         A.[{{../conventions.loadDateTimeAttribute}}] = C.[MAX_{{../conventions.loadDateTimeAttribute}}]
+         A.[{{../conventions.loadDateTimeAttribute}}] = C.[MAX_{{../conventions.loadDateTimeAttribute}}] AND
+         1 = C.[MAX_ROWNUM]
+     WHERE {{../conventions.changeDataCaptureAttribute}} != 'D'         
   ) maxsub ON     {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
      STG.[{{sourceDataItems.0.name}}] = maxsub.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
      STG.[{{../conventions.sourceRowIdAttribute}}] = maxsub.[{{../conventions.sourceRowIdAttribute}}] 

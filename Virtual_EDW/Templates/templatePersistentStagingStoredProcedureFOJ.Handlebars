@@ -25,26 +25,45 @@ FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupE
 ),
 PSA_CTE AS
 (
-SELECT
-   A.[{{../conventions.recordChecksumAttribute}}] AS [{{../conventions.recordChecksumAttribute}}], 
-   {{#each dataItemMappings}}
-   A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
-   {{/each}}
-FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] A
-JOIN
+   -- The most recently arrived PSA record which is not logically deleted.
+   SELECT
+      A.[{{../conventions.recordChecksumAttribute}}] AS [{{../conventions.recordChecksumAttribute}}], 
+      {{#each dataItemMappings}}
+      A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
+      {{/each}}
+   FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] A
+   JOIN
    (
-   SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
-      [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
-      MAX({{../conventions.sourceRowIdAttribute}}) AS MAX_{{../conventions.sourceRowIdAttribute}},  
-      MAX({{../conventions.loadDateTimeAttribute}}) AS MAX_{{../conventions.loadDateTimeAttribute}}
-   FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]  A
-   GROUP BY {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
-      [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
-   ) B ON {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
-   A.[{{sourceDataItems.0.name}}] = B.[{{sourceDataItems.0.name}}] AND {{/each}} {{/each}}
-   A.[{{../conventions.sourceRowIdAttribute}}] = B.MAX_{{../conventions.sourceRowIdAttribute}} AND   
-   A.{{../conventions.loadDateTimeAttribute}} = B.MAX_{{../conventions.loadDateTimeAttribute}}
-   WHERE {{../conventions.changeDataCaptureAttribute}} != 'D'
+      SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+         B.[{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+         {{../conventions.loadDateTimeAttribute}} AS MAX_{{../conventions.loadDateTimeAttribute}},
+         MAX({{../conventions.sourceRowIdAttribute}}) OVER 
+         (
+         PARTITION BY              
+         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+            [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+            {{../conventions.loadDateTimeAttribute}}
+         ORDER BY              
+         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+            [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+            {{../conventions.loadDateTimeAttribute}}              
+         ) AS MAX_{{../conventions.sourceRowIdAttribute}},  
+         ROW_NUMBER() OVER 
+         (
+         PARTITION BY              {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+            [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}} {{/each}} {{/each}}
+         ORDER BY
+            {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+            [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
+            {{../conventions.loadDateTimeAttribute}} DESC             
+         ) AS MAX_ROWNUM
+      FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] B
+   ) C ON         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+      A.[{{targetDataItem.name}}] = C.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
+      A.[{{../conventions.sourceRowIdAttribute}}] = C.[MAX_{{../conventions.sourceRowIdAttribute}}] AND
+      A.[{{../conventions.loadDateTimeAttribute}}] = C.[MAX_{{../conventions.loadDateTimeAttribute}}] AND
+      1 = C.[MAX_ROWNUM]
+   WHERE {{../conventions.changeDataCaptureAttribute}} != 'D'         
 )
 INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
