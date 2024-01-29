@@ -49,8 +49,7 @@ FROM
      {{/each}}
      COALESCE(maxsub.[LKP_{{../conventions.recordChecksumAttribute}}], 'N/A') AS [LKP_{{../conventions.recordChecksumAttribute}}],
      COALESCE(maxsub.[LKP_{{../conventions.changeDataCaptureAttribute}}], 'C') AS [LKP_{{../conventions.changeDataCaptureAttribute}}],
-     CAST(ROW_NUMBER() OVER
-        (  PARTITION BY
+     ROW_NUMBER() OVER  (  PARTITION BY
              {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}STG.[{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
              {{/each}}{{/each}}
            ORDER BY
@@ -58,10 +57,9 @@ FROM
              {{/each}}{{/each}}
              STG.[{{../conventions.loadDateTimeAttribute}}],
              STG.[{{../conventions.sourceRowIdAttribute}}]             
-      )  AS INT
-    ) AS KEY_ROW_NUMBER
+     ) AS KEY_ROW_NUMBER
   FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}] STG
-  -- Prevent reprocessing
+   -- Prevent reloading already processed data
   LEFT OUTER JOIN [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] HSTG
     ON
        {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
