@@ -593,7 +593,7 @@
       <Version>5.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client">
-      <Version>4.57.0</Version>
+      <Version>4.59.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects">
       <Version>170.18.0</Version>
