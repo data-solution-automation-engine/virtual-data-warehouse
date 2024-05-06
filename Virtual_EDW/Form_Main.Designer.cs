@@ -343,7 +343,6 @@
             backgroundWorkerActivateMetadata.WorkerReportsProgress = true;
             backgroundWorkerActivateMetadata.WorkerSupportsCancellation = true;
             backgroundWorkerActivateMetadata.DoWork += backgroundWorker_DoWorkMetadataActivation;
-            backgroundWorkerActivateMetadata.ProgressChanged += backgroundWorkerActivateMetadata_ProgressChanged;
             backgroundWorkerActivateMetadata.RunWorkerCompleted += backgroundWorkerActivateMetadata_RunWorkerCompleted;
             // 
             // pictureBox1

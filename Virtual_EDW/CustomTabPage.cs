@@ -11,6 +11,7 @@ using HandlebarsDotNet;
 using Newtonsoft.Json;
 using DataWarehouseAutomation;
 using TEAM_Library;
+using DataWarehouseAutomation.Utils;
 
 namespace Virtual_Data_Warehouse
 {
@@ -39,7 +40,7 @@ namespace Virtual_Data_Warehouse
     class CustomTabPage : TabPage
     {
         readonly string _inputNiceName;
-        internal Dictionary<string, VDW_DataObjectMappingList> ItemList;
+        internal Dictionary<string, VdwDataObjectMappingList> ItemList;
 
         // Objects on main Tab Page
         readonly CheckBox _localCheckBoxSelectAll;
@@ -103,7 +104,7 @@ namespace Virtual_Data_Warehouse
         /// <summary>
         /// Constructor to instantiate a new Custom Tab Page
         /// </summary>
-        public CustomTabPage(string classification, string notes, Dictionary<string, VDW_DataObjectMappingList> itemList)
+        public CustomTabPage(string classification, string notes, Dictionary<string, VdwDataObjectMappingList> itemList)
         {
             // Register the Handlebars helpers (extensions), these are maintained in the DataWarehouseAutomation class library.
             HandleBarsHelpers.RegisterHandleBarsHelpers();
@@ -425,7 +426,7 @@ namespace Virtual_Data_Warehouse
             SetItemList(ItemList);
         }
 
-        public void SetItemList(Dictionary<string, VDW_DataObjectMappingList> itemList)
+        public void SetItemList(Dictionary<string, VdwDataObjectMappingList> itemList)
         {
             // Copy the input variable to the local item list.
             this.ItemList = itemList;

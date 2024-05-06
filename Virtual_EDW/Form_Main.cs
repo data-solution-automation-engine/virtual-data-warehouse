@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using DataWarehouseAutomation;
+using DataWarehouseAutomation.DwaModel;
+using DataWarehouseAutomation.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TEAM_Library;
@@ -251,7 +253,6 @@ namespace Virtual_Data_Warehouse
             }
         }
 
-        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         public void RunFileWatcher()
         {
             try
@@ -400,7 +401,6 @@ namespace Virtual_Data_Warehouse
         {
             if (e.Cancelled)
             {
-                // labelResult.Text = "Cancelled!";
                 richTextBoxInformationMain.AppendText("Cancelled!");
             }
             else if (e.Error != null)
@@ -410,23 +410,7 @@ namespace Virtual_Data_Warehouse
             else
             {
                 richTextBoxInformationMain.AppendText("Done. The metadata was processed succesfully!\r\n");
-                //SetVersion(trackBarVersioning.Value);
             }
-
-            // Close the AlertForm
-            //alert.Close();
-        }
-
-        // This event handler updates the progress.
-        private void backgroundWorkerActivateMetadata_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            // Show the progress in main form (GUI)
-            //labelResult.Text = (e.ProgressPercentage + "%");
-
-            // Pass the progress to AlertForm label and progressbar
-
-
-            // Manage the logging
         }
 
         # endregion
@@ -451,27 +435,27 @@ namespace Virtual_Data_Warehouse
         private void saveConfigurationFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Make sure the paths contain a backslash.
-            if (textBoxTeamEnvironmentsFilePath.Text.EndsWith(@"\"))
+            if (textBoxTeamEnvironmentsFilePath.Text.EndsWith('\\'))
             {
                 textBoxTeamEnvironmentsFilePath.Text = textBoxTeamEnvironmentsFilePath.Text.Replace(@"\", "");
             }
 
-            if (!textBoxTeamConfigurationPath.Text.EndsWith(@"\"))
+            if (!textBoxTeamConfigurationPath.Text.EndsWith('\\'))
             {
                 textBoxTeamConfigurationPath.Text += @"\";
             }
 
-            if (!textBoxMetadataPath.Text.EndsWith(@"\"))
+            if (!textBoxMetadataPath.Text.EndsWith('\\'))
             {
                 textBoxMetadataPath.Text += @"\";
             }
 
-            if (!textBoxOutputPath.Text.EndsWith(@"\"))
+            if (!textBoxOutputPath.Text.EndsWith('\\'))
             {
                 textBoxOutputPath.Text += @"\";
             }
 
-            if (!textBoxTemplatePath.Text.EndsWith(@"\"))
+            if (!textBoxTemplatePath.Text.EndsWith('\\'))
             {
                 textBoxTemplatePath.Text += @"\";
             }
@@ -602,7 +586,7 @@ namespace Virtual_Data_Warehouse
         {
             internal string classification { get; set; }
             internal string notes { get; set; }
-            internal Dictionary<string, VDW_DataObjectMappingList> itemList { get; set; }
+            internal Dictionary<string, VdwDataObjectMappingList> itemList { get; set; }
         }
 
 
@@ -621,7 +605,7 @@ namespace Virtual_Data_Warehouse
             #region Deserialisation
 
             // Deserialise the Json files into a local List of Data Object Mappings (mappingList) for further use.
-            List<VDW_DataObjectMappingList> mappingList = new List<VDW_DataObjectMappingList>();
+            List<VdwDataObjectMappingList> mappingList = new List<VdwDataObjectMappingList>();
 
             if (Directory.Exists(VdwConfigurationSettings.VdwMetadatPath))
             {
@@ -673,7 +657,7 @@ namespace Virtual_Data_Warehouse
 
                                 // Add the file to the list of mappings.
                                 var jsonInput = File.ReadAllText(fileName);
-                                VDW_DataObjectMappingList deserialisedMapping = System.Text.Json.JsonSerializer.Deserialize<VDW_DataObjectMappingList>(jsonInput);
+                                VdwDataObjectMappingList deserialisedMapping = System.Text.Json.JsonSerializer.Deserialize<VdwDataObjectMappingList>(jsonInput);
 
                                 if (deserialisedMapping != null)
                                 {
@@ -712,11 +696,11 @@ namespace Virtual_Data_Warehouse
 
             // First step, re-ordering and flattening.
             // In the Tuple, Item1 is the classification, Item2 is the mapping name and Item 3 is notes.
-            Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>> objectDictionary = new Dictionary<VDW_DataObjectMappingList, Tuple<string, string, string>>();
+            Dictionary<VdwDataObjectMappingList, Tuple<string, string, string>> objectDictionary = new Dictionary<VdwDataObjectMappingList, Tuple<string, string, string>>();
 
             if (mappingList.Any())
             {
-                foreach (VDW_DataObjectMappingList dataObjectMappings in mappingList)
+                foreach (VdwDataObjectMappingList dataObjectMappings in mappingList)
                 {
                     if (dataObjectMappings.DataObjectMappings != null)
                     {
@@ -782,7 +766,7 @@ namespace Virtual_Data_Warehouse
             foreach (var classification in classificationDictionary)
             {
                 LocalTemplate localTemplateMapping = new LocalTemplate();
-                Dictionary<string, VDW_DataObjectMappingList> itemList = new Dictionary<string, VDW_DataObjectMappingList>();
+                Dictionary<string, VdwDataObjectMappingList> itemList = new Dictionary<string, VdwDataObjectMappingList>();
 
                 foreach (var objectRow in objectDictionary)
                 {
@@ -1038,7 +1022,7 @@ namespace Virtual_Data_Warehouse
                 }
 
                 string finalPath;
-                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                if (fileBrowserDialog.SelectedPath.EndsWith('\\'))
                 {
                     finalPath = fileBrowserDialog.SelectedPath;
                 }
@@ -1080,7 +1064,7 @@ namespace Virtual_Data_Warehouse
             {
                 string finalPath;
 
-                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                if (fileBrowserDialog.SelectedPath.EndsWith('\\'))
                 {
                     finalPath = fileBrowserDialog.SelectedPath;
                 }
@@ -1145,7 +1129,7 @@ namespace Virtual_Data_Warehouse
                 }
 
                 string finalPath;
-                if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                if (fileBrowserDialog.SelectedPath.EndsWith('\\'))
                 {
                     finalPath = fileBrowserDialog.SelectedPath;
                 }
@@ -1412,7 +1396,7 @@ namespace Virtual_Data_Warehouse
                 else
                 {
                     string finalPath;
-                    if (fileBrowserDialog.SelectedPath.EndsWith(@"\"))
+                    if (fileBrowserDialog.SelectedPath.EndsWith('\\'))
                     {
                         finalPath = fileBrowserDialog.SelectedPath;
                     }
@@ -1520,7 +1504,7 @@ namespace Virtual_Data_Warehouse
             VdwConfigurationSettings.TemplatePath = VdwConfigurationSettings.ActiveEnvironment.templatePath;
             VdwConfigurationSettings.VdwOutputPath = VdwConfigurationSettings.ActiveEnvironment.outputPath;
 
-            if (startUpIndicator != true)
+            if (!startUpIndicator)
             {
                 // Reload the configuration and connections file associated with this new environment.
                 VdwUtility.LoadTeamConnectionsFileForVdw(VdwConfigurationSettings.ActiveEnvironment.environmentKey, VdwConfigurationSettings.VdwEventLog);
@@ -1529,7 +1513,6 @@ namespace Virtual_Data_Warehouse
                 richTextBoxInformationMain.AppendText($"The '{VdwConfigurationSettings.ActiveEnvironment.environmentKey}' environment is now active.\r\n");
             }
             // Ensure the template overview is updated.
-            //_templateGridView = new TemplateGridView(TeamConfigurationSettings);
             RefreshTemplateGrid();
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using DataWarehouseAutomation;
+using DataWarehouseAutomation.DwaModel;
 
 namespace Virtual_Data_Warehouse
 {
@@ -7,14 +8,11 @@ namespace Virtual_Data_Warehouse
     /// The parent object containing the list of source-to-target mappings. This is the highest level and contains the list of mappings (as individual objects
     /// but also the parameters inherited from TEAM and VDW.
     /// </summary>
-    class VDW_DataObjectMappingList : DataObjectMappingList
+    class VdwDataObjectMappingList : DataObjectMappingList
     {
-        // Generic interface definitions
-        //public List<DataObjectMapping> dataObjectMapping { get; set; }
-
         // TEAM and VDW specific details
         public MetadataConfiguration conventions { get; set; }
-        //public GenerationSpecificMetadata generationSpecificMetadata { get; set; }
+
         public string metadataFileName { get; set; }
     }
 
