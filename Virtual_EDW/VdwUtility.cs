@@ -234,6 +234,7 @@ namespace Virtual_Data_Warehouse
 
         public static void ExecuteInDatabase(TeamConnection teamConnection, string query)
         {
+            // SQL Server
             if (teamConnection.TechnologyConnectionType == TechnologyConnectionType.SqlServer)
             {
                 var connectionString = teamConnection.CreateSqlServerConnectionString(false);
@@ -260,6 +261,7 @@ namespace Virtual_Data_Warehouse
                     sqlConnection.Dispose();
                 }
             }
+            // Snowflake
             else if (teamConnection.TechnologyConnectionType == TechnologyConnectionType.Snowflake)
             {
                 IDbConnection conn = new SnowflakeDbConnection();
@@ -269,8 +271,13 @@ namespace Virtual_Data_Warehouse
                 {
                     conn.Open();
                     IDbCommand cmd = conn.CreateCommand();
+                    // Select the Snowflake warehouse.
                     cmd.CommandText = $"USE WAREHOUSE {teamConnection.DatabaseServer.Warehouse}";
                     cmd.ExecuteNonQuery();
+                    // Support multiple statements for this session.
+                    cmd.CommandText = "ALTER SESSION SET MULTI_STATEMENT_COUNT = 0;";
+                    cmd.ExecuteNonQuery();
+                    // Run the query generated from the template.
                     cmd.CommandText = query;
                     cmd.ExecuteNonQuery();
                 }

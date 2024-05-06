@@ -7,14 +7,16 @@ IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
   DROP TABLE [{{targetDataObject.name}}];
 
 CREATE TABLE [{{targetDataObject.name}}]
-(
-    [{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] binary(16) NOT NULL
-   ,[{{../conventions.etlProcessAttribute}}] [int] NOT NULL
-   ,[{{../conventions.loadDateTimeAttribute}}] [datetime2](7) NOT NULL
-   ,[{{../conventions.recordSourceAttribute}}] [nvarchar](100) NOT NULL
-  {{#each relatedDataObjects}}
-{{/each}}
+({{/if}}{{/each}}
+{{#each dataObjectMappings}}
     {{#each dataItemMappings}}
    ,[{{targetDataItem.name}}] [nvarchar](1000) NOT NULL
          {{/each}}
-){{/if}}{{/each}}
+{{/each}}
+    [SNAPSHOT_DATE] [datetime2](7) NOT NULL,
+    [{{metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL,
+    [{{metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL,
+    [{{metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
+    [{{metadataConfiguration.eventDateTimeAttribute}}] [datetime2](7) NOT NULL,
+    [{{metadataConfiguration.recordChecksumAttribute}}] [binary](16) NOT NULL
+)
