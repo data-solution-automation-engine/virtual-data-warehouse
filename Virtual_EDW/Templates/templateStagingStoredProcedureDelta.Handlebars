@@ -61,7 +61,7 @@ PSA_CTE AS
             [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
             {{../conventions.loadDateTimeAttribute}} DESC             
          ) AS MAX_ROWNUM
-      FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] B
+      FROM [{{lookupExtension relatedDataObjects.0.extensions "datastore"}}].[{{lookupExtension relatedDataObjects.0.extensions "location"}}].[{{relatedDataObjects.0.name}}] B
    ) C ON         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
       A.[{{targetDataItem.name}}] = C.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
       A.[{{../conventions.sourceRowIdAttribute}}] = C.[MAX_{{../conventions.sourceRowIdAttribute}}] AND
