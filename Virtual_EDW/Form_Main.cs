@@ -6,13 +6,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using DataWarehouseAutomation;
-using DataWarehouseAutomation.DwaModel;
-using DataWarehouseAutomation.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TEAM_Library;
@@ -43,7 +40,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.6.14";
+            const string versionNumberForApplication = "v1.7.0";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
@@ -586,7 +583,7 @@ namespace Virtual_Data_Warehouse
         {
             internal string classification { get; set; }
             internal string notes { get; set; }
-            internal Dictionary<string, VdwDataObjectMappingList> itemList { get; set; }
+            internal Dictionary<string, VdwDataObjectMappingList> vdwDataObjectMappingList { get; set; }
         }
 
 
@@ -602,13 +599,12 @@ namespace Virtual_Data_Warehouse
         /// <returns></returns>
         internal List<LocalTemplate> GetMetadata()
         {
-
             var hideDisabled = checkBoxHideDisabled.Checked;
 
             #region Deserialisation
 
             // Deserialise the Json files into a local List of Data Object Mappings (mappingList) for further use.
-            List<VdwDataObjectMappingList> mappingList = new List<VdwDataObjectMappingList>();
+            List<VdwDataObjectMappingList> vdwDataObjectMappigLists = new List<VdwDataObjectMappingList>();
 
             if (Directory.Exists(VdwConfigurationSettings.VdwMetadatPath))
             {
@@ -631,6 +627,17 @@ namespace Virtual_Data_Warehouse
                     "Production_TEAM_Attribute_Mapping.json",
                     "Production_TEAM_Table_Mapping.json"
                 };
+
+                var localConventions = new MetadataConfiguration();
+                localConventions.recordSourceAttribute = TeamConfigurationSettings.RecordSourceAttribute;
+                localConventions.recordChecksumAttribute = TeamConfigurationSettings.RecordChecksumAttribute;
+                localConventions.changeDataCaptureAttribute = TeamConfigurationSettings.ChangeDataCaptureAttribute;
+                localConventions.expiryDateTimeAttribute = TeamConfigurationSettings.ExpiryDateTimeAttribute;
+                localConventions.eventDateTimeAttribute = TeamConfigurationSettings.EventDateTimeAttribute;
+                localConventions.etlProcessAttribute = TeamConfigurationSettings.EtlProcessAttribute;
+                localConventions.changeDataCaptureAttribute = TeamConfigurationSettings.ChangeDataCaptureAttribute;
+                localConventions.loadDateTimeAttribute = TeamConfigurationSettings.LoadDateTimeAttribute;
+                localConventions.sourceRowIdAttribute = TeamConfigurationSettings.RowIdAttribute;
 
                 if (fileEntries.Length > 0)
                 {
@@ -677,10 +684,13 @@ namespace Virtual_Data_Warehouse
                                 }
                                 deserialisedMapping.DataObjectMappings = tempDOM;
 
+
+
                                 if (deserialisedMapping != null)
                                 {
                                     deserialisedMapping.metadataFileName = fileName;
-                                    mappingList.Add(deserialisedMapping);
+                                    deserialisedMapping.metadataConfiguration = localConventions;
+                                    vdwDataObjectMappigLists.Add(deserialisedMapping);
                                 }
                             }
                             catch (Exception exception)
@@ -716,23 +726,23 @@ namespace Virtual_Data_Warehouse
             // In the Tuple, Item1 is the classification, Item2 is the mapping name and Item 3 is notes.
             Dictionary<VdwDataObjectMappingList, Tuple<string, string, string>> objectDictionary = new Dictionary<VdwDataObjectMappingList, Tuple<string, string, string>>();
 
-            if (mappingList.Any())
+            if (vdwDataObjectMappigLists.Any())
             {
-                foreach (VdwDataObjectMappingList dataObjectMappings in mappingList)
+                foreach (VdwDataObjectMappingList dataObjectMappings in vdwDataObjectMappigLists)
                 {
                     if (dataObjectMappings.DataObjectMappings != null)
                     {
                         foreach (DataObjectMapping dataObjectMapping in dataObjectMappings.DataObjectMappings)
                         {
-                            if (dataObjectMapping.Name == null)
+                            if (dataObjectMapping.MappingName == null)
                             {
-                                dataObjectMapping.Name = dataObjectMapping.TargetDataObject.Name;
+                                dataObjectMapping.MappingName = dataObjectMapping.TargetDataObject.Name;
                                 InformUser($"The Data Object Mapping for target {dataObjectMapping.TargetDataObject.Name} does not have a mapping name, so the target name is used.", EventTypes.Warning);
                             }
                             // Check if there are classifications, as these are used to create the tabs.
-                            if (dataObjectMapping.Classifications != null)
+                            if (dataObjectMapping.MappingClassifications != null)
                             {
-                                foreach (DataClassification classification in dataObjectMapping.Classifications)
+                                foreach (DataClassification classification in dataObjectMapping.MappingClassifications)
                                 {
                                     if (!objectDictionary.ContainsKey(dataObjectMappings))
                                     {
@@ -747,7 +757,7 @@ namespace Virtual_Data_Warehouse
                                     objectDictionary.Add(dataObjectMappings, new Tuple<string, string, string>("Miscellaneous", dataObjectMapping.TargetDataObject.Name, ""));
                                 }
 
-                                InformUser($"The Data Object Mapping {dataObjectMapping.Name} does not have a classification, and therefore will be placed under 'Miscellaneous'", EventTypes.Warning);
+                                InformUser($"The Data Object Mapping {dataObjectMapping.MappingName} does not have a classification, and therefore will be placed under 'Miscellaneous'", EventTypes.Warning);
                             }
                         }
                     }
@@ -799,7 +809,7 @@ namespace Virtual_Data_Warehouse
 
                 localTemplateMapping.classification = classification.Key;
                 localTemplateMapping.notes = classification.Value;
-                localTemplateMapping.itemList = itemList;
+                localTemplateMapping.vdwDataObjectMappingList = itemList;
 
                 finalMappingList.Add(localTemplateMapping);
             }
@@ -839,6 +849,7 @@ namespace Virtual_Data_Warehouse
             Dictionary<string, LocalTemplate> sortedMappingList = new Dictionary<string, LocalTemplate>();
             foreach (var mapping in finalMappingList)
             {
+                int counter = 1;
                 string orderNumber = mapping.classification switch
                 {
                     "Source" => "0",
@@ -862,16 +873,25 @@ namespace Virtual_Data_Warehouse
                     "NaturalBusinessRelationshipContextDrivingKey" => "71",
                     "Link-Satellite Driving Key" => "72",
                     "Presentation" => "80",
-                    _ => "900"
+                    "Helper" => "85",
+                    "Export" => "86",
+                    _ => $"{900+counter}" // To ensure uniquness for all unknowns
                 };
 
-                sortedMappingList.Add(orderNumber, mapping);
+                if (!sortedMappingList.ContainsKey(orderNumber))
+                {
+                    sortedMappingList.Add(orderNumber, mapping);
+                }
+                else
+                {
+                    // TODO
+                }
             }
 
             // Add the Custom Tab Pages
             foreach (var template in sortedMappingList.OrderBy(x => x.Key))
             {
-                CustomTabPage localCustomTabPage = new CustomTabPage(template.Value.classification, template.Value.notes, template.Value.itemList);
+                CustomTabPage localCustomTabPage = new CustomTabPage(template.Value.classification, template.Value.notes, template.Value.vdwDataObjectMappingList);
                 localCustomTabPage.OnChangeMainText += UpdateMainInformationTextBox;
                 localCustomTabPage.OnClearMainText += ClearMainInformationTextBox;
 
@@ -998,7 +1018,7 @@ namespace Virtual_Data_Warehouse
                     {
                         if (localTemplate.classification == tabName)
                         {
-                            customTabPage.SetItemList(localTemplate.itemList);
+                            customTabPage.SetItemList(localTemplate.vdwDataObjectMappingList);
                         }
                     }
                 }
@@ -1249,14 +1269,14 @@ namespace Virtual_Data_Warehouse
                         TemplateType = singleRow[1].ToString(),
                         TemplateConnectionKey = singleRow[2].ToString(),
                         TemplateOutputFileConvention = singleRow[3].ToString(),
-                        TemplateFilePath = singleRow[4].ToString(),
-                        TemplateNotes = singleRow[5].ToString()
+                        TemplateOutputFileSplit = singleRow[4].ToString(),
+                        TemplateFilePath = singleRow[5].ToString(),
+                        TemplateNotes = singleRow[6].ToString()
                     });
                     outputFileArray.Add(individualRow);
                 }
 
                 string json = JsonConvert.SerializeObject(outputFileArray, Formatting.Indented);
-
 
                 File.WriteAllText(chosenFile, json);
 
@@ -1265,8 +1285,7 @@ namespace Virtual_Data_Warehouse
                 try
                 {
                     // Quick fix, in the file again to commit changes to memory.
-                    VdwConfigurationSettings.templateList =
-                        JsonConvert.DeserializeObject<List<TemplateHandling>>(File.ReadAllText(chosenFile));
+                    VdwConfigurationSettings.templateList = JsonConvert.DeserializeObject<List<TemplateHandling>>(File.ReadAllText(chosenFile));
                     CreateCustomTabPages();
                 }
                 catch (Exception ex)

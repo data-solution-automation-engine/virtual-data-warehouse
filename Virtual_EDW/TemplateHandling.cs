@@ -19,6 +19,7 @@ namespace Virtual_Data_Warehouse
         public string TemplateType { get; set; }
         public string TemplateConnectionKey { get; set; }
         public string TemplateOutputFileConvention { get; set; }
+        public bool TemplateOutputFileSplit { get; set; } = false;
         public string TemplateFilePath { get; set; }
         public string TemplateNotes { get; set; }
 

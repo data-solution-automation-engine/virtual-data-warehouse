@@ -96,6 +96,15 @@ namespace Virtual_Data_Warehouse
             };
             Columns.Add(TemplateOutputFileConvention);
 
+            DataGridViewCheckBoxColumn TemplateOutputFileSplit= new DataGridViewCheckBoxColumn
+            {
+                Name = TemplateGridColumns.TemplateOutputFileSplit.ToString(),
+                HeaderText = "Separate Files",
+                DataPropertyName = TemplateGridColumns.TemplateOutputFileSplit.ToString(),
+                MinimumWidth = 100
+            };
+            Columns.Add(TemplateOutputFileSplit);
+
             DataGridViewTextBoxColumn TemplatePath = new DataGridViewTextBoxColumn
             {
                 Name = TemplateGridColumns.TemplateFilePath.ToString(),
@@ -108,7 +117,8 @@ namespace Virtual_Data_Warehouse
             {
                 Name = TemplateGridColumns.TemplateNotes.ToString(),
                 HeaderText = "Notes",
-                DataPropertyName = TemplateGridColumns.TemplateNotes.ToString()
+                DataPropertyName = TemplateGridColumns.TemplateNotes.ToString(),
+                MinimumWidth = 100
                 //Width = 400
             };
             Columns.Add(TemplateNotes);
@@ -208,8 +218,9 @@ namespace Virtual_Data_Warehouse
         TemplateType = 1,
         TemplateConnectionKey = 2,
         TemplateOutputFileConvention = 3,
-        TemplateFilePath = 4,
-        TemplateNotes = 5,
+        TemplateOutputFileSplit = 4,
+        TemplateFilePath = 5,
+        TemplateNotes = 6,
     }
 
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using DataWarehouseAutomation;
-using DataWarehouseAutomation.DwaModel;
 
 namespace Virtual_Data_Warehouse
 {
@@ -11,9 +10,11 @@ namespace Virtual_Data_Warehouse
     class VdwDataObjectMappingList : DataObjectMappingList
     {
         // TEAM and VDW specific details
-        public MetadataConfiguration conventions { get; set; }
+        public MetadataConfiguration metadataConfiguration { get; set; }
 
         public string metadataFileName { get; set; }
+
+        public GenerationSpecificMetadata generationSpecificMetadata { get; set; }
     }
 
 

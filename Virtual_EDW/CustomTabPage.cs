@@ -11,7 +11,8 @@ using HandlebarsDotNet;
 using Newtonsoft.Json;
 using DataWarehouseAutomation;
 using TEAM_Library;
-using DataWarehouseAutomation.Utils;
+using System.Text.Json;
+using TEAM;
 
 namespace Virtual_Data_Warehouse
 {
@@ -40,7 +41,8 @@ namespace Virtual_Data_Warehouse
     class CustomTabPage : TabPage
     {
         readonly string _inputNiceName;
-        internal Dictionary<string, VdwDataObjectMappingList> ItemList;
+        internal bool _fileSplit;
+        internal Dictionary<string, VdwDataObjectMappingList> VdwDataObjectMappingList;
 
         // Objects on main Tab Page
         readonly CheckBox _localCheckBoxSelectAll;
@@ -104,12 +106,12 @@ namespace Virtual_Data_Warehouse
         /// <summary>
         /// Constructor to instantiate a new Custom Tab Page
         /// </summary>
-        public CustomTabPage(string classification, string notes, Dictionary<string, VdwDataObjectMappingList> itemList)
+        public CustomTabPage(string classification, string notes, Dictionary<string, VdwDataObjectMappingList> vdwDataObjectMappingList)
         {
             // Register the Handlebars helpers (extensions), these are maintained in the DataWarehouseAutomation class library.
             HandleBarsHelpers.RegisterHandleBarsHelpers();
 
-            this.ItemList = itemList;
+            this.VdwDataObjectMappingList = vdwDataObjectMappingList;
 
             _inputNiceName = Regex.Replace(classification, "(\\B[A-Z])", " $1");
 
@@ -290,7 +292,7 @@ namespace Virtual_Data_Warehouse
             localLabelOutputFileTemplate.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelOutputFileTemplate.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             localLabelOutputFileTemplate.Location = new Point(350, 57);
-            localLabelOutputFileTemplate.Size = new Size(100, 13);
+            localLabelOutputFileTemplate.Size = new Size(120, 13);
             localLabelOutputFileTemplate.Name = $"label{classification}OutputFileTemplate";
             localLabelOutputFileTemplate.Text = @"Output file template:";
 
@@ -299,8 +301,8 @@ namespace Virtual_Data_Warehouse
             tabPageGenerationTemplate.Controls.Add(localLabelOutputFileTemplateValue);
             localLabelOutputFileTemplateValue.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
             localLabelOutputFileTemplateValue.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            localLabelOutputFileTemplateValue.Location = new Point(460, 57);
-            localLabelOutputFileTemplateValue.Size = new Size(250, 13);
+            localLabelOutputFileTemplateValue.Location = new Point(480, 57);
+            localLabelOutputFileTemplateValue.Size = new Size(400, 13);
             localLabelOutputFileTemplateValue.Name = $"label{classification}OutputFileTemplateValue";
             localLabelOutputFileTemplateValue.Text = @"<output file template>";
 
@@ -334,10 +336,10 @@ namespace Virtual_Data_Warehouse
             LoadTabPageComboBox(classification);
 
             // Populate the Checked List Box
-            SetItemList(itemList);
+            SetItemList(vdwDataObjectMappingList);
 
             // Report back to the user if there is not metadata available
-            if (itemList == null || itemList.Count == 0)
+            if (vdwDataObjectMappingList == null || vdwDataObjectMappingList.Count == 0)
             {
                 RaiseOnChangeMainText($"There was no metadata available to display {_inputNiceName} content. Please check the associated metadata schema (are there any {_inputNiceName} records available?) or the database connection.\r\n\r\n");
             }
@@ -361,8 +363,7 @@ namespace Virtual_Data_Warehouse
                         localTabControl.SelectTab(localTabControl.TabPages[currentSubTab]);
                         try
                         {
-                            localTabControl.SelectedTab.Controls[7].Text =
-                                FormBase.VdwConfigurationSettings.SelectedTemplateText;
+                            localTabControl.SelectedTab.Controls[7].Text = FormBase.VdwConfigurationSettings.SelectedTemplateText;
                         }
                         catch
                         {
@@ -388,8 +389,7 @@ namespace Virtual_Data_Warehouse
                 {
                     try
                     {
-                        FormBase.VdwConfigurationSettings.SelectedTemplateText =
-                            localTabControl.SelectedTab.Controls[7].Text;
+                        FormBase.VdwConfigurationSettings.SelectedTemplateText = localTabControl.SelectedTab.Controls[7].Text;
                     }
                     catch
                     {
@@ -423,21 +423,21 @@ namespace Virtual_Data_Warehouse
 
         public void FilterItemList(object o, EventArgs e)
         {
-            SetItemList(ItemList);
+            SetItemList(VdwDataObjectMappingList);
         }
 
-        public void SetItemList(Dictionary<string, VdwDataObjectMappingList> itemList)
+        public void SetItemList(Dictionary<string, VdwDataObjectMappingList> vdwDataObjectMappingList)
         {
             // Copy the input variable to the local item list.
-            this.ItemList = itemList;
+            this.VdwDataObjectMappingList = vdwDataObjectMappingList;
 
             // Clear the existing checkboxes.
             _localCheckedListBox.Items.Clear();
 
             // Add items to the Checked List Box, if it satisfies the filter criterion.
-            if (itemList != null && itemList.Count > 0)
+            if (vdwDataObjectMappingList != null && vdwDataObjectMappingList.Count > 0)
             {
-                foreach (string item in itemList.Keys)
+                foreach (string item in vdwDataObjectMappingList.Keys)
                 {
                     if (item.Contains(_localTextBoxFilter.Text))
                     {
@@ -479,6 +479,9 @@ namespace Virtual_Data_Warehouse
 
                 localLabelFullFilePath.Text = localFullPath;
                 localLabelActiveConnectionKeyValue.Text = template.TemplateConnectionKey;
+
+                // Update the internal flag to split files, or not.
+                _fileSplit = template.TemplateOutputFileSplit;
 
                 if (!string.IsNullOrEmpty(template.TemplateOutputFileConvention))
                 {
@@ -572,10 +575,6 @@ namespace Virtual_Data_Warehouse
         /// </summary>
         private void GenerateFromTemplate()
         {
-            // Workaround for file output spool
-            //if (this.SaveOutputFileFlag)
-
-            // Establish the current time at the start of generation, to display only messages related to the current generation run.
             var currentTime = DateTime.Now;
 
             localRichTextBoxGenerationOutput.Clear();
@@ -587,96 +586,72 @@ namespace Virtual_Data_Warehouse
             {
                 for (int x = 0; x <= _localCheckedListBox.CheckedItems.Count - 1; x++)
                 {
-                    var targetTableName = _localCheckedListBox.CheckedItems[x].ToString();
-                    RaiseOnChangeMainText(@"Generating code for " + targetTableName + ".\r\n");
+                    var targetDataObjectName = _localCheckedListBox.CheckedItems[x].ToString();
+                    RaiseOnChangeMainText(@"Generating code for " + targetDataObjectName + ".\r\n");
 
                     // Only process the selected items in the total of available source-to-target mappings.
-                    ItemList.TryGetValue(targetTableName, out var VDW_dataObjectMappingList);
+                    VdwDataObjectMappingList.TryGetValue(targetDataObjectName, out var VDW_dataObjectMappingList);
 
                     // Return the result to the user.
                     try
                     {
                         // Compile the template, and merge it with the metadata.
-                        var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);
-                        //var result = template(dataObjectMappingList);
+                        var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);                   
 
-                        //string jsonInput = File.ReadAllText(dataObjectMappingList.metadataFileName);
-                        var jsonInput = System.Text.Json.JsonSerializer.Serialize(VDW_dataObjectMappingList);
-                        JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
-
-                        //var result = template(VDW_dataObjectMappingList);
-                        var result = template(deserializedMapping);
-
-                        // Check if the metadata needs to be displayed.
-                        if (DisplayJsonFlag)
+                        if (!_fileSplit)
                         {
-                            try
-                            {
-                                var json = JsonConvert.SerializeObject(VDW_dataObjectMappingList, Formatting.Indented,
-                                    new JsonSerializerSettings
-                                    {
-                                        ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-                                        NullValueHandling = NullValueHandling.Ignore
-                                    });
-
-                                localRichTextBoxGenerationOutput.AppendText(json + "\r\n\r\n");
-                            }
-                            catch (Exception exception)
-                            {
-                                RaiseOnChangeMainText($"An error was encountered while parsing the Json metadata. The error message is: {exception.Message}.");
-                            }
+                            var outputFileName = localLabelOutputFileTemplateValue.Text;
+                            outputFileName = outputFileName.Replace("{targetDataObject.name}", targetDataObjectName);
+                            Generate(targetDataObjectName, VDW_dataObjectMappingList, template, outputFileName);
                         }
-
-                        // Display the output of the template to the user.
-                        localRichTextBoxGenerationOutput.AppendText(result);
-
-                        // Spool the output to disk.
-                        if (SaveOutputFileFlag)
+                        else
                         {
-                            // Assert file output template.
-                            var outputFile = localLabelOutputFileTemplateValue.Text;
-                            outputFile = outputFile.Replace("{targetDataObject.name}", targetTableName);
-                            VdwUtility.SaveOutputToDisk(FormBase.VdwConfigurationSettings.VdwOutputPath + outputFile, result);
-                        }
+                            // Split out the original mapping list into separate mapping lists.
+                            var separatedMappingLists = new List<DataObjectMapping>();
 
-                        //Generate in database.
-                        if (GenerateInDatabaseFlag)
-                        {
-                            // Find the right connection for the template connection key.
-                            var localConnection = TeamConfiguration.GetTeamConnectionByInternalId(localLabelActiveConnectionKeyValue.Text, FormBase.TeamConfigurationSettings.ConnectionDictionary);
+                            var tempMetadataConfiguration = VDW_dataObjectMappingList.metadataConfiguration;
+                            var tempGenerationSpecificMetadata = VDW_dataObjectMappingList.generationSpecificMetadata;
+                            var tempMetadataFileName = VDW_dataObjectMappingList.metadataFileName;
 
-                            if (localConnection != null)
+                            foreach (var vdwMapping in VDW_dataObjectMappingList.DataObjectMappings)
                             {
+                                var outputFileName = localLabelOutputFileTemplateValue.Text;
+                                var localVdwMappingList = new VdwDataObjectMappingList();
+                                localVdwMappingList.generationSpecificMetadata = tempGenerationSpecificMetadata;
+                                localVdwMappingList.metadataFileName = tempMetadataFileName;
+                                localVdwMappingList.metadataConfiguration = tempMetadataConfiguration;
+
+                                localVdwMappingList.DataObjectMappings.Add(vdwMapping);
+
+                                outputFileName = outputFileName.Replace("{targetDataObject.name}", targetDataObjectName);
+
                                 try
                                 {
-                                    if (localConnection.TechnologyConnectionType == TechnologyConnectionType.SqlServer)
+                                    var sourceDataObject = vdwMapping.SourceDataObjects.FirstOrDefault();
+                                    string sourceDataObjectName = "";
+
+                                    // Parse the JSON string to a dynamic object
+                                    //JsonDocument jsonDoc = JsonDocument.Parse(sourceDataObject);
+                                    //JsonElement root = jsonDoc.RootElement;
+
+                                    // Safely extract the "name" property
+                                    if (sourceDataObject.TryGetProperty("name", out JsonElement nameElement))
                                     {
-                                        VdwUtility.CreateVdwSchema(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) });
+                                        sourceDataObjectName = nameElement.GetString();
+
+                                        outputFileName = outputFileName.Replace("{sourceDataObject.name}", sourceDataObjectName);
                                     }
-                                }
-                                catch (Exception exception)
-                                {
-                                    var errorMessage = $"There was an issue creating the schema '{FormBase.VdwConfigurationSettings.VdwSchema}' against connection '{localConnection.ConnectionKey}'. The error message is {exception.Message}.";
-                                    RaiseOnChangeMainText(errorMessage);
-                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
-                                }
 
-                                try
-                                {
-                                    VdwUtility.ExecuteInDatabase(localConnection, result);
+                                    //sourceDataObjectName = sourceDataObject.Name;                         
+
+                                    //outputFileName = outputFileName.Replace("{sourceDataObject.name}", vdwMapping.SourceDataObjects.FirstOrDefault().MappingName);
                                 }
-                                catch (Exception exception)
+                                catch (Exception ex)
                                 {
-                                    var errorMessage = $"There was an issue executing the query '{result}' against connection '{localConnection.ConnectionKey}'. The reported error is {exception.Message}.";
-                                    RaiseOnChangeMainText(errorMessage);
-                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
+                                    //
                                 }
-                            }
-                            else
-                            {
-                                var errorMessage = $"There was an issue establishing a connection to generate the output for '{targetTableName}'. Is there a TEAM connections file in the configuration directory?";
-                                RaiseOnChangeMainText(errorMessage);
-                                FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
+                                
+                                Generate(targetDataObjectName, localVdwMappingList, template, outputFileName);
                             }
                         }
                     }
@@ -710,6 +685,84 @@ namespace Virtual_Data_Warehouse
 
             // Apply syntax highlighting.
             //localRichTextBoxGenerationOutput.Rtf = TextHandling.SyntaxHighlightSql(localRichTextBoxGenerationOutput.Text).Rtf;
+        }
+
+        private void Generate(string targetDataObjectName, VdwDataObjectMappingList vdwDataObjectMappingList, HandlebarsTemplate<object, object> template, string outputFileName)
+        {
+            var jsonInput = System.Text.Json.JsonSerializer.Serialize(vdwDataObjectMappingList);
+            JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
+
+            var result = template(deserializedMapping);
+
+            // Check if the metadata needs to be displayed.
+            if (DisplayJsonFlag)
+            {
+                try
+                {
+                    var json = JsonConvert.SerializeObject(vdwDataObjectMappingList, Formatting.Indented,
+                        new JsonSerializerSettings
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                            NullValueHandling = NullValueHandling.Ignore
+                        });
+
+                    localRichTextBoxGenerationOutput.AppendText(json + "\r\n\r\n");
+                }
+                catch (Exception exception)
+                {
+                    RaiseOnChangeMainText($"An error was encountered while parsing the Json metadata. The error message is: {exception.Message}.");
+                }
+            }
+
+            // Display the output of the template to the user.
+            localRichTextBoxGenerationOutput.AppendText(result);
+
+            // Spool the output to disk.
+            if (SaveOutputFileFlag)
+            {
+                VdwUtility.SaveOutputToDisk(FormBase.VdwConfigurationSettings.VdwOutputPath + outputFileName, result);
+            }
+
+            //Generate in database.
+            if (GenerateInDatabaseFlag)
+            {
+                // Find the right connection for the template connection key.
+                var localConnection = TeamConfiguration.GetTeamConnectionByInternalId(localLabelActiveConnectionKeyValue.Text, FormBase.TeamConfigurationSettings.ConnectionDictionary);
+
+                if (localConnection != null)
+                {
+                    try
+                    {
+                        if (localConnection.TechnologyConnectionType == TechnologyConnectionType.SqlServer)
+                        {
+                            VdwUtility.CreateVdwSchema(new SqlConnection { ConnectionString = localConnection.CreateSqlServerConnectionString(false) });
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        var errorMessage = $"There was an issue creating the schema '{FormBase.VdwConfigurationSettings.VdwSchema}' against connection '{localConnection.ConnectionKey}'. The error message is {exception.Message}.";
+                        RaiseOnChangeMainText(errorMessage);
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
+                    }
+
+                    try
+                    {
+                        VdwUtility.ExecuteInDatabase(localConnection, result);
+                    }
+                    catch (Exception exception)
+                    {
+                        var errorMessage = $"There was an issue executing the query '{result}' against connection '{localConnection.ConnectionKey}'. The reported error is {exception.Message}.";
+                        RaiseOnChangeMainText(errorMessage);
+                        FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
+                    }
+                }
+                else
+                {
+                    var errorMessage = $"There was an issue establishing a connection to generate the output for '{targetDataObjectName}'. Is there a TEAM connections file in the configuration directory?";
+                    RaiseOnChangeMainText(errorMessage);
+                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
+                }
+            }
         }
 
         /// <summary>
