@@ -43,7 +43,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v2.0.0";
+            const string versionNumberForApplication = "v1.6.14";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
@@ -602,6 +602,9 @@ namespace Virtual_Data_Warehouse
         /// <returns></returns>
         internal List<LocalTemplate> GetMetadata()
         {
+
+            var hideDisabled = checkBoxHideDisabled.Checked;
+
             #region Deserialisation
 
             // Deserialise the Json files into a local List of Data Object Mappings (mappingList) for further use.
@@ -658,6 +661,21 @@ namespace Virtual_Data_Warehouse
                                 // Add the file to the list of mappings.
                                 var jsonInput = File.ReadAllText(fileName);
                                 VdwDataObjectMappingList deserialisedMapping = System.Text.Json.JsonSerializer.Deserialize<VdwDataObjectMappingList>(jsonInput);
+
+                                // Remove any disabled mappings, if checkbox for this is active.
+                                var tempDOM = new List<DataObjectMapping>();
+                                foreach (var mapping in deserialisedMapping.DataObjectMappings)
+                                {
+                                    if (hideDisabled && mapping.Enabled == false)
+                                    {
+                                        // Skip
+                                    }
+                                    else
+                                    {
+                                        tempDOM.Add(mapping);
+                                    }
+                                }
+                                deserialisedMapping.DataObjectMappings = tempDOM;
 
                                 if (deserialisedMapping != null)
                                 {

@@ -53,6 +53,7 @@
             helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             displayEventLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            clearEventLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             checkBoxGenerateInDatabase = new System.Windows.Forms.CheckBox();
             SQLGenerationGroupBox = new System.Windows.Forms.GroupBox();
@@ -92,7 +93,7 @@
             backgroundWorkerEventLog = new System.ComponentModel.BackgroundWorker();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             toolTipVdw = new System.Windows.Forms.ToolTip(components);
-            clearEventLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            checkBoxHideDisabled = new System.Windows.Forms.CheckBox();
             menuStripMainMenu.SuspendLayout();
             SQLGenerationGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -262,7 +263,7 @@
             // 
             helpToolStripMenuItem1.Image = Properties.Resources.HelpIconSmall;
             helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            helpToolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
             helpToolStripMenuItem1.Text = "Help";
             helpToolStripMenuItem1.Click += helpToolStripMenuItem1_Click;
             // 
@@ -270,15 +271,23 @@
             // 
             displayEventLogToolStripMenuItem.Image = Properties.Resources.log_file;
             displayEventLogToolStripMenuItem.Name = "displayEventLogToolStripMenuItem";
-            displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            displayEventLogToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             displayEventLogToolStripMenuItem.Text = "Display Event Log";
             displayEventLogToolStripMenuItem.Click += displayEventLogToolStripMenuItem_Click;
+            // 
+            // clearEventLogToolStripMenuItem
+            // 
+            clearEventLogToolStripMenuItem.Image = Properties.Resources.log_file;
+            clearEventLogToolStripMenuItem.Name = "clearEventLogToolStripMenuItem";
+            clearEventLogToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            clearEventLogToolStripMenuItem.Text = "Clear Event Log";
+            clearEventLogToolStripMenuItem.Click += clearEventLogToolStripMenuItem_Click;
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Image = Properties.Resources.RavosLogo;
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            aboutToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             aboutToolStripMenuItem.Text = "About";
             aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
             // 
@@ -286,10 +295,9 @@
             // 
             checkBoxGenerateInDatabase.AutoSize = true;
             checkBoxGenerateInDatabase.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            checkBoxGenerateInDatabase.Location = new System.Drawing.Point(7, 23);
+            checkBoxGenerateInDatabase.Location = new System.Drawing.Point(8, 23);
             checkBoxGenerateInDatabase.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBoxGenerateInDatabase.Name = "checkBoxGenerateInDatabase";
-            checkBoxGenerateInDatabase.Size = new System.Drawing.Size(198, 17);
             checkBoxGenerateInDatabase.Size = new System.Drawing.Size(198, 17);
             checkBoxGenerateInDatabase.TabIndex = 7;
             checkBoxGenerateInDatabase.Text = "Generate in database (SQL Server)";
@@ -299,6 +307,7 @@
             // SQLGenerationGroupBox
             // 
             SQLGenerationGroupBox.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            SQLGenerationGroupBox.Controls.Add(checkBoxHideDisabled);
             SQLGenerationGroupBox.Controls.Add(checkBoxSaveToFile);
             SQLGenerationGroupBox.Controls.Add(checkBoxGenerateJsonSchema);
             SQLGenerationGroupBox.Controls.Add(checkBoxGenerateInDatabase);
@@ -316,7 +325,7 @@
             // 
             checkBoxSaveToFile.AutoSize = true;
             checkBoxSaveToFile.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            checkBoxSaveToFile.Location = new System.Drawing.Point(7, 76);
+            checkBoxSaveToFile.Location = new System.Drawing.Point(8, 69);
             checkBoxSaveToFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBoxSaveToFile.Name = "checkBoxSaveToFile";
             checkBoxSaveToFile.Size = new System.Drawing.Size(181, 17);
@@ -329,7 +338,7 @@
             // 
             checkBoxGenerateJsonSchema.AutoSize = true;
             checkBoxGenerateJsonSchema.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            checkBoxGenerateJsonSchema.Location = new System.Drawing.Point(7, 50);
+            checkBoxGenerateJsonSchema.Location = new System.Drawing.Point(8, 46);
             checkBoxGenerateJsonSchema.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBoxGenerateJsonSchema.Name = "checkBoxGenerateJsonSchema";
             checkBoxGenerateJsonSchema.Size = new System.Drawing.Size(191, 17);
@@ -429,7 +438,7 @@
             // textBoxMetadataPath
             // 
             textBoxMetadataPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBoxMetadataPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            textBoxMetadataPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             textBoxMetadataPath.Location = new System.Drawing.Point(160, 27);
             textBoxMetadataPath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             textBoxMetadataPath.Multiline = true;
@@ -463,7 +472,7 @@
             // textBoxTemplatePath
             // 
             textBoxTemplatePath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBoxTemplatePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            textBoxTemplatePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             textBoxTemplatePath.Location = new System.Drawing.Point(160, 57);
             textBoxTemplatePath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             textBoxTemplatePath.Multiline = true;
@@ -520,7 +529,7 @@
             // textBoxTeamConfigurationPath
             // 
             textBoxTeamConfigurationPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBoxTeamConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            textBoxTeamConfigurationPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             textBoxTeamConfigurationPath.Location = new System.Drawing.Point(160, 136);
             textBoxTeamConfigurationPath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             textBoxTeamConfigurationPath.Multiline = true;
@@ -577,7 +586,7 @@
             // textBoxTeamEnvironmentsFilePath
             // 
             textBoxTeamEnvironmentsFilePath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBoxTeamEnvironmentsFilePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            textBoxTeamEnvironmentsFilePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             textBoxTeamEnvironmentsFilePath.Location = new System.Drawing.Point(160, 25);
             textBoxTeamEnvironmentsFilePath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             textBoxTeamEnvironmentsFilePath.Multiline = true;
@@ -658,7 +667,7 @@
             // textBoxOutputPath
             // 
             textBoxOutputPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            textBoxOutputPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             textBoxOutputPath.Location = new System.Drawing.Point(160, 57);
             textBoxOutputPath.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             textBoxOutputPath.Multiline = true;
@@ -726,13 +735,19 @@
             toolTipVdw.InitialDelay = 300;
             toolTipVdw.ReshowDelay = 100;
             // 
-            // clearEventLogToolStripMenuItem
+            // checkBoxHideDisabled
             // 
-            clearEventLogToolStripMenuItem.Image = Properties.Resources.log_file;
-            clearEventLogToolStripMenuItem.Name = "clearEventLogToolStripMenuItem";
-            clearEventLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            clearEventLogToolStripMenuItem.Text = "Clear Event Log";
-            clearEventLogToolStripMenuItem.Click += clearEventLogToolStripMenuItem_Click;
+            checkBoxHideDisabled.AutoSize = true;
+            checkBoxHideDisabled.Checked = true;
+            checkBoxHideDisabled.CheckState = System.Windows.Forms.CheckState.Checked;
+            checkBoxHideDisabled.Location = new System.Drawing.Point(8, 92);
+            checkBoxHideDisabled.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            checkBoxHideDisabled.Name = "checkBoxHideDisabled";
+            checkBoxHideDisabled.Size = new System.Drawing.Size(151, 17);
+            checkBoxHideDisabled.TabIndex = 10;
+            checkBoxHideDisabled.Text = "Hide disabled mappings";
+            toolTipVdw.SetToolTip(checkBoxHideDisabled, "Do not show Data Object Mappings that are disabled (enabled = false).");
+            checkBoxHideDisabled.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -842,6 +857,7 @@
         private System.Windows.Forms.ToolStripMenuItem refreshMetadataToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem clearEventLogToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkBoxHideDisabled;
     }
 }
 

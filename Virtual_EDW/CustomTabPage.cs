@@ -458,7 +458,7 @@ namespace Virtual_Data_Warehouse
                 CheckAllCheckBoxes();
             }
         }
-        
+
         private void CheckAllCheckBoxes()
         {
             for (int x = 0; x <= _localCheckedListBox.Items.Count - 1; x++)
