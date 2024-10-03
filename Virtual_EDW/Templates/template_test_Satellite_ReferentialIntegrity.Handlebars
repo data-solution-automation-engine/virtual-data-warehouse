@@ -4,10 +4,10 @@ DECLARE @HUB nvarchar(1000);
 {{#each dataObjectMappings}}
 
 --
--- HUB has a SAT record UT check for {{targetDataObject.name}} and {{businessKeys.0.surrogateKey}}
+-- HUB has a SAT record UT check for {{targetDataObject.name}} and {{businessKeyDefinitions.0.surrogateKey}}
 --
 
-SET @HUB = REPLACE('{{businessKeys.0.surrogateKey}}','_SK','');
+SET @HUB = REPLACE('{{businessKeyDefinitions.0.surrogateKey}}','_SK','');
 
 INSERT INTO OMD.UT_DETAIL (UT_ID, TARGET_TABLE, SOURCE_TABLE, TARGET_COLUMN, SOURCE_COLUMN, TARGET_SCHEMA, SOURCE_SCHEMA, REALM, UT_TEST_SQL, UT_DETAIL_SQL, INACTIVE_INDICATOR, NOTES)
 SELECT DISTINCT
@@ -26,10 +26,10 @@ SELECT DISTINCT
      AS (
       SELECT Count(*)		AS test_count
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-         WHERE  [{{businessKeys.0.surrogateKey}}]
+         WHERE  [{{businessKeyDefinitions.0.surrogateKey}}]
             NOT IN 
           ( 
-            SELECT [{{businessKeys.0.surrogateKey}}]
+            SELECT [{{businessKeyDefinitions.0.surrogateKey}}]
             FROM [{{targetDataObject.dataObjectConnection.extensions.1.value}}].['+@HUB+']
           )
      )
@@ -45,12 +45,12 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeys.0.surrogateKey}}]	AS SAT_SK, [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}]	AS SAT_SK, [{{../conventions.etlProcessAttribute}}]
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-         WHERE  [{{businessKeys.0.surrogateKey}}]
+         WHERE  [{{businessKeyDefinitions.0.surrogateKey}}]
             NOT IN 
           ( 
-            SELECT [{{businessKeys.0.surrogateKey}}]
+            SELECT [{{businessKeyDefinitions.0.surrogateKey}}]
             FROM [{{targetDataObject.dataObjectConnection.extensions.1.value}}].['+@HUB+']
           )'
 

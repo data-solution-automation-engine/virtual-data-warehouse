@@ -1,16 +1,16 @@
 {{#each dataObjectMappings}}
-CREATE OR ALTER PROCEDURE [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[SP_{{targetDataObject.name}}]
+CREATE OR ALTER PROCEDURE [{{lookupExtension targetDataObject.extensions "location"}}].[SP_{{targetDataObject.name}}]
 AS
 
 -- 
--- Insert Into statement for [{{targetDataObject.name}}] from [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+-- Insert Into statement for [{{targetDataObject.name}}] from [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
 --
 -- Create using '300 Presentation Daily Snapshot' template.
 --
 
-DECLARE @SnapshotEndDate DATE        = GETUTCDATE();
-DECLARE @SnapshotStartDate DATE       = CONVERT(DATE,'2023-10-01'); -- A starting point.
-DECLARE @CurrentSnapshotDate DATE  = @SnapshotStartDate;
+DECLARE @SnapshotEndDate DATETIME2(7)       = GETUTCDATE();
+DECLARE @SnapshotStartDate DATETIME2(7)      = CONVERT(DATE,'2023-10-01'); -- A starting point.
+DECLARE @CurrentSnapshotDate DATETIME2(7) = @SnapshotStartDate;
 
 {{! -- Only apply this if the object is a procedure, as identified in the extension -- }}
 {{#each sourceDataObjects.0.extensions}}{{#stringcompare key objectType}}{{#stringcompare value procedure}}
@@ -24,7 +24,7 @@ DECLARE @TEMP_T TABLE
 {{/stringcompare}}{{/stringcompare}}{{/each}}
 BEGIN
   -- Detect what the range of the missing snapshots would be.
-  SELECT @CurrentSnapshotDate = MAX([SNAPSHOT_DATE]) FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+  SELECT @CurrentSnapshotDate = MAX([SNAPSHOT_DATE]) FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 
    PRINT 'The maximum available snapshot date is '+CONVERT(VARCHAR(10),@CurrentSnapshotDate)+'.'
 
@@ -50,28 +50,28 @@ BEGIN
      PRINT 'Working on '+CONVERT(VARCHAR(10),@CurrentSnapshotDate);     
      {{#each sourceDataObjects.0.extensions}}{{#stringcompare key objectType}}{{#stringcompare value procedure}}INSERT @TEMP_T EXEC [{{#each ../../../sourceDataObjects.0.dataObjectConnection.extensions}}{{#stringcompare key schema}}{{value}}{{/stringcompare}}{{/each}}].[{{../../../sourceDataObjects.0.name}}] @SnapshotDate = @CurrentSnapshotDate;
      {{/stringcompare}}{{/stringcompare}}{{/each}}
-     INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-      (      
+     INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
+      (        {{#each businessKeys}}[{{surrogateKey}}]{{/each}}
         [SNAPSHOT_DATE]
-       ,[{{../metadataConfiguration.eventDateTimeAttribute}}]
-       ,[{{../metadataConfiguration.changeDataCaptureAttribute}}]
-       ,[{{../metadataConfiguration.etlProcessAttribute}}]
-       ,[{{../metadataConfiguration.loadDateTimeAttribute}}]
-       ,[{{../metadataConfiguration.recordChecksumAttribute}}]
+       ,[{{../conventions.eventDateTimeAttribute}}]
+       ,[{{../conventions.changeDataCaptureAttribute}}]
+       ,[{{../conventions.etlProcessAttribute}}]
+       ,[{{../conventions.sourceRowIdAttribute}}]
+       ,[{{../conventions.recordChecksumAttribute}}]
 {{#each dataItemMappings}}
        ,{{stringwrap targetDataItem.name "[" "]"}}
 {{/each}} 
       )
       SELECT 
-         @CurrentSnapshotDate  AS [SNAPSHOT_DATE]
-        ,GETUTCDATE() AS [{{../metadataConfiguration.eventDateTimeAttribute}}]               
-        ,[{{../metadataConfiguration.changeDataCaptureAttribute}}]
-        ,0 AS [{{../metadataConfiguration.etlProcessAttribute}}]
-        ,[{{../metadataConfiguration.loadDateTimeAttribute}}]
+         @CurrentSnapshotDate  
+        ,GETUTCDATE()                 
+        ,[{{../conventions.changeDataCaptureAttribute}}]
+        ,0 AS [{{../conventions.etlProcessAttribute}}]
+        ,0
         ,HASHBYTES('MD5',
-         ISNULL(RTRIM(CONVERT(NVARCHAR(MAX),{{../metadataConfiguration.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMappings}}
+         ISNULL(RTRIM(CONVERT(NVARCHAR(MAX),{{../conventions.changeDataCaptureAttribute}})), 'N/A') + '#~!' +{{#each dataItemMappings}}
          ISNULL(RTRIM(CONVERT(NVARCHAR(MAX),{{targetDataItem.name}})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
-         ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
+         ) AS [{{../conventions.recordChecksumAttribute}}]
         {{#each dataItemMappings}}
          ,{{stringwrap sourceDataItems.0.name "[" "]"}}{{sourceDataItems.0.dataQueryCode}}
 {{/each}} 
@@ -81,7 +81,7 @@ FROM @TEMP_T;
 DELETE FROM @TEMP_T;
 {{/stringcompare}}{{/stringcompare}}{{/each}}
 {{! -- Only apply this if the object is a function, as identified in the extension -- }}
-{{#each sourceDataObjects.0.extensions}}{{#stringcompare key objectType}}{{#stringcompare value function}}FROM [{{../../../sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{../../../sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{../../../sourceDataObjects.0.name}}] (@CurrentSnapshotDate) bc
+{{#each sourceDataObjects.0.extensions}}{{#stringcompare key objectType}}{{#stringcompare value function}}FROM [{{lookupExtension ../../../sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension ../../../sourceDataObjects.0.extensions "location"}}].[{{../../../sourceDataObjects.0.name}}] (@CurrentSnapshotDate) bc
 {{/stringcompare}}{{/stringcompare}}{{/each}}
 	
     SET @CurrentSnapshotDate = DATEADD(DAY,1,@CurrentSnapshotDate);

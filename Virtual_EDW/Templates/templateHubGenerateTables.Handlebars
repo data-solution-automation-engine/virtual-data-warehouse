@@ -8,11 +8,11 @@ IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
 
 CREATE TABLE [{{targetDataObject.name}}]
 (
-   [{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] binary(16) NOT NULL,
-   [{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL, 
-   [{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL,
-   [{{../metadataConfiguration.recordSourceAttribute}}] [nvarchar](100) NOT NULL,
-   {{#each businessKeys.0.businessKeyComponentMapping}}
+   [{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] binary(16) NOT NULL,
+   [{{../conventions.etlProcessAttribute}}] [int] NOT NULL, 
+   [{{../conventions.loadDateTimeAttribute}}] [datetime2](7) NOT NULL,
+   [{{../conventions.recordSourceAttribute}}] [nvarchar](100) NOT NULL,
+   {{#each businessKeyDefinitions.0.businessKeyComponentMappings}}
    [{{targetDataItem.name}}] [nvarchar](100) NOT NULL{{#unless @last}},{{/unless}}
    {{/each}}
 ){{/if}}

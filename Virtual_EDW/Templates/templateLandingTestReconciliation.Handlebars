@@ -72,5 +72,5 @@ EXEC [omd].[RegisterModule]
 PRINT 'The Module Id is: '+CONVERT(VARCHAR(10),@ModuleId)+'.';
 
 -- Example - running the DIRECT Module
-EXEC [900_Direct_Framework].[omd].[RunModule] @ModuleCode = 'RECON_STG_{{sourceDataObjects.0.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
+EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[RunModule] @ModuleCode = 'RECON_STG_{{sourceDataObjects.0.name}}', @Debug='Y', @ModuleInstanceIdColumnName='AUDIT_TRAIL_ID'
 {{/each}}

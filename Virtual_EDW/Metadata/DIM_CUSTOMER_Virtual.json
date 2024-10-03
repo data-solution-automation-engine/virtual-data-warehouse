@@ -1,5 +1,5 @@
 {
-  "metadataConfiguration": {
+  "conventions": {
     "changeDataCaptureAttribute": "CDC_OPERATION",
     "recordSourceAttribute": "RECORD_SOURCE",
     "loadDateTimeAttribute": "LOAD_DATETIME",
@@ -9,35 +9,10 @@
     "etlProcessAttribute": "MODULE_INSTANCE_ID",
     "sourceRowIdAttribute": "SOURCE_ROW_ID"
   },
-  "generationSpecificMetadata": {
-    "selectedDataObject": {
-      "name": "DIM_CUSTOMER_Virtual",
-      "dataObjectConnection": {
-        "dataConnectionString": "Presentation",
-        "extensions": [
-          {
-            "key": "database",
-            "value": "VirtualDWH",
-            "description": "database name"
-          },
-          {
-            "key": "schema",
-            "value": "dbo",
-            "description": "schema name"
-          }
-        ]
-      },
-      "dataObjectClassifications": [
-        {
-          "classification": "Presentation"
-        }
-      ]
-    }
-  },
   "dataObjectMappings": [
     {
-      "mappingName": "DIM_CUSTOMER_Virtual",
-      "mappingClassifications": [
+      "name": "DIM_CUSTOMER_Virtual",
+      "classifications": [
         {
           "classification": "Presentation"
         }

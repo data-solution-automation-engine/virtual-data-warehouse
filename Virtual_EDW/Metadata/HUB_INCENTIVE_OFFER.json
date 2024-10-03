@@ -1,5 +1,5 @@
 {
-  "metadataConfiguration": {
+  "conventions": {
     "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
     "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
     "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",
@@ -9,131 +9,96 @@
     "etlProcessAttribute": "AUDIT_TRAIL_ID",
     "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
-  "generationSpecificMetadata": {
-    "selectedDataObject": {
-      "name": "HUB_INCENTIVE_OFFER",
-      "dataItems": [
-        {
-          "name": "INCENTIVE_OFFER_SK",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 1
-        },
-        {
-          "name": "AUDIT_TRAIL_ID",
-          "dataType": "int",
-          "ordinalPosition": 2
-        },
-        {
-          "name": "INSCRIPTION_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 3
-        },
-        {
-          "name": "OFFER_ID",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 4
-        }
-      ],
-      "dataObjectConnection": {
-        "dataConnectionString": "Integration",
-        "extensions": [
-          {
-            "key": "database",
-            "value": "200_Integration_Layer",
-            "description": "database name"
-          },
-          {
-            "key": "schema",
-            "value": "dbo",
-            "description": "schema name"
-          }
-        ]
-      },
-      "dataObjectClassifications": [
-        {
-          "classification": "CoreBusinessConcept"
-        }
-      ]
-    }
-  },
   "dataObjectMappings": [
     {
-      "mappingName": "HUB_INCENTIVE_OFFER",
-      "mappingClassifications": [
-        {
-          "classification": "CoreBusinessConcept"
-        }
-      ],
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "573d3310-b086-4927-8fd9-015ba9656e74",
           "name": "PSA_PROFILER_CUSTOMER_OFFER",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
               "name": "SOURCE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "21a6f46c-adbc-49bf-b507-cf610200885b",
               "name": "CustomerID",
               "dataType": "int",
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "bf73a7ef-9bc3-4822-9585-3675e69adc1a",
               "name": "OfferID",
               "dataType": "int",
               "ordinalPosition": 8
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "PSA",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "150_Persistent_Staging_Area",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "PSA",
+            "id": "ef0fd46d-a6fa-4e82-a579-69cf4e768f86"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "PersistentStagingArea"
+              "classification": "PersistentStagingArea",
+              "group": "Solution Layer",
+              "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "150_Persistent_Staging_Area",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -142,146 +107,218 @@
         "name": "HUB_INCENTIVE_OFFER",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "fe21a8bd-ee1c-4db8-a2bb-e122d5298fd7",
             "name": "INCENTIVE_OFFER_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 1
           },
           {
+            "dataItemType": "dataItem",
+            "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
             "name": "AUDIT_TRAIL_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
             "name": "INSCRIPTION_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 3
+            "ordinalPosition": 3,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "a2e83931-dde6-4a17-abfc-1ebd10b363a3",
             "name": "OFFER_ID",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 4
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Integration",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "200_Integration_Layer",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "CoreBusinessConcept"
+            "key": "datastore",
+            "value": "200_Integration_Layer",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "41b7876e-05ef-4337-a933-0d6f48e303e9",
+        "dataConnection": {
+          "name": "Integration",
+          "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+        },
+        "classifications": [
+          {
+            "classification": "Hub",
+            "group": "Physical",
+            "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
           }
         ]
       },
-      "businessKeys": [
+      "filterCriterion": "",
+      "enabled": true,
+      "name": "PSA_PROFILER_CUSTOMER_OFFER to HUB_INCENTIVE_OFFER",
+      "classifications": [
         {
-          "businessKeyComponentMapping": [
+          "classification": "Hub",
+          "group": "Physical",
+          "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
+        }
+      ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "INCENTIVE_OFFER_SK",
+          "id": "d8c16823-6324-4434-b458-a7f79ef3fe7a",
+          "name": "PSA_PROFILER_CUSTOMER_OFFER to HUB_INCENTIVE_OFFER for INCENTIVE_OFFER_SK",
+          "businessKeyComponentMappings": [
             {
               "sourceDataItems": [
                 {
+                  "dataItemType": "dataItem",
                   "name": "OfferID",
-                  "isHardCodedValue": false
+                  "id": "bf73a7ef-9bc3-4822-9585-3675e69adc1a"
                 }
               ],
               "targetDataItem": {
-                "name": "OFFER_ID"
+                "name": "OFFER_ID",
+                "id": "a2e83931-dde6-4a17-abfc-1ebd10b363a3"
               }
             }
-          ],
-          "surrogateKey": "INCENTIVE_OFFER_SK"
+          ]
         }
       ],
-      "filterCriterion": "",
-      "enabled": true
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "ccd68712-8471-4e7c-a7f8-7f877aa11208"
     },
     {
-      "mappingName": "HUB_INCENTIVE_OFFER",
-      "mappingClassifications": [
-        {
-          "classification": "CoreBusinessConcept"
-        }
-      ],
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "1e77a20c-6522-42e6-90e5-746db2d9c16c",
           "name": "PSA_PROFILER_OFFER",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
               "name": "SOURCE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "bf73a7ef-9bc3-4822-9585-3675e69adc1a",
               "name": "OfferID",
               "dataType": "int",
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "f9bebb0a-5855-46dc-84a2-008a893a39dd",
               "name": "Offer_Long_Description",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 8
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "PSA",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "150_Persistent_Staging_Area",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "PSA",
+            "id": "ef0fd46d-a6fa-4e82-a579-69cf4e768f86"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "PersistentStagingArea"
+              "classification": "PersistentStagingArea",
+              "group": "Solution Layer",
+              "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "150_Persistent_Staging_Area",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -290,70 +327,135 @@
         "name": "HUB_INCENTIVE_OFFER",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "fe21a8bd-ee1c-4db8-a2bb-e122d5298fd7",
             "name": "INCENTIVE_OFFER_SK",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 1
           },
           {
+            "dataItemType": "dataItem",
+            "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
             "name": "AUDIT_TRAIL_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
             "name": "INSCRIPTION_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 3
+            "ordinalPosition": 3,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "a2e83931-dde6-4a17-abfc-1ebd10b363a3",
             "name": "OFFER_ID",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 4
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "Integration",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "200_Integration_Layer",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "CoreBusinessConcept"
+            "key": "datastore",
+            "value": "200_Integration_Layer",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "41b7876e-05ef-4337-a933-0d6f48e303e9",
+        "dataConnection": {
+          "name": "Integration",
+          "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+        },
+        "classifications": [
+          {
+            "classification": "Hub",
+            "group": "Physical",
+            "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
           }
         ]
       },
-      "businessKeys": [
+      "filterCriterion": "",
+      "enabled": true,
+      "name": "PSA_PROFILER_OFFER to HUB_INCENTIVE_OFFER",
+      "classifications": [
         {
-          "businessKeyComponentMapping": [
+          "classification": "Hub",
+          "group": "Physical",
+          "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
+        }
+      ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "INCENTIVE_OFFER_SK",
+          "id": "d8c16823-6324-4434-b458-a7f79ef3fe7a",
+          "name": "PSA_PROFILER_OFFER to HUB_INCENTIVE_OFFER for INCENTIVE_OFFER_SK",
+          "businessKeyComponentMappings": [
             {
               "sourceDataItems": [
                 {
+                  "dataItemType": "dataItem",
                   "name": "OfferID",
-                  "isHardCodedValue": false
+                  "id": "bf73a7ef-9bc3-4822-9585-3675e69adc1a"
                 }
               ],
               "targetDataItem": {
-                "name": "OFFER_ID"
+                "name": "OFFER_ID",
+                "id": "a2e83931-dde6-4a17-abfc-1ebd10b363a3"
               }
             }
-          ],
-          "surrogateKey": "INCENTIVE_OFFER_SK"
+          ]
         }
       ],
-      "filterCriterion": "",
-      "enabled": true
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "4ad0351f-9025-40de-b717-97003a9780bb"
+    }
+  ],
+  "name": "HUB_INCENTIVE_OFFER",
+  "classifications": [
+    {
+      "classification": "Hub",
+      "group": "Physical",
+      "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
     }
   ]
 }

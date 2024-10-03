@@ -3,30 +3,30 @@
 -- Persistent Staging Area View definition for {{targetDataObject.name}}
 --
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
+DROP VIEW [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}]
 GO
 
-CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
+CREATE VIEW [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}] AS
 
 SELECT
    {{#each dataItemMappings}}
    STG.[{{targetDataItem.name}}],
    {{/each}}
-   STG.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-   STG.[{{../metadataConfiguration.eventDateTimeAttribute}}],
-   --STG.[{{../metadataConfiguration.recordSourceAttribute}}],
-   STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
-   STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   STG.[{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] STG
+   STG.[{{../conventions.loadDateTimeAttribute}}],
+   STG.[{{../conventions.eventDateTimeAttribute}}],
+   --STG.[{{../conventions.recordSourceAttribute}}],
+   STG.[{{../conventions.sourceRowIdAttribute}}],
+   STG.[{{../conventions.changeDataCaptureAttribute}}],
+   STG.[{{../conventions.recordChecksumAttribute}}]
+FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}] STG
 LEFT OUTER JOIN -- Prevent reprocessing
-  [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] HSTG
-  ON{{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+  [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] HSTG
+  ON{{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
      HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItems.0.name}}] AND{{/each}} {{/each}}
-     HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
-     HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
-WHERE {{#each businessKeys}}  {{#each businessKeyComponentMapping}} {{#if @first}}
+     HSTG.[{{../conventions.sourceRowIdAttribute}}] = STG.[{{../conventions.sourceRowIdAttribute}}] AND
+     HSTG.[{{../conventions.loadDateTimeAttribute}}] = STG.[{{../conventions.loadDateTimeAttribute}}]
+WHERE {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}} {{#if @first}}
    HSTG.[{{targetDataItem.name}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
 
 {{/each}}

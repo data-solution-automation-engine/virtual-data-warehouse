@@ -33,6 +33,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             menuStripMainMenu = new System.Windows.Forms.MenuStrip();
             fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            refreshMetadataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             openInputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             openTemplateDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             openOutputDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,7 +63,6 @@
             pictureBox1 = new System.Windows.Forms.PictureBox();
             groupBox9 = new System.Windows.Forms.GroupBox();
             richTextBoxInformationMain = new System.Windows.Forms.RichTextBox();
-            button12 = new System.Windows.Forms.Button();
             tabPageSettings = new System.Windows.Forms.TabPage();
             groupBox1 = new System.Windows.Forms.GroupBox();
             label10 = new System.Windows.Forms.Label();
@@ -123,10 +124,24 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { openInputDirectoryToolStripMenuItem, openTemplateDirectoryToolStripMenuItem, openOutputDirectoryToolStripMenuItem, openVDWConfigurationDirectoryToolStripMenuItem, openCoreDirectoryToolStripMenuItem, toolStripSeparator1, openVDWConfigurationSettingsFileToolStripMenuItem, openTEAMConfigurationSettingsFileToolStripMenuItem, toolStripSeparator2, openTemplateCollectionFileToolStripMenuItem, saveTemplateCollectionFileToolStripMenuItem, toolStripSeparator4, saveConfigurationFileToolStripMenuItem, toolStripSeparator3, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { refreshMetadataToolStripMenuItem, toolStripSeparator5, openInputDirectoryToolStripMenuItem, openTemplateDirectoryToolStripMenuItem, openOutputDirectoryToolStripMenuItem, openVDWConfigurationDirectoryToolStripMenuItem, openCoreDirectoryToolStripMenuItem, toolStripSeparator1, openVDWConfigurationSettingsFileToolStripMenuItem, openTEAMConfigurationSettingsFileToolStripMenuItem, toolStripSeparator2, openTemplateCollectionFileToolStripMenuItem, saveTemplateCollectionFileToolStripMenuItem, toolStripSeparator4, saveConfigurationFileToolStripMenuItem, toolStripSeparator3, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             fileToolStripMenuItem.Text = "File";
+            // 
+            // refreshMetadataToolStripMenuItem
+            // 
+            refreshMetadataToolStripMenuItem.Image = Properties.Resources.RavosLogo;
+            refreshMetadataToolStripMenuItem.Name = "refreshMetadataToolStripMenuItem";
+            refreshMetadataToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R;
+            refreshMetadataToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            refreshMetadataToolStripMenuItem.Text = "Refresh Metadata";
+            refreshMetadataToolStripMenuItem.Click += refreshMetadataToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator5
+            // 
+            toolStripSeparator5.Name = "toolStripSeparator5";
+            toolStripSeparator5.Size = new System.Drawing.Size(231, 6);
             // 
             // openInputDirectoryToolStripMenuItem
             // 
@@ -279,6 +294,7 @@
             // checkBoxGenerateInDatabase
             // 
             checkBoxGenerateInDatabase.AutoSize = true;
+            checkBoxGenerateInDatabase.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             checkBoxGenerateInDatabase.Location = new System.Drawing.Point(8, 23);
             checkBoxGenerateInDatabase.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBoxGenerateInDatabase.Name = "checkBoxGenerateInDatabase";
@@ -295,11 +311,12 @@
             SQLGenerationGroupBox.Controls.Add(checkBoxSaveToFile);
             SQLGenerationGroupBox.Controls.Add(checkBoxGenerateJsonSchema);
             SQLGenerationGroupBox.Controls.Add(checkBoxGenerateInDatabase);
+            SQLGenerationGroupBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             SQLGenerationGroupBox.Location = new System.Drawing.Point(19, 669);
             SQLGenerationGroupBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             SQLGenerationGroupBox.Name = "SQLGenerationGroupBox";
             SQLGenerationGroupBox.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            SQLGenerationGroupBox.Size = new System.Drawing.Size(233, 122);
+            SQLGenerationGroupBox.Size = new System.Drawing.Size(411, 122);
             SQLGenerationGroupBox.TabIndex = 14;
             SQLGenerationGroupBox.TabStop = false;
             SQLGenerationGroupBox.Text = "SQL Generation Options";
@@ -307,6 +324,7 @@
             // checkBoxSaveToFile
             // 
             checkBoxSaveToFile.AutoSize = true;
+            checkBoxSaveToFile.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             checkBoxSaveToFile.Location = new System.Drawing.Point(8, 69);
             checkBoxSaveToFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBoxSaveToFile.Name = "checkBoxSaveToFile";
@@ -319,6 +337,7 @@
             // checkBoxGenerateJsonSchema
             // 
             checkBoxGenerateJsonSchema.AutoSize = true;
+            checkBoxGenerateJsonSchema.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             checkBoxGenerateJsonSchema.Location = new System.Drawing.Point(8, 46);
             checkBoxGenerateJsonSchema.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             checkBoxGenerateJsonSchema.Name = "checkBoxGenerateJsonSchema";
@@ -333,7 +352,6 @@
             backgroundWorkerActivateMetadata.WorkerReportsProgress = true;
             backgroundWorkerActivateMetadata.WorkerSupportsCancellation = true;
             backgroundWorkerActivateMetadata.DoWork += backgroundWorker_DoWorkMetadataActivation;
-            backgroundWorkerActivateMetadata.ProgressChanged += backgroundWorkerActivateMetadata_ProgressChanged;
             backgroundWorkerActivateMetadata.RunWorkerCompleted += backgroundWorkerActivateMetadata_RunWorkerCompleted;
             // 
             // pictureBox1
@@ -352,11 +370,12 @@
             // 
             groupBox9.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupBox9.Controls.Add(richTextBoxInformationMain);
-            groupBox9.Location = new System.Drawing.Point(393, 669);
+            groupBox9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            groupBox9.Location = new System.Drawing.Point(437, 669);
             groupBox9.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox9.Name = "groupBox9";
             groupBox9.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox9.Size = new System.Drawing.Size(923, 122);
+            groupBox9.Size = new System.Drawing.Size(877, 122);
             groupBox9.TabIndex = 12;
             groupBox9.TabStop = false;
             groupBox9.Text = "Information";
@@ -366,26 +385,14 @@
             richTextBoxInformationMain.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             richTextBoxInformationMain.BackColor = System.Drawing.SystemColors.Control;
             richTextBoxInformationMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            richTextBoxInformationMain.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             richTextBoxInformationMain.Location = new System.Drawing.Point(7, 20);
             richTextBoxInformationMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             richTextBoxInformationMain.Name = "richTextBoxInformationMain";
-            richTextBoxInformationMain.Size = new System.Drawing.Size(909, 95);
+            richTextBoxInformationMain.Size = new System.Drawing.Size(863, 95);
             richTextBoxInformationMain.TabIndex = 29;
             richTextBoxInformationMain.Text = "";
             richTextBoxInformationMain.TextChanged += richTextBoxInformationMain_TextChanged;
-            // 
-            // button12
-            // 
-            button12.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            button12.Location = new System.Drawing.Point(259, 676);
-            button12.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            button12.MinimumSize = new System.Drawing.Size(127, 46);
-            button12.Name = "button12";
-            button12.Size = new System.Drawing.Size(127, 46);
-            button12.TabIndex = 23;
-            button12.Text = "Refresh Metadata";
-            button12.UseVisualStyleBackColor = true;
-            button12.Click += buttonRefreshMetadata_Click;
             // 
             // tabPageSettings
             // 
@@ -749,7 +756,6 @@
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.Control;
             ClientSize = new System.Drawing.Size(1469, 808);
-            Controls.Add(button12);
             Controls.Add(groupBox9);
             Controls.Add(pictureBox1);
             Controls.Add(SQLGenerationGroupBox);
@@ -808,7 +814,6 @@
         private System.Windows.Forms.CheckBox checkBoxGenerateJsonSchema;
         private System.Windows.Forms.CheckBox checkBoxSaveToFile;
         private System.Windows.Forms.ToolStripMenuItem openVDWConfigurationSettingsFileToolStripMenuItem;
-        private System.Windows.Forms.Button button12;
         private System.Windows.Forms.TabPage tabPageSettings;
         internal System.Windows.Forms.TextBox textBoxTeamEnvironmentsFilePath;
         internal System.Windows.Forms.TextBox textBoxOutputPath;
@@ -849,6 +854,8 @@
         private System.Windows.Forms.Label labelWelcome;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openCoreDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem refreshMetadataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem clearEventLogToolStripMenuItem;
         private System.Windows.Forms.CheckBox checkBoxHideDisabled;
     }

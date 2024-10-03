@@ -2,29 +2,31 @@
 --
 -- Persistent Staging Area Insert Into statement for {{targetDataObject.name}}
 --
+-- Generated from template '150 Persistent Staging Area Insert Into'.
+--
 
-INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
-   [{{../metadataConfiguration.etlProcessAttribute}}], 
-   [{{../metadataConfiguration.loadDateTimeAttribute}}],
-   [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.sourceRowIdAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   [{{../conventions.etlProcessAttribute}}], 
+   [{{../conventions.loadDateTimeAttribute}}],
+   [{{../conventions.eventDateTimeAttribute}}],
+   [{{../conventions.sourceRowIdAttribute}}],
+   [{{../conventions.changeDataCaptureAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}],
    {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
 )
 SELECT
-   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}], 
-   [{{../metadataConfiguration.loadDateTimeAttribute}}],
-   [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.sourceRowIdAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   -1 AS [{{../conventions.etlProcessAttribute}}], 
+   [{{../conventions.loadDateTimeAttribute}}],
+   [{{../conventions.eventDateTimeAttribute}}],
+   [{{../conventions.sourceRowIdAttribute}}],
+   [{{../conventions.changeDataCaptureAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}],
    {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
+FROM [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}]
 
 {{/each}}

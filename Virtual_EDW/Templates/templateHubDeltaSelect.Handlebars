@@ -4,36 +4,36 @@
 -- Generated at {{now}}
 --
 SELECT
-    HASHBYTES('MD5', {{#each businessKeys}} {{#if @first}}
-    {{#each businessKeyComponentMapping}}
+    HASHBYTES('MD5', {{#each businessKeyDefinitions}} {{#if @first}}
+    {{#each businessKeyComponentMappings}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
-    ) AS [{{surrogateKey}}],{{/if}}{{/each}}{{#each businessKeys}}{{#each businessKeyComponentMapping}}
+    ) AS [{{surrogateKey}}],{{/if}}{{/each}}{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
     [{{targetDataItem.name}}],{{/each}}{{/each}}
-    [{{../metadataConfiguration.loadDateTimeAttribute}}],
-    [{{../metadataConfiguration.etlProcessAttribute}}],
-    [{{../metadataConfiguration.recordSourceAttribute}}]
+    [{{../conventions.loadDateTimeAttribute}}],
+    [{{../conventions.etlProcessAttribute}}],
+    [{{../conventions.recordSourceAttribute}}]
 FROM
 (
     SELECT
         sub.*,
-        ROW_NUMBER() OVER (PARTITION BY {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+        ROW_NUMBER() OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
            [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-           ORDER BY [{{../metadataConfiguration.loadDateTimeAttribute}}]
+           ORDER BY [{{../conventions.loadDateTimeAttribute}}]
         ) AS LDTS_ORDER
         FROM
         (
-          SELECT {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+          SELECT {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
             {{sourceDataItems.0.name}} AS [{{targetDataItem.name}}],{{/each}}{{/each}}
-            stg.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-            -1 AS [{{../metadataConfiguration.etlProcessAttribute}}],
-            stg.[{{../metadataConfiguration.recordSourceAttribute}}]
+            stg.[{{../conventions.loadDateTimeAttribute}}],
+            -1 AS [{{../conventions.etlProcessAttribute}}],
+            stg.[{{../conventions.recordSourceAttribute}}]
           FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] stg
           WHERE NOT EXISTS
           (
              SELECT 1
              FROM [{{targetDataObject.name}}] hub
-             WHERE {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+             WHERE {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
                 {{sourceDataItems.0.name}} = hub.{{targetDataItem.name}}{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         )
     ) sub

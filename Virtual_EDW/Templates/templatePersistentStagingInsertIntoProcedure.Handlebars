@@ -7,40 +7,40 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'PSA.SP_{{tar
 DROP PROCEDURE [PSA].[SP_{{targetDataObject.name}}]
 GO
 
-CREATE PROCEDURE [PSA].[SP_{{targetDataObject.name}}] @{{../metadataConfiguration.etlProcessAttribute}} int
+CREATE PROCEDURE [PSA].[SP_{{targetDataObject.name}}] @{{../conventions.etlProcessAttribute}} int
 AS
 INSERT INTO [PSA].[{{targetDataObject.name}}]
 (
-   [{{businessKeys.0.surrogateKey}}],
+   [{{businessKeyDefinitions.0.surrogateKey}}],
    {{#each dataItemMappings}}
    [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-   ,{{../metadataConfiguration.etlProcessAttribute}}
+   ,{{../conventions.etlProcessAttribute}}
   ,OMD_FILE_LOCATION
-  ,{{../metadataConfiguration.eventDateTimeAttribute}}
+  ,{{../conventions.eventDateTimeAttribute}}
   ,OMD_EFFECTIVE_DATETIME
   ,OMD_HASH_DIFF
   ,OMD_CURRENT_RECORD_INDICATOR
   ,OMD_DELETED_RECORD_INDICATOR
   ,OMD_EXPIRY_DATETIME
-,{{../metadataConfiguration.recordSourceAttribute}}
-,{{../metadataConfiguration.sourceRowIdAttribute}}
+,{{../conventions.recordSourceAttribute}}
+,{{../conventions.sourceRowIdAttribute}}
 )
 SELECT
-     CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(ISNULL([{{sourceDataItems.0.name}}],'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2),
+     CONVERT(CHAR,HASHBYTES('SHA1',UPPER({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(ISNULL([{{sourceDataItems.0.name}}],'NA')){{#unless @last}}+'|'+{{/unless}}{{/each}} {{/each}} )),2),
     {{#each dataItemMappings}}
   [{{sourceDataItems.0.name}}] as [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-   ,@{{../metadataConfiguration.etlProcessAttribute}}
+   ,@{{../conventions.etlProcessAttribute}}
   ,OMD_FILE_LOCATION
-  ,{{../metadataConfiguration.eventDateTimeAttribute}}
-  ,[{{../metadataConfiguration.loadDateTimeAttribute}}]
+  ,{{../conventions.eventDateTimeAttribute}}
+  ,[{{../conventions.loadDateTimeAttribute}}]
   ,OMD_HASH_DIFF
   ,OMD_CURRENT_RECORD_INDICATOR
   ,OMD_DELETED_RECORD_INDICATOR
   ,OMD_EXPIRY_DATETIME
-  ,{{../metadataConfiguration.recordSourceAttribute}}
- ,{{../metadataConfiguration.sourceRowIdAttribute}}
+  ,{{../conventions.recordSourceAttribute}}
+ ,{{../conventions.sourceRowIdAttribute}}
 
 FROM [STG].[{{sourceDataObjects.0.name}}] ;
 SELECT @@ROWCOUNT AS ROWS_INSERTED

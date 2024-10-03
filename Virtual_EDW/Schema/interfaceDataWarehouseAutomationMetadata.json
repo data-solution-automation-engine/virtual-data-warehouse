@@ -32,12 +32,12 @@
         "targetDataObject"
       ],
       "properties": {
-        "mappingName": {
+        "Name": {
           "$id": "#/definitions/dataObjectMapping/properties/dataObjectMappingName",
           "description": "Unique name which identifies the mapping.",
           "type": [ "string", "null" ]
         },
-        "mappingClassifications": {
+        "Classifications": {
           "$id": "#/definitions/dataObjectMapping/properties/dataObjectMappingClassifications",
           "description": "Classification for the source-to-target mapping (free form).",
           "type": [ "array", "null" ],

@@ -136,7 +136,7 @@ SELECT @SYSTEM_GROUP = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '
 
 --3
    INSERT INTO [omd].PARAMETER ( [PARAMETER_DESCRIPTION], [PARAMETER_KEY_CODE], [PARAMETER_VALUE_CODE], [PARAMETER_AREA_CODE], [INACTIVE_INDICATOR]) 
-   SELECT DISTINCT  N'Azure SQL INT LNK SK', N'SQL_INT_LSAT_SK_'+@TARGET_TABLE, '{{businessKeys.0.surrogateKey}}', N'SQL_INT_LSAT_SK', N'N'
+   SELECT DISTINCT  N'Azure SQL INT LNK SK', N'SQL_INT_LSAT_SK_'+@TARGET_TABLE, '{{businessKeyDefinitions.0.surrogateKey}}', N'SQL_INT_LSAT_SK', N'N'
             from OMD.MODULE dm
                left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='SQL_INT_LSAT_SK_'+@TARGET_TABLE
       where dm.MODULE_ID = 0

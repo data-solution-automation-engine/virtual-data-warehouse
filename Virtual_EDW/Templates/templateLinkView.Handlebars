@@ -1,58 +1,60 @@
+CREATE OR ALTER VIEW [{{conventions.vdwSchemaName}}].[{{dataObjectMappings.0.targetDataObject.name}}] 
+AS
 --
--- Link View definition for {{generationSpecificMetadata.selectedDataObject.name}}.
+-- Link View definition for {{dataObjectMappings.0.targetDataObject.name}}.
 --
 -- This template represents a standard Data Vault style 'Link' table as a view.
 -- The view shows the same data as would otherwise be the case if the table would be created and all data logistics processes run.
 --
+-- Generated from template '200 Data Vault Link View'.
+--
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}]
-GO
-
-CREATE VIEW [{{metadataConfiguration.vdwSchemaName}}].[{{generationSpecificMetadata.selectedDataObject.name}}] AS
 SELECT link.*
 FROM 
 ( {{#each dataObjectMappings}}{{#if @first}}
 SELECT
-    HASHBYTES('MD5',  {{#each businessKeys}} {{#unless @first}}{{!-- Create the Surrogate Key using the combined Business Keys --}}{{#each dataItemMappings}}ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}], 'N/A') + '#~!'{{/each}}
-{{#each businessKeyComponentMapping}} ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{@../index }})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
-{{#each dataItemMappings}} + ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{{/each}}{{#each businessKeys}} {{#if @first}} ) AS {{surrogateKey}},{{/if}}{{/each}}
-    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
-    MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
-    {{#each businessKeys}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
+    HASHBYTES('MD5',  {{#each businessKeyDefinitions}} {{#unless @first}}{{!-- Create the Surrogate Key using the combined Business Keys --}}{{#each dataItemMappings}}
+   ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}], 'N/A') + '#~!'{{/each}}
+{{#each businessKeyComponentMappings}}
+    ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{@../index }})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}{{#unless @last}} +{{/unless}}{{/unless}}{{/each}}
+{{#each dataItemMappings}} + 
+ISNULL(RTRIM(CONVERT(NVARCHAR(100), [{{targetDataItem.name}}])), 'N/A') + '#~!'{{/each}}{{#each businessKeyDefinitions}} {{#if @first}} ) AS {{surrogateKey}},{{/if}}{{/each}}
+    -1 AS {{../conventions.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    MIN({{../conventions.loadDateTimeAttribute}}) AS {{../conventions.loadDateTimeAttribute}},
+    {{#each businessKeyDefinitions}}{{#unless @first}} {{!-- List out the separate (Hub) business keys, by skipping the first generic relationship key. --}}
     {{#unless businessKeyClassification}}HASHBYTES('MD5',
-    {{#each businessKeyComponentMapping}}
+    {{#each businessKeyComponentMappings}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100), {{targetDataItem.name}}{{@../index }})), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}{{/each}}
      ) AS {{surrogateKey}},
-    {{/unless}}{{#if businessKeyClassification}}{{#each businessKeyComponentMapping}}{{targetDataItem.name}}{{@../index }}{{/each}} AS {{surrogateKey}},
+    {{/unless}}{{#if businessKeyClassification}}{{#each businessKeyComponentMappings}}{{targetDataItem.name}}{{@../index }}{{/each}} AS {{surrogateKey}},
     {{/if}} {{/unless}} {{/each}}{{#each dataItemMappings}}
     [{{targetDataItem.name}}],{{/each}}
-    ROW_NUMBER() OVER (PARTITION BY {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+    ROW_NUMBER() OVER (PARTITION BY {{#each businessKeyDefinitions}} {{#unless @first}} {{#each businessKeyComponentMappings}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
       {{targetDataItem.name}}{{@../index }}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
      {{#each dataItemMappings}},[{{targetDataItem.name}}]{{/each}}
     ORDER BY 
-       MIN({{../metadataConfiguration.loadDateTimeAttribute}})
+       MIN({{../conventions.loadDateTimeAttribute}})
     ) AS ROW_NR
 FROM 
 ({{/if}}{{/each}}
     {{#each dataObjectMappings }}
-    SELECT {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
+    SELECT {{#each businessKeyDefinitions}} {{#unless @first}} {{#each businessKeyComponentMappings}}
         CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}}{{@../index }},{{/each}}{{/unless}}{{/each}}{{#each dataItemMappings}}
         [{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}],{{/each}}
-        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
-    FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
-    WHERE {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
+        MIN({{../conventions.loadDateTimeAttribute}}) AS {{../conventions.loadDateTimeAttribute}}
+    FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
+    WHERE {{#each businessKeyDefinitions}} {{#unless @first}} {{#each businessKeyComponentMappings}}
        {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{#unless @last}} AND{{/unless}}{{/unless}} {{/each}}
        {{#each dataItemMappings}}
        AND [{{sourceDataItems.0.name}}] IS NOT NULL
        {{/each}}
-       {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
+       {{#if filterCriterion}}{{#stringcompare filterCriterion ""}}{{else}}AND {{filterCriterion}}{{/stringcompare}}{{/if}}
     GROUP BY
-       {{#each businessKeys}}{{#unless @first}}{{#each businessKeyComponentMapping}}{{#stringcompare sourceDataItems.0.isHardCodedValue "True"}}{{else}}{{sourceDataItems.0.name}}{{/stringcompare}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
+       {{#each businessKeyDefinitions}}{{#unless @first}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{!-- Exclude hard-coded values from the group by --}}{{#if extensions}}{{#each extensions}}{{#stringcompare key "isHardCodedValue"}}{{/stringcompare}}{{/each}}{{else}}        {{name}}{{#unless @last}},{{/unless}}{{/if}}{{/each}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}} {{/each}}
        {{#each dataItemMappings}},[{{sourceDataItems.0.name}}] -- Degenerate column{{/each}}
        {{#unless @last}}UNION{{/unless}}
   ) LINK_selection
-  GROUP BY {{#each businessKeys}} {{#unless @first}} {{#each businessKeyComponentMapping}}
+  GROUP BY {{#each businessKeyDefinitions}} {{#unless @first}} {{#each businessKeyComponentMappings}}
      {{targetDataItem.name}}{{@../index }}{{#unless @last}},{{/unless}}{{/each}}{{#unless @last}},{{/unless}}{{/unless}}{{/each}}
      {{#each dataItemMappings}}
      ,[{{targetDataItem.name}}]{{/each}}{{/each}}

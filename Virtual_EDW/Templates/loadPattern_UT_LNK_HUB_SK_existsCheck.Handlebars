@@ -4,7 +4,7 @@ DECLARE @HUB nvarchar(1000);
 
 {{#each dataObjectMappings}}
 
-{{#each businessKeys}}
+{{#each businessKeyDefinitions}}
 {{#unless @first}}
 --
 -- LNK UT SK Generation check for {{../targetDataObject.name}} - {{surrogateKey}} pair

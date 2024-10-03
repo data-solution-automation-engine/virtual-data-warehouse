@@ -18,13 +18,13 @@ SELECT DISTINCT
   
   'WITH recordcount
      AS (SELECT Count(*) AS Record_Count
-         FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{mappingName}}]),
+         FROM   [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}]),
 
      testcount
      AS (SELECT Sum(test_count) AS Test_Count
-         FROM   (SELECT Count(DISTINCT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}]) AS test_count
-                 FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{mappingName}}] {{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}
-                 GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}]
+         FROM   (SELECT Count(DISTINCT [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}]) AS test_count
+                 FROM   [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] {{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}
+                 GROUP  BY [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}]
                           , OMD_HASH_DIFF
                  HAVING Count(*) > 1) AS a)
 
@@ -41,9 +41,9 @@ FROM   recordcount
                     ON 1 = 1; '
 , 
   
-  'SELECT [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}] , [{{../metadataConfiguration.etlProcessAttribute}}]
-  FROM   [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{mappingName}}] {{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}
-  GROUP  BY [{{../generationSpecificMetadata.selectedDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeys.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}] , [{{../conventions.etlProcessAttribute}}]
+  FROM   [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{Name}}] {{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}
+  GROUP  BY [{{../dataObjectMappings.0.targetDataObject.dataObjectConnection.extensions.1.value}}].[{{businessKeyDefinitions.0.surrogateKey}}], [{{../conventions.etlProcessAttribute}}]
             , OMD_HASH_DIFF
   HAVING Count(*) > 1'
 

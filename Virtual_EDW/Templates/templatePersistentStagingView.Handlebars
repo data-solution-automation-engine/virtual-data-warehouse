@@ -1,87 +1,86 @@
 {{#each dataObjectMappings}}
+
+CREATE OR ALTER VIEW [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}] 
+AS
+
 --
 -- Persistent Staging Area View definition for {{targetDataObject.name}}
 --
-
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
-GO
-
-CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
+-- Generated from template '150 Persistent Staging Area View'.
+--
 
 SELECT
    {{#each dataItemMappings}}
    [{{targetDataItem.name}}],
    {{/each}}
-   [{{../metadataConfiguration.loadDateTimeAttribute}}],
-   [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.sourceRowIdAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../metadataConfiguration.recordChecksumAttribute}}],
-   [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
-   [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}],
+   [{{../conventions.loadDateTimeAttribute}}],
+   [{{../conventions.eventDateTimeAttribute}}],
+   [{{../conventions.sourceRowIdAttribute}}],
+   [{{../conventions.changeDataCaptureAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}],
+   [LKP_{{../conventions.recordChecksumAttribute}}],
+   [LKP_{{../conventions.changeDataCaptureAttribute}}],
    [KEY_ROW_NUMBER]
 FROM 
 (
   SELECT
-     STG.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-     STG.[{{../metadataConfiguration.eventDateTimeAttribute}}],
-     STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
-     STG.[{{../metadataConfiguration.changeDataCaptureAttribute}}],
-     STG.[{{../metadataConfiguration.recordChecksumAttribute}}],
+     STG.[{{../conventions.loadDateTimeAttribute}}],
+     STG.[{{../conventions.eventDateTimeAttribute}}],
+     STG.[{{../conventions.sourceRowIdAttribute}}],
+     STG.[{{../conventions.changeDataCaptureAttribute}}],
+     STG.[{{../conventions.recordChecksumAttribute}}],
      {{#each dataItemMappings}}
      STG.[{{sourceDataItems.0.name}}],
      {{/each}}
-     COALESCE(maxsub.[LKP_{{../metadataConfiguration.recordChecksumAttribute}}], 'N/A') AS [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
-     COALESCE(maxsub.[LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}], 'N/A') AS [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}],
+     COALESCE(maxsub.[LKP_{{../conventions.recordChecksumAttribute}}], 'N/A') AS [LKP_{{../conventions.recordChecksumAttribute}}],
+     COALESCE(maxsub.[LKP_{{../conventions.changeDataCaptureAttribute}}], 'N/A') AS [LKP_{{../conventions.changeDataCaptureAttribute}}],
      CAST(ROW_NUMBER() OVER
         (  PARTITION BY
-             {{#each businessKeys}}{{#each businessKeyComponentMapping}}STG.[{{sourceDataItems.0.name}}],
+             {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}STG.[{{sourceDataItems.0.name}}],
              {{/each}}{{/each}}
-             STG.[{{../metadataConfiguration.sourceRowIdAttribute}}]
+             STG.[{{../conventions.sourceRowIdAttribute}}]
            ORDER BY
-             {{#each businessKeys}}{{#each businessKeyComponentMapping}}STG.[{{sourceDataItems.0.name}}],
+             {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}STG.[{{sourceDataItems.0.name}}],
              {{/each}}{{/each}}
-             STG.[{{../metadataConfiguration.sourceRowIdAttribute}}],
-             STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
+             STG.[{{../conventions.sourceRowIdAttribute}}],
+             STG.[{{../conventions.loadDateTimeAttribute}}]
       )  AS INT
     ) AS KEY_ROW_NUMBER
-  FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}] STG
-  LEFT OUTER JOIN -- Prevent reprocessing
-    [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] HSTG
+  FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}] STG
+  -- Prevent reprocessing
+  LEFT OUTER JOIN [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] HSTG
     ON
-       {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+       {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
        HSTG.[{{targetDataItem.name}}] = STG.[{{sourceDataItems.0.name}}] AND{{/each}} {{/each}}
-       HSTG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
-       HSTG.[{{../metadataConfiguration.loadDateTimeAttribute}}] = STG.[{{../metadataConfiguration.loadDateTimeAttribute}}]
-  LEFT OUTER JOIN -- max HSTG checksum
+       HSTG.[{{../conventions.sourceRowIdAttribute}}] = STG.[{{../conventions.sourceRowIdAttribute}}] AND
+       HSTG.[{{../conventions.loadDateTimeAttribute}}] = STG.[{{../conventions.loadDateTimeAttribute}}]
+  -- max HSTG checksum
+  LEFT OUTER JOIN 
   (
-      SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+      SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
          A.[{{sourceDataItems.0.name}}], {{/each}} {{/each}}
-         A.[{{../metadataConfiguration.sourceRowIdAttribute}}],  
-         A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [LKP_{{../metadataConfiguration.recordChecksumAttribute}}],
-         A.[{{../metadataConfiguration.changeDataCaptureAttribute}}] AS [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}]
-      FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] A
+         A.[{{../conventions.sourceRowIdAttribute}}],  
+         A.[{{../conventions.recordChecksumAttribute}}] AS [LKP_{{../conventions.recordChecksumAttribute}}],
+         A.[{{../conventions.changeDataCaptureAttribute}}] AS [LKP_{{../conventions.changeDataCaptureAttribute}}]
+      FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] A
       JOIN
       (
-        SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+        SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
           B.[{{sourceDataItems.0.name}}], {{/each}} {{/each}}
-          B.[{{../metadataConfiguration.sourceRowIdAttribute}}],  
-          MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-        FROM [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] B
-        GROUP BY {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
-          B.[{{sourceDataItems.0.name}}],{{/each}} {{/each}}
-          B.[{{../metadataConfiguration.sourceRowIdAttribute}}]
-     ) C ON
-         {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+          MAX({{../conventions.sourceRowIdAttribute}}) AS MAX_{{../conventions.sourceRowIdAttribute}},  
+          MAX({{../conventions.loadDateTimeAttribute}}) AS MAX_{{../conventions.loadDateTimeAttribute}}
+        FROM [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] B
+        GROUP BY {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
+          B.[{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}{{/each}} {{/each}}
+     ) C ON         {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
          A.[{{targetDataItem.name}}] = C.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
-         A.[{{../metadataConfiguration.sourceRowIdAttribute}}] = C.[{{../metadataConfiguration.sourceRowIdAttribute}}] AND
-         A.[{{../metadataConfiguration.loadDateTimeAttribute}}] = C.[MAX_{{../metadataConfiguration.loadDateTimeAttribute}}]
+         A.[{{../conventions.sourceRowIdAttribute}}] = C.[MAX_{{../conventions.sourceRowIdAttribute}}] AND
+         A.[{{../conventions.loadDateTimeAttribute}}] = C.[MAX_{{../conventions.loadDateTimeAttribute}}]
   ) maxsub ON
-     {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+     {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
      STG.[{{sourceDataItems.0.name}}] = maxsub.[{{targetDataItem.name}}] AND{{/each}} {{/each}}
-     STG.[{{../metadataConfiguration.sourceRowIdAttribute}}] = maxsub.[{{../metadataConfiguration.sourceRowIdAttribute}}] 
-  WHERE {{#each businessKeys}}  {{#each businessKeyComponentMapping}} {{#if @first}}
+     STG.[{{../conventions.sourceRowIdAttribute}}] = maxsub.[{{../conventions.sourceRowIdAttribute}}] 
+  WHERE {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}} {{#if @first}}
      HSTG.[{{targetDataItem.name}}] IS NULL -- prevent reprocessing{{/if}}{{/each}} {{/each}}
 ) sub
 WHERE
@@ -89,11 +88,11 @@ WHERE
   KEY_ROW_NUMBER=1
   AND
   (
-    ( {{../metadataConfiguration.recordChecksumAttribute}} != LKP_{{../metadataConfiguration.recordChecksumAttribute}} )
+    ( {{../conventions.recordChecksumAttribute}} != LKP_{{../conventions.recordChecksumAttribute}} )
     -- The checksums are different
     OR
-    ( [{{../metadataConfiguration.recordChecksumAttribute}}] = [LKP_{{../metadataConfiguration.recordChecksumAttribute}}] AND     
-      [{{../metadataConfiguration.changeDataCaptureAttribute}}] != [LKP_{{../metadataConfiguration.changeDataCaptureAttribute}}] )
+    ( [{{../conventions.recordChecksumAttribute}}] = [LKP_{{../conventions.recordChecksumAttribute}}] AND     
+      [{{../conventions.changeDataCaptureAttribute}}] != [LKP_{{../conventions.changeDataCaptureAttribute}}] )
     -- The checksums are the same but the CDC is different
     -- In other words, if the hash is the same AND the CDC operation is the same then there is no change
   )

@@ -1,49 +1,48 @@
 \{{ config(materialized='view') }}  
 --
--- Hub View definition for {{generationSpecificMetadata.selectedDataObject}}
--- Generated at {{generationSpecificMetadata.generationDateTime}}
+-- Hub View definition for {{dataObjectMappings.0.targetDataObject}}
 --
 
 SELECT hub.*
 FROM (
 {{#each dataObjectMappings}}{{#if @first}}
 SELECT
-    MD5({{#each businessKeys}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
-    {{#each businessKeyComponentMapping}}
+    MD5({{#each businessKeyDefinitions}} {{#if @first}} {{!-- Create the Surrogate Key using the Business Key and components --}}
+    {{#each businessKeyComponentMappings}}
       COALESCE(RTRIM(CAST({{targetDataItem.name}} AS NVARCHAR(100))), 'N/A') || '#~!'{{#unless @last}} +{{/unless}} 
     {{/each}}
     ) AS {{surrogateKey}},{{/if}}{{/each}}
-    -1 AS {{../metadataConfiguration.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
-    MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}},
-    {{../metadataConfiguration.recordSourceAttribute}},{{#each businessKeys}} {{!-- The Hub business key --}}
-    {{#each businessKeyComponentMapping}}
+    -1 AS {{../conventions.etlProcessAttribute}}, {{!-- List out the ETL Framework attributes --}}
+    MIN({{../conventions.loadDateTimeAttribute}}) AS {{../conventions.loadDateTimeAttribute}},
+    {{../conventions.recordSourceAttribute}},{{#each businessKeyDefinitions}} {{!-- The Hub business key --}}
+    {{#each businessKeyComponentMappings}}
     {{targetDataItem.name}},{{/each}}{{/each}}
-    ROW_NUMBER() OVER (PARTITION BY {{#each businessKeys}}{{#each businessKeyComponentMapping}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
+    ROW_NUMBER() OVER (PARTITION BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} {{!-- Create a row number to enable selection only the earliest row, ordered by date/time --}}
        {{targetDataItem.name}}{{#unless @last}},{{/unless}}{{/each}}
     {{/each}}
     ORDER BY 
-       MIN({{../metadataConfiguration.loadDateTimeAttribute}})
+       MIN({{../conventions.loadDateTimeAttribute}})
     ) AS ROW_NR
 FROM 
 ( {{/if}}{{/each}}
     {{#each dataObjectMappings }}
-    SELECT {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+    SELECT {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
         CAST({{sourceDataItems.0.name}} AS NVARCHAR(100)) AS {{targetDataItem.name}},{{/each}}{{/each}}
-        {{../metadataConfiguration.recordSourceAttribute}},
-        MIN({{../metadataConfiguration.loadDateTimeAttribute}}) AS {{../metadataConfiguration.loadDateTimeAttribute}}
+        {{../conventions.recordSourceAttribute}},
+        MIN({{../conventions.loadDateTimeAttribute}}) AS {{../conventions.loadDateTimeAttribute}}
     FROM VDW.{{sourceDataObjects.0.name}}
-    WHERE {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+    WHERE {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
         {{sourceDataItems.0.name}} IS NOT NULL{{#unless @last}} AND{{/unless}}{{/each}}{{/each}}
         {{#if filterCriterion}}AND {{filterCriterion}}{{/if}}
     GROUP BY         
-        {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}},{{/stringcompare}}{{/each}}{{/each}}{{/each}}        
-        {{../metadataConfiguration.recordSourceAttribute}}
+        {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#each sourceDataItems}}{{#stringcompare isHardCodedValue "True"}}{{else}}{{name}},{{/stringcompare}}{{/each}}{{/each}}{{/each}}        
+        {{../conventions.recordSourceAttribute}}
     {{#unless @last}}UNION{{/unless}}
     {{/each}}
 ) HUB_selection {{#each dataObjectMappings}}{{#if @first}}
-GROUP BY {{#each businessKeys}}{{#each businessKeyComponentMapping}}
+GROUP BY {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
     {{targetDataItem.name}},{{/each}}{{/each}}
-    {{../metadataConfiguration.recordSourceAttribute}} {{/if}}{{/each}}
+    {{../conventions.recordSourceAttribute}} {{/if}}{{/each}}
 ) hub
 WHERE ROW_NR = 1
 UNION
@@ -51,6 +50,6 @@ SELECT
   MD5('ZeroRecord'),
   - 1,
   '1900-01-01',
-  'Data Warehouse',{{#each dataObjectMappings}}{{#if @first}}{{#each businessKeys}}{{#each businessKeyComponentMapping}}
+  'Data Warehouse',{{#each dataObjectMappings}}{{#if @first}}{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}
   'Unknown',{{/each}}{{/each}}{{/if}}{{/each}}
   1 AS ROW_NR

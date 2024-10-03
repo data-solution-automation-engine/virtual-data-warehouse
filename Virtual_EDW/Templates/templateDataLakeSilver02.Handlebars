@@ -5,9 +5,9 @@ select  * from {{sourceDataObjects.0.name}} as source
 
 where source.OMD_CURRENT_RECORD_INDICATOR =''Y'' and source.OMD_DELETED_RECORD_INDICATOR=''N''
 
-and sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL(source.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) not in
+and sha1(UPPER(CAST({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(IFNULL(source.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) not in
 
-(select sha1(UPPER(CAST({{#each businessKeys}}{{#each businessKeyComponentMapping}} RTRIM(IFNULL(target.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) from DL_{{targetDataObject.name}} AS target)
+(select sha1(UPPER(CAST({{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}} RTRIM(IFNULL(target.{{sourceDataItems.0.name}},''NA'')){{#unless @last}}||''|''||{{/unless}}{{/each}} {{/each}} AS STRING))) from DL_{{targetDataObject.name}} AS target)
 
 )
 

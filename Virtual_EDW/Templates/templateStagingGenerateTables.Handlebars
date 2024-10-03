@@ -8,15 +8,15 @@
 IF OBJECT_ID('[{{targetDataObject.name}}]', 'U') IS NOT NULL
 DROP TABLE [{{targetDataObject.name}}]
 
-CREATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+CREATE TABLE [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
-   [{{../metadataConfiguration.loadDateTimeAttribute}}] [datetime2](7) NOT NULL DEFAULT (SYSDATETIME()),
-   [{{../metadataConfiguration.sourceRowIdAttribute}}] int IDENTITY(1,1) NOT NULL,
-   [{{../metadataConfiguration.eventDateTimeAttribute}}] [datetime2](7) NOT NULL,
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}] [nvarchar](100) NOT NULL,
-   [{{../metadataConfiguration.etlProcessAttribute}}] [int] NOT NULL, 
-   --[{{../metadataConfiguration.recordSourceAttribute}}] [nvarchar](100) NOT NULL,
-   [{{../metadataConfiguration.recordChecksumAttribute}}] binary(16) NOT NULL,
+   [{{../conventions.loadDateTimeAttribute}}] [datetime2](7) NOT NULL DEFAULT (SYSDATETIME()),
+   [{{../conventions.sourceRowIdAttribute}}] int IDENTITY(1,1) NOT NULL,
+   [{{../conventions.eventDateTimeAttribute}}] [datetime2](7) NOT NULL,
+   [{{../conventions.changeDataCaptureAttribute}}] [char](1) NOT NULL,
+   [{{../conventions.etlProcessAttribute}}] [int] NOT NULL, 
+   --[{{../conventions.recordSourceAttribute}}] [nvarchar](100) NOT NULL,
+   [{{../conventions.recordChecksumAttribute}}] binary(16) NOT NULL,
    {{#each sourceDataObjects.0.dataItems}}
    [{{name}}] [varchar](1000){{#unless @last}},{{/unless}}
    {{/each}}

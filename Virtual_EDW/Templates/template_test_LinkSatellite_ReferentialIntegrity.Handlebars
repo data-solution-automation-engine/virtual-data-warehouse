@@ -2,7 +2,7 @@ DECLARE @LAST_UT_DETAIL_ID nvarchar(1000);
 DECLARE @UT_ID int = 27;
 {{#each dataObjectMappings}}
 --
--- HUB has a LSAT record UT check for {{targetDataObject.name}} and {{businessKeys.0.surrogateKey}}
+-- HUB has a LSAT record UT check for {{targetDataObject.name}} and {{businessKeyDefinitions.0.surrogateKey}}
 --
 
 INSERT INTO OMD.UT_DETAIL (UT_ID, TARGET_TABLE, SOURCE_TABLE, TARGET_COLUMN, SOURCE_COLUMN, TARGET_SCHEMA, SOURCE_SCHEMA, REALM, UT_TEST_SQL, UT_DETAIL_SQL, INACTIVE_INDICATOR, NOTES)
@@ -22,10 +22,10 @@ SELECT DISTINCT
      AS (
       SELECT Count(*)		AS test_count
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-         WHERE  [{{businessKeys.0.surrogateKey}}]
+         WHERE  [{{businessKeyDefinitions.0.surrogateKey}}]
             NOT IN 
           ( 
-            SELECT [{{businessKeys.0.surrogateKey}}]
+            SELECT [{{businessKeyDefinitions.0.surrogateKey}}]
             FROM [{{relatedDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{relatedDataObjects.0.name}}]
           )
      )
@@ -41,12 +41,12 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeys.0.surrogateKey}}]	AS LSAT_SK, [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}]	AS LSAT_SK, [{{../conventions.etlProcessAttribute}}]
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-         WHERE  [{{businessKeys.0.surrogateKey}}]
+         WHERE  [{{businessKeyDefinitions.0.surrogateKey}}]
             NOT IN 
           ( 
-            SELECT [{{businessKeys.0.surrogateKey}}]
+            SELECT [{{businessKeyDefinitions.0.surrogateKey}}]
             FROM [{{relatedDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{relatedDataObjects.0.name}}]
           )'
 

@@ -15,7 +15,7 @@ SELECT DISTINCT
      AS (SELECT Count(*) AS Record_Count
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]),
      testcount
-     AS (SELECT Count(DISTINCT [{{businessKeys.0.surrogateKey}}]) AS Test_Count
+     AS (SELECT Count(DISTINCT [{{businessKeyDefinitions.0.surrogateKey}}]) AS Test_Count
          FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}])
 SELECT record_count,
        test_count,
@@ -29,9 +29,9 @@ FROM   recordcount,
        testcount;  '
 , 
   
-  'SELECT [{{businessKeys.0.surrogateKey}}] as HUB_SK, [{{../metadataConfiguration.etlProcessAttribute}}]
+  'SELECT [{{businessKeyDefinitions.0.surrogateKey}}] as HUB_SK, [{{../conventions.etlProcessAttribute}}]
     FROM   [{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
-    GROUP  BY [{{businessKeys.0.surrogateKey}}], [{{../metadataConfiguration.etlProcessAttribute}}]
+    GROUP  BY [{{businessKeyDefinitions.0.surrogateKey}}], [{{../conventions.etlProcessAttribute}}]
     HAVING Count(*) > 1 '
 
 , 'N'

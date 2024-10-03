@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Data.SqlClient;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -8,11 +7,8 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.Win32;
 using TEAM_Library;
-using System.Data.SqlClient;
-using Microsoft.SqlServer.Management.Sdk.Sfc;
 using System.Data;
 using Snowflake.Data.Client;
-using System.Linq;
 
 
 namespace Virtual_Data_Warehouse

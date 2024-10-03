@@ -4,27 +4,29 @@
 --
 -- This template inserts the data delta that has been detected into the landing area table.
 --
+-- Generated from template '100 Staging Area Insert Into'.
+--
 
-TRUNCATE TABLE [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+TRUNCATE TABLE [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 
-INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
 (
-   [{{../metadataConfiguration.etlProcessAttribute}}], 
-   [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   [{{../conventions.etlProcessAttribute}}], 
+   [{{../conventions.eventDateTimeAttribute}}],
+   [{{../conventions.changeDataCaptureAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}],
    {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
 )
 SELECT
-   -1 AS [{{../metadataConfiguration.etlProcessAttribute}}], 
-   [{{../metadataConfiguration.eventDateTimeAttribute}}],
-   [{{../metadataConfiguration.changeDataCaptureAttribute}}],
-   [{{../metadataConfiguration.recordChecksumAttribute}}],
+   -1 AS [{{../conventions.etlProcessAttribute}}], 
+   [{{../conventions.eventDateTimeAttribute}}],
+   [{{../conventions.changeDataCaptureAttribute}}],
+   [{{../conventions.recordChecksumAttribute}}],
    {{#each dataItemMappings}}
    [{{sourceDataItems.0.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
+FROM [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}]
 
 {{/each}}

@@ -2,17 +2,17 @@
 -- DIRECT registration template for the staging/landing object {{targetDataObject.name}}.
 --
 
-DECLARE @SOURCE_TYPE_{{generationSpecificMetadata.selectedDataObject.name}} VARCHAR(100);
-DECLARE @TABLE_NAME_{{generationSpecificMetadata.selectedDataObject.name}} VARCHAR(1000);
-DECLARE @LAYER_{{generationSpecificMetadata.selectedDataObject.name}} VARCHAR(10);
+DECLARE @SOURCE_TYPE_[{{dataObjectMappings.0.targetDataObject.name}}] VARCHAR(100);
+DECLARE @TABLE_NAME_[{{dataObjectMappings.0.targetDataObject.name}}] VARCHAR(1000);
+DECLARE @LAYER_[{{dataObjectMappings.0.targetDataObject.name}}] VARCHAR(10);
 {{#each dataObjectMappings}}
 
-select @TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}} = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '{{sourceDataObjects.0.name}}', (charindex('_', '{{sourceDataObjects.0.name}}', 1))+1)+1, 1000),
-          @SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '{{sourceDataObjects.0.name}}', 1)+1, charindex('_', '{{sourceDataObjects.0.name}}', (charindex('_', '{{sourceDataObjects.0.name}}', 1))+1) -charindex('_', '{{sourceDataObjects.0.name}}', 1)-1 ),
-           @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}} = SUBSTRING('{{sourceDataObjects.0.name}}',0,charindex('_', '{{sourceDataObjects.0.name}}', 1));
+select @TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}} = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '{{sourceDataObjects.0.name}}', (charindex('_', '{{sourceDataObjects.0.name}}', 1))+1)+1, 1000),
+          @SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} = SUBSTRING('{{sourceDataObjects.0.name}}',charindex('_', '{{sourceDataObjects.0.name}}', 1)+1, charindex('_', '{{sourceDataObjects.0.name}}', (charindex('_', '{{sourceDataObjects.0.name}}', 1))+1) -charindex('_', '{{sourceDataObjects.0.name}}', 1)-1 ),
+           @LAYER_{{../dataObjectMappings.0.targetDataObject.name}} = SUBSTRING('{{sourceDataObjects.0.name}}',0,charindex('_', '{{sourceDataObjects.0.name}}', 1));
 
 
-IF @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}='DL'
+IF @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}='DL'
 BEGIN
 --DataLake
 
@@ -26,12 +26,12 @@ BEGIN
            ,[FREQUENCY_CODE]
            ,[INACTIVE_INDICATOR])
 		      
-	 SELECT 'm_025_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})+' extract file processing for '+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),'EXT',upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),
+	 SELECT 'm_025_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})+' extract file processing for '+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),'EXT',upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),
 	 'EXT','EXT','Continuous','N'
 	 from OMD.DM_MODEL dm
-	 left outer join omd.module m on m.MODULE_CODE='m_025_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and layer=@LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-                 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.module m on m.MODULE_CODE='m_025_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and layer=@LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+                 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and m.MODULE_ID is null
 
 
@@ -47,12 +47,12 @@ BEGIN
            ,[INACTIVE_INDICATOR])
 		   
      
-	 SELECT 'm_050_DL_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})+' extract file processing for '+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),'DL',upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),
+	 SELECT 'm_050_DL_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})+' extract file processing for '+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),'DL',upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),
 	 'EXT','DL','Continuous','N'
 	 from OMD.DM_MODEL dm
-	 left outer join omd.module m on m.MODULE_CODE='m_050_DL_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.module m on m.MODULE_CODE='m_050_DL_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and m.MODULE_ID is null
 
 	INSERT INTO [omd].[MODULE]
@@ -66,12 +66,12 @@ BEGIN
            ,[INACTIVE_INDICATOR])
 		   
      
-	 SELECT 'm_075_DL_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})+' extract file processing for '+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),'DL',upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),
+	 SELECT 'm_075_DL_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})+' extract file processing for '+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),'DL',upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),
 	 'EXT','DL','Continuous','N'
 	 from OMD.DM_MODEL dm
-	 left outer join omd.module m on m.MODULE_CODE='m_075_DL_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.module m on m.MODULE_CODE='m_075_DL_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and m.MODULE_ID is null
 
 	INSERT INTO [omd].[MODULE]
@@ -85,12 +85,12 @@ BEGIN
            ,[INACTIVE_INDICATOR])
 		   
      
-	 SELECT 'm_100_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})+' extract file processing for '+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),'STG','EXT',
+	 SELECT 'm_100_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})+' extract file processing for '+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),'STG','EXT',
 	 'STG','STG','Continuous','N'
 	 from OMD.DM_MODEL dm
-	 left outer join omd.module m on m.MODULE_CODE='m_100_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.module m on m.MODULE_CODE='m_100_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and m.MODULE_ID is null
 
 
@@ -105,12 +105,12 @@ BEGIN
            ,[INACTIVE_INDICATOR])
 		   
      
-	 SELECT 'm_150_PSA_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})+' data processing from STG ','PSA','STG',
+	 SELECT 'm_150_PSA_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})+' data processing from STG ','PSA','STG',
 	 'PSA','PSA','Continuous','N'
 	 from OMD.DM_MODEL dm
-	 left outer join omd.module m on m.MODULE_CODE='m_150_PSA_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.module m on m.MODULE_CODE='m_150_PSA_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and m.MODULE_ID is null
 
 	INSERT INTO [omd].[BATCH]
@@ -120,11 +120,11 @@ BEGIN
            ,[INACTIVE_INDICATOR]
            ,[NEXT_RUN_INDICATOR])
 
-	 SELECT 'b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})+' data processing from '+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),'Continuous','N',NULL
+	 SELECT 'b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})+' data processing from '+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),'Continuous','N',NULL
 	 from OMD.DM_MODEL dm
-	 left outer join omd.batch m on m.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.batch m on m.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and m.batch_id is null
 
 	INSERT INTO [omd].[BATCH]
@@ -134,11 +134,11 @@ BEGIN
            ,[INACTIVE_INDICATOR]
            ,[NEXT_RUN_INDICATOR])
 
-	 SELECT 'b_STG_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})+' data processing from '+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),'Continuous','N',NULL
+	 SELECT 'b_STG_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})+' data processing from '+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),'Continuous','N',NULL
 	 from OMD.DM_MODEL dm
-	 left outer join omd.batch m on m.batch_code='b_STG_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.batch m on m.batch_code='b_STG_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and m.batch_id is null
 
 	INSERT INTO [omd].[BATCH_MODULE]
@@ -148,11 +148,11 @@ BEGIN
 
 	SELECT b.batch_id,m.module_id,'N'
 	from OMD.DM_MODEL dm
-		left outer join omd.batch b on b.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-		left outer join omd.module m on m.MODULE_CODE='m_025_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
+		left outer join omd.batch b on b.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+		left outer join omd.module m on m.MODULE_CODE='m_025_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
 		left outer join omd.batch_module bm on b.BATCH_ID=bm.BATCH_ID and bm.MODULE_ID=m.MODULE_ID
-		where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+		where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 		and bm.batch_id is null
 
 	INSERT INTO [omd].[BATCH_MODULE]
@@ -161,11 +161,11 @@ BEGIN
 			,[INACTIVE_INDICATOR])
 	SELECT b.batch_id,m.module_id,'N'
 	from OMD.DM_MODEL dm
-		left outer join omd.batch b on b.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-		left outer join omd.module m on m.MODULE_CODE='m_050_DL_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
+		left outer join omd.batch b on b.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+		left outer join omd.module m on m.MODULE_CODE='m_050_DL_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
 		left outer join omd.batch_module bm on b.BATCH_ID=bm.BATCH_ID and bm.MODULE_ID=m.MODULE_ID
-		where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+		where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 		and bm.batch_id is null
 
 	INSERT INTO [omd].[BATCH_MODULE]
@@ -174,11 +174,11 @@ BEGIN
 			,[INACTIVE_INDICATOR])
 	SELECT b.batch_id,m.module_id,'N'
 	from OMD.DM_MODEL dm
-		left outer join omd.batch b on b.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-		left outer join omd.module m on m.MODULE_CODE='m_075_DL_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
+		left outer join omd.batch b on b.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+		left outer join omd.module m on m.MODULE_CODE='m_075_DL_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
 		left outer join omd.batch_module bm on b.BATCH_ID=bm.BATCH_ID and bm.MODULE_ID=m.MODULE_ID
-		where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+		where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 		and bm.batch_id is null
 
 	INSERT INTO [omd].[BATCH_MODULE]
@@ -187,11 +187,11 @@ BEGIN
 			,[INACTIVE_INDICATOR])
 	SELECT b.batch_id,m.module_id,'N'
 	from OMD.DM_MODEL dm
-		left outer join omd.batch b on b.batch_code='b_STG_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-		left outer join omd.module m on m.MODULE_CODE='m_100_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
+		left outer join omd.batch b on b.batch_code='b_STG_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+		left outer join omd.module m on m.MODULE_CODE='m_100_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
 		left outer join omd.batch_module bm on b.BATCH_ID=bm.BATCH_ID and bm.MODULE_ID=m.MODULE_ID
-		where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+		where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 		and bm.batch_id is null
 
 	INSERT INTO [omd].[BATCH_MODULE]
@@ -200,11 +200,11 @@ BEGIN
 			,[INACTIVE_INDICATOR])
 	SELECT b.batch_id,m.module_id,'N'
 	from OMD.DM_MODEL dm
-		left outer join omd.batch b on b.batch_code='b_STG_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
-		left outer join omd.module m on m.MODULE_CODE='m_150_PSA_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
+		left outer join omd.batch b on b.batch_code='b_STG_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
+		left outer join omd.module m on m.MODULE_CODE='m_150_PSA_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
 		left outer join omd.batch_module bm on b.BATCH_ID=bm.BATCH_ID and bm.MODULE_ID=m.MODULE_ID
-		where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+		where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+		and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 		and bm.batch_id is null
 
 /*
@@ -218,10 +218,10 @@ BEGIN
            ,[INACTIVE_INDICATOR]
            ,[NEXT_RUN_INDICATOR])
 
-	 SELECT DISTINCT 'b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+' EXT Wrapper','Continuous','N',NULL
+	 SELECT DISTINCT 'b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+' EXT Wrapper','Continuous','N',NULL
 	 from OMD.DM_MODEL dm
-	 left outer join omd.batch b on b.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})
-	 where dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.batch b on b.batch_code='b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})
+	 where dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 		and b.BATCH_ID is null
 
 	INSERT INTO [omd].[BATCH]
@@ -231,10 +231,10 @@ BEGIN
            ,[INACTIVE_INDICATOR]
            ,[NEXT_RUN_INDICATOR])
 
-	 SELECT DISTINCT 'b_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}),upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+' STG Wrapper','Continuous','N',NULL
+	 SELECT DISTINCT 'b_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}),upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+' STG Wrapper','Continuous','N',NULL
 	 from OMD.DM_MODEL dm
-	 left outer join omd.batch b on b.batch_code='b_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})
-	 where dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 left outer join omd.batch b on b.batch_code='b_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})
+	 where dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 		and b.BATCH_ID is null
 
 
@@ -253,17 +253,17 @@ BEGIN
 
 	SELECT DISTINCT pb.BATCH_ID as PARENT_BATCH_ID,
 		cb.BATCH_ID as BATCH_ID,
-		upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}) as SYSTEM_GROUP,
+		upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}) as SYSTEM_GROUP,
 		1 as [SEQUENCE],
 		'Concurrent' as BATCH_SEQUENCE,
 		NULL as NEXT_RUN_INDICATOR
 
 	from OMD.DM_MODEL dm
 	left outer join OMD.BATCH pb ON pb.BATCH_CODE = 'b_EXT'
-	left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})
+	left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})
 	left outer join OMD.BATCH_BATCH bb ON cb.BATCH_ID = bb.BATCH_ID
 
-	WHERE dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	WHERE dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	and bb.BATCH_ID is null
 
 
@@ -277,17 +277,17 @@ BEGIN
 
 	SELECT DISTINCT pb.BATCH_ID as PARENT_BATCH_ID,
 		cb.BATCH_ID as BATCH_ID,
-		upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}) as SYSTEM_GROUP,
+		upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}) as SYSTEM_GROUP,
 		1 as [SEQUENCE],
 		'Concurrent' as BATCH_SEQUENCE,
 		NULL as NEXT_RUN_INDICATOR
 
 	from OMD.DM_MODEL dm
 	left outer join OMD.BATCH pb ON pb.BATCH_CODE = 'b_STG'
-	left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})
+	left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})
 	left outer join OMD.BATCH_BATCH bb ON cb.BATCH_ID = bb.BATCH_ID
 
-	WHERE dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	WHERE dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	and bb.BATCH_ID is null
 
 
@@ -301,17 +301,17 @@ BEGIN
 
 	SELECT DISTINCT pb.BATCH_ID as PARENT_BATCH_ID,
 		cb.BATCH_ID as BATCH_ID,
-		upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}) as SYSTEM_GROUP,
+		upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}) as SYSTEM_GROUP,
 		1 as [SEQUENCE],
 		'Concurrent' as BATCH_SEQUENCE,
 		NULL as NEXT_RUN_INDICATOR
 
 	from OMD.DM_MODEL dm
-	left outer join OMD.BATCH pb ON pb.BATCH_CODE = 'b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})
-	left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_EXT_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
+	left outer join OMD.BATCH pb ON pb.BATCH_CODE = 'b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})
+	left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_EXT_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
 	left outer join OMD.BATCH_BATCH bb ON cb.BATCH_ID = bb.BATCH_ID
 
-	WHERE dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	WHERE dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	and bb.BATCH_ID is null
 
 
@@ -326,17 +326,17 @@ BEGIN
 
 	SELECT DISTINCT pb.BATCH_ID as PARENT_BATCH_ID,
 		cb.BATCH_ID as BATCH_ID,
-		upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}}) as SYSTEM_GROUP,
+		upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}}) as SYSTEM_GROUP,
 		1 as [SEQUENCE],
 		'Concurrent' as BATCH_SEQUENCE,
 		NULL as NEXT_RUN_INDICATOR
 
 	from OMD.DM_MODEL dm
-	left outer join OMD.BATCH pb ON pb.BATCH_CODE = 'b_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})
-	left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_STG_STG_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}}
+	left outer join OMD.BATCH pb ON pb.BATCH_CODE = 'b_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})
+	left outer join OMD.BATCH cb ON cb.BATCH_CODE = 'b_STG_STG_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}}
 	left outer join OMD.BATCH_BATCH bb ON cb.BATCH_ID = bb.BATCH_ID
 
-	WHERE dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	WHERE dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	and bb.BATCH_ID is null
 
 
@@ -355,11 +355,11 @@ BEGIN
            ,[INACTIVE_INDICATOR])
 		   SELECT m.module_id, p.PATTERN_ID,'N'
 		   		   from  OMD.DM_MODEL dm
-				   inner join OMD.MODULE m on module_code='m_150_PSA_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+UPPER(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})
+				   inner join OMD.MODULE m on module_code='m_150_PSA_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+UPPER(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})
 				   inner join omd.PATTERN p on p.PATTERN_NAME='m_150_PSA_Delta_Detect_SP'
 		   	 left outer join omd.MODULE_PATTERN mp on mp.MODULE_ID=m.MODULE_ID and mp.PATTERN_ID=p.PATTERN_ID
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}   
-	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}   
+	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and mp.PATTERN_ID is null
 
 
@@ -379,8 +379,8 @@ BEGIN
 	SELECT N'Azure SQL PSA Database Schema', N'EXAMPLE_PARAMETER', N'PSA', N'EXAMPLE_PARAMETER', N'N'
 		   from OMD.DM_MODEL dm
 		   	 left outer join omd.PARAMETER p on p.PARAMETER_KEY_CODE='EXAMPLE_PARAMETER'
-	 where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}
-	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	 where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}
+	 and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	 and p.PARAMETER_ID is null 
 
 	--INSERT INTO [omd].[MODULE_PARAMETER]
@@ -389,11 +389,11 @@ BEGIN
     --       ,[INACTIVE_INDICATOR])
 	--	   SELECT m.module_id, p.PARAMETER_ID,'N'
 	--	   		   from  OMD.DM_MODEL dm
-	--			   inner join OMD.MODULE m on module_code='m_150_PSA_'+upper(@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}})+'_'+UPPER(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}})
+	--			   inner join OMD.MODULE m on module_code='m_150_PSA_'+upper(@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}})+'_'+UPPER(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}})
 	--			   inner join omd.PARAMETER p on p.PARAMETER_KEY_CODE='EXAMPLE_PARAMETER'
 	--	   	 left outer join omd.MODULE_PARAMETER mp on mp.MODULE_ID=m.MODULE_ID and mp.PARAMETER_ID=p.PARAMETER_ID
-	-- where source_type=@SOURCE_TYPE_{{../generationSpecificMetadata.selectedDataObject.name}} and LAYER = @LAYER_{{../generationSpecificMetadata.selectedDataObject.name}}   
-	-- and dm.TABLE_NAME like replace(@TABLE_NAME_{{../generationSpecificMetadata.selectedDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
+	-- where source_type=@SOURCE_TYPE_{{../dataObjectMappings.0.targetDataObject.name}} and LAYER = @LAYER_{{../dataObjectMappings.0.targetDataObject.name}}   
+	-- and dm.TABLE_NAME like replace(@TABLE_NAME_{{../dataObjectMappings.0.targetDataObject.name}},'-','_') --Using "LIKE" to ignore case-sensitivity (occurs in DBeaver)
 	-- and mp.PARAMETER_ID is null
 END
 

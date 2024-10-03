@@ -1,5 +1,5 @@
 {
-  "metadataConfiguration": {
+  "conventions": {
     "changeDataCaptureAttribute": "CHANGE_DATA_INDICATOR",
     "recordSourceAttribute": "RECORD_SOURCE_INDICATOR",
     "loadDateTimeAttribute": "INSCRIPTION_TIMESTAMP",
@@ -9,170 +9,107 @@
     "etlProcessAttribute": "AUDIT_TRAIL_ID",
     "sourceRowIdAttribute": "INSCRIPTION_RECORD_ID"
   },
-  "generationSpecificMetadata": {
-    "selectedDataObject": {
-      "name": "PSA_PROFILER_ESTIMATED_WORTH",
-      "dataItems": [
-        {
-          "name": "INSCRIPTION_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 1
-        },
-        {
-          "name": "INSCRIPTION_RECORD_ID",
-          "dataType": "int",
-          "ordinalPosition": 2
-        },
-        {
-          "name": "SOURCE_TIMESTAMP",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 3
-        },
-        {
-          "name": "CHANGE_DATA_INDICATOR",
-          "dataType": "varchar",
-          "characterLength": 100,
-          "ordinalPosition": 4
-        },
-        {
-          "name": "AUDIT_TRAIL_ID",
-          "dataType": "int",
-          "ordinalPosition": 5
-        },
-        {
-          "name": "CHECKSUM",
-          "dataType": "binary",
-          "characterLength": 16,
-          "ordinalPosition": 6
-        },
-        {
-          "name": "Plan_Code",
-          "dataType": "nvarchar",
-          "characterLength": 100,
-          "ordinalPosition": 7
-        },
-        {
-          "name": "Date_effective",
-          "dataType": "datetime2",
-          "numericScale": 7,
-          "ordinalPosition": 8
-        },
-        {
-          "name": "Value_Amount",
-          "dataType": "numeric",
-          "numericPrecision": 38,
-          "numericScale": 20,
-          "ordinalPosition": 9
-        }
-      ],
-      "dataObjectConnection": {
-        "dataConnectionString": "PSA",
-        "extensions": [
-          {
-            "key": "database",
-            "value": "150_Persistent_Staging_Area",
-            "description": "database name"
-          },
-          {
-            "key": "schema",
-            "value": "dbo",
-            "description": "schema name"
-          }
-        ]
-      },
-      "dataObjectClassifications": [
-        {
-          "classification": "PersistentStagingArea"
-        }
-      ]
-    }
-  },
   "dataObjectMappings": [
     {
-      "mappingName": "PSA_PROFILER_ESTIMATED_WORTH",
-      "mappingClassifications": [
-        {
-          "classification": "PersistentStagingArea"
-        }
-      ],
       "sourceDataObjects": [
         {
+          "dataObjectType": "dataObject",
+          "id": "8658cadf-0fd0-4e9c-9cdb-957e20d45ac1",
           "name": "STG_PROFILER_ESTIMATED_WORTH",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 1
+              "ordinalPosition": 1,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
               "name": "SOURCE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 5
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
               "name": "Plan_Code",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "12549ee5-25c1-4e28-9e7c-ad0b41b763c7",
               "name": "Date_effective",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 8
+              "ordinalPosition": 8,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "4ad209f2-514e-4885-9c4f-371c19fa52a4",
               "name": "Value_Amount",
               "dataType": "numeric",
-              "numericPrecision": 38,
+              "ordinalPosition": 9,
               "numericScale": 20,
-              "ordinalPosition": 9
+              "numericPrecision": 38
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Staging",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "100_Staging_Area",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
+          "dataConnection": {
+            "name": "Staging",
+            "id": "bbc31ce0-8e0b-49ac-9b38-8ae93d2f7b44"
           },
-          "dataObjectClassifications": [
+          "classifications": [
             {
-              "classification": "StagingArea"
+              "classification": "StagingArea",
+              "group": "Solution Layer",
+              "id": "b32a59cd-c2f4-4ded-a378-dc51b692cb93"
+            }
+          ],
+          "extensions": [
+            {
+              "key": "datastore",
+              "value": "100_Staging_Area",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
             }
           ]
         }
@@ -181,77 +118,99 @@
         "name": "PSA_PROFILER_ESTIMATED_WORTH",
         "dataItems": [
           {
+            "dataItemType": "dataItem",
+            "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
             "name": "INSCRIPTION_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 1
+            "ordinalPosition": 1,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
             "name": "INSCRIPTION_RECORD_ID",
             "dataType": "int",
             "ordinalPosition": 2
           },
           {
+            "dataItemType": "dataItem",
+            "id": "1ae930f5-671d-46a8-bcbf-8c8568ac0e07",
             "name": "SOURCE_TIMESTAMP",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 3
+            "ordinalPosition": 3,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "247bf085-d755-44a8-b3d4-a8e595548393",
             "name": "CHANGE_DATA_INDICATOR",
             "dataType": "varchar",
             "characterLength": 100,
             "ordinalPosition": 4
           },
           {
+            "dataItemType": "dataItem",
+            "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
             "name": "AUDIT_TRAIL_ID",
             "dataType": "int",
             "ordinalPosition": 5
           },
           {
+            "dataItemType": "dataItem",
+            "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
             "name": "CHECKSUM",
             "dataType": "binary",
             "characterLength": 16,
             "ordinalPosition": 6
           },
           {
+            "dataItemType": "dataItem",
+            "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b",
             "name": "Plan_Code",
             "dataType": "nvarchar",
             "characterLength": 100,
             "ordinalPosition": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "12549ee5-25c1-4e28-9e7c-ad0b41b763c7",
             "name": "Date_effective",
             "dataType": "datetime2",
-            "numericScale": 7,
-            "ordinalPosition": 8
+            "ordinalPosition": 8,
+            "numericScale": 7
           },
           {
+            "dataItemType": "dataItem",
+            "id": "4ad209f2-514e-4885-9c4f-371c19fa52a4",
             "name": "Value_Amount",
             "dataType": "numeric",
-            "numericPrecision": 38,
+            "ordinalPosition": 9,
             "numericScale": 20,
-            "ordinalPosition": 9
+            "numericPrecision": 38
           }
         ],
-        "dataObjectConnection": {
-          "dataConnectionString": "PSA",
-          "extensions": [
-            {
-              "key": "database",
-              "value": "150_Persistent_Staging_Area",
-              "description": "database name"
-            },
-            {
-              "key": "schema",
-              "value": "dbo",
-              "description": "schema name"
-            }
-          ]
-        },
-        "dataObjectClassifications": [
+        "extensions": [
           {
-            "classification": "PersistentStagingArea"
+            "key": "datastore",
+            "value": "150_Persistent_Staging_Area",
+            "notes": "database name"
+          },
+          {
+            "key": "location",
+            "value": "dbo",
+            "notes": "schema name"
+          }
+        ],
+        "id": "174aa420-19f8-419c-bedf-4c66360c9b6e",
+        "dataConnection": {
+          "name": "PSA",
+          "id": "ef0fd46d-a6fa-4e82-a579-69cf4e768f86"
+        },
+        "classifications": [
+          {
+            "classification": "PersistentStagingArea",
+            "group": "Solution Layer",
+            "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
           }
         ]
       },
@@ -260,53 +219,67 @@
           "name": "HUB_MEMBERSHIP_PLAN",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "a7d97c16-ec08-4c47-bb43-82c8989e5fb6",
               "name": "MEMBERSHIP_PLAN_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 2
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "d2ae5882-6677-45d5-ac98-25b5c512b09e",
               "name": "PLAN_CODE",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "0ddde8dd-78d3-4d95-958f-7a021e0d8f67",
               "name": "PLAN_SUFFIX",
               "dataType": "nvarchar",
               "characterLength": 100,
               "ordinalPosition": 5
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "CoreBusinessConcept"
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "b2cf8473-d7f8-4baf-9a71-969241d269f9",
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+          },
+          "classifications": [
+            {
+              "classification": "Hub",
+              "group": "Physical",
+              "id": "6009837b-b587-48a5-8cd5-5db1c201bb3d"
             }
           ]
         },
@@ -314,77 +287,99 @@
           "name": "SAT_MEMBERSHIP_PLAN_VALUATION",
           "dataItems": [
             {
+              "dataItemType": "dataItem",
+              "id": "a7d97c16-ec08-4c47-bb43-82c8989e5fb6",
               "name": "MEMBERSHIP_PLAN_SK",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 1
             },
             {
+              "dataItemType": "dataItem",
+              "id": "0cdce821-6516-4e0f-acf8-ed2ff84e2181",
               "name": "PLAN_VALUATION_DATE",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 2
+              "ordinalPosition": 2,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "687bfd64-ce1d-4905-892c-7e54bab2d217",
               "name": "INSCRIPTION_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 3
+              "ordinalPosition": 3,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "7363427e-f08f-4133-89a9-fba4a02b3f56",
               "name": "INSCRIPTION_RECORD_ID",
               "dataType": "int",
               "ordinalPosition": 4
             },
             {
+              "dataItemType": "dataItem",
+              "id": "8fb58083-39e1-4e1f-b37c-ceffe75b39cc",
               "name": "STATE_TIMESTAMP",
               "dataType": "datetime2",
-              "numericScale": 7,
-              "ordinalPosition": 5
+              "ordinalPosition": 5,
+              "numericScale": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "3de1b400-550a-4e72-af6b-ceff0437c198",
               "name": "AUDIT_TRAIL_ID",
               "dataType": "int",
               "ordinalPosition": 6
             },
             {
+              "dataItemType": "dataItem",
+              "id": "247bf085-d755-44a8-b3d4-a8e595548393",
               "name": "CHANGE_DATA_INDICATOR",
               "dataType": "varchar",
               "characterLength": 100,
               "ordinalPosition": 7
             },
             {
+              "dataItemType": "dataItem",
+              "id": "af2dc4ce-c492-438d-8e61-c00ab7b7e3f4",
               "name": "CHECKSUM",
               "dataType": "binary",
               "characterLength": 16,
               "ordinalPosition": 8
             },
             {
+              "dataItemType": "dataItem",
+              "id": "88a2440c-42ae-4ea4-9a4f-0306799f570a",
               "name": "PLAN_VALUATION_AMOUNT",
               "dataType": "numeric",
-              "numericPrecision": 38,
+              "ordinalPosition": 9,
               "numericScale": 20,
-              "ordinalPosition": 9
+              "numericPrecision": 38
             }
           ],
-          "dataObjectConnection": {
-            "dataConnectionString": "Integration",
-            "extensions": [
-              {
-                "key": "database",
-                "value": "200_Integration_Layer",
-                "description": "database name"
-              },
-              {
-                "key": "schema",
-                "value": "dbo",
-                "description": "schema name"
-              }
-            ]
-          },
-          "dataObjectClassifications": [
+          "extensions": [
             {
-              "classification": "Context"
+              "key": "datastore",
+              "value": "200_Integration_Layer",
+              "notes": "database name"
+            },
+            {
+              "key": "location",
+              "value": "dbo",
+              "notes": "schema name"
+            }
+          ],
+          "id": "41b06545-fa8b-43c7-ba4a-82d599c22a84",
+          "dataConnection": {
+            "name": "Integration",
+            "id": "9a270f21-ce93-488f-a889-c1293c0b03a3"
+          },
+          "classifications": [
+            {
+              "classification": "Satellite",
+              "group": "Conceptual",
+              "id": "290ffd52-8a37-4e47-a5cf-04eb0b27f6dd"
             }
           ]
         }
@@ -393,10 +388,12 @@
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Plan_Code",
               "dataType": "nvarchar",
               "characterLength": 100,
-              "ordinalPosition": 7
+              "ordinalPosition": 7,
+              "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
             }
           ],
           "targetDataItem": {
@@ -409,16 +406,20 @@
                 "classification": "MultiActiveKey",
                 "notes": "The attribute that supports granularity shift in describing context."
               }
-            ]
-          }
+            ],
+            "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
+          },
+          "id": "df7e6beb-3dfa-498f-bc22-b20217b3028d"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Date_effective",
               "dataType": "datetime2",
+              "ordinalPosition": 8,
               "numericScale": 7,
-              "ordinalPosition": 8
+              "id": "12549ee5-25c1-4e28-9e7c-ad0b41b763c7"
             }
           ],
           "targetDataItem": {
@@ -431,17 +432,21 @@
                 "classification": "MultiActiveKey",
                 "notes": "The attribute that supports granularity shift in describing context."
               }
-            ]
-          }
+            ],
+            "id": "12549ee5-25c1-4e28-9e7c-ad0b41b763c7"
+          },
+          "id": "1137457c-e0c0-4e01-b146-7a3d85990b00"
         },
         {
           "sourceDataItems": [
             {
+              "dataItemType": "dataItem",
               "name": "Value_Amount",
               "dataType": "numeric",
-              "numericPrecision": 38,
+              "ordinalPosition": 9,
               "numericScale": 20,
-              "ordinalPosition": 9
+              "numericPrecision": 38,
+              "id": "4ad209f2-514e-4885-9c4f-371c19fa52a4"
             }
           ],
           "targetDataItem": {
@@ -449,41 +454,98 @@
             "dataType": "numeric",
             "numericPrecision": 38,
             "numericScale": 20,
-            "ordinalPosition": 9
-          }
+            "ordinalPosition": 9,
+            "id": "4ad209f2-514e-4885-9c4f-371c19fa52a4"
+          },
+          "id": "877fdd93-bfc1-4f85-b98f-ef9849835f65"
         }
       ],
-      "businessKeys": [
+      "filterCriterion": "",
+      "enabled": true,
+      "name": "STG_PROFILER_ESTIMATED_WORTH to PSA_PROFILER_ESTIMATED_WORTH",
+      "classifications": [
         {
-          "businessKeyComponentMapping": [
+          "classification": "PersistentStagingArea",
+          "group": "Solution Layer",
+          "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
+        }
+      ],
+      "businessKeyDefinitions": [
+        {
+          "surrogateKey": "PROFILER_ESTIMATED_WORTH_SK",
+          "id": "6414b858-f08e-4c1f-a7e0-ea68819b7762",
+          "name": "STG_PROFILER_ESTIMATED_WORTH to PSA_PROFILER_ESTIMATED_WORTH for PROFILER_ESTIMATED_WORTH_SK",
+          "businessKeyComponentMappings": [
             {
               "sourceDataItems": [
                 {
+                  "dataItemType": "dataItem",
                   "name": "Plan_Code",
-                  "isHardCodedValue": false
+                  "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
                 }
               ],
               "targetDataItem": {
-                "name": "Plan_Code"
+                "name": "Plan_Code",
+                "id": "7e072f68-4a85-48b7-b592-6b8fa8af5d9b"
               }
             },
             {
               "sourceDataItems": [
                 {
+                  "dataItemType": "dataItem",
                   "name": "Date_effective",
-                  "isHardCodedValue": false
+                  "id": "12549ee5-25c1-4e28-9e7c-ad0b41b763c7"
                 }
               ],
               "targetDataItem": {
-                "name": "Date_effective"
+                "name": "Date_effective",
+                "id": "12549ee5-25c1-4e28-9e7c-ad0b41b763c7"
               }
             }
-          ],
-          "surrogateKey": "PROFILER_ESTIMATED_WORTH_SK"
+          ]
         }
       ],
-      "filterCriterion": "",
-      "enabled": true
+      "extensions": [
+        {
+          "key": "hasControlFramework",
+          "value": "true",
+          "notes": "Integration with Control Framework"
+        },
+        {
+          "key": "controlFrameworkDataStore",
+          "value": "900_Direct_Framework",
+          "notes": "Control Framework data store"
+        },
+        {
+          "key": "controlFrameworkLocation",
+          "value": "omd",
+          "notes": "Control Framework location"
+        },
+        {
+          "key": "hasTestingFramework",
+          "value": "true",
+          "notes": "Integration with Testing Framework"
+        },
+        {
+          "key": "controlTestingDataStore",
+          "value": "testing-framework",
+          "notes": "Testing Framework data store"
+        },
+        {
+          "key": "controlTestingLocation",
+          "value": "ut",
+          "notes": "Testing Framework location"
+        }
+      ],
+      "id": "6c853573-a914-44c7-a9c7-c68d2983ca91"
+    }
+  ],
+  "name": "PSA_PROFILER_ESTIMATED_WORTH",
+  "classifications": [
+    {
+      "classification": "PersistentStagingArea",
+      "group": "Solution Layer",
+      "id": "f07b7970-51a6-4a2f-8686-4f7fddea5a62"
     }
   ]
 }

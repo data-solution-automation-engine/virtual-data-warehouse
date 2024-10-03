@@ -15,28 +15,28 @@ DECLARE @Reset VARCHAR(10) = 'N';
 DECLARE @Module_id INT;
 
  -- Module Registration
-INSERT INTO [900_Direct_Framework].[omd].MODULE (MODULE_CODE, MODULE_DESCRIPTION, MODULE_TYPE, DATA_OBJECT_SOURCE, DATA_OBJECT_TARGET, AREA_CODE, FREQUENCY_CODE, INACTIVE_INDICATOR)
+INSERT INTO [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].MODULE (MODULE_CODE, MODULE_DESCRIPTION, MODULE_TYPE, DATA_OBJECT_SOURCE, DATA_OBJECT_TARGET, AREA_CODE, FREQUENCY_CODE, INACTIVE_INDICATOR)
 SELECT *
 FROM 
 (
-  VALUES ('m_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}', 'Data logistics from {{sourceDataObjects.0.name}} to {{targetDataObject.name}}', 'SQL', 'None', '[{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]','INT','Continuous', 'N')    
+  VALUES ('m_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}', 'Data logistics from {{sourceDataObjects.0.name}} to {{targetDataObject.name}}', 'SQL', 'None', '[{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]','INT','Continuous', 'N')    
 ) AS refData( MODULE_CODE, MODULE_DESCRIPTION, MODULE_TYPE, DATA_OBJECT_SOURCE, DATA_OBJECT_TARGET, AREA_CODE, FREQUENCY_CODE, INACTIVE_INDICATOR)
 WHERE NOT EXISTS 
 (
   SELECT NULL
-  FROM [900_Direct_Framework].[omd].MODULE module
+  FROM [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].MODULE module
   WHERE module.MODULE_CODE = refData.MODULE_CODE
 );
 
 -- Clean up and reset
-SELECT @Module_id = module_id FROM [900_Direct_Framework].[omd].module WHERE module_code = 'm_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}'
+SELECT @Module_id = module_id FROM [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].module WHERE module_code = 'm_200_{{targetDataObject.name}}_{{sourceDataObjects.0.name}}'
 
 IF @Reset = 'Y'
   BEGIN
-    DELETE FROM [900_Direct_Framework].[omd].event_log WHERE MODULE_INSTANCE_ID IN (SELECT MODULE_INSTANCE_ID FROM [900_Direct_Framework].[omd].module_instance WHERE MODULE_ID=@Module_id)
-    DELETE FROM [900_Direct_Framework].[omd].source_control WHERE MODULE_INSTANCE_ID IN (SELECT MODULE_INSTANCE_ID FROM [900_Direct_Framework].[omd].module_instance WHERE MODULE_ID=@Module_id)
-    DELETE FROM [900_Direct_Framework].[omd].module_instance WHERE MODULE_ID=@Module_id
-    DELETE FROM [900_Direct_Framework].[omd].batch_module where module_id = @Module_id
+    DELETE FROM [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].event_log WHERE MODULE_INSTANCE_ID IN (SELECT MODULE_INSTANCE_ID FROM [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].module_instance WHERE MODULE_ID=@Module_id)
+    DELETE FROM [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].source_control WHERE MODULE_INSTANCE_ID IN (SELECT MODULE_INSTANCE_ID FROM [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].module_instance WHERE MODULE_ID=@Module_id)
+    DELETE FROM [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].module_instance WHERE MODULE_ID=@Module_id
+    DELETE FROM [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].batch_module where module_id = @Module_id
   END
 
 /* End of debugging block */
@@ -51,7 +51,7 @@ BEGIN
 
   -- Create Module Instance
   DECLARE @ModuleInstanceId INT
-  EXEC [900_Direct_Framework].[omd].[CreateModuleInstance]
+  EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[CreateModuleInstance]
     @ModuleCode = @ModuleCode,
     @Debug = @Debug,
     @BatchInstanceId = @BatchInstanceId, -- The Batch Instance Id, if the Module is run from a Batch.
@@ -59,7 +59,7 @@ BEGIN
 
   -- Module Evaluation
   DECLARE @ProcessIndicator VARCHAR(10);
-  EXEC [900_Direct_Framework].[omd].[ModuleEvaluation]
+  EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[ModuleEvaluation]
     @ModuleInstanceId = @ModuleInstanceId,
     @Debug = @Debug,
     @ProcessIndicator = @ProcessIndicator OUTPUT;
@@ -74,24 +74,24 @@ BEGIN
         Main ETL block
       */
 
-       INSERT INTO [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}]
+       INSERT INTO [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}]
        (
-         [{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
+         [{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}
          [{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
          [MODULE_INSTANCE_ID],
-         [{{../metadataConfiguration.loadDateTimeAttribute}}],
-         [{{../metadataConfiguration.recordSourceAttribute}}]
+         [{{../conventions.loadDateTimeAttribute}}],
+         [{{../conventions.recordSourceAttribute}}]
        )
        SELECT
-         hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeys}}{{#if @first}}{{#each businessKeyComponentMapping}}
+         hub_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}],{{#each businessKeyDefinitions}}{{#if @first}}{{#each businessKeyComponentMappings}}
          hub_view.[{{targetDataItem.name}}],{{/each}}{{/if}}{{/each}}
          @ModuleInstanceId AS [MODULE_INSTANCE_ID],
-         hub_view.[{{../metadataConfiguration.loadDateTimeAttribute}}],
-         hub_view.[{{../metadataConfiguration.recordSourceAttribute}}]
-       FROM [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
-       LEFT OUTER JOIN [{{targetDataObject.dataObjectConnection.extensions.0.value}}].[{{targetDataObject.dataObjectConnection.extensions.1.value}}].[{{targetDataObject.name}}] hub_table
-          ON hub_view.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
-       WHERE hub_table.[{{#each businessKeys}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL  
+         hub_view.[{{../conventions.loadDateTimeAttribute}}],
+         hub_view.[{{../conventions.recordSourceAttribute}}]
+       FROM [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}] hub_view
+       LEFT OUTER JOIN [{{lookupExtension targetDataObject.extensions "datastore"}}].[{{lookupExtension targetDataObject.extensions "location"}}].[{{targetDataObject.name}}] hub_table
+          ON hub_view.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] = hub_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}]
+       WHERE hub_table.[{{#each businessKeyDefinitions}}{{#if @first}}{{surrogateKey}}{{/if}}{{/each}}] IS NULL  
 
       DECLARE @RowCountInsert INT= @@ROWCOUNT;
 
@@ -106,7 +106,7 @@ BEGIN
         PRINT 'Success pathway';
 
       -- Module Success
-      EXEC [900_Direct_Framework].[omd].[UpdateModuleInstance]
+      EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[UpdateModuleInstance]
         @ModuleInstanceId            = @ModuleInstanceId,
         @RowCountSelect              = 0,
         @RowCountInsert               = @RowCountInsert,
@@ -122,7 +122,7 @@ BEGIN
         PRINT 'Failure pathway';
 
         -- Module Failure
-      EXEC [900_Direct_Framework].[omd].[UpdateModuleInstance]
+      EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[UpdateModuleInstance]
         @ModuleInstanceId = @ModuleInstanceId,
         @Debug                   = @Debug,
         @EventCode            = 'Failure';
@@ -134,7 +134,7 @@ BEGIN
         @EventDetail VARCHAR(4000) = ERROR_MESSAGE(),
         @EventReturnCode int               = ERROR_NUMBER();
 
-      EXEC [900_Direct_Framework].[omd].[InsertIntoEventLog]
+      EXEC [{{lookupExtension ../../extensions "controlFrameworkDataStore"}}].[{{lookupExtension ../../extensions "controlFrameworkLocation"}}].[InsertIntoEventLog]
         @ModuleInstanceId  = @ModuleInstanceId,
         @EventDetail            = @EventDetail,
         @EventReturnCode  = @EventReturnCode;

@@ -1,16 +1,17 @@
 {{#each dataObjectMappings}}
+
+CREATE OR ALTER VIEW [{{../conventions.vdwSchemaName}}].[{{targetDataObject.name}}] 
+AS
+
 --
 -- Staging Area View definition for {{targetDataObject.name}}.
 --
 -- This template implements a Full Outer Join data delta detection mechanism, by comparing the incoming data with the data available in the PSA.
 -- The resulting view only shows the data delta at the point of execution, but does not insert this into the landing area or PSA yet (that is for another template to do).
 --
+-- Generated from template '100 Staging Area View'.
+--
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]') AND type in (N'V'))
-DROP VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}]
-GO
-
-CREATE VIEW [{{../metadataConfiguration.vdwSchemaName}}].[{{targetDataObject.name}}] AS
 WITH STG_CTE AS
 (
 SELECT
@@ -21,63 +22,63 @@ SELECT
    {{#each dataItemMappings}}
       ISNULL(RTRIM(CONVERT(NVARCHAR(100),[{{sourceDataItems.0.name}}])), 'N/A') + '#~!'{{#unless @last}} +{{/unless}}
    {{/each}}
-   ) AS [{{../metadataConfiguration.recordChecksumAttribute}}]
-FROM [{{sourceDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{sourceDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{sourceDataObjects.0.name}}]
+   ) AS [{{../conventions.recordChecksumAttribute}}]
+FROM [{{lookupExtension sourceDataObjects.0.extensions "datastore"}}].[{{lookupExtension sourceDataObjects.0.extensions "location"}}].[{{sourceDataObjects.0.name}}]
 ),
 PSA_CTE AS
 (
 SELECT
-   A.[{{../metadataConfiguration.recordChecksumAttribute}}] AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
+   A.[{{../conventions.recordChecksumAttribute}}] AS [{{../conventions.recordChecksumAttribute}}], 
    {{#each dataItemMappings}}
    A.[{{sourceDataItems.0.name}}] AS [{{targetDataItem.name}}]{{#unless @last}},{{/unless}}
    {{/each}}
-FROM [{{relatedDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{relatedDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{relatedDataObjects.0.name}}] A
+FROM [{{lookupExtension relatedDataObjects.0.extensions "datastore"}}].[{{lookupExtension relatedDataObjects.0.extensions "location"}}].[{{relatedDataObjects.0.name}}] A
 JOIN
    (
-   SELECT {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+   SELECT {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
       [{{sourceDataItems.0.name}}], {{/each}} {{/each}}
-      MAX({{../metadataConfiguration.loadDateTimeAttribute}}) AS MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-   FROM [{{relatedDataObjects.0.dataObjectConnection.extensions.0.value}}].[{{relatedDataObjects.0.dataObjectConnection.extensions.1.value}}].[{{relatedDataObjects.0.name}}] A
-   GROUP BY {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+      MAX({{../conventions.loadDateTimeAttribute}}) AS MAX_{{../conventions.loadDateTimeAttribute}}
+   FROM [{{lookupExtension relatedDataObjects.0.extensions "datastore"}}].[{{lookupExtension relatedDataObjects.0.extensions "location"}}].[{{relatedDataObjects.0.name}}] A
+   GROUP BY {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
       [{{sourceDataItems.0.name}}] {{#unless @last}},{{/unless}}{{/each}} {{/each}}
-   ) B ON {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+   ) B ON {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
    A.[{{sourceDataItems.0.name}}] = B.[{{sourceDataItems.0.name}}] AND {{/each}} {{/each}}
-   A.{{../metadataConfiguration.loadDateTimeAttribute}} = B.MAX_{{../metadataConfiguration.loadDateTimeAttribute}}
-   WHERE {{../metadataConfiguration.changeDataCaptureAttribute}} != 'D'
+   A.{{../conventions.loadDateTimeAttribute}} = B.MAX_{{../conventions.loadDateTimeAttribute}}
+   WHERE {{../conventions.changeDataCaptureAttribute}} != 'D'
 )
 SELECT
    {{#each dataItemMappings}}
    CASE 
-     WHEN STG_CTE.{{#each ../businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
+     WHEN STG_CTE.{{#each ../businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL 
      THEN PSA_CTE.[{{sourceDataItems.0.name}}]
      ELSE STG_CTE.[{{sourceDataItems.0.name}}] 
    END AS [{{sourceDataItems.0.name}}],{{/each}}
    CASE 
-     WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL
-     THEN PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
-     ELSE STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]
-   END AS [{{../metadataConfiguration.recordChecksumAttribute}}], 
+     WHEN STG_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL
+     THEN PSA_CTE.[{{../conventions.recordChecksumAttribute}}]
+     ELSE STG_CTE.[{{../conventions.recordChecksumAttribute}}]
+   END AS [{{../conventions.recordChecksumAttribute}}], 
    CASE 
-      WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'D' 
-      WHEN PSA_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'C' --Inserts are also C
-      WHEN STG_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
-         AND PSA_CTE.{{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
-         AND STG_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}]  != PSA_CTE.[{{../metadataConfiguration.recordChecksumAttribute}}] THEN 'C' ELSE 'No Change' 
-   END AS {{../metadataConfiguration.changeDataCaptureAttribute}},
+      WHEN STG_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'D' 
+      WHEN PSA_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NULL THEN 'C' --Inserts are also C
+      WHEN STG_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}}  IS NOT NULL 
+         AND PSA_CTE.{{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}[{{sourceDataItems.0.name}}]{{/if}}{{/each}}{{/each}} IS NOT NULL 
+         AND STG_CTE.[{{../conventions.recordChecksumAttribute}}]  != PSA_CTE.[{{../conventions.recordChecksumAttribute}}] THEN 'C' ELSE 'No Change' 
+   END AS {{../conventions.changeDataCaptureAttribute}},
    ROW_NUMBER() OVER
       (ORDER BY
-         {{#each businessKeys}}{{#each businessKeyComponentMapping}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}
-      ) AS {{../metadataConfiguration.sourceRowIdAttribute}},
-   GETDATE() {{../metadataConfiguration.eventDateTimeAttribute}}
+         {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}CASE WHEN STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN PSA_CTE.[{{sourceDataItems.0.name}}] ELSE STG_CTE.[{{sourceDataItems.0.name}}] END{{#unless @last}},{{/unless}}{{/each}}{{/each}}
+      ) AS {{../conventions.sourceRowIdAttribute}},
+   GETDATE() {{../conventions.eventDateTimeAttribute}}
 FROM STG_CTE
-FULL OUTER JOIN PSA_CTE ON {{#each businessKeys}}  {{#each businessKeyComponentMapping}}
+FULL OUTER JOIN PSA_CTE ON {{#each businessKeyDefinitions}}  {{#each businessKeyComponentMappings}}
     PSA_CTE.[{{sourceDataItems.0.name}}] = STG_CTE.[{{sourceDataItems.0.name}}]{{#unless @last}} AND{{/unless}}{{/each}} {{/each}}
 WHERE
 (
    CASE
-      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'D'{{/if}}{{/each}}{{/each}}
-      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'C'{{/if}}{{/each}}{{/each}}
-      WHEN {{#each businessKeys}}{{#each businessKeyComponentMapping}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NOT NULL AND PSA_CTE.{{sourceDataItems.0.name}} IS NOT NULL AND STG_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] != PSA_CTE.[{{../../../metadataConfiguration.recordChecksumAttribute}}] THEN 'C'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}STG_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'D'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NULL THEN 'C'{{/if}}{{/each}}{{/each}}
+      WHEN {{#each businessKeyDefinitions}}{{#each businessKeyComponentMappings}}{{#if @first}}PSA_CTE.[{{sourceDataItems.0.name}}] IS NOT NULL AND PSA_CTE.{{sourceDataItems.0.name}} IS NOT NULL AND STG_CTE.[{{../../../conventions.recordChecksumAttribute}}] != PSA_CTE.[{{../../../conventions.recordChecksumAttribute}}] THEN 'C'{{/if}}{{/each}}{{/each}}
       ELSE 'No Change'
    END
 ) != 'No Change'
