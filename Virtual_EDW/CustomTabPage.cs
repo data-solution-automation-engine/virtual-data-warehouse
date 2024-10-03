@@ -596,6 +596,9 @@ namespace Virtual_Data_Warehouse
                     try
                     {
                         // Compile the template, and merge it with the metadata.
+                        // Register Handlebars template with escaping disabled
+                        // Disable HTML escaping directly on the Handlebars class
+                        Handlebars.Configuration.NoEscape = true;
                         var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);                   
 
                         if (!_fileSplit)
@@ -689,8 +692,15 @@ namespace Virtual_Data_Warehouse
 
         private void Generate(string targetDataObjectName, VdwDataObjectMappingList vdwDataObjectMappingList, HandlebarsTemplate<object, object> template, string outputFileName)
         {
-            var jsonInput = System.Text.Json.JsonSerializer.Serialize(vdwDataObjectMappingList);
-            JsonNode deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput);
+            var serializeOptions = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
+            // Change it to a JsonNode for full flexibility (files don't need to conform to the schema this way)
+            var jsonInput = System.Text.Json.JsonSerializer.Serialize(vdwDataObjectMappingList, serializeOptions);
+            JsonNode? deserializedMapping = System.Text.Json.JsonSerializer.Deserialize<JsonNode>(jsonInput, serializeOptions);
 
             var result = template(deserializedMapping);
 
