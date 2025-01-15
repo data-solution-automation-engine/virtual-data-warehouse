@@ -601,8 +601,6 @@ namespace Virtual_Data_Warehouse
                         Handlebars.Configuration.NoEscape = true;
                         var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);
 
-
-
                         if (!_fileSplit)
                         {
                             var outputFileName = localLabelOutputFileTemplateValue.Text;
