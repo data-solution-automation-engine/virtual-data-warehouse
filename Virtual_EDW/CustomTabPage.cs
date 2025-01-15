@@ -599,7 +599,7 @@ namespace Virtual_Data_Warehouse
                         // Register Handlebars template with escaping disabled
                         // Disable HTML escaping directly on the Handlebars class
                         Handlebars.Configuration.NoEscape = true;
-                        var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);                   
+                        var template = Handlebars.Compile(localRichTextBoxGenerationTemplate.Text);
 
                         if (!_fileSplit)
                         {
@@ -626,7 +626,33 @@ namespace Virtual_Data_Warehouse
 
                                 localVdwMappingList.DataObjectMappings.Add(vdwMapping);
 
+                                // Replace the target data object.
                                 outputFileName = outputFileName.Replace("{targetDataObject.name}", targetDataObjectName);
+
+                                // Replace the mapping extension, if available
+                                try
+                                {
+                                    if (vdwMapping.Extensions != null && vdwMapping.Extensions.Count > 0)
+                                    {
+                                        var mappingExtension = vdwMapping.Extensions.FirstOrDefault(x => x.Key == "mapping_suffix").Value;
+
+                                        // Replace the mapping suffix, if available
+                                        if (mappingExtension != null && outputFileName.Contains("mapping_suffix"))
+                                        {
+                                            outputFileName = outputFileName.Replace("{mapping_suffix}", mappingExtension);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        outputFileName = outputFileName.Replace("_{mapping_suffix}", "");
+                                    }
+                                }
+                                catch (Exception exception)
+                                {
+                                    var errorMessage = $"There is an issue interpreting the mapping extension. The error message is: {exception.Message}";
+                                    RaiseOnChangeMainText(errorMessage);
+                                    FormBase.VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, errorMessage));
+                                }
 
                                 try
                                 {
