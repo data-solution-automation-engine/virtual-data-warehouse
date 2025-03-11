@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -40,7 +41,7 @@ namespace Virtual_Data_Warehouse
             InitializeComponent();
 
             // Set the version of the build for everything
-            const string versionNumberForApplication = "v1.7.1";
+            const string versionNumberForApplication = "v1.7.2";
 
             Text = $"Virtual Data Warehouse - {versionNumberForApplication}";
             labelWelcome.Text = $"{labelWelcome.Text} - {versionNumberForApplication}";
@@ -650,6 +651,7 @@ namespace Virtual_Data_Warehouse
                         {
                             try
                             {
+                                /*
                                 // Validate the file contents against the schema definition.
                                 if (File.Exists(Application.StartupPath + @"\Schema\" + GlobalParameters.JsonSchemaForDataWarehouseAutomationFileName))
                                 {
@@ -664,6 +666,7 @@ namespace Virtual_Data_Warehouse
                                 {
                                     VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error occurred while validating the file against the Data Warehouse Automation schema. Does the schema file exist?"));
                                 }
+                                */
 
                                 // Add the file to the list of mappings.
                                 var jsonInput = File.ReadAllText(fileName);
@@ -847,9 +850,9 @@ namespace Virtual_Data_Warehouse
 
             // Reorder.
             Dictionary<string, LocalTemplate> sortedMappingList = new Dictionary<string, LocalTemplate>();
+            int counter = 1;
             foreach (var mapping in finalMappingList)
             {
-                int counter = 1;
                 string orderNumber = mapping.classification switch
                 {
                     "Source" => "0",
@@ -875,12 +878,15 @@ namespace Virtual_Data_Warehouse
                     "Presentation" => "80",
                     "Helper" => "85",
                     "Export" => "86",
-                    _ => $"{900+counter}" // To ensure uniquness for all unknowns
+                    _ => $"{900 + counter}" // To ensure uniquness for all unknowns
                 };
+
+                counter++;
 
                 if (!sortedMappingList.ContainsKey(orderNumber))
                 {
                     sortedMappingList.Add(orderNumber, mapping);
+                    
                 }
                 else
                 {
@@ -1012,15 +1018,22 @@ namespace Virtual_Data_Warehouse
 
             foreach (CustomTabPage customTabPage in localCustomTabPageList)
             {
-                if (customTabPage.Name == tabName)
+                try
                 {
-                    foreach (LocalTemplate localTemplate in templateList)
+                    if (customTabPage.Name == tabName)
                     {
-                        if (localTemplate.classification == tabName)
+                        foreach (LocalTemplate localTemplate in templateList)
                         {
-                            customTabPage.SetItemList(localTemplate.vdwDataObjectMappingList);
+                            if (localTemplate.classification == tabName)
+                            {
+                                customTabPage.SetItemList(localTemplate.vdwDataObjectMappingList);
+                            }
                         }
                     }
+                }
+                catch (Exception exception)
+                {
+                    VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"Issue encountered populating tabs: "+exception));
                 }
             }
         }
@@ -1623,8 +1636,17 @@ namespace Virtual_Data_Warehouse
 
         private void refreshMetadataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RefreshMetadata();
-            richTextBoxInformationMain.Text = $@"The metadata has been reloaded from the repository.";
+            try
+            {
+                richTextBoxInformationMain.Text = $@"Refreshing metadata...";
+                RefreshMetadata();
+                richTextBoxInformationMain.Text = $@"The metadata has been reloaded from the repository.";
+            }
+            catch (Exception exception)
+            {
+                richTextBoxInformationMain.Text = $@"Issues have been found refreshing metadata, please check the event log.";
+                VdwConfigurationSettings.VdwEventLog.Add(Event.CreateNewEvent(EventTypes.Error, $"An error occurred while refrshing metadata: "+exception));
+            }
         }
 
         private void clearEventLogToolStripMenuItem_Click(object sender, EventArgs e)
