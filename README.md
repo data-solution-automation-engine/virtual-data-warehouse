@@ -1,3 +1,12 @@
+ > [!WARNING]
+> ## This project is deprecated and no longer maintained
+>
+> **Virtual Data Warehouse** has been superseded by [Agnostic Data Labs](https://www.agnosticdatalabs.com), a free (closed-source) successor product.
+>
+> This repository is retained for historical reference only. No further updates or bug fixes will be released, and no pull requests or issues will be accepted. The repository will be archived shortly.
+
+---
+
 # Virtual Data Warehouse
 
 The Virtual Data Warehouse (VDW) and the associated metadata management software TEAM are free tools to quickly prototype your Data Warehouse model (output), validate your metadata and generally get insight in the your Data Warehouse patterns.
