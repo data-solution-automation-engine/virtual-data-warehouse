@@ -3,7 +3,7 @@
 >
 > **Virtual Data Warehouse** has been superseded by [Agnostic Data Labs](https://www.agnosticdatalabs.com), a free (closed-source) successor product.
 >
-> This repository is retained for historical reference only. No further updates or bug fixes will be released, and no pull requests or issues will be accepted. The repository will be archived shortly.
+> This repository has been archived and is retained for historical reference only. No further updates or bug fixes will be released, and no pull requests or issues are being accepted.
 
 ---
 
