@@ -606,7 +606,7 @@
     <PackageReference Include="Handlebars.Net">
       <Version>2.1.6</Version>
     </PackageReference>
-    <PackageReference Include="log4net" Version="3.0.1" />
+    <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.Data.SqlClient">
       <Version>5.2.2</Version>
     </PackageReference>
